@@ -1,6 +1,7 @@
 package xyz.peast.beep;
 
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,10 +13,15 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    boolean playing = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +58,28 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "sampleRateString: " + samplerateString);
         Log.d(TAG, "buffersizeString: " + buffersizeString);
 
+        // NOTE: This is temp code that will be deleted
+
+        // Files under res/raw are not zipped, just copied into the APK. Get the offset and length to know where our files are located.
+        AssetFileDescriptor fd0 = getResources().openRawResourceFd(R.raw.lycka), fd1 = getResources().openRawResourceFd(R.raw.nuyorica);
+        int fileAoffset = (int)fd0.getStartOffset(), fileAlength = (int)fd0.getLength(), fileBoffset = (int)fd1.getStartOffset(), fileBlength = (int)fd1.getLength();
+        try {
+            fd0.getParcelFileDescriptor().close();
+            fd1.getParcelFileDescriptor().close();
+        } catch (IOException e) {
+            android.util.Log.d("", "Close error.");
+        }
+
+        // Arguments: path to the APK file, offset and length of the two resource files, sample rate, audio buffer size.
+        SuperpoweredExample(Integer.parseInt(samplerateString), Integer.parseInt(buffersizeString), getPackageResourcePath(), fileAoffset, fileAlength, fileBoffset, fileBlength);
+
+
+    }
+    public void SuperpoweredExample_PlayPause(View button) {  // Play/pause.
+        playing = !playing;
+        onPlayPause(playing);
+        Button b = (Button) findViewById(R.id.playPause);
+        if (b != null) b.setText(playing ? "Pause" : "Play");
     }
 
     @Override
@@ -74,5 +102,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    private native void SuperpoweredExample(int samplerate, int buffersize, String apkPath, int fileAoffset, int fileAlength, int fileBoffset, int fileBlength);
+    private native void onPlayPause(boolean play);
+    private native void onCrossfader(int value);
+    private native void onFxSelect(int value);
+    private native void onFxOff();
+    private native void onFxValue(int value);
+    static {
+        System.loadLibrary("SuperpoweredExample");
     }
 }
