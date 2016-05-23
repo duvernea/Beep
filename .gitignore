@@ -8,4 +8,4 @@ gradle.properties
 .DS_Store
 /build
 /captures
-/libs
+/libs/*
