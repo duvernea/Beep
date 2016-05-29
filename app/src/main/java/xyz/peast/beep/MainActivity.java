@@ -2,7 +2,9 @@ package xyz.peast.beep;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
+import android.media.AudioFormat;
 import android.media.AudioManager;
+import android.media.AudioRecord;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -22,6 +24,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     boolean playing = false;
+    String mSamplerateString = null;
+    String mBuffersizeString = null;
+    boolean mSupportRecording;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,21 +48,12 @@ public class MainActivity extends AppCompatActivity {
         // Get the sample rate and buffer size, if possible from the device
         // Set to 44.1k samples/s and 512 frame buffer
         // A frame = sample size * channels (stereo with 16bit samples = 32 bits (4 bytes)/frame)
-        String samplerateString = null;
-        String buffersizeString = null;
-        if (Build.VERSION.SDK_INT >= 17) {
-            AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
-            samplerateString = audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE);
-            buffersizeString = audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER);
-        }
-        if (samplerateString == null) {
-            samplerateString = "44100";
-        }
-        if (buffersizeString == null) {
-            buffersizeString = "512";
-        }
-        Log.d(TAG, "sampleRateString: " + samplerateString);
-        Log.d(TAG, "buffersizeString: " + buffersizeString);
+        // Get the device's sample rate and buffer size to enable low-latency Android audio output, if available.
+        // get the min buffer size
+        // check if recording is possible
+        queryNativeAudioParameters();
+        Log.d(TAG, "sampleRateString: " + mSamplerateString);
+        Log.d(TAG, "buffersizeString: " + mBuffersizeString);
 
         // NOTE: This is temp code that will be deleted
 
@@ -71,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Arguments: path to the APK file, offset and length of the two resource files, sample rate, audio buffer size.
-        SuperpoweredExample(Integer.parseInt(samplerateString), Integer.parseInt(buffersizeString), getPackageResourcePath(), fileAoffset, fileAlength, fileBoffset, fileBlength);
+        SuperpoweredExample(Integer.parseInt(mSamplerateString), Integer.parseInt(mBuffersizeString), getPackageResourcePath(), fileAoffset, fileAlength, fileBoffset, fileBlength);
 
 
     }
@@ -81,6 +78,28 @@ public class MainActivity extends AppCompatActivity {
         Button b = (Button) findViewById(R.id.playPause);
         if (b != null) b.setText(playing ? "Pause" : "Play");
     }
+    private void queryNativeAudioParameters() {
+
+
+        if (Build.VERSION.SDK_INT >= 17) {
+            AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+            mSamplerateString = audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE);
+            mBuffersizeString = audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER);
+        }
+        if (mSamplerateString == null) mSamplerateString = "44100";
+        if (mBuffersizeString == null) mBuffersizeString = "512";
+
+        int recBufSize = AudioRecord.getMinBufferSize(
+                Integer.parseInt(mSamplerateString),
+                AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT);
+        mSupportRecording = true;
+        if (recBufSize == AudioRecord.ERROR ||
+                recBufSize == AudioRecord.ERROR_BAD_VALUE) {
+            mSupportRecording = false;
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
