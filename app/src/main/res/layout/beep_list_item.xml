@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ImageView
+        android:src="@drawable/beep_item_temp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/imageView" />
+
+    <TextView
+        android:id="@+id/list_item_date_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:layout_gravity="bottom"
+        android:text="Best bear*"
+        android:background="#80f19985"
+        android:textStyle="normal|bold"
+        android:gravity="center"
+        android:textColor="#ffffff" />
+</FrameLayout>
