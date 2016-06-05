@@ -43,6 +43,19 @@ SuperpoweredExample::SuperpoweredExample(unsigned int samplerate, unsigned int b
     filter = new SuperpoweredFilter(SuperpoweredFilter_Resonant_Lowpass, samplerate);
     flanger = new SuperpoweredFlanger(samplerate);
 
+    /**
+    @brief Creates an audio I/O instance. Audio input and/or output immediately starts after calling this.
+
+    @param samplerate The requested sample rate in Hz.
+    @param buffersize The requested buffer size (number of samples).
+    @param enableInput Enable audio input.
+    @param enableOutput Enable audio output.
+    @param callback The audio processing callback function to call periodically.
+    @param clientdata A custom pointer the callback receives.
+    @param inputStreamType OpenSL ES stream type, such as SL_ANDROID_RECORDING_PRESET_GENERIC. -1 means default. SLES/OpenSLES_AndroidConfiguration.h has them.
+    @param outputStreamType OpenSL ES stream type, such as SL_ANDROID_STREAM_MEDIA or SL_ANDROID_STREAM_VOICE. -1 means default. SLES/OpenSLES_AndroidConfiguration.h has them.
+    @param latencySamples How many samples to have in the internal fifo buffer minimum. Works only when both input and output are enabled. Might help if you have many dropouts.
+    */
     audioSystem = new SuperpoweredAndroidAudioIO(samplerate, buffersize, false, true, audioProcessing, this, -1, SL_ANDROID_STREAM_MEDIA, buffersize * 2);
 }
 
