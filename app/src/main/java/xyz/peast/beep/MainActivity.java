@@ -75,8 +75,8 @@ public class MainActivity extends AppCompatActivity {
     public void SuperpoweredExample_PlayPause(View button) {  // Play/pause.
         playing = !playing;
         onPlayPause(playing);
-        Button b = (Button) findViewById(R.id.playPause);
-        if (b != null) b.setText(playing ? "Pause" : "Play");
+        //Button b = (Button) findViewById(R.id.playPause);
+        //if (b != null) b.setText(playing ? "Pause" : "Play");
     }
     private void queryNativeAudioParameters() {
 
