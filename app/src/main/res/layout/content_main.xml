@@ -12,6 +12,21 @@
     android:fitsSystemWindows="true">
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/top_beeps_background"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+        <TextView
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_top_beeps"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:paddingBottom="8dp"/>
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -32,5 +47,6 @@
             layout="@layout/beep_list_item"
             android:layout_weight="1"/>
 
+    </LinearLayout>
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

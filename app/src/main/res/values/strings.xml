@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">beep</string>
     <string name="action_settings">Settings</string>
+
+    // Headings
+    <string name="label_top_beeps">Top Beeps</string>
 </resources>
