@@ -20,6 +20,27 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        // Beep Table
+        final String SQL_CREATE_BEEP_TABLE = "CREATE TABLE " + DbContract.BeepEntry.TABLE_NAME + " (" +
+                DbContract.BeepEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                DbContract.BeepEntry.COLUMN_NAME + " TEXT NOT NULL, " +
+                DbContract.BeepEntry.COLUMN_IMAGE + " TEXT NOT NULL, " +
+                DbContract.BeepEntry.COLUMN_AUDIO + " TEXT NOT NULL, " +
+                DbContract.BeepEntry.COLUMN_COORD_LAT + " REAL NOT NULL, " +
+                DbContract.BeepEntry.COLUMN_COORD_LONG + " REAL NOT NULL, " +
+                DbContract.BeepEntry.COLUMN_PRIVACY + " BOOLEAN NOT NULL, " +
+                DbContract.BeepEntry.COLUMN_PLAY_COUNT + " INTEGER NOT NULL, " +
+                DbContract.BeepEntry.COLUMN_BOARD_KEY + " INTEGER NOT NULL, " +
+                // Set up foreign key
+                " FOREIGN KEY (" + DbContract.BeepEntry.COLUMN_BOARD_KEY + ") REFERENCES " +
+                DbContract.BoardEntry.TABLE_NAME + " (" + DbContract.BoardEntry._ID + ");";
+
+        db.execSQL(SQL_CREATE_BEEP_TABLE);
+
+
+
+
+
 
     }
 
