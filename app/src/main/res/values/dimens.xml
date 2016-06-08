@@ -5,5 +5,5 @@
     <dimen name="fab_margin">16dp</dimen>
 
     // height of appbar for main activity - includes large image
-    <dimen name="appbar_height">400dp</dimen>
+    <dimen name="appbar_height">320dp</dimen>
 </resources>
