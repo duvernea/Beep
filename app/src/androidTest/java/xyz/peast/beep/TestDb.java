@@ -1,10 +1,12 @@
 package xyz.peast.beep;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
+import android.util.Log;
 
 import java.util.HashSet;
 
@@ -33,10 +35,19 @@ public class TestDb extends AndroidTestCase {
         tableNameHashSet.add(DbContract.BoardEntry.TABLE_NAME);
         tableNameHashSet.add(DbContract.BeepEntry.TABLE_NAME);
 
+        // Test that database was created
         SQLiteDatabase db = new DbHelper(this.mContext).getWritableDatabase();
         assertEquals(true, db.isOpen());
 
+        Cursor c = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
+        assertTrue("Error: This means that the database has not been created correctlyl", c.moveToFirst());
 
+        // Test that database tables were created
+        do {
+            tableNameHashSet.remove(c.getString(0));
+        } while (c.moveToNext());
+        assertTrue("Error: Your database was created without both the beep and board tables",
+                tableNameHashSet.isEmpty());
     }
 
     @Override
