@@ -33,14 +33,17 @@ public class DbHelper extends SQLiteOpenHelper {
                 DbContract.BeepEntry.COLUMN_BOARD_KEY + " INTEGER NOT NULL, " +
                 // Set up foreign key
                 " FOREIGN KEY (" + DbContract.BeepEntry.COLUMN_BOARD_KEY + ") REFERENCES " +
-                DbContract.BoardEntry.TABLE_NAME + " (" + DbContract.BoardEntry._ID + ");";
+                DbContract.BoardEntry.TABLE_NAME + " (" + DbContract.BoardEntry._ID + "));";
 
         db.execSQL(SQL_CREATE_BEEP_TABLE);
 
+        // Board Table
+        final String SQL_CREATE_BOARD_TABLE = "CREATE TABLE " + DbContract.BoardEntry.TABLE_NAME + " (" +
+                DbContract.BoardEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                DbContract.BoardEntry.COLUMN_NAME + " TEXT NOT NULL, " +
+                DbContract.BoardEntry.COLUMN_IMAGE + " TEXT NOT NULL);";
 
-
-
-
+        db.execSQL(SQL_CREATE_BOARD_TABLE);
 
     }
 
