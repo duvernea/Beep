@@ -6,7 +6,7 @@ import android.provider.BaseColumns;
  * Created by duvernea on 6/7/16.
  */
 
-public class dbContract {
+public class DbContract {
 
     public static final class BeepEntry implements BaseColumns {
         public static final String TABLE_NAME = "beeps";
