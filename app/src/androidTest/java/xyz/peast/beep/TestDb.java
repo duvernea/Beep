@@ -40,14 +40,65 @@ public class TestDb extends AndroidTestCase {
         assertEquals(true, db.isOpen());
 
         Cursor c = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
-        assertTrue("Error: This means that the database has not been created correctlyl", c.moveToFirst());
+        assertTrue("Error: The database has not been created correctly", c.moveToFirst());
 
         // Test that database tables were created
         do {
             tableNameHashSet.remove(c.getString(0));
         } while (c.moveToNext());
-        assertTrue("Error: Your database was created without both the beep and board tables",
+        assertTrue("Error: The database created does not contain all tables",
                 tableNameHashSet.isEmpty());
+
+        // Test that Beep table contain the correct columns
+        c = db.rawQuery("PRAGMA table_info(" + DbContract.BeepEntry.TABLE_NAME + ")", null);
+
+        assertTrue("Error: Unable to query the database for table information", c.moveToFirst());
+
+        //Build HashSet of all of the columns to look for - Beep Table
+        final HashSet<String> beepColumnHashSet = new HashSet<String>();
+        beepColumnHashSet.add(DbContract.BeepEntry._ID);
+        beepColumnHashSet.add(DbContract.BeepEntry.COLUMN_NAME);
+        beepColumnHashSet.add(DbContract.BeepEntry.COLUMN_IMAGE);
+        beepColumnHashSet.add(DbContract.BeepEntry.COLUMN_AUDIO);
+        beepColumnHashSet.add(DbContract.BeepEntry.COLUMN_COORD_LAT);
+        beepColumnHashSet.add(DbContract.BeepEntry.COLUMN_COORD_LONG);
+        beepColumnHashSet.add(DbContract.BeepEntry.COLUMN_PRIVACY);
+        beepColumnHashSet.add(DbContract.BeepEntry.COLUMN_PLAY_COUNT);
+        beepColumnHashSet.add(DbContract.BeepEntry.COLUMN_BOARD_KEY);
+
+        int columnNameIndex = c.getColumnIndex("name");
+        do {
+            String columnName = c.getString(columnNameIndex);
+            Log.d(TAG, "Column was created: " + columnName);
+            beepColumnHashSet.remove(columnName);
+        } while (c.moveToNext());
+
+        assertTrue("Error: The database doesn't contain all of the required Beep table columns",
+                beepColumnHashSet.isEmpty());
+
+        // Test that Board table contain the correct columns
+        c = db.rawQuery("PRAGMA table_info(" + DbContract.BoardEntry.TABLE_NAME + ")", null);
+
+        assertTrue("Error: Unable to query the database for table information", c.moveToFirst());
+        //Build HashSet of all of the columns to look for - Board Table
+        final HashSet<String> boardColumnHashSet = new HashSet<String>();
+        boardColumnHashSet.add(DbContract.BoardEntry._ID);
+        boardColumnHashSet.add(DbContract.BoardEntry.COLUMN_NAME);
+        boardColumnHashSet.add(DbContract.BoardEntry.COLUMN_IMAGE);
+
+        columnNameIndex = c.getColumnIndex("name");
+        do {
+            String columnName = c.getString(columnNameIndex);
+            Log.d(TAG, "Column was created: " + columnName);
+
+            boardColumnHashSet.remove(columnName);
+        } while (c.moveToNext());
+
+        assertTrue("Error: The database doesn't contain all of the required Board table columns",
+                boardColumnHashSet.isEmpty());
+
+        db.close();
+
     }
 
     @Override
