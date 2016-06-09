@@ -100,15 +100,17 @@ public class TestDb extends AndroidTestCase {
 
         db.close();
     }
-    public void testBoardTable() {
+    public void testInsertQueryTables() {
         // Insert data into database, query database, validate result
         DbHelper dbHelper = new DbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues boardValues = TestUtilities.createBoardValues();
 
-        long rowId = db.insert(DbContract.BoardEntry.TABLE_NAME, null, boardValues);
-        assertTrue(rowId != -1);
+        // Insert row into table
+        long boardRowId;
+        boardRowId = db.insert(DbContract.BoardEntry.TABLE_NAME, null, boardValues);
+        assertTrue(boardRowId != -1);
 
         Cursor boardCursor = db.query(DbContract.BoardEntry.TABLE_NAME,
                 null, // leaving "columns" null just returns all the columns.
@@ -119,17 +121,37 @@ public class TestDb extends AndroidTestCase {
                 null  // sort order
         );
 
-        assertTrue("Error: No records returned from board query", boardCursor.moveToFirst());
+        assertTrue("Error: No records returned from Board query", boardCursor.moveToFirst());
 
         TestUtilities.validateCurrentRecord("Error: testInsertReadDb Board Entry failed to validate",
                 boardCursor, boardValues);
 
-        assertFalse("Error: More than one record returned from query",
+        assertFalse("Error: More than one record returned from Board query",
                 boardCursor.moveToNext());
+
+        ContentValues beepValues = TestUtilities.createBeepValues(boardRowId);
+        long beepRowId;
+        beepRowId = db.insert(DbContract.BeepEntry.TABLE_NAME, null, beepValues);
+        assertTrue(beepRowId != -1);
+
+        Cursor beepCursor = db.query(DbContract.BeepEntry.TABLE_NAME,
+                null, // leaving "columns" null just returns all the columns.
+                null, // cols for "where" clause
+                null, // values for "where" clause
+                null, // columns to group by
+                null, // columns to filter by row groups
+                null  // sort order
+        );
+        assertTrue("Error: No records returned from Beep query", beepCursor.moveToFirst());
+
+        TestUtilities.validateCurrentRecord("Error: testInsertReadDb Beep Entry failed to validate",
+                beepCursor, beepValues);
+
+        assertFalse("Error: More than one record returned from Beep query",
+                beepCursor.moveToNext());
 
         boardCursor.close();
         dbHelper.close();
-
     }
 
     @Override

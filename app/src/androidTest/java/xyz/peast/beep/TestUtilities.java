@@ -3,6 +3,7 @@ package xyz.peast.beep;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.test.AndroidTestCase;
+import android.util.Log;
 
 import java.util.Map;
 import java.util.Set;
@@ -15,12 +16,28 @@ import xyz.peast.beep.data.DbContract;
 
 public class TestUtilities extends AndroidTestCase {
 
+    private static final String TAG = TestUtilities.class.getSimpleName();
+
     static ContentValues createBoardValues() {
         ContentValues boardValues = new ContentValues();
         boardValues.put(DbContract.BoardEntry.COLUMN_NAME, "Sweetie <3");
         boardValues.put(DbContract.BoardEntry.COLUMN_IMAGE, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
 
         return boardValues;
+    }
+    static ContentValues createBeepValues(long rowId) {
+        ContentValues beepValues = new ContentValues();
+        beepValues.put(DbContract.BeepEntry.COLUMN_NAME, "Beep beep!");
+        beepValues.put(DbContract.BeepEntry.COLUMN_IMAGE, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
+        beepValues.put(DbContract.BeepEntry.COLUMN_AUDIO, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
+        beepValues.put(DbContract.BeepEntry.COLUMN_COORD_LAT, 178.1234);
+        beepValues.put(DbContract.BeepEntry.COLUMN_COORD_LONG, 92.1234);
+        beepValues.put(DbContract.BeepEntry.COLUMN_PRIVACY, 1);
+        beepValues.put(DbContract.BeepEntry.COLUMN_PLAY_COUNT, 0);
+        beepValues.put(DbContract.BeepEntry.COLUMN_BOARD_KEY, rowId);
+
+        return beepValues;
+
     }
 
     static void validateCurrentRecord(String error, Cursor valueCursor, ContentValues expectedValues) {
@@ -30,9 +47,17 @@ public class TestUtilities extends AndroidTestCase {
             int idx = valueCursor.getColumnIndex(columnName);
             assertFalse("Column '" + columnName + "' not found. " + error, idx == -1);
             String expectedValue = entry.getValue().toString();
+            if (valueCursor.getType(idx) == Cursor.FIELD_TYPE_FLOAT) {
+                Log.d(TAG, "we found a float");
+                Log.d(TAG, "Float value: " + valueCursor.getFloat(idx));
+            }
+            Log.d(TAG, "getString(idx): " + valueCursor.getString(idx));
             assertEquals("Value '" + entry.getValue().toString() +
                     "' did not match the expected value '" +
-                    expectedValue + "'. " + error, expectedValue, valueCursor.getString(idx));
+                    expectedValue + "'. " + error, expectedValue,
+                    valueCursor.getType(idx)==Cursor.FIELD_TYPE_FLOAT
+                            ? Float.toString(valueCursor.getFloat(idx)) : valueCursor.getString(idx));
         }
     }
+
 }

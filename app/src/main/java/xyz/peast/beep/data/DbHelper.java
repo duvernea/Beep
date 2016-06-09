@@ -26,8 +26,8 @@ public class DbHelper extends SQLiteOpenHelper {
                 DbContract.BeepEntry.COLUMN_NAME + " TEXT NOT NULL, " +
                 DbContract.BeepEntry.COLUMN_IMAGE + " TEXT NOT NULL, " +
                 DbContract.BeepEntry.COLUMN_AUDIO + " TEXT NOT NULL, " +
-                DbContract.BeepEntry.COLUMN_COORD_LAT + " REAL NOT NULL, " +
-                DbContract.BeepEntry.COLUMN_COORD_LONG + " REAL NOT NULL, " +
+                DbContract.BeepEntry.COLUMN_COORD_LAT + " FLOAT NOT NULL, " +
+                DbContract.BeepEntry.COLUMN_COORD_LONG + " FLOAT NOT NULL, " +
                 DbContract.BeepEntry.COLUMN_PRIVACY + " BOOLEAN NOT NULL, " +
                 DbContract.BeepEntry.COLUMN_PLAY_COUNT + " INTEGER NOT NULL, " +
                 DbContract.BeepEntry.COLUMN_BOARD_KEY + " INTEGER NOT NULL, " +
