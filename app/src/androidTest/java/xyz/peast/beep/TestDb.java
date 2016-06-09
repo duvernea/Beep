@@ -1,5 +1,6 @@
 package xyz.peast.beep;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -98,6 +99,36 @@ public class TestDb extends AndroidTestCase {
                 boardColumnHashSet.isEmpty());
 
         db.close();
+    }
+    public void testBoardTable() {
+        // Insert data into database, query database, validate result
+        DbHelper dbHelper = new DbHelper(mContext);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues boardValues = TestUtilities.createBoardValues();
+
+        long rowId = db.insert(DbContract.BoardEntry.TABLE_NAME, null, boardValues);
+        assertTrue(rowId != -1);
+
+        Cursor boardCursor = db.query(DbContract.BoardEntry.TABLE_NAME,
+                null, // leaving "columns" null just returns all the columns.
+                null, // cols for "where" clause
+                null, // values for "where" clause
+                null, // columns to group by
+                null, // columns to filter by row groups
+                null  // sort order
+        );
+
+        assertTrue("Error: No records returned from board query", boardCursor.moveToFirst());
+
+        TestUtilities.validateCurrentRecord("Error: testInsertReadDb Board Entry failed to validate",
+                boardCursor, boardValues);
+
+        assertFalse("Error: More than one record returned from query",
+                boardCursor.moveToNext());
+
+        boardCursor.close();
+        dbHelper.close();
 
     }
 
