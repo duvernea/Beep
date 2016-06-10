@@ -8,7 +8,7 @@ import android.util.Log;
 import java.util.Map;
 import java.util.Set;
 
-import xyz.peast.beep.data.DbContract;
+import xyz.peast.beep.data.BeepDbContract;
 
 /**
  * Created by duvernea on 6/9/16.
@@ -20,21 +20,21 @@ public class TestUtilities extends AndroidTestCase {
 
     static ContentValues createBoardValues() {
         ContentValues boardValues = new ContentValues();
-        boardValues.put(DbContract.BoardEntry.COLUMN_NAME, "Sweetie <3");
-        boardValues.put(DbContract.BoardEntry.COLUMN_IMAGE, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
+        boardValues.put(BeepDbContract.BoardEntry.COLUMN_NAME, "Sweetie <3");
+        boardValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
 
         return boardValues;
     }
     static ContentValues createBeepValues(long rowId) {
         ContentValues beepValues = new ContentValues();
-        beepValues.put(DbContract.BeepEntry.COLUMN_NAME, "Beep beep!");
-        beepValues.put(DbContract.BeepEntry.COLUMN_IMAGE, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
-        beepValues.put(DbContract.BeepEntry.COLUMN_AUDIO, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
-        beepValues.put(DbContract.BeepEntry.COLUMN_COORD_LAT, 178.1234);
-        beepValues.put(DbContract.BeepEntry.COLUMN_COORD_LONG, 92.1234);
-        beepValues.put(DbContract.BeepEntry.COLUMN_PRIVACY, 1);
-        beepValues.put(DbContract.BeepEntry.COLUMN_PLAY_COUNT, 0);
-        beepValues.put(DbContract.BeepEntry.COLUMN_BOARD_KEY, rowId);
+        beepValues.put(BeepDbContract.BeepEntry.COLUMN_NAME, "Beep beep!");
+        beepValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
+        beepValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
+        beepValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LAT, 178.1234);
+        beepValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LONG, 92.1234);
+        beepValues.put(BeepDbContract.BeepEntry.COLUMN_PRIVACY, 1);
+        beepValues.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, 0);
+        beepValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, rowId);
 
         return beepValues;
 

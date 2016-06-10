@@ -1,18 +1,16 @@
 package xyz.peast.beep;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
 import android.util.Log;
 
 import java.util.HashSet;
 
-import xyz.peast.beep.data.DbContract;
-import xyz.peast.beep.data.DbHelper;
+import xyz.peast.beep.data.BeepDbContract;
+import xyz.peast.beep.data.BeepDbHelper;
 
 /**
  * Created by duvernea on 6/8/16.
@@ -33,11 +31,11 @@ public class TestDb extends AndroidTestCase {
     }
     public void testCreateDb() throws Throwable {
         final HashSet<String> tableNameHashSet = new HashSet<String>();
-        tableNameHashSet.add(DbContract.BoardEntry.TABLE_NAME);
-        tableNameHashSet.add(DbContract.BeepEntry.TABLE_NAME);
+        tableNameHashSet.add(BeepDbContract.BoardEntry.TABLE_NAME);
+        tableNameHashSet.add(BeepDbContract.BeepEntry.TABLE_NAME);
 
         // Test that database was created
-        SQLiteDatabase db = new DbHelper(this.mContext).getWritableDatabase();
+        SQLiteDatabase db = new BeepDbHelper(this.mContext).getWritableDatabase();
         assertEquals(true, db.isOpen());
 
         Cursor c = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
@@ -51,21 +49,21 @@ public class TestDb extends AndroidTestCase {
                 tableNameHashSet.isEmpty());
 
         // Test that Beep table contain the correct columns
-        c = db.rawQuery("PRAGMA table_info(" + DbContract.BeepEntry.TABLE_NAME + ")", null);
+        c = db.rawQuery("PRAGMA table_info(" + BeepDbContract.BeepEntry.TABLE_NAME + ")", null);
 
         assertTrue("Error: Unable to query the database for table information", c.moveToFirst());
 
         //Build HashSet of all of the columns to look for - Beep Table
         final HashSet<String> beepColumnHashSet = new HashSet<String>();
-        beepColumnHashSet.add(DbContract.BeepEntry._ID);
-        beepColumnHashSet.add(DbContract.BeepEntry.COLUMN_NAME);
-        beepColumnHashSet.add(DbContract.BeepEntry.COLUMN_IMAGE);
-        beepColumnHashSet.add(DbContract.BeepEntry.COLUMN_AUDIO);
-        beepColumnHashSet.add(DbContract.BeepEntry.COLUMN_COORD_LAT);
-        beepColumnHashSet.add(DbContract.BeepEntry.COLUMN_COORD_LONG);
-        beepColumnHashSet.add(DbContract.BeepEntry.COLUMN_PRIVACY);
-        beepColumnHashSet.add(DbContract.BeepEntry.COLUMN_PLAY_COUNT);
-        beepColumnHashSet.add(DbContract.BeepEntry.COLUMN_BOARD_KEY);
+        beepColumnHashSet.add(BeepDbContract.BeepEntry._ID);
+        beepColumnHashSet.add(BeepDbContract.BeepEntry.COLUMN_NAME);
+        beepColumnHashSet.add(BeepDbContract.BeepEntry.COLUMN_IMAGE);
+        beepColumnHashSet.add(BeepDbContract.BeepEntry.COLUMN_AUDIO);
+        beepColumnHashSet.add(BeepDbContract.BeepEntry.COLUMN_COORD_LAT);
+        beepColumnHashSet.add(BeepDbContract.BeepEntry.COLUMN_COORD_LONG);
+        beepColumnHashSet.add(BeepDbContract.BeepEntry.COLUMN_PRIVACY);
+        beepColumnHashSet.add(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT);
+        beepColumnHashSet.add(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY);
 
         int columnNameIndex = c.getColumnIndex("name");
         do {
@@ -78,14 +76,14 @@ public class TestDb extends AndroidTestCase {
                 beepColumnHashSet.isEmpty());
 
         // Test that Board table contain the correct columns
-        c = db.rawQuery("PRAGMA table_info(" + DbContract.BoardEntry.TABLE_NAME + ")", null);
+        c = db.rawQuery("PRAGMA table_info(" + BeepDbContract.BoardEntry.TABLE_NAME + ")", null);
 
         assertTrue("Error: Unable to query the database for table information", c.moveToFirst());
         //Build HashSet of all of the columns to look for - Board Table
         final HashSet<String> boardColumnHashSet = new HashSet<String>();
-        boardColumnHashSet.add(DbContract.BoardEntry._ID);
-        boardColumnHashSet.add(DbContract.BoardEntry.COLUMN_NAME);
-        boardColumnHashSet.add(DbContract.BoardEntry.COLUMN_IMAGE);
+        boardColumnHashSet.add(BeepDbContract.BoardEntry._ID);
+        boardColumnHashSet.add(BeepDbContract.BoardEntry.COLUMN_NAME);
+        boardColumnHashSet.add(BeepDbContract.BoardEntry.COLUMN_IMAGE);
 
         columnNameIndex = c.getColumnIndex("name");
         do {
@@ -102,17 +100,17 @@ public class TestDb extends AndroidTestCase {
     }
     public void testInsertQueryTables() {
         // Insert data into database, query database, validate result
-        DbHelper dbHelper = new DbHelper(mContext);
+        BeepDbHelper dbHelper = new BeepDbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues boardValues = TestUtilities.createBoardValues();
 
         // Insert row into table
         long boardRowId;
-        boardRowId = db.insert(DbContract.BoardEntry.TABLE_NAME, null, boardValues);
+        boardRowId = db.insert(BeepDbContract.BoardEntry.TABLE_NAME, null, boardValues);
         assertTrue(boardRowId != -1);
 
-        Cursor boardCursor = db.query(DbContract.BoardEntry.TABLE_NAME,
+        Cursor boardCursor = db.query(BeepDbContract.BoardEntry.TABLE_NAME,
                 null, // leaving "columns" null just returns all the columns.
                 null, // cols for "where" clause
                 null, // values for "where" clause
@@ -131,10 +129,10 @@ public class TestDb extends AndroidTestCase {
 
         ContentValues beepValues = TestUtilities.createBeepValues(boardRowId);
         long beepRowId;
-        beepRowId = db.insert(DbContract.BeepEntry.TABLE_NAME, null, beepValues);
+        beepRowId = db.insert(BeepDbContract.BeepEntry.TABLE_NAME, null, beepValues);
         assertTrue(beepRowId != -1);
 
-        Cursor beepCursor = db.query(DbContract.BeepEntry.TABLE_NAME,
+        Cursor beepCursor = db.query(BeepDbContract.BeepEntry.TABLE_NAME,
                 null, // leaving "columns" null just returns all the columns.
                 null, // cols for "where" clause
                 null, // values for "where" clause
