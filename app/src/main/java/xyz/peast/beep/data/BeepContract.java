@@ -9,8 +9,12 @@ import android.provider.BaseColumns;
 
 public class BeepContract {
 
+    // ContentProvider constants
     public static final String CONTENT_AUTHORITY = "xyz.peast.beep";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+    // Possible paths (appended to base content URI for possible URI's)
+    public static final String PATH_BEEP = "beep";
+    public static final String PATH_BOARD = "board";
 
     public static final class BeepEntry implements BaseColumns {
         public static final String TABLE_NAME = "beeps";
