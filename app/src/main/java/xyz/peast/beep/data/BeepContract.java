@@ -17,6 +17,9 @@ public class BeepContract {
     public static final String PATH_BOARD = "board";
 
     public static final class BeepEntry implements BaseColumns {
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BEEP).build();
+
         public static final String TABLE_NAME = "beeps";
 
         // define columns
@@ -39,6 +42,9 @@ public class BeepContract {
 
     }
     public static final class BoardEntry implements  BaseColumns {
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BOARD).build();
+
 
         public static final String TABLE_NAME = "boards";
 
