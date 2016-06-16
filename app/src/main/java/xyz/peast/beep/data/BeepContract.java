@@ -1,14 +1,16 @@
 package xyz.peast.beep.data;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
  * Created by duvernea on 6/7/16.
  */
 
-public class BeepDbContract {
+public class BeepContract {
 
-    // testings
+    public static final String CONTENT_AUTHORITY = "xyz.peast.beep";
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     public static final class BeepEntry implements BaseColumns {
         public static final String TABLE_NAME = "beeps";
