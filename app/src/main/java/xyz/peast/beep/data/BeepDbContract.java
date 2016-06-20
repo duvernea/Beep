@@ -7,7 +7,7 @@ import android.provider.BaseColumns;
  * Created by duvernea on 6/7/16.
  */
 
-public class BeepContract {
+public class BeepDbContract {
 
     // ContentProvider constants
     public static final String CONTENT_AUTHORITY = "xyz.peast.beep";
