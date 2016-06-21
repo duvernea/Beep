@@ -2,6 +2,7 @@ package xyz.peast.beep.data;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.Nullable;
@@ -10,6 +11,9 @@ import android.support.annotation.Nullable;
  * Created by duverneay on 6/15/16.
  */
 public class BeepProvider extends ContentProvider {
+
+    static final int BEEP = 100;
+    static final int BOARD = 300;
     @Override
     public boolean onCreate() {
         return false;
@@ -42,4 +46,10 @@ public class BeepProvider extends ContentProvider {
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         return 0;
     }
+    static UriMatcher buildUriMatcher() {
+        UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+        uriMatcher.addURI(BeepDbContract.CONTENT_AUTHORITY, BeepDbContract.PATH_BEEP, BEEP);
+        uriMatcher.addURI(BeepDbContract.CONTENT_AUTHORITY, BeepDbContract.PATH_BOARD, BOARD);
+    }
+
 }

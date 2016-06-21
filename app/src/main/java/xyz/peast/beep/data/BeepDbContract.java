@@ -1,5 +1,6 @@
 package xyz.peast.beep.data;
 
+import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -19,6 +20,9 @@ public class BeepDbContract {
     public static final class BeepEntry implements BaseColumns {
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BEEP).build();
+
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_BEEP;
 
         public static final String TABLE_NAME = "beeps";
 
@@ -44,6 +48,9 @@ public class BeepDbContract {
     public static final class BoardEntry implements  BaseColumns {
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BOARD).build();
+
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_BOARD;
 
 
         public static final String TABLE_NAME = "boards";
