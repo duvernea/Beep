@@ -1,4 +1,4 @@
-package xyz.peast.beep;
+package xyz.peast.beep.data;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -8,9 +8,6 @@ import android.test.RenamingDelegatingContext;
 import android.util.Log;
 
 import java.util.HashSet;
-
-import xyz.peast.beep.data.BeepDbContract;
-import xyz.peast.beep.data.BeepDbHelper;
 
 /**
  * Created by duvernea on 6/8/16.

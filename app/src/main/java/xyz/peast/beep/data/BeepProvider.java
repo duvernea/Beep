@@ -12,6 +12,9 @@ import android.support.annotation.Nullable;
  */
 public class BeepProvider extends ContentProvider {
 
+    private static final UriMatcher sUriMatcher = buildUriMatcher();
+
+
     static final int BEEP = 100;
     static final int BOARD = 300;
     @Override
@@ -50,6 +53,8 @@ public class BeepProvider extends ContentProvider {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(BeepDbContract.CONTENT_AUTHORITY, BeepDbContract.PATH_BEEP, BEEP);
         uriMatcher.addURI(BeepDbContract.CONTENT_AUTHORITY, BeepDbContract.PATH_BOARD, BOARD);
+
+        return uriMatcher;
     }
 
 }

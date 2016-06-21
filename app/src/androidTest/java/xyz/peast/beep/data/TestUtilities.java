@@ -1,4 +1,4 @@
-package xyz.peast.beep;
+package xyz.peast.beep.data;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -7,8 +7,6 @@ import android.util.Log;
 
 import java.util.Map;
 import java.util.Set;
-
-import xyz.peast.beep.data.BeepDbContract;
 
 /**
  * Created by duvernea on 6/9/16.
