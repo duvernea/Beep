@@ -6,4 +6,6 @@
     <string name="label_top_beeps">Top Beeps</string>
     <string name="label_boards">Boards</string>
 
+    <string name="content_authority">xyz.peast.beep</string>
+
 </resources>
