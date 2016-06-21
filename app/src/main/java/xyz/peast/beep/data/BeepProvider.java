@@ -9,7 +9,7 @@ import android.support.annotation.Nullable;
 /**
  * Created by duverneay on 6/15/16.
  */
-public class BeepDbProvider extends ContentProvider {
+public class BeepProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         return false;
