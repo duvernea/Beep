@@ -27,5 +27,16 @@ public class TestProvider extends AndroidTestCase {
             assertTrue("Error: Provider not registered at " + mContext.getPackageName(), false);
         }
     }
+    public void testGetType() {
+        String type = mContext.getContentResolver().getType(BeepDbContract.BeepEntry.CONTENT_URI);
+
+        assertEquals("Error: the BeepEntry CONTENT_URI should return BeepEntry.CONTENT_TYPE",
+                type, BeepDbContract.BeepEntry.CONTENT_TYPE);
+
+        type = mContext.getContentResolver().getType(BeepDbContract.BoardEntry.CONTENT_URI);
+
+        assertEquals("Error: the BoardEntry CONTENT_URI should return BoardEntry.CONTENT_TYPE",
+                type, BeepDbContract.BoardEntry.CONTENT_TYPE);
+    }
 
 }
