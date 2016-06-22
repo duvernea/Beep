@@ -38,24 +38,30 @@ public class TestUtilities extends AndroidTestCase {
 
     }
 
-    static void validateCurrentRecord(String error, Cursor valueCursor, ContentValues expectedValues) {
+    static void validateCurrentRecord(String error, Cursor cursor, ContentValues expectedValues) {
         Set<Map.Entry<String, Object>> valueSet = expectedValues.valueSet();
         for (Map.Entry<String, Object> entry : valueSet) {
             String columnName = entry.getKey();
-            int idx = valueCursor.getColumnIndex(columnName);
+            Log.d(TAG, "Key from expected value: " + entry.getKey());
+            int idx = cursor.getColumnIndex(columnName);
+            Log.d(TAG,"Column name: " + columnName);
             assertFalse("Column '" + columnName + "' not found. " + error, idx == -1);
             String expectedValue = entry.getValue().toString();
-            if (valueCursor.getType(idx) == Cursor.FIELD_TYPE_FLOAT) {
-                Log.d(TAG, "we found a float");
-                Log.d(TAG, "Float value: " + valueCursor.getFloat(idx));
-            }
-            Log.d(TAG, "getString(idx): " + valueCursor.getString(idx));
-            assertEquals("Value '" + entry.getValue().toString() +
-                    "' did not match the expected value '" +
-                    expectedValue + "'. " + error, expectedValue,
-                    valueCursor.getType(idx)==Cursor.FIELD_TYPE_FLOAT
-                            ? Float.toString(valueCursor.getFloat(idx)) : valueCursor.getString(idx));
+            String cursorValue = cursor.getString(idx);
+            Log.d(TAG, "cursor value: " + cursor.getString(idx));
+            Log.d(TAG, "expected value: " + expectedValue);
+
+            assertEquals("Value '" + cursorValue +
+                            "' did not match the expected value '" +
+                            expectedValue + "'. " + error, expectedValue,
+                    cursor.getType(idx)==Cursor.FIELD_TYPE_FLOAT
+                            ? Float.toString(cursor.getFloat(idx)) : cursor.getString(idx));
+
         }
     }
-
+    static void validateCursor(String error, Cursor valueCursor, ContentValues expectedValues) {
+        assertTrue("Empty cursor returned, " + error, valueCursor.moveToFirst());
+        validateCurrentRecord(error, valueCursor, expectedValues);
+        valueCursor.close();
+    }
 }
