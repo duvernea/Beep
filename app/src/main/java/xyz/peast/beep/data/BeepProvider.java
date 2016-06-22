@@ -4,6 +4,7 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.media.UnsupportedSchemeException;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
@@ -29,7 +30,35 @@ public class BeepProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        return null;
+
+        Cursor cursor;
+
+        switch(sUriMatcher.match(uri)) {
+            case BEEP:
+                cursor = mBeepDbHelper.getReadableDatabase().query(
+                        BeepDbContract.BeepEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            case BOARD:
+                cursor = mBeepDbHelper.getReadableDatabase().query(
+                        BeepDbContract.BoardEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return cursor;
     }
 
     @Nullable
