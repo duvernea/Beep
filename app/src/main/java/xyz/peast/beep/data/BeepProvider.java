@@ -17,9 +17,13 @@ public class BeepProvider extends ContentProvider {
 
     static final int BEEP = 100;
     static final int BOARD = 300;
+
+    private BeepDbHelper mBeepDbHelper;
+
     @Override
     public boolean onCreate() {
-        return false;
+        mBeepDbHelper = new BeepDbHelper(getContext());
+        return true;
     }
 
     @Nullable
@@ -31,7 +35,16 @@ public class BeepProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(Uri uri) {
-        return null;
+        final int match = sUriMatcher.match(uri);
+
+        switch(match) {
+            case BEEP:
+                return BeepDbContract.BeepEntry.CONTENT_TYPE;
+            case BOARD:
+                return BeepDbContract.BoardEntry.CONTENT_TYPE;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
     }
 
     @Nullable
