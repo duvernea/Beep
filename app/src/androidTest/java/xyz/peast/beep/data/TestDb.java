@@ -118,7 +118,7 @@ public class TestDb extends AndroidTestCase {
 
         assertTrue("Error: No records returned from Board query", boardCursor.moveToFirst());
 
-        TestUtilities.validateCurrentRecord("Error: testInsertReadDb Board Entry failed to validate",
+        TestUtilities.validateLastRecord("Error: testInsertReadDb Board Entry failed to validate",
                 boardCursor, boardValues);
 
         assertFalse("Error: More than one record returned from Board query",
@@ -139,7 +139,7 @@ public class TestDb extends AndroidTestCase {
         );
         assertTrue("Error: No records returned from Beep query", beepCursor.moveToFirst());
 
-        TestUtilities.validateCurrentRecord("Error: testInsertReadDb Beep Entry failed to validate",
+        TestUtilities.validateLastRecord("Error: testInsertReadDb Beep Entry failed to validate",
                 beepCursor, beepValues);
 
         assertFalse("Error: More than one record returned from Beep query",

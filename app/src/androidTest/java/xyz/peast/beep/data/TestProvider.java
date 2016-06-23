@@ -52,7 +52,6 @@ public class TestProvider extends AndroidTestCase {
         long boardRowId;
         boardRowId = db.insert(BeepDbContract.BoardEntry.TABLE_NAME, null, boardValues);
         assertTrue(boardRowId != -1);
-        Log.d(TAG, "Board row ID: "+ boardRowId);
 
 
         ContentValues beepValues = TestUtilities.createBeepValues(boardRowId);
@@ -69,7 +68,9 @@ public class TestProvider extends AndroidTestCase {
 
         cursor = mContext.getContentResolver().query(
                 BeepDbContract.BoardEntry.CONTENT_URI, null, null, null, null);
+
         TestUtilities.validateCursor("testBasicBoardQuery", cursor, boardValues);
+
 
     }
 
