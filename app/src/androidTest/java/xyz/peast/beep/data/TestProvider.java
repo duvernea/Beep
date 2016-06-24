@@ -100,7 +100,6 @@ public class TestProvider extends AndroidTestCase {
         TestUtilities.validateCursor("testInsertReadProvider. Error validating BoardEntry.",
                 cursor, boardValues);
 
-
         // Register Content Observer for Boards
         tco = TestUtilities.getTestContentObserver();
         mContext.getContentResolver().registerContentObserver(BeepDbContract.BeepEntry.CONTENT_URI, true, tco);
@@ -114,10 +113,55 @@ public class TestProvider extends AndroidTestCase {
         assertTrue(beepUri != null);
         assertTrue(rowId != -1);
 
-
         tco.waitForNotificationOrFail();
         mContext.getContentResolver().unregisterContentObserver(tco);
-
     }
+    public void testUpdateProvider() {
+        ContentValues values = TestUtilities.createBoardValues();
 
+        Uri boardUri = mContext.getContentResolver().insert(
+                BeepDbContract.BoardEntry.CONTENT_URI, values);
+        long rowId = ContentUris.parseId(boardUri);
+
+        // verify row inserted
+        assertTrue(rowId != -1);
+
+        // update the values
+        ContentValues updatedValues = new ContentValues(values);
+        updatedValues.put(BeepDbContract.BoardEntry.COLUMN_NAME, "Sweetest");
+        updatedValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, "5f9247bf-792b-44eb-9715-cc96da9ce1c5");
+
+        Cursor cursor = mContext.getContentResolver().query(BeepDbContract.BoardEntry.CONTENT_URI, null, null, null, null);
+
+        TestUtilities.TestContentObserver tco = TestUtilities.getTestContentObserver();
+        cursor.registerContentObserver(tco);
+
+        int count = mContext.getContentResolver().update(
+                BeepDbContract.BoardEntry.CONTENT_URI, updatedValues, BeepDbContract.BeepEntry._ID + "= ?",
+                new String[] { Long.toString(rowId)});
+
+        // assert a single row updated
+        assertEquals(count, 1);
+
+        // Test to make sure our observer is called.  If not, we throw an assertion.
+        //
+        // If code is failing here, it means that your content provider
+        // isn't calling getContext().getContentResolver().notifyChange(uri, null);
+        tco.waitForNotificationOrFail();
+        cursor.unregisterContentObserver(tco);
+        cursor.close();
+
+        // Query the database to verify change
+        cursor = mContext.getContentResolver().query(
+                BeepDbContract.BoardEntry.CONTENT_URI,
+                null,   // projection
+                BeepDbContract.BoardEntry._ID + " = " + rowId,
+                null,   // Values for the "where" clause
+                null    // sort order
+        );
+        TestUtilities.validateCursor("testUpdateBoard.  Error validating board entry update.",
+                cursor, updatedValues);
+
+        cursor.close();
+    }
 }
