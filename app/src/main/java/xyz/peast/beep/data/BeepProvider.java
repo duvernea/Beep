@@ -136,7 +136,21 @@ public class BeepProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        int numRows;
+        switch (sUriMatcher.match(uri)) {
+            case BEEP:
+                numRows = mBeepDbHelper.getWritableDatabase().update(BeepDbContract.BeepEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case BOARD:
+                numRows = mBeepDbHelper.getWritableDatabase().update(BeepDbContract.BoardEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        if (numRows != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return numRows;
     }
     static UriMatcher buildUriMatcher() {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
