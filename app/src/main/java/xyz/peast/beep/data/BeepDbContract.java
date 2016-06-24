@@ -1,6 +1,7 @@
 package xyz.peast.beep.data;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -44,6 +45,10 @@ public class BeepDbContract {
         // Board is foreign key to the id of the board this beep belongs to.
         public static final String COLUMN_BOARD_KEY = "board";
 
+        public static Uri buildUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
     }
     public static final class BoardEntry implements  BaseColumns {
 
@@ -60,5 +65,9 @@ public class BeepDbContract {
         public static final String COLUMN_NAME = "name";
         // Image is stored as text representing the file name string, no extention
         public static final String COLUMN_IMAGE = "image";
+
+        public static Uri buildUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
     }
 }

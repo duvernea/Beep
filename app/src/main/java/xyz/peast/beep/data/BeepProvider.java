@@ -7,12 +7,14 @@ import android.database.Cursor;
 import android.media.UnsupportedSchemeException;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 /**
  * Created by duverneay on 6/15/16.
  */
 public class BeepProvider extends ContentProvider {
 
+    private static final String TAG = BeepProvider.class.getSimpleName();
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
 
@@ -79,7 +81,37 @@ public class BeepProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        return null;
+        Uri returnUri;
+        long _id;
+        switch (sUriMatcher.match(uri)) {
+
+            case BEEP:
+                _id = mBeepDbHelper.getWritableDatabase().insert(BeepDbContract.BeepEntry.TABLE_NAME,
+                        null, values);
+                if (_id > 0) {
+                    returnUri = BeepDbContract.BeepEntry.buildUri(_id);
+                    Log.d(TAG, "Insert return uri: " + returnUri.toString());
+                }
+                else {
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                }
+                break;
+            case BOARD:
+                _id = mBeepDbHelper.getWritableDatabase().insert(BeepDbContract.BoardEntry.TABLE_NAME,
+                        null, values);
+                if (_id >0) {
+                    returnUri = BeepDbContract.BoardEntry.buildUri(_id);
+                    Log.d(TAG, "Insert return uri: " + returnUri.toString());
+                }
+                else {
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                }
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return returnUri;
     }
 
     @Override
