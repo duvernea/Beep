@@ -164,4 +164,57 @@ public class TestProvider extends AndroidTestCase {
 
         cursor.close();
     }
+    public void testDeleteRecords() {
+        testInsertReadProvider();
+        // Register a content observer for our deletes.
+        TestUtilities.TestContentObserver boardObserver = TestUtilities.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(BeepDbContract.BoardEntry.CONTENT_URI, true, boardObserver);
+
+        TestUtilities.TestContentObserver beepObserver = TestUtilities.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(BeepDbContract.BoardEntry.CONTENT_URI, true, beepObserver);
+
+        deleteAllRecordsFromProvider();
+
+        // If either of these fail, most-likely are not calling the
+        // getContext().getContentResolver().notifyChange(uri, null); in the ContentProvider
+        // delete.  (only if the insertReadProvider is succeeding)
+        boardObserver.waitForNotificationOrFail();
+        beepObserver.waitForNotificationOrFail();
+
+        mContext.getContentResolver().unregisterContentObserver(boardObserver);
+        mContext.getContentResolver().unregisterContentObserver(beepObserver);
+
+    }
+    public void deleteAllRecordsFromProvider() {
+        mContext.getContentResolver().delete(
+                BeepDbContract.BoardEntry.CONTENT_URI,
+                null,
+                null
+        );
+        mContext.getContentResolver().delete(
+                BeepDbContract.BeepEntry.CONTENT_URI,
+                null,
+                null
+        );
+
+        Cursor cursor = mContext.getContentResolver().query(
+                BeepDbContract.BoardEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null
+        );
+        assertEquals("Error: Records not deleted from Weather table during delete", 0, cursor.getCount());
+        cursor.close();
+
+        cursor = mContext.getContentResolver().query(
+                BeepDbContract.BeepEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null
+        );
+        assertEquals("Error: Records not deleted from Location table during delete", 0, cursor.getCount());
+        cursor.close();
+    }
 }
