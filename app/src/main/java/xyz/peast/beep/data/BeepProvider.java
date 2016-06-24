@@ -116,7 +116,22 @@ public class BeepProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        int numRows;
+
+        switch (sUriMatcher.match(uri)) {
+            case BEEP:
+                numRows = mBeepDbHelper.getWritableDatabase().delete(BeepDbContract.BeepEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case BOARD:
+                numRows = mBeepDbHelper.getWritableDatabase().delete(BeepDbContract.BoardEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        if (numRows != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return numRows;
     }
 
     @Override
