@@ -1,11 +1,13 @@
 package xyz.peast.beep.data;
 
 import android.content.ComponentName;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.test.AndroidTestCase;
 import android.util.Log;
 
@@ -70,7 +72,51 @@ public class TestProvider extends AndroidTestCase {
                 BeepDbContract.BoardEntry.CONTENT_URI, null, null, null, null);
 
         TestUtilities.validateCursor("testBasicBoardQuery", cursor, boardValues);
+    }
+    public void testInsertReadProvider() {
 
+        // Register Content Observer for Boards
+        TestUtilities.TestContentObserver tco = TestUtilities.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(BeepDbContract.BoardEntry.CONTENT_URI, true, tco);
+
+        // Insert data into content provider for Board Uri
+        ContentValues boardValues = TestUtilities.createBoardValues();
+        Uri boardUri = mContext.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, boardValues );
+
+        tco.waitForNotificationOrFail();
+        mContext.getContentResolver().unregisterContentObserver(tco);
+        long rowId = ContentUris.parseId(boardUri);
+
+        // verify row inserted via content provider
+        assertTrue(boardUri != null);
+        assertTrue(rowId != -1);
+
+        Cursor cursor = mContext.getContentResolver().query(BeepDbContract.BoardEntry.CONTENT_URI,
+                null, // leaving "columns" null just returns all the columns.
+                null, // cols for "where" clause
+                null, // values for "where" clause
+                null  // sort order
+        );
+        TestUtilities.validateCursor("testInsertReadProvider. Error validating BoardEntry.",
+                cursor, boardValues);
+
+
+        // Register Content Observer for Boards
+        tco = TestUtilities.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(BeepDbContract.BeepEntry.CONTENT_URI, true, tco);
+
+        // Insert data into content provider for Beeps Uri
+        ContentValues beepValues = TestUtilities.createBeepValues(rowId);
+        Uri beepUri = mContext.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, beepValues );
+
+        rowId = ContentUris.parseId(boardUri);
+        // verify row inserted via content provider
+        assertTrue(beepUri != null);
+        assertTrue(rowId != -1);
+
+
+        tco.waitForNotificationOrFail();
+        mContext.getContentResolver().unregisterContentObserver(tco);
 
     }
 
