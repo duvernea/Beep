@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.GridView;
 
 import java.io.IOException;
 
@@ -29,12 +30,17 @@ public class MainActivity extends AppCompatActivity {
     boolean mSupportRecording;
 
 
+    GridView mGridView;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Delete all old data. Insert mock data.
         InsertData.insertData(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -46,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+
 
         // Get the sample rate and buffer size, if possible from the device
         // Set to 44.1k samples/s and 512 frame buffer

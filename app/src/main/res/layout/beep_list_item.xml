@@ -9,11 +9,11 @@
         android:src="@drawable/beep_item_temp"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/imageView"
+        android:id="@+id/beep_imageview"
         android:adjustViewBounds="true"/>
 
     <TextView
-        android:id="@+id/list_item_date_textview"
+        android:id="@+id/beep_name_textview"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
