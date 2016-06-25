@@ -2,6 +2,7 @@ package xyz.peast.beep;
 
 import android.app.LoaderManager;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Loader;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final String TAG = MainActivity.class.getSimpleName();
 
     public static final int TOP_BEEPS_LOADER = 0;
+    public static final int BOARDS_LOADER = 1;
 
     boolean playing = false;
     String mSamplerateString = null;
@@ -91,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
 
         getLoaderManager().initLoader(TOP_BEEPS_LOADER, null, this);
+        getLoaderManager().initLoader(BOARDS_LOADER, null, this);
 
         mBeepAdapter = new BeepAdapter(mContext, null, 0);
         mTopBeepsGridView = (GridView) findViewById(R.id.top_beeps_gridview);
@@ -200,15 +203,45 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
+        CursorLoader loader;
+        Uri uri;
+        if (id == TOP_BEEPS_LOADER) {
+            uri = BeepDbContract.BeepEntry.CONTENT_URI;
+            loader = new CursorLoader(mContext,
+                    uri,
+                    null,
+                    null,
+                    null,
+                    BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT + " DESC LIMIT 3"
+                    );
+        }
+        else if (id == BOARDS_LOADER) {
+            uri = BeepDbContract.BoardEntry.CONTENT_URI;
+            loader = new CursorLoader(mContext,
+                    uri,
+                    null,
+                    null,
+                    null,
+                    null
+            );
+        }
+        else {
+            loader = null;
+        }
         // sort by top plays and only get the top 3
-        return new android.content.CursorLoader(mContext, uri, null, null, null, BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT + " DESC LIMIT 3");
+        return loader;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mBeepAdapter.swapCursor(data);
-        mBeepAdapter.notifyDataSetChanged();
+
+        if (loader.getId() == TOP_BEEPS_LOADER) {
+            mBeepAdapter.swapCursor(data);
+            mBeepAdapter.notifyDataSetChanged();
+        }
+        if (loader.getId() == BOARDS_LOADER) {
+            // TODO
+        }
     }
 
     @Override
