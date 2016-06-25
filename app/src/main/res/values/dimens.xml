@@ -6,4 +6,7 @@
 
     // height of appbar for main activity - includes large image
     <dimen name="appbar_height">320dp</dimen>
+
+    // beep tiles in grid
+    <dimen name="beep_item_name_text_size">16sp</dimen>
 </resources>

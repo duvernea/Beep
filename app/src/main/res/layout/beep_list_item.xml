@@ -22,7 +22,7 @@
         android:textStyle="normal|bold"
         android:gravity="center"
         android:textColor="#ffffff"
-        android:textSize="20sp"
+        android:textSize="@dimen/beep_item_name_text_size"
         android:paddingBottom="4dp"
         android:paddingTop="4dp"
 

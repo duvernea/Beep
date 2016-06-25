@@ -2,7 +2,18 @@ package xyz.peast.beep;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
 import android.net.Uri;
+import android.util.Log;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.UUID;
 
 import xyz.peast.beep.data.BeepDbContract;
 
@@ -10,6 +21,8 @@ import xyz.peast.beep.data.BeepDbContract;
  * Created by duverneay on 6/24/16.
  */
 public class InsertData {
+
+    public static final String TAG = InsertData.class.getSimpleName();
 
     static void insertData(Context context) {
         context.getContentResolver().delete(BeepDbContract.BoardEntry.CONTENT_URI,null, null);
@@ -105,5 +118,53 @@ public class InsertData {
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, 1);
 
         beepUri = context.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, beepValues);
+    }
+    static void insertSoundFile(Context context) {
+        AssetFileDescriptor fd0 = context.getResources().openRawResourceFd(R.raw.king);
+        int fileOffset = (int) fd0.getStartOffset();
+        int fileLength = (int) fd0.getLength();
+        try {
+            fd0.getParcelFileDescriptor().close();
+        }
+        catch (IOException e) {
+            Log.d(TAG, "File descriptor close error");
+        }
+        AssetManager assetManager = context.getAssets();
+        String assets[] = null;
+        String uniqueID = UUID.randomUUID().toString();
+        uniqueID += ".mp3";
+        Log.d(TAG, "random ID: " + uniqueID);
+
+        String fileRaw = "king";
+        InputStream in = context.getResources().openRawResource(R.raw.king);
+        OutputStream out = null;
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        int size = 0;
+        byte[] buffer = new byte[1024];
+
+        try {
+            while ((size = in.read(buffer, 0, 1024)) >=0) {
+                outputStream.write(buffer, 0, size);
+            }
+            in.close();
+            buffer=outputStream.toByteArray();
+
+            FileOutputStream fos = context.openFileOutput(uniqueID, Context.MODE_PRIVATE);
+            fos.write(buffer);
+            fos.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // update audio file path for beep in mock data
+        ContentValues updatedValues = new ContentValues();
+        updatedValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, uniqueID);
+
+        int count = context.getContentResolver().update(
+                BeepDbContract.BeepEntry.CONTENT_URI, updatedValues, BeepDbContract.BeepEntry._ID + "= ?",
+                new String[] { Long.toString(1)});
+
+
     }
 }
