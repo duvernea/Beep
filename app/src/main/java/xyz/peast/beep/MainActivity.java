@@ -19,8 +19,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -93,8 +95,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mBeepAdapter = new BeepAdapter(mContext, null, 0);
         mTopBeepsGridView = (GridView) findViewById(R.id.top_beeps_gridview);
         mTopBeepsGridView.setAdapter(mBeepAdapter);
+        mTopBeepsGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+             @Override
+             public void onItemClick(AdapterView<?> parent, View view,
+                                     int position, long id) {
+                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
+                 String beepName = cursor.getString(MainActivity.COL_NAME);
+                 Toast.makeText(getApplicationContext(),
+                         "Item Clicked: " + beepName, Toast.LENGTH_SHORT).show();
 
-
+             }
+        });
 
         // Get the sample rate and buffer size, if possible from the device
         // Set to 44.1k samples/s and 512 frame buffer

@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+
    >
 
     <ImageView
@@ -23,8 +24,8 @@
         android:gravity="center"
         android:textColor="#ffffff"
         android:textSize="@dimen/beep_item_name_text_size"
-        android:paddingBottom="4dp"
-        android:paddingTop="4dp"
+        android:paddingBottom="@dimen/beep_item_name_padding_top_bottom"
+        android:paddingTop="@dimen/beep_item_name_padding_top_bottom"
 
         android:layout_gravity="bottom"/>
 </FrameLayout>

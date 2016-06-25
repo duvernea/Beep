@@ -9,4 +9,5 @@
 
     // beep tiles in grid
     <dimen name="beep_item_name_text_size">16sp</dimen>
+    <dimen name="beep_item_name_padding_top_bottom">2dp</dimen>
 </resources>
