@@ -2,6 +2,7 @@ package xyz.peast.beep.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +13,13 @@ import android.widget.TextView;
 import xyz.peast.beep.MainActivity;
 import xyz.peast.beep.R;
 
+
 /**
  * Created by duvernea on 6/25/16.
  */
 
 public class BoardAdapter extends CursorAdapter {
+    private static final String TAG = BoardAdapter.class.getSimpleName();
 
     public BoardAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
@@ -27,6 +30,7 @@ public class BoardAdapter extends CursorAdapter {
         View view = LayoutInflater.from(context).inflate(R.layout.board_list_item, parent, false);
         BoardAdapter.ViewHolder viewHolder = new BoardAdapter.ViewHolder(view);
         view.setTag(viewHolder);
+        Log.d(TAG, "new view created");
         return view;
     }
 

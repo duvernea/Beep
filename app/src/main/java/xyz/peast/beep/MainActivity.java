@@ -15,19 +15,26 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.IOException;
 
 import xyz.peast.beep.adapters.BeepAdapter;
+import xyz.peast.beep.adapters.BoardAdapter;
+import xyz.peast.beep.adapters.BoardRecyclerViewAdapter;
 import xyz.peast.beep.data.BeepDbContract;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -45,6 +52,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private Context mContext;
     private BeepAdapter mBeepAdapter;
     private GridView mTopBeepsGridView;
+
+    private BoardAdapter mBoardAdapter;
+    private ListView mBoardsListView;
+
+    private RecyclerView mBoardsRecyclerView;
+    private BoardRecyclerViewAdapter mBoardsRecyclerViewAdapter;
 
     // database projection for BEEPS
     private static final String[] BEEP_COLUMNS = {
@@ -132,6 +145,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 onPlayPause(true);
              }
         });
+
+
+        mBoardAdapter = new BoardAdapter(mContext, null, 0);
+
+        mBoardsRecyclerViewAdapter = new BoardRecyclerViewAdapter(mContext, null, 0);
+        mBoardsRecyclerView = (RecyclerView) findViewById(R.id.boards_recyclerview);
+        mBoardsRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        mBoardsRecyclerView.setAdapter(mBoardsRecyclerViewAdapter);
+
+
+        //mBoardsListView = (ListView) findViewById(R.id.boards_listview);
+        //mBoardsListView.setAdapter(mBoardAdapter);
+
 
         // Get the sample rate and buffer size, if possible from the device
         // Set to 44.1k samples/s and 512 frame buffer
@@ -251,13 +277,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             mBeepAdapter.notifyDataSetChanged();
         }
         if (loader.getId() == BOARDS_LOADER) {
-            // TODO
+            mBoardAdapter.swapCursor(data);
+            Log.d(TAG, "# of boards in cursor: " + data.getCount());
+            mBoardAdapter.notifyDataSetChanged();
+
+            mBoardsRecyclerViewAdapter.swapCursor(data);
+            mBoardsRecyclerViewAdapter.notifyDataSetChanged();
         }
     }
-
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mBeepAdapter.swapCursor(null);
+        if (loader.getId() == TOP_BEEPS_LOADER) {
+            mBeepAdapter.swapCursor(null);
+        }
+        if (loader.getId() == BOARDS_LOADER) {
+            mBoardAdapter.swapCursor(null);
+            mBoardsRecyclerViewAdapter.swapCursor(null);
+        }
     }
     private native void SuperpoweredExample(int samplerate, int buffersize, String apkPath, int fileAoffset, int fileAlength, int fileBoffset, int fileBlength);
     private native void onPlayPause(boolean play);
