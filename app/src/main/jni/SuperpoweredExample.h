@@ -26,6 +26,7 @@ public:
 	void onFxSelect(int value);
 	void onFxOff();
 	void onFxValue(int value);
+	void onFileChange(const char *path, int fileOffset, int fileLength);
 
 private:
     pthread_mutex_t mutex;

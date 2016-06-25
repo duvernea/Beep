@@ -101,9 +101,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                                      int position, long id) {
                  Cursor cursor = (Cursor) parent.getItemAtPosition(position);
                  String beepName = cursor.getString(MainActivity.COL_NAME);
+                 String audiofileName = cursor.getString(MainActivity.COL_AUDIO);
                  Toast.makeText(getApplicationContext(),
                          "Item Clicked: " + beepName, Toast.LENGTH_SHORT).show();
-
+                 AssetFileDescriptor fd0 = getResources().openRawResourceFd(R.raw.king);
+                 int fileAoffset = (int)fd0.getStartOffset();
+                 int fileAlength = (int)fd0.getLength();
+                 try {
+                     fd0.getParcelFileDescriptor().close();
+                 } catch (IOException e) {
+                     android.util.Log.d("", "Close error.");
+                 }
+                 onFileChange(getPackageResourcePath(), fileAlength, fileAoffset);
+                 playing = !playing;
+                 //onPlayPause(playing);
+                onPlayPause(true);
              }
         });
 
@@ -209,6 +221,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private native void onFxSelect(int value);
     private native void onFxOff();
     private native void onFxValue(int value);
+    private native void onFileChange(String apkPath, int fileOffset, int fileLength );
     static {
         System.loadLibrary("SuperpoweredExample");
     }

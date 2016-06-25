@@ -66,6 +66,9 @@ SuperpoweredExample::~SuperpoweredExample() {
     free(stereoBuffer);
     pthread_mutex_destroy(&mutex);
 }
+void SuperpoweredExample::onFileChange(const char *path, int fileOffset, int fileLength) {
+    playerA->open(path, fileOffset, fileLength);
+}
 
 void SuperpoweredExample::onPlayPause(bool play) {
     pthread_mutex_lock(&mutex);
@@ -196,4 +199,8 @@ extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_onFxOff(JNIEnv * __un
 
 extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_onFxValue(JNIEnv * __unused javaEnvironment, jobject __unused obj, jint value) {
 	example->onFxValue(value);
+}
+extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_onFileChange(JNIEnv * __unused javaEnvironment, jobject, jstring apkPath, jint fileOffset, jint fileLength ) {
+    const char *path = javaEnvironment->GetStringUTFChars(apkPath, JNI_FALSE);
+    example->onFileChange(path, fileOffset, fileLength);
 }
