@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+
         mContext = this;
 
         // Delete all old data. Insert mock data.
@@ -175,17 +176,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
+        Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
+        // sort by top plays and only get the top 3
+        return new android.content.CursorLoader(mContext, uri, null, null, null, BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT + " DESC LIMIT 3");
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
+        mBeepAdapter.swapCursor(data);
+        mBeepAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        mBeepAdapter.swapCursor(null);
     }
     private native void SuperpoweredExample(int samplerate, int buffersize, String apkPath, int fileAoffset, int fileAlength, int fileBoffset, int fileBlength);
     private native void onPlayPause(boolean play);

@@ -4,7 +4,6 @@
     android:layout_height="wrap_content"
    >
 
-
     <ImageView
         android:src="@drawable/beep_item_temp"
         android:layout_width="fill_parent"

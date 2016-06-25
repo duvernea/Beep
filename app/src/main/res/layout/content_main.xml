@@ -19,10 +19,19 @@
 
         android:paddingTop="8dp"
         android:paddingBottom="8dp">
+        <TextView
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_top_beeps"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:paddingBottom="8dp"/>
         <GridView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/top_beeps_gridview">
+            android:id="@+id/top_beeps_gridview"
+            android:numColumns="3">
 
         </GridView>
         <LinearLayout
@@ -32,35 +41,7 @@
             android:background="@color/top_beeps_background"
             android:paddingTop="8dp"
             android:paddingBottom="8dp">
-            <TextView
-                style="@style/TextAppearance.AppCompat.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_top_beeps"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:paddingBottom="8dp"/>
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-                <include android:id="@+id/top_beep1"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    layout="@layout/beep_list_item"
-                    android:layout_weight="1"/>
-                <include android:id="@+id/top_beep2"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    layout="@layout/beep_list_item"
-                    android:layout_weight="1"/>
-                <include android:id="@+id/top_beep3"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    layout="@layout/beep_list_item"
-                    android:layout_weight="1"/>
-            </LinearLayout>
+
         </LinearLayout>
     // Boards Linear Layout
         <LinearLayout

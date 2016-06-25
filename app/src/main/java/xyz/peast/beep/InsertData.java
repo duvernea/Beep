@@ -93,5 +93,17 @@ public class InsertData {
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, 2);
 
         beepUri = context.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, beepValues);
+
+        beepValues = new ContentValues();
+        beepValues.put(BeepDbContract.BeepEntry.COLUMN_NAME, "monkey brush");
+        beepValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
+        beepValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
+        beepValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LAT, 178.1234);
+        beepValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LONG, 92.1234);
+        beepValues.put(BeepDbContract.BeepEntry.COLUMN_PRIVACY, 1);
+        beepValues.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, 5000);
+        beepValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, 1);
+
+        beepUri = context.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, beepValues);
     }
 }
