@@ -9,6 +9,7 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import xyz.peast.beep.MainActivity;
 import xyz.peast.beep.R;
 
 /**
@@ -35,12 +36,12 @@ public class BeepAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
         // set data for this view
-        //String albumName = cursor.getString(ArtistDetailFragment.COL_ALBUM_NAME);
-        //String albumImage = cursor.getString(ArtistDetailFragment.COL_IMAGE_THUMB);
+        String beepName = cursor.getString(MainActivity.COL_NAME);
+        String beepImage = cursor.getString(MainActivity.COL_IMAGE);
 
-        viewHolder.mBeepNameTextView.setText("set text");
+        viewHolder.mBeepNameTextView.setText(beepName);
 
-        // set image
+        // TODO - set image
 
     }
     public static class ViewHolder {

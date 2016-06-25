@@ -20,6 +20,8 @@ import android.widget.GridView;
 
 import java.io.IOException;
 
+import xyz.peast.beep.data.BeepDbContract;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -29,8 +31,37 @@ public class MainActivity extends AppCompatActivity {
     String mBuffersizeString = null;
     boolean mSupportRecording;
 
+    private static final String[] BEEP_COLUMNS = {
 
-    GridView mGridView;
+            BeepDbContract.BeepEntry.TABLE_NAME + "." + BeepDbContract.BeepEntry._ID,
+            BeepDbContract.BeepEntry.COLUMN_NAME,
+            BeepDbContract.BeepEntry.COLUMN_IMAGE,
+            BeepDbContract.BeepEntry.COLUMN_AUDIO,
+            BeepDbContract.BeepEntry.COLUMN_COORD_LAT,
+            BeepDbContract.BeepEntry.COLUMN_COORD_LONG,
+            BeepDbContract.BeepEntry.COLUMN_PRIVACY,
+            BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT,
+            BeepDbContract.BeepEntry.COLUMN_BOARD_KEY
+    };
+    public static final int COL_BEEP_ID = 0;
+    public static final int COL_NAME = 1;
+    public static final int COL_IMAGE = 2;
+    public static final int COL_AUDIO = 3;
+    public static final int COL_COORD_LAT = 4;
+    public static final int COL_COORD_LONG = 5;
+    public static final int COL_PRIVACY = 6;
+    public static final int COL_PLAY_COUNT = 7;
+    public static final int COL_BOARD_KEY = 8;
+
+
+
+
+
+
+
+
+
+
 
 
     @Override
