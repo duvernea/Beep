@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private BeepAdapter mBeepAdapter;
     private GridView mTopBeepsGridView;
 
-    // database projection
+    // database projection for BEEPS
     private static final String[] BEEP_COLUMNS = {
 
             BeepDbContract.BeepEntry.TABLE_NAME + "." + BeepDbContract.BeepEntry._ID,
@@ -59,15 +59,26 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT,
             BeepDbContract.BeepEntry.COLUMN_BOARD_KEY
     };
-    public static final int COL_BEEP_ID = 0;
-    public static final int COL_NAME = 1;
-    public static final int COL_IMAGE = 2;
-    public static final int COL_AUDIO = 3;
-    public static final int COL_COORD_LAT = 4;
-    public static final int COL_COORD_LONG = 5;
-    public static final int COL_PRIVACY = 6;
-    public static final int COL_PLAY_COUNT = 7;
-    public static final int COL_BOARD_KEY = 8;
+    public static final int BEEPS_COL_BEEP_ID = 0;
+    public static final int BEEPS_COL_NAME = 1;
+    public static final int BEEPS_COL_IMAGE = 2;
+    public static final int BEEPS_COL_AUDIO = 3;
+    public static final int BEEPS_COL_COORD_LAT = 4;
+    public static final int BEEPS_COL_COORD_LONG = 5;
+    public static final int BEEPS_COL_PRIVACY = 6;
+    public static final int BEEPS_COL_PLAY_COUNT = 7;
+    public static final int BEEPS_COL_BOARD_KEY = 8;
+
+    // database projection for BOARDS
+    private static final String[] BOARD_COLUMNS = {
+            BeepDbContract.BoardEntry.TABLE_NAME + "." + BeepDbContract.BoardEntry._ID,
+            BeepDbContract.BoardEntry.COLUMN_NAME,
+            BeepDbContract.BoardEntry.COLUMN_IMAGE
+    };
+    public static final int BOARDS_BOARD_ID = 0;
+    public static final int BOARDS_COL_NAME = 1;
+    public static final int BOARDS_COL_IMAGE = 2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,8 +114,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
              public void onItemClick(AdapterView<?> parent, View view,
                                      int position, long id) {
                  Cursor cursor = (Cursor) parent.getItemAtPosition(position);
-                 String beepName = cursor.getString(MainActivity.COL_NAME);
-                 String audiofileName = cursor.getString(MainActivity.COL_AUDIO);
+                 String beepName = cursor.getString(MainActivity.BEEPS_COL_NAME);
+                 String audiofileName = cursor.getString(MainActivity.BEEPS_COL_AUDIO);
                  Toast.makeText(getApplicationContext(),
                          "Item Clicked: " + beepName, Toast.LENGTH_SHORT).show();
                  AssetFileDescriptor fd0 = getResources().openRawResourceFd(R.raw.king);
