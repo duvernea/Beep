@@ -35,7 +35,8 @@ public class BeepAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
-        // set data for this view
+
+        // get and set data for this view
         String beepName = cursor.getString(MainActivity.COL_NAME);
         String beepImage = cursor.getString(MainActivity.COL_IMAGE);
 

@@ -1,7 +1,10 @@
 package xyz.peast.beep;
 
+import android.app.LoaderManager;
 import android.content.Context;
+import android.content.Loader;
 import android.content.res.AssetFileDescriptor;
+import android.database.Cursor;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
@@ -20,17 +23,25 @@ import android.widget.GridView;
 
 import java.io.IOException;
 
+import xyz.peast.beep.adapters.BeepAdapter;
 import xyz.peast.beep.data.BeepDbContract;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    public static final int TOP_BEEPS_LOADER = 0;
 
     boolean playing = false;
     String mSamplerateString = null;
     String mBuffersizeString = null;
     boolean mSupportRecording;
 
+    private Context mContext;
+    private BeepAdapter mBeepAdapter;
+    private GridView mTopBeepsGridView;
+
+    // database projection
     private static final String[] BEEP_COLUMNS = {
 
             BeepDbContract.BeepEntry.TABLE_NAME + "." + BeepDbContract.BeepEntry._ID,
@@ -53,21 +64,12 @@ public class MainActivity extends AppCompatActivity {
     public static final int COL_PLAY_COUNT = 7;
     public static final int COL_BOARD_KEY = 8;
 
-
-
-
-
-
-
-
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        mContext = this;
 
         // Delete all old data. Insert mock data.
         InsertData.insertData(this);
@@ -83,6 +85,12 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        getLoaderManager().initLoader(TOP_BEEPS_LOADER, null, this);
+
+        mBeepAdapter = new BeepAdapter(mContext, null, 0);
+        mTopBeepsGridView = (GridView) findViewById(R.id.top_beeps_gridview);
+        mTopBeepsGridView.setAdapter(mBeepAdapter);
 
 
 
@@ -163,6 +171,22 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
     private native void SuperpoweredExample(int samplerate, int buffersize, String apkPath, int fileAoffset, int fileAlength, int fileBoffset, int fileBlength);
     private native void onPlayPause(boolean play);
     private native void onCrossfader(int value);
@@ -172,5 +196,4 @@ public class MainActivity extends AppCompatActivity {
     static {
         System.loadLibrary("SuperpoweredExample");
     }
-
 }
