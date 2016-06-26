@@ -3,6 +3,7 @@ package xyz.peast.beep;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
@@ -111,8 +112,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(mContext, RecordActivity.class);
+                startActivity(intent);
             }
         });
 

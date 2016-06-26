@@ -6,6 +6,10 @@
     <string name="label_top_beeps">Top Beeps</string>
     <string name="label_boards">Boards</string>
 
-    <string name="content_authority">xyz.peast.beep</string>
+    <string name="content_authority" translatable="false">xyz.peast.beep</string>
+
+    // Record Activity
+    <string name="record">Start Recording</string>
+    <string name="next">Next</string>
 
 </resources>

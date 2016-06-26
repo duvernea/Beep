@@ -67,14 +67,35 @@
 
     <include layout="@layout/content_main"/>
 
+    // note want overlay later on, when state is in Action Button display mode
+    // when in this mode, the onclicklisteners behind the overlay would be disabled
+    // and a click on the framelayout will remove overlay and back into standard mode
+
+    <!--
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#88000000"/>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:layout_marginBottom="96dp"
+        android:src="@drawable/ic_add_white_24dp" />
+    -->
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
+        android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_add_white_24dp" />
+        android:src="@drawable/ic_add_white_24dp"
+        />
 
 
 </android.support.design.widget.CoordinatorLayout>
