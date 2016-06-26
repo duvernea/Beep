@@ -8,9 +8,11 @@
     <ImageView
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:id="@+id/board_imageview"/>
+        android:id="@+id/board_imageview"
+        android:layout_gravity="center_vertical"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/board_name_textview"/>
+        android:id="@+id/board_name_textview"
+        android:layout_gravity="center_vertical"/>
 </LinearLayout>

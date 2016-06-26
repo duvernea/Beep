@@ -165,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mBoardsRecyclerView = (RecyclerView) findViewById(R.id.boards_recyclerview);
         mBoardsRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mBoardsRecyclerView.setAdapter(mBoardsRecyclerViewAdapter);
+        mBoardsRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
 
 
         // Get the sample rate and buffer size, if possible from the device

@@ -51,10 +51,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/top_beeps_background"
-            android:layout_marginTop="8dp"
             android:paddingTop="8dp"
-            android:paddingBottom="8dp">
+            android:paddingBottom="8dp"
+            android:divider="@drawable/line_divider"
+            android:showDividers="middle|end">
             <TextView
                 style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="wrap_content"
