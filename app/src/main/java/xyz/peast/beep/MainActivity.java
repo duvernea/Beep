@@ -31,6 +31,10 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import xyz.peast.beep.adapters.BeepAdapter;
@@ -140,7 +144,30 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                  } catch (IOException e) {
                      android.util.Log.d("", "Close error.");
                  }
-                 onFileChange(getPackageResourcePath(), fileAlength, fileAoffset);
+                 String path = "/data/data/xyz.peast.beep/files/" + audiofileName;
+                 //String path = "/data/data/xyz.peast.beep/files/" + "c9ed1312-33ba-4143-8d45-3bb6deefa5a9.mp3";
+
+
+
+                 Log.d(TAG, "file path: " + path);
+                 File file = new File(path);
+                 int size = (int) file.length();
+                 byte[] bytes = new byte[size];
+
+                 try {
+                     BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
+                     buf.read(bytes, 0, bytes.length);
+                     buf.close();
+                 } catch (FileNotFoundException e) {
+                     // TODO Auto-generated catch block
+                     e.printStackTrace();
+                 } catch (IOException e) {
+                     // TODO Auto-generated catch block
+                     e.printStackTrace();
+                 }
+                 //onFileChange(getPackageResourcePath(), fileAlength, fileAoffset);
+                 onFileChange(path, size, 0);
+                 Log.d(TAG, "getPackageResourcePath: " + getPackageResourcePath());
                  playing = !playing;
                  //onPlayPause(playing);
                 onPlayPause(true);

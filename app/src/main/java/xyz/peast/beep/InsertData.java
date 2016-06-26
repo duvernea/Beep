@@ -162,8 +162,29 @@ public class InsertData {
         updatedValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, uniqueID);
 
         int count = context.getContentResolver().update(
-                BeepDbContract.BeepEntry.CONTENT_URI, updatedValues, BeepDbContract.BeepEntry._ID + "= ?",
-                new String[] { Long.toString(1)});
+                BeepDbContract.BeepEntry.CONTENT_URI, updatedValues, null,
+                null);
+//
+//
+//        int count = context.getContentResolver().update(
+//                BeepDbContract.BeepEntry.CONTENT_URI, updatedValues, BeepDbContract.BeepEntry._ID + "=?",
+//                new String[] { String.valueOf(0)});
+//
+//        count = context.getContentResolver().update(
+//                BeepDbContract.BeepEntry.CONTENT_URI, updatedValues, BeepDbContract.BeepEntry._ID + "=?",
+//                new String[] { Long.toString(1)});
+//        count = context.getContentResolver().update(
+//                BeepDbContract.BeepEntry.CONTENT_URI, updatedValues, BeepDbContract.BeepEntry._ID + "=?",
+//                new String[] { Long.toString(2)});
+//        count = context.getContentResolver().update(
+//                BeepDbContract.BeepEntry.CONTENT_URI, updatedValues, BeepDbContract.BeepEntry._ID + "=?",
+//                new String[] { Long.toString(3)});
+//        count = context.getContentResolver().update(
+//                BeepDbContract.BeepEntry.CONTENT_URI, updatedValues, BeepDbContract.BeepEntry._ID + "=?",
+//                new String[] { Long.toString(4)});
+//        count = context.getContentResolver().update(
+//                BeepDbContract.BeepEntry.CONTENT_URI, updatedValues, BeepDbContract.BeepEntry._ID + "=?",
+//                new String[] { Long.toString(5)});
 
 
     }
