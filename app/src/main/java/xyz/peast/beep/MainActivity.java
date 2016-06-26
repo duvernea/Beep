@@ -149,14 +149,22 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         mBoardAdapter = new BoardAdapter(mContext, null, 0);
 
-        mBoardsRecyclerViewAdapter = new BoardRecyclerViewAdapter(mContext, null, 0);
+        // TODO - set emptyView for recyclerview
+        // View rootView = getLayoutinflater.inflate(....)
+        // findViewById...
+        // View emptyView =
+
+        mBoardsRecyclerViewAdapter = new BoardRecyclerViewAdapter(mContext,
+                new BoardRecyclerViewAdapter.BoardAdapterOnClickHandler() {
+            @Override
+            public void onClick(BoardRecyclerViewAdapter.BoardViewHolder vh) {
+                Toast.makeText(mContext, "recyclerview clicked " + vh.getAdapterPosition(), Toast.LENGTH_SHORT).show();
+            }
+        }, null, 0);
+
         mBoardsRecyclerView = (RecyclerView) findViewById(R.id.boards_recyclerview);
         mBoardsRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mBoardsRecyclerView.setAdapter(mBoardsRecyclerViewAdapter);
-
-
-        //mBoardsListView = (ListView) findViewById(R.id.boards_listview);
-        //mBoardsListView.setAdapter(mBoardAdapter);
 
 
         // Get the sample rate and buffer size, if possible from the device

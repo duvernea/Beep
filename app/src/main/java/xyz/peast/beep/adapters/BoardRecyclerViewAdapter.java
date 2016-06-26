@@ -25,10 +25,16 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
     private Cursor mCursor;
     private Context mContext;
 
-    public BoardRecyclerViewAdapter(Context context, Cursor cursor, int flags) {
+    final private BoardAdapterOnClickHandler mClickHandler;
+    // final private View mEmptyView;
+
+    public BoardRecyclerViewAdapter(Context context, BoardAdapterOnClickHandler dh, Cursor cursor, int flags) {
         mCursor = cursor;
         mContext = context;
+        // mEmptyView = emptyview;
+        mClickHandler = dh;
     }
+
 
 
     @Override
@@ -61,7 +67,7 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
         return mCursor.getCount();
     }
 
-    public static class BoardViewHolder extends RecyclerView.ViewHolder {
+    public class BoardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final TextView mBoardNameTextView;
         public final ImageView mBoardImageView;
 
@@ -69,11 +75,26 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
             super(view);
             mBoardNameTextView = (TextView) view.findViewById(R.id.board_name_textview);
             mBoardImageView = (ImageView) view.findViewById(R.id.board_imageview);
+            view.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            int adapterPosition = getAdapterPosition();
+            mCursor.moveToPosition(adapterPosition);
+
+            mClickHandler.onClick(this);
+
+
+        }
+    }
+    public static interface BoardAdapterOnClickHandler {
+        void onClick(BoardViewHolder vh);
     }
     public void swapCursor(Cursor newCursor) {
         mCursor = newCursor;
         notifyDataSetChanged();
+        // mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
     public Cursor getCursor() {
         return mCursor;
