@@ -5,6 +5,7 @@
 #include <android/log.h>
 #include <SLES/OpenSLES.h>
 #include <SLES/OpenSLES_AndroidConfiguration.h>
+#include <android/log.h>
 
 static void playerEventCallbackA(void *clientData, SuperpoweredAdvancedAudioPlayerEvent event, void * __unused value) {
     if (event == SuperpoweredAdvancedAudioPlayerEvent_LoadSuccess) {
@@ -12,6 +13,7 @@ static void playerEventCallbackA(void *clientData, SuperpoweredAdvancedAudioPlay
         playerA->setBpm(126.0f);
         playerA->setFirstBeatMs(353);
         playerA->setPosition(playerA->firstBeatMs, false, false);
+        __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "playerCallbackA running..");
     };
 }
 
@@ -68,6 +70,9 @@ SuperpoweredExample::~SuperpoweredExample() {
 }
 void SuperpoweredExample::onFileChange(const char *path, int fileOffset, int fileLength) {
     playerA->open(path, fileOffset, fileLength);
+    //double a = .90;
+    //playerA->seek(a);
+    //playerA->setPosition(10, 1, 0);
 }
 
 void SuperpoweredExample::onPlayPause(bool play) {
