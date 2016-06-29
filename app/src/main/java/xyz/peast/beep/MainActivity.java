@@ -254,7 +254,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         catch (Exception e) {
             e.printStackTrace();
         }
-        String path = "/data/data/xyz.peast.beep/files/" + uniqueID;
+        String path = mContext.getFilesDir().getPath() + uniqueID;
+        //String path = "/data/data/xyz.peast.beep/files/" + uniqueID;
         // Arguments: path to the APK file, offset and length of the two resource files, sample rate, audio buffer size.
         SuperpoweredExample(Integer.parseInt(mSamplerateString), Integer.parseInt(mBuffersizeString), getPackageResourcePath(), fileAoffset, fileAlength, fileBoffset, fileBlength);
 
