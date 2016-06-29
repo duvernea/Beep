@@ -136,7 +136,7 @@ public class InsertData {
         Log.d(TAG, "random ID: " + uniqueID);
 
         String fileRaw = "king";
-        InputStream in = context.getResources().openRawResource(R.raw.king);
+        InputStream in = context.getResources().openRawResource(R.raw.beep);
         OutputStream out = null;
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         int size = 0;

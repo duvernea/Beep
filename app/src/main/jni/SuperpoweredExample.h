@@ -21,7 +21,7 @@ public:
 	~SuperpoweredExample();
 
 	bool process(short int *output, unsigned int numberOfSamples);
-	void onPlayPause(bool play);
+	void onPlayPause(const char *path, bool play, int size);
 	void onCrossfader(int value);
 	void onFxSelect(int value);
 	void onFxOff();
