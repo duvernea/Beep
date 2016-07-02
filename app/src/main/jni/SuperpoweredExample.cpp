@@ -20,6 +20,12 @@ static void playerEventCallbackA(void *clientData, SuperpoweredAdvancedAudioPlay
         __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "playerCallbackA running..");
 
     };
+    if (event == SuperpoweredAdvancedAudioPlayerEvent_EOF) {
+        __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "playerCallbackA EOF");
+        SuperpoweredAdvancedAudioPlayer *playerA = *((SuperpoweredAdvancedAudioPlayer **)clientData);
+        playerA->pause(0, 0);
+
+    }
 }
 
 static void playerEventCallbackB(void *clientData, SuperpoweredAdvancedAudioPlayerEvent event, void * __unused value) {
@@ -77,7 +83,7 @@ SuperpoweredExample::SuperpoweredExample(unsigned int samplerate, unsigned int b
     @param outputStreamType OpenSL ES stream type, such as SL_ANDROID_STREAM_MEDIA or SL_ANDROID_STREAM_VOICE. -1 means default. SLES/OpenSLES_AndroidConfiguration.h has them.
     @param latencySamples How many samples to have in the internal fifo buffer minimum. Works only when both input and output are enabled. Might help if you have many dropouts.
     */
-    audioSystem = new SuperpoweredAndroidAudioIO(samplerate, buffersize, false, true, audioProcessing, this, -1, SL_ANDROID_STREAM_MEDIA, buffersize * 2);
+    audioSystem = new SuperpoweredAndroidAudioIO(samplerate, buffersize, false, true, audioProcessing, this, -1, -1, buffersize * 2);
 }
 
 SuperpoweredExample::~SuperpoweredExample() {
@@ -94,6 +100,9 @@ void SuperpoweredExample::onFileChange(const char *path, int fileOffset, int fil
     //playerA->setFirstBeatMs(beatStart);
     playerA->setPosition(0, false, false);
     //playerA->open(path, fileOffset, fileLength);
+    __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "onFileChange run");
+    pthread_mutex_lock(&mutex);
+
     //double a = .90;
     //playerA->seek(a);
     //playerA->setPosition(10, 1, 0);
@@ -103,18 +112,32 @@ void SuperpoweredExample::onFileChange(const char *path, int fileOffset, int fil
 
 }
 
-void SuperpoweredExample::onPlayPause(bool play) {
+void SuperpoweredExample::onPlayPause(const char *path, bool play, int size) {
+    __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "onPlayPause called");
+    __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredPATH", path);
+
     pthread_mutex_lock(&mutex);
 
+    //audioSystem->start();
+    //const char *path = "/data/data/xyz.peast.beep/files/d5925c56-c611-49ae-91bd-bc1d25ff6b56.mp3";
+    //playerA->open(path, 0, size);
+
+    //playerA->seek(0);
+    //playerA->play(0);
     if (!play) {
-        playerA->pause();
-        playerB->pause();
+        __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "onPlayPause PAUSE");
+
+        //playerA->seek(0);
+        //playerA->play(0);
+        //playerA->pause();
+        //playerB->pause();
     } else {
         bool masterIsA = (crossValue <= 0.5f);
         playerA->play(!masterIsA);
         playerB->play(masterIsA);
     };
     pthread_mutex_unlock(&mutex);
+
 }
 
 void SuperpoweredExample::onCrossfader(int value) {
@@ -176,9 +199,8 @@ void SuperpoweredExample::onFxValue(int ivalue) {
 }
 
 bool SuperpoweredExample::process(short int *output, unsigned int numberOfSamples) {
-    //const char* myCharPointer;
-    //sprintf(myCharPointer, "%f", playerA->positionPercent);
-    //__android_log_write(ANDROID_LOG_ERROR, "SuperpoweredPosition", myCharPointer);
+
+
 
     pthread_mutex_lock(&mutex);
 
@@ -210,13 +232,19 @@ static SuperpoweredExample *example = NULL;
 
 extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_SuperpoweredExample(JNIEnv *javaEnvironment, jobject __unused obj, jint samplerate, jint buffersize, jstring apkPath, jint fileAoffset, jint fileAlength, jint fileBoffset, jint fileBlength) {
     const char *path = javaEnvironment->GetStringUTFChars(apkPath, JNI_FALSE);
+    __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredInitialPath", path);
+
     example = new SuperpoweredExample((unsigned int)samplerate, (unsigned int)buffersize, path, fileAoffset, fileAlength, fileBoffset, fileBlength);
     javaEnvironment->ReleaseStringUTFChars(apkPath, path);
 
 }
 
-extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_onPlayPause(JNIEnv * __unused javaEnvironment, jobject __unused obj, jboolean play) {
-	example->onPlayPause(play);
+extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_onPlayPause(JNIEnv * __unused javaEnvironment, jobject __unused obj, jstring filepath, jboolean play, jint size) {
+    const char *path = javaEnvironment->GetStringUTFChars(filepath, JNI_FALSE);
+
+    example->onPlayPause(path, play, size);
+    javaEnvironment->ReleaseStringUTFChars(filepath, path);
+
 }
 
 extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_onCrossfader(JNIEnv * __unused javaEnvironment, jobject __unused obj, jint value) {
@@ -239,6 +267,5 @@ extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_onFileChange(JNIEnv *
     example->onFileChange(path, fileOffset, fileLength);
     javaEnvironment->ReleaseStringUTFChars(apkPath, path);
     __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", path);
-
 
 }

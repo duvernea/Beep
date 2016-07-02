@@ -32,10 +32,15 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.UUID;
 
 import xyz.peast.beep.adapters.BeepAdapter;
 import xyz.peast.beep.adapters.BoardAdapter;
@@ -138,8 +143,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                          "Item Clicked: " + beepName, Toast.LENGTH_SHORT).show();
 
                  String path = "/data/data/xyz.peast.beep/files/" + audiofileName;
-                 //String path = "/data/data/xyz.peast.beep/files/" + "c9ed1312-33ba-4143-8d45-3bb6deefa5a9.mp3";
-                 //Log.d(TAG, "file path: " + path);
 
                  //String path = mContext.getFilesDir().getpath + audiofileName;
 
@@ -148,17 +151,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                  int size = (int) file.length();
                  byte[] bytes = new byte[size];
 
-                 try {
-                     BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
-                     buf.read(bytes, 0, bytes.length);
-                     buf.close();
-                 } catch (FileNotFoundException e) {
-                     // TODO Auto-generated catch block
-                     e.printStackTrace();
-                 } catch (IOException e) {
-                     // TODO Auto-generated catch block
-                     e.printStackTrace();
-                 }
+//                 try {
+//                     BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
+//                     buf.read(bytes, 0, bytes.length);
+//                     buf.close();
+//                 } catch (FileNotFoundException e) {
+//                     // TODO Auto-generated catch block
+//                     e.printStackTrace();
+//                 } catch (IOException e) {
+//                     // TODO Auto-generated catch block
+//                     e.printStackTrace();
+//                 }
                  //onFileChange(getPackageResourcePath(), fileAlength, fileAoffset);
                  //size = 100; // test
                  Log.d(TAG, "Size: " + size);
@@ -167,12 +170,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                  // file change path, offset, length
 
                  //onFileChange(path, 0, 16384);
+
                  int offset = 16384;
                  onFileChange(path, 0, size);
+
+
                  //Log.d(TAG, "getPackageResourcePath: " + getPackageResourcePath());
                  playing = !playing;
                  //onPlayPause(playing);
-                onPlayPause(true);
+                 Log.d(TAG, "playing java: " + playing);
+
+                 onPlayPause(path, playing, size);
              }
         });
 
@@ -211,7 +219,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // NOTE: This is temp code that will be deleted
 
         // Files under res/raw are not zipped, just copied into the APK. Get the offset and length to know where our files are located.
+
         AssetFileDescriptor fd0 = getResources().openRawResourceFd(R.raw.lycka), fd1 = getResources().openRawResourceFd(R.raw.king);
+
         int fileAoffset = (int)fd0.getStartOffset(), fileAlength = (int)fd0.getLength(), fileBoffset = (int)fd1.getStartOffset(), fileBlength = (int)fd1.getLength();
         try {
             fd0.getParcelFileDescriptor().close();
@@ -219,15 +229,42 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         } catch (IOException e) {
             android.util.Log.d("", "Close error.");
         }
+        String uniqueID = UUID.randomUUID().toString();
+        uniqueID += ".mp3";
+        Log.d(TAG, "getresourcepath: " + getPackageResourcePath());
+        InputStream in = mContext.getResources().openRawResource(R.raw.beep);
+        OutputStream out = null;
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        int size = 0;
+        byte[] buffer = new byte[1024];
 
+        try {
+            while ((size = in.read(buffer, 0, 1024)) >=0) {
+                outputStream.write(buffer, 0, size);
+            }
+            in.close();
+            buffer=outputStream.toByteArray();
+
+            FileOutputStream fos = mContext.openFileOutput(uniqueID, Context.MODE_PRIVATE);
+            fos.write(buffer);
+            fos.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        String path = mContext.getFilesDir().getPath() + uniqueID;
+        //String path = "/data/data/xyz.peast.beep/files/" + uniqueID;
         // Arguments: path to the APK file, offset and length of the two resource files, sample rate, audio buffer size.
         SuperpoweredExample(Integer.parseInt(mSamplerateString), Integer.parseInt(mBuffersizeString), getPackageResourcePath()+"xx", fileAoffset, fileAlength, fileBoffset, fileBlength);
 
 
     }
     public void SuperpoweredExample_PlayPause(View button) {  // Play/pause.
+
         playing = !playing;
-        onPlayPause(playing);
+        Log.d(TAG, "playing java: " + playing);
+        //onPlayPause(playing);
+
         //Button b = (Button) findViewById(R.id.playPause);
         //if (b != null) b.setText(playing ? "Pause" : "Play");
     }
@@ -335,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
     private native void SuperpoweredExample(int samplerate, int buffersize, String apkPath, int fileAoffset, int fileAlength, int fileBoffset, int fileBlength);
-    private native void onPlayPause(boolean play);
+    private native void onPlayPause(String filepath, boolean play, int size);
     private native void onCrossfader(int value);
     private native void onFxSelect(int value);
     private native void onFxOff();
