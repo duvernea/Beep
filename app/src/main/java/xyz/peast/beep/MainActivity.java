@@ -163,17 +163,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 //                     e.printStackTrace();
 //                 }
                  //onFileChange(getPackageResourcePath(), fileAlength, fileAoffset);
-                 //size = 100; // test
                  Log.d(TAG, "Size: " + size);
-                 // size = 4114816
-                 //int offset = 4100000;
-                 // file change path, offset, length
-
-                 //onFileChange(path, 0, 16384);
 
                  int offset = 16384;
                  onFileChange(path, 0, size);
-
 
                  //Log.d(TAG, "getPackageResourcePath: " + getPackageResourcePath());
                  playing = !playing;

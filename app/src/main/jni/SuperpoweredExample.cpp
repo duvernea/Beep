@@ -101,7 +101,6 @@ void SuperpoweredExample::onFileChange(const char *path, int fileOffset, int fil
     playerA->setPosition(0, false, false);
     //playerA->open(path, fileOffset, fileLength);
     __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "onFileChange run");
-    pthread_mutex_lock(&mutex);
 
     //double a = .90;
     //playerA->seek(a);
@@ -129,8 +128,8 @@ void SuperpoweredExample::onPlayPause(const char *path, bool play, int size) {
 
         //playerA->seek(0);
         //playerA->play(0);
-        //playerA->pause();
-        //playerB->pause();
+        playerA->pause();
+        playerB->pause();
     } else {
         bool masterIsA = (crossValue <= 0.5f);
         playerA->play(!masterIsA);
