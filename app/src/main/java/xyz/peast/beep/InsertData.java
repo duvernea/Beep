@@ -131,7 +131,7 @@ public class InsertData {
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, 1);
 
         beepUri = context.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, beepValues);
-        beepRowIds[4] = (int) ContentUris.parseId(beepUri);
+        beepRowIds[5] = (int) ContentUris.parseId(beepUri);
 
     }
     static void insertSoundFile(Context context) {

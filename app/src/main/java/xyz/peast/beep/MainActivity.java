@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                  Cursor cursor = (Cursor) parent.getItemAtPosition(position);
                  String beepName = cursor.getString(MainActivity.BEEPS_COL_NAME);
                  String audiofileName = cursor.getString(MainActivity.BEEPS_COL_AUDIO);
+                 Log.d(TAG, audiofileName);
                  Toast.makeText(getApplicationContext(),
                          "Item Clicked: " + beepName, Toast.LENGTH_SHORT).show();
 
@@ -176,7 +177,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                  onPlayPause(path, playing, size);
              }
         });
-
 
         mBoardAdapter = new BoardAdapter(mContext, null, 0);
 
