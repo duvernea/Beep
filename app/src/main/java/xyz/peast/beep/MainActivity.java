@@ -136,18 +136,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                  String audiofileName = cursor.getString(MainActivity.BEEPS_COL_AUDIO);
                  Toast.makeText(getApplicationContext(),
                          "Item Clicked: " + beepName, Toast.LENGTH_SHORT).show();
-                 AssetFileDescriptor fd0 = getResources().openRawResourceFd(R.raw.king);
-                 int fileAoffset = (int)fd0.getStartOffset();
-                 int fileAlength = (int)fd0.getLength();
-                 try {
-                     fd0.getParcelFileDescriptor().close();
-                 } catch (IOException e) {
-                     android.util.Log.d("", "Close error.");
-                 }
+
                  String path = "/data/data/xyz.peast.beep/files/" + audiofileName;
                  //String path = "/data/data/xyz.peast.beep/files/" + "c9ed1312-33ba-4143-8d45-3bb6deefa5a9.mp3";
+                 //Log.d(TAG, "file path: " + path);
 
-
+                 //String path = mContext.getFilesDir().getpath + audiofileName;
 
                  Log.d(TAG, "file path: " + path);
                  File file = new File(path);
@@ -169,10 +163,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                  //size = 100; // test
                  Log.d(TAG, "Size: " + size);
                  // size = 4114816
-                 int offset = 4100000;
+                 //int offset = 4100000;
+                 // file change path, offset, length
+
                  //onFileChange(path, 0, 16384);
+                 int offset = 16384;
                  onFileChange(path, 0, size);
-                 Log.d(TAG, "getPackageResourcePath: " + getPackageResourcePath());
+                 //Log.d(TAG, "getPackageResourcePath: " + getPackageResourcePath());
                  playing = !playing;
                  //onPlayPause(playing);
                 onPlayPause(true);
@@ -214,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // NOTE: This is temp code that will be deleted
 
         // Files under res/raw are not zipped, just copied into the APK. Get the offset and length to know where our files are located.
-        AssetFileDescriptor fd0 = getResources().openRawResourceFd(R.raw.lycka), fd1 = getResources().openRawResourceFd(R.raw.nuyorica);
+        AssetFileDescriptor fd0 = getResources().openRawResourceFd(R.raw.lycka), fd1 = getResources().openRawResourceFd(R.raw.king);
         int fileAoffset = (int)fd0.getStartOffset(), fileAlength = (int)fd0.getLength(), fileBoffset = (int)fd1.getStartOffset(), fileBlength = (int)fd1.getLength();
         try {
             fd0.getParcelFileDescriptor().close();
@@ -224,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
 
         // Arguments: path to the APK file, offset and length of the two resource files, sample rate, audio buffer size.
-        SuperpoweredExample(Integer.parseInt(mSamplerateString), Integer.parseInt(mBuffersizeString), getPackageResourcePath(), fileAoffset, fileAlength, fileBoffset, fileBlength);
+        SuperpoweredExample(Integer.parseInt(mSamplerateString), Integer.parseInt(mBuffersizeString), getPackageResourcePath()+"xx", fileAoffset, fileAlength, fileBoffset, fileBlength);
 
 
     }

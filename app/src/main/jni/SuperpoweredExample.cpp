@@ -10,24 +10,38 @@
 static void playerEventCallbackA(void *clientData, SuperpoweredAdvancedAudioPlayerEvent event, void * __unused value) {
     if (event == SuperpoweredAdvancedAudioPlayerEvent_LoadSuccess) {
     	SuperpoweredAdvancedAudioPlayer *playerA = *((SuperpoweredAdvancedAudioPlayer **)clientData);
-        playerA->setBpm(126.0f);
-        playerA->setFirstBeatMs(353);
-        playerA->setPosition(playerA->firstBeatMs, false, false);
+        //playerA->setBpm(126.0f);
+        //playerA->setFirstBeatMs(353);
+        //playerA->setPosition(playerA->firstBeatMs, false, false);
+        //playerA->setPitchShift(-6);
+
+        //playerA->setReverse(false, 0);
+        //playerA->setTempo(.5f, true);
         __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "playerCallbackA running..");
+
     };
 }
 
 static void playerEventCallbackB(void *clientData, SuperpoweredAdvancedAudioPlayerEvent event, void * __unused value) {
     if (event == SuperpoweredAdvancedAudioPlayerEvent_LoadSuccess) {
     	SuperpoweredAdvancedAudioPlayer *playerB = *((SuperpoweredAdvancedAudioPlayer **)clientData);
-        playerB->setBpm(123.0f);
-        playerB->setFirstBeatMs(40);
-        playerB->setPosition(playerB->firstBeatMs, false, false);
+        //playerB->setBpm(123.0f);
+        //playerB->setFirstBeatMs(40);
+        //playerB->setPosition(playerB->firstBeatMs, false, false);
     };
 }
 
 static bool audioProcessing(void *clientdata, short int *audioIO, int numberOfSamples, int __unused samplerate) {
 	return ((SuperpoweredExample *)clientdata)->process(audioIO, (unsigned int)numberOfSamples);
+}
+#define MINFREQ 60.0f
+#define MAXFREQ 20000.0f
+
+static inline float floatToFrequency(float value) {
+    if (value > 0.97f) return MAXFREQ;
+    if (value < 0.03f) return MINFREQ;
+    value = powf(10.0f, (value + ((0.4f - fabsf(value - 0.4f)) * 0.3f)) * log10f(MAXFREQ - MINFREQ)) + MINFREQ;
+    return value < MAXFREQ ? value : MAXFREQ;
 }
 
 SuperpoweredExample::SuperpoweredExample(unsigned int samplerate, unsigned int buffersize, const char *path, int fileAoffset, int fileAlength, int fileBoffset, int fileBlength) : activeFx(0), crossValue(0.0f), volB(0.0f), volA(1.0f * headroom) {
@@ -42,7 +56,12 @@ SuperpoweredExample::SuperpoweredExample(unsigned int samplerate, unsigned int b
     playerA->syncMode = playerB->syncMode = SuperpoweredAdvancedAudioPlayerSyncMode_TempoAndBeat;
 
     roll = new SuperpoweredRoll(samplerate);
+    //filter->setResonantParameters(floatToFrequency(1.0f - .5f), 0.2f);
+
     filter = new SuperpoweredFilter(SuperpoweredFilter_Resonant_Lowpass, samplerate);
+
+
+    filter->enable(false);
     flanger = new SuperpoweredFlanger(samplerate);
 
     /**
@@ -69,14 +88,24 @@ SuperpoweredExample::~SuperpoweredExample() {
     pthread_mutex_destroy(&mutex);
 }
 void SuperpoweredExample::onFileChange(const char *path, int fileOffset, int fileLength) {
-    playerA->open(path, fileOffset, fileLength);
+    pthread_mutex_lock(&mutex);
+    playerA->open(path);
+    //playerA->setBpm(bpm);
+    //playerA->setFirstBeatMs(beatStart);
+    playerA->setPosition(0, false, false);
+    //playerA->open(path, fileOffset, fileLength);
     //double a = .90;
     //playerA->seek(a);
     //playerA->setPosition(10, 1, 0);
+    //playerA->seek(50);
+    pthread_mutex_unlock(&mutex);
+
+
 }
 
 void SuperpoweredExample::onPlayPause(bool play) {
     pthread_mutex_lock(&mutex);
+
     if (!play) {
         playerA->pause();
         playerB->pause();
@@ -115,15 +144,9 @@ void SuperpoweredExample::onFxOff() {
     flanger->enable(false);
 }
 
-#define MINFREQ 60.0f
-#define MAXFREQ 20000.0f
 
-static inline float floatToFrequency(float value) {
-    if (value > 0.97f) return MAXFREQ;
-    if (value < 0.03f) return MINFREQ;
-    value = powf(10.0f, (value + ((0.4f - fabsf(value - 0.4f)) * 0.3f)) * log10f(MAXFREQ - MINFREQ)) + MINFREQ;
-    return value < MAXFREQ ? value : MAXFREQ;
-}
+
+
 
 void SuperpoweredExample::onFxValue(int ivalue) {
     float value = float(ivalue) * 0.01f;
@@ -153,6 +176,10 @@ void SuperpoweredExample::onFxValue(int ivalue) {
 }
 
 bool SuperpoweredExample::process(short int *output, unsigned int numberOfSamples) {
+    //const char* myCharPointer;
+    //sprintf(myCharPointer, "%f", playerA->positionPercent);
+    //__android_log_write(ANDROID_LOG_ERROR, "SuperpoweredPosition", myCharPointer);
+
     pthread_mutex_lock(&mutex);
 
     bool masterIsA = (crossValue <= 0.5f);
@@ -165,6 +192,8 @@ bool SuperpoweredExample::process(short int *output, unsigned int numberOfSample
     roll->bpm = flanger->bpm = (float)masterBpm; // Syncing fx is one line.
 
     if (roll->process(silence ? NULL : stereoBuffer, stereoBuffer, numberOfSamples) && silence) silence = false;
+    filter->process(stereoBuffer, stereoBuffer, numberOfSamples);
+
     if (!silence) {
         filter->process(stereoBuffer, stereoBuffer, numberOfSamples);
         flanger->process(stereoBuffer, stereoBuffer, numberOfSamples);
@@ -208,4 +237,8 @@ extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_onFxValue(JNIEnv * __
 extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_onFileChange(JNIEnv * __unused javaEnvironment, jobject, jstring apkPath, jint fileOffset, jint fileLength ) {
     const char *path = javaEnvironment->GetStringUTFChars(apkPath, JNI_FALSE);
     example->onFileChange(path, fileOffset, fileLength);
+    javaEnvironment->ReleaseStringUTFChars(apkPath, path);
+    __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", path);
+
+
 }
