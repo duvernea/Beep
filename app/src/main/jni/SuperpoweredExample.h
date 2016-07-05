@@ -28,6 +28,7 @@ public:
 	void onFxOff();
 	void onFxValue(int value);
 	void onFileChange(const char *path, int fileOffset, int fileLength);
+	void toggleRecord(bool record);
 
 private:
     pthread_mutex_t mutex;
@@ -41,6 +42,7 @@ private:
 	float *recordBuffer;
     unsigned char activeFx;
     float crossValue, volA, volB;
+	bool isRecording;
 };
 
 #endif

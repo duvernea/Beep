@@ -55,6 +55,8 @@ SuperpoweredExample::SuperpoweredExample(unsigned int samplerate, unsigned int b
     stereoBuffer = (float *)memalign(16, (buffersize + 16) * sizeof(float) * 2);
     recordBuffer = (float *)memalign(16, (buffersize + 16) * sizeof(float) * 2);
 
+    isRecording = false;
+
 
     playerA = new SuperpoweredAdvancedAudioPlayer(&playerA , playerEventCallbackA, samplerate, 0);
     playerA->open(path, fileAoffset, fileAlength);
@@ -63,7 +65,7 @@ SuperpoweredExample::SuperpoweredExample(unsigned int samplerate, unsigned int b
 
     playerA->syncMode = playerB->syncMode = SuperpoweredAdvancedAudioPlayerSyncMode_None;
 
-    const char *temp = "enter_file_path_here";
+    const char *temp = "/data/data/xyz.peast.beep/files/temp.wav";
     recorder = new SuperpoweredRecorder(temp, samplerate);
 
     roll = new SuperpoweredRoll(samplerate);
@@ -93,6 +95,8 @@ SuperpoweredExample::SuperpoweredExample(unsigned int samplerate, unsigned int b
 }
 
 SuperpoweredExample::~SuperpoweredExample() {
+    __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "Deconstructor run..");
+
     delete audioSystem;
     delete playerA;
     delete playerB;
@@ -205,33 +209,72 @@ void SuperpoweredExample::onFxValue(int ivalue) {
 
 bool SuperpoweredExample::process(short int *output, unsigned int numberOfSamples) {
 
-
-
     pthread_mutex_lock(&mutex);
+    bool silence = false;
 
-    bool masterIsA = (crossValue <= 0.5f);
-    double masterBpm = masterIsA ? playerA->currentBpm : playerB->currentBpm;
-    double msElapsedSinceLastBeatA = playerA->msElapsedSinceLastBeat; // When playerB needs it, playerA has already stepped this value, so save it now.
+    if (isRecording) {
+        __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredExample", "process.. isRecording");
 
-    bool silence = !playerA->process(stereoBuffer, false, numberOfSamples, volA, masterBpm, playerB->msElapsedSinceLastBeat);
-    if (playerB->process(stereoBuffer, !silence, numberOfSamples, volB, masterBpm, msElapsedSinceLastBeatA)) silence = false;
+        SuperpoweredShortIntToFloat(output, recordBuffer, numberOfSamples, NULL);
+        //SuperpoweredFloatToShortInt(recordBuffer, output, numberOfSamples);
+        recorder->process(recordBuffer, NULL, numberOfSamples);
+        silence = !playerA->process(stereoBuffer, false, numberOfSamples, volB);
+    }
+    else {
 
-    roll->bpm = flanger->bpm = (float)masterBpm; // Syncing fx is one line.
+        bool masterIsA = (crossValue <= 0.5f);
+        double masterBpm = masterIsA ? playerA->currentBpm : playerB->currentBpm;
+        double msElapsedSinceLastBeatA = playerA->msElapsedSinceLastBeat; // When playerB needs it, playerA has already stepped this value, so save it now.
 
-    if (roll->process(silence ? NULL : stereoBuffer, stereoBuffer, numberOfSamples) && silence) silence = false;
-    filter->process(stereoBuffer, stereoBuffer, numberOfSamples);
+        silence = !playerA->process(stereoBuffer, false, numberOfSamples, volA, masterBpm,
+                                         playerB->msElapsedSinceLastBeat);
+        if (playerB->process(stereoBuffer, !silence, numberOfSamples, volB, masterBpm,
+                             msElapsedSinceLastBeatA))
+            silence = false;
 
-    if (!silence) {
+        roll->bpm = flanger->bpm = (float) masterBpm; // Syncing fx is one line.
+
+        if (roll->process(silence ? NULL : stereoBuffer, stereoBuffer, numberOfSamples) &&
+            silence)
+            silence = false;
         filter->process(stereoBuffer, stereoBuffer, numberOfSamples);
-        flanger->process(stereoBuffer, stereoBuffer, numberOfSamples);
-    };
 
+        if (!silence) {
+            filter->process(stereoBuffer, stereoBuffer, numberOfSamples);
+            flanger->process(stereoBuffer, stereoBuffer, numberOfSamples);
+        };
+
+
+
+        // The stereoBuffer is ready now, let's put the finished audio into the requested buffers.
+        if (!silence) SuperpoweredFloatToShortInt(stereoBuffer, output, numberOfSamples);
+    }
     pthread_mutex_unlock(&mutex);
-
-    // The stereoBuffer is ready now, let's put the finished audio into the requested buffers.
-    if (!silence) SuperpoweredFloatToShortInt(stereoBuffer, output, numberOfSamples);
     return !silence;
 }
+void SuperpoweredExample::toggleRecord(bool record) {
+    __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "toggleRecord called..");
+
+    pthread_mutex_lock(&mutex);
+    isRecording = record;
+    if (isRecording) {
+        __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "toggleRecord startRecord");
+
+        //playerA->open(musicpath, musicOffset, musicLength);
+        //playerA->play(false);
+        const char *path = "/data/data/xyz.peast.beep/files/temp.wav";
+        recorder->start(path);
+    }
+    else {
+        __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "toggleRecord stopRecord");
+
+        playerA->pause();
+        recorder->stop();
+
+    }
+    pthread_mutex_unlock(&mutex);
+}
+
 
 static SuperpoweredExample *example = NULL;
 
@@ -296,5 +339,12 @@ extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_onFileChange(JNIEnv
     __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", path);
 
 }
+
+extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_toggleRecord(JNIEnv * __unused javaEnvironment, jobject __unused obj, jboolean record) {
+    example->toggleRecord(record);
+}
+
+
+
 
 
