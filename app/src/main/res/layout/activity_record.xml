@@ -16,13 +16,8 @@
         android:text="@string/record"
         android:layout_alignParentTop="true"
         android:layout_centerInParent="true"
+        android:layout_marginTop="100dp"
         />
-
-    <Button
-        android:layout_width="150dp"
-        android:layout_height="58dp"
-        android:text="@string/next"
-        android:layout_below="@id/record_button"/>
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adview"

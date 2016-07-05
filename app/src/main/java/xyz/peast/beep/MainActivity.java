@@ -102,6 +102,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public static final int BOARDS_COL_NAME = 1;
     public static final int BOARDS_COL_IMAGE = 2;
 
+    public static final String TEMP_FILE_PATH = "file_path";
+    private String mPath;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, RecordActivity.class);
+                intent.putExtra(TEMP_FILE_PATH, mPath);
                 startActivity(intent);
             }
         });
@@ -173,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                  playing = !playing;
                  //onPlayPause(playing);
                  Log.d(TAG, "playing java: " + playing);
-
+                mPath = path;
                  onPlayPause(path, playing, size);
              }
         });

@@ -268,3 +268,27 @@ extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_onFileChange(JNIEnv *
     __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", path);
 
 }
+
+extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_SuperpoweredExample(JNIEnv *javaEnvironment, jobject __unused obj, jint samplerate, jint buffersize, jstring apkPath, jint fileAoffset, jint fileAlength, jint fileBoffset, jint fileBlength) {
+    const char *path = javaEnvironment->GetStringUTFChars(apkPath, JNI_FALSE);
+    __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredInitialPath", path);
+
+    example = new SuperpoweredExample((unsigned int)samplerate, (unsigned int)buffersize, path, fileAoffset, fileAlength, fileBoffset, fileBlength);
+    javaEnvironment->ReleaseStringUTFChars(apkPath, path);
+}
+extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_onPlayPause(JNIEnv * __unused javaEnvironment, jobject __unused obj, jstring filepath, jboolean play, jint size) {
+    const char *path = javaEnvironment->GetStringUTFChars(filepath, JNI_FALSE);
+
+    example->onPlayPause(path, play, size);
+    javaEnvironment->ReleaseStringUTFChars(filepath, path);
+
+}
+extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_onFileChange(JNIEnv * __unused javaEnvironment, jobject, jstring apkPath, jint fileOffset, jint fileLength ) {
+    const char *path = javaEnvironment->GetStringUTFChars(apkPath, JNI_FALSE);
+    example->onFileChange(path, fileOffset, fileLength);
+    javaEnvironment->ReleaseStringUTFChars(apkPath, path);
+    __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", path);
+
+}
+
+
