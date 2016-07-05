@@ -9,6 +9,7 @@
 #include <SuperpoweredFilter.h>
 #include <SuperpoweredRoll.h>
 #include <SuperpoweredFlanger.h>
+#include <SuperpoweredRecorder.h>
 #include <AndroidIO/SuperpoweredAndroidAudioIO.h>
 
 #define HEADROOM_DECIBEL 3.0f
@@ -35,7 +36,9 @@ private:
     SuperpoweredRoll *roll;
     SuperpoweredFilter *filter;
     SuperpoweredFlanger *flanger;
+	SuperpoweredRecorder *recorder;
     float *stereoBuffer;
+	float *recordBuffer;
     unsigned char activeFx;
     float crossValue, volA, volB;
 };

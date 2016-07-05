@@ -53,13 +53,18 @@ static inline float floatToFrequency(float value) {
 SuperpoweredExample::SuperpoweredExample(unsigned int samplerate, unsigned int buffersize, const char *path, int fileAoffset, int fileAlength, int fileBoffset, int fileBlength) : activeFx(0), crossValue(0.0f), volB(0.0f), volA(1.0f * headroom) {
     pthread_mutex_init(&mutex, NULL); // This will keep our player volumes and playback states in sync.
     stereoBuffer = (float *)memalign(16, (buffersize + 16) * sizeof(float) * 2);
+    recordBuffer = (float *)memalign(16, (buffersize + 16) * sizeof(float) * 2);
+
 
     playerA = new SuperpoweredAdvancedAudioPlayer(&playerA , playerEventCallbackA, samplerate, 0);
     playerA->open(path, fileAoffset, fileAlength);
     playerB = new SuperpoweredAdvancedAudioPlayer(&playerB, playerEventCallbackB, samplerate, 0);
     playerB->open(path, fileBoffset, fileBlength);
 
-    playerA->syncMode = playerB->syncMode = SuperpoweredAdvancedAudioPlayerSyncMode_TempoAndBeat;
+    playerA->syncMode = playerB->syncMode = SuperpoweredAdvancedAudioPlayerSyncMode_None;
+
+    const char *temp = "enter_file_path_here";
+    recorder = new SuperpoweredRecorder(temp, samplerate);
 
     roll = new SuperpoweredRoll(samplerate);
     //filter->setResonantParameters(floatToFrequency(1.0f - .5f), 0.2f);
