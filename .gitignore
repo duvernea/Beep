@@ -9,3 +9,4 @@ gradle.properties
 /build
 /captures
 app/libs/*
+strings-private.xml
