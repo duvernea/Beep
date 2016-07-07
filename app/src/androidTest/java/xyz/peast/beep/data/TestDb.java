@@ -60,6 +60,7 @@ public class TestDb extends AndroidTestCase {
         beepColumnHashSet.add(BeepDbContract.BeepEntry.COLUMN_COORD_LONG);
         beepColumnHashSet.add(BeepDbContract.BeepEntry.COLUMN_PRIVACY);
         beepColumnHashSet.add(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT);
+        beepColumnHashSet.add(BeepDbContract.BeepEntry.COLUMN_DATE_CREATED);
         beepColumnHashSet.add(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY);
 
         int columnNameIndex = c.getColumnIndex("name");
@@ -81,6 +82,9 @@ public class TestDb extends AndroidTestCase {
         boardColumnHashSet.add(BeepDbContract.BoardEntry._ID);
         boardColumnHashSet.add(BeepDbContract.BoardEntry.COLUMN_NAME);
         boardColumnHashSet.add(BeepDbContract.BoardEntry.COLUMN_IMAGE);
+        boardColumnHashSet.add(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED);
+
+
 
         columnNameIndex = c.getColumnIndex("name");
         do {

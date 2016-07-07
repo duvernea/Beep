@@ -30,6 +30,7 @@ public class BeepDbHelper extends SQLiteOpenHelper {
                 BeepDbContract.BeepEntry.COLUMN_COORD_LONG + " FLOAT NOT NULL, " +
                 BeepDbContract.BeepEntry.COLUMN_PRIVACY + " BOOLEAN NOT NULL, " +
                 BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT + " INTEGER NOT NULL, " +
+                BeepDbContract.BeepEntry.COLUMN_DATE_CREATED + " INTEGER NOT NULL, " +
                 BeepDbContract.BeepEntry.COLUMN_BOARD_KEY + " INTEGER NOT NULL, " +
                 // Set up foreign key
                 " FOREIGN KEY (" + BeepDbContract.BeepEntry.COLUMN_BOARD_KEY + ") REFERENCES " +
@@ -41,7 +42,9 @@ public class BeepDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_BOARD_TABLE = "CREATE TABLE " + BeepDbContract.BoardEntry.TABLE_NAME + " (" +
                 BeepDbContract.BoardEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 BeepDbContract.BoardEntry.COLUMN_NAME + " TEXT NOT NULL, " +
+                BeepDbContract.BeepEntry.COLUMN_DATE_CREATED + " INTEGER NOT NULL, " +
                 BeepDbContract.BoardEntry.COLUMN_IMAGE + " TEXT NOT NULL);";
+        ;
 
         db.execSQL(SQL_CREATE_BOARD_TABLE);
 

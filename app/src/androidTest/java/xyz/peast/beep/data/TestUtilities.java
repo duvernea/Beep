@@ -25,7 +25,9 @@ public class TestUtilities extends AndroidTestCase {
     static ContentValues createBoardValues() {
         ContentValues boardValues = new ContentValues();
         boardValues.put(BeepDbContract.BoardEntry.COLUMN_NAME, "Sweetie <3");
+        boardValues.put(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED, 1467857522);
         boardValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
+
 
         return boardValues;
     }
@@ -38,6 +40,7 @@ public class TestUtilities extends AndroidTestCase {
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LONG, 92.1234);
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_PRIVACY, 1);
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, 0);
+        beepValues.put(BeepDbContract.BeepEntry.COLUMN_DATE_CREATED, 1467857522);
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, rowId);
 
         return beepValues;
