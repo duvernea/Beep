@@ -6,6 +6,7 @@
 #include <SLES/OpenSLES.h>
 #include <SLES/OpenSLES_AndroidConfiguration.h>
 #include <android/log.h>
+#include <string>
 
 static void playerEventCallbackA(void *clientData, SuperpoweredAdvancedAudioPlayerEvent event, void * __unused value) {
     if (event == SuperpoweredAdvancedAudioPlayerEvent_LoadSuccess) {
@@ -99,13 +100,14 @@ SuperpoweredExample::~SuperpoweredExample() {
 
     delete audioSystem;
     delete playerA;
-    delete playerB;
+    //delete playerB;
     free(stereoBuffer);
     pthread_mutex_destroy(&mutex);
 }
 void SuperpoweredExample::onFileChange(const char *path, int fileOffset, int fileLength) {
     pthread_mutex_lock(&mutex);
     playerA->open(path);
+    playerA->cachePosition(0, 255);
     //playerA->setBpm(bpm);
     //playerA->setFirstBeatMs(beatStart);
     //playerA->setPosition(0, false, false);
@@ -131,7 +133,8 @@ void SuperpoweredExample::onPlayPause(const char *path, bool play, int size) {
     //const char *path = "/data/data/xyz.peast.beep/files/d5925c56-c611-49ae-91bd-bc1d25ff6b56.mp3";
     //playerA->open(path, 0, size);
 
-    playerA->seek(0);
+    playerA->setPosition(0, false, false);
+    //playerA->seek(0);
     playerA->play(0);
 //    if (!play) {
 //        __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "onPlayPause PAUSE");
@@ -210,12 +213,19 @@ void SuperpoweredExample::onFxValue(int ivalue) {
 }
 
 bool SuperpoweredExample::process(short int *output, unsigned int numberOfSamples) {
+    //unsigned int *a = &numberOfSamples;
+    //char * b = (char*) *a;
+    const char* numSamples =  (std::to_string(numberOfSamples)).c_str();
+    __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", numSamples);
+
+
+
 
     pthread_mutex_lock(&mutex);
     bool silence = false;
 
     if (isRecording) {
-        __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredExample", "process.. isRecording");
+        //__android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredExample", "process.. isRecording");
 
         SuperpoweredShortIntToFloat(output, recordBuffer, numberOfSamples, NULL);
         //SuperpoweredFloatToShortInt(recordBuffer, output, numberOfSamples);
@@ -228,23 +238,24 @@ bool SuperpoweredExample::process(short int *output, unsigned int numberOfSample
         double masterBpm = masterIsA ? playerA->currentBpm : playerB->currentBpm;
         double msElapsedSinceLastBeatA = playerA->msElapsedSinceLastBeat; // When playerB needs it, playerA has already stepped this value, so save it now.
 
-        silence = !playerA->process(stereoBuffer, false, numberOfSamples, volA, masterBpm,
-                                         playerB->msElapsedSinceLastBeat);
-        if (playerB->process(stereoBuffer, !silence, numberOfSamples, volB, masterBpm,
-                             msElapsedSinceLastBeatA))
-            silence = false;
+        silence = !playerA->process(stereoBuffer, false, numberOfSamples, volA, 0.0f,
+                                         -1);
 
-        roll->bpm = flanger->bpm = (float) masterBpm; // Syncing fx is one line.
-
-        if (roll->process(silence ? NULL : stereoBuffer, stereoBuffer, numberOfSamples) &&
-            silence)
-            silence = false;
-        filter->process(stereoBuffer, stereoBuffer, numberOfSamples);
-
-        if (!silence) {
-            filter->process(stereoBuffer, stereoBuffer, numberOfSamples);
-            flanger->process(stereoBuffer, stereoBuffer, numberOfSamples);
-        };
+//        if (playerB->process(stereoBuffer, !silence, numberOfSamples, volB, masterBpm,
+//                             msElapsedSinceLastBeatA))
+//            silence = false;
+//
+//        roll->bpm = flanger->bpm = (float) masterBpm; // Syncing fx is one line.
+//
+//        if (roll->process(silence ? NULL : stereoBuffer, stereoBuffer, numberOfSamples) &&
+//            silence)
+//            silence = false;
+//        filter->process(stereoBuffer, stereoBuffer, numberOfSamples);
+//
+//        if (!silence) {
+//            filter->process(stereoBuffer, stereoBuffer, numberOfSamples);
+//            flanger->process(stereoBuffer, stereoBuffer, numberOfSamples);
+//        };
 
 
 
