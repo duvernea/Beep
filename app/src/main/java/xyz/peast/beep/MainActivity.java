@@ -147,18 +147,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                  Cursor cursor = (Cursor) parent.getItemAtPosition(position);
                  String beepName = cursor.getString(MainActivity.BEEPS_COL_NAME);
                  String audiofileName = cursor.getString(MainActivity.BEEPS_COL_AUDIO);
-                 Log.d(TAG, audiofileName);
-                 Toast.makeText(getApplicationContext(),
-                         "Item Clicked: " + beepName, Toast.LENGTH_SHORT).show();
+//                 Log.d(TAG, audiofileName);
+//                 Toast.makeText(getApplicationContext(),
+//                         "Item Clicked: " + beepName, Toast.LENGTH_SHORT).show();
 
                  String path = "/data/data/xyz.peast.beep/files/" + audiofileName;
 
                  //String path = mContext.getFilesDir().getpath + audiofileName;
 
-                 Log.d(TAG, "file path: " + path);
-                 File file = new File(path);
-                 int size = (int) file.length();
-                 byte[] bytes = new byte[size];
+                 //Log.d(TAG, "file path: " + path);
+                 //File file = new File(path);
+                 //int size = (int) file.length();
+                 //byte[] bytes = new byte[size];
 
 //                 try {
 //                     BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
@@ -172,17 +172,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 //                     e.printStackTrace();
 //                 }
                  //onFileChange(getPackageResourcePath(), fileAlength, fileAoffset);
-                 Log.d(TAG, "Size: " + size);
+                 //Log.d(TAG, "Size: " + size);
 
-                 int offset = 16384;
-                 onFileChange(path, 0, size);
+                 //int offset = 16384;
+                 onFileChange(path, 0, 0);
 
                  //Log.d(TAG, "getPackageResourcePath: " + getPackageResourcePath());
                  playing = !playing;
                  //onPlayPause(playing);
                  Log.d(TAG, "playing java: " + playing);
                 mPath = path;
-                 onPlayPause(path, playing, size);
+                 onPlayPause(path, playing, 0);
              }
         });
 

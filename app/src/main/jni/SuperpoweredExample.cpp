@@ -17,7 +17,7 @@ static void playerEventCallbackA(void *clientData, SuperpoweredAdvancedAudioPlay
 
         //playerA->setReverse(false, 0);
         //playerA->setTempo(.5f, true);
-        __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "playerCallbackA running..");
+       // __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "playerCallbackA running..");
 
     };
     if (event == SuperpoweredAdvancedAudioPlayerEvent_EOF) {
@@ -108,9 +108,9 @@ void SuperpoweredExample::onFileChange(const char *path, int fileOffset, int fil
     playerA->open(path);
     //playerA->setBpm(bpm);
     //playerA->setFirstBeatMs(beatStart);
-    playerA->setPosition(0, false, false);
+    //playerA->setPosition(0, false, false);
     //playerA->open(path, fileOffset, fileLength);
-    __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "onFileChange run");
+    //__android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "onFileChange run");
 
     //double a = .90;
     //playerA->seek(a);
@@ -122,8 +122,8 @@ void SuperpoweredExample::onFileChange(const char *path, int fileOffset, int fil
 }
 
 void SuperpoweredExample::onPlayPause(const char *path, bool play, int size) {
-    __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "onPlayPause called");
-    __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredPATH", path);
+    //__android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "onPlayPause called");
+    //__android_log_write(ANDROID_LOG_ERROR, "SuperpoweredPATH", path);
 
     pthread_mutex_lock(&mutex);
 
@@ -131,21 +131,23 @@ void SuperpoweredExample::onPlayPause(const char *path, bool play, int size) {
     //const char *path = "/data/data/xyz.peast.beep/files/d5925c56-c611-49ae-91bd-bc1d25ff6b56.mp3";
     //playerA->open(path, 0, size);
 
-    //playerA->seek(0);
-    //playerA->play(0);
-    if (!play) {
-        __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "onPlayPause PAUSE");
-
-        //playerA->seek(0);
-        //playerA->play(0);
-        playerA->pause();
-        playerB->pause();
-    } else {
-        bool masterIsA = (crossValue <= 0.5f);
-        playerA->play(!masterIsA);
-        playerB->play(masterIsA);
-    };
+    playerA->seek(0);
+    playerA->play(0);
+//    if (!play) {
+//        __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "onPlayPause PAUSE");
+//
+//        //playerA->seek(0);
+//        //playerA->play(0);
+//        playerA->pause();
+//        playerB->pause();
+//    } else {
+//        bool masterIsA = (crossValue <= 0.5f);
+//        playerA->play(!masterIsA);
+//        playerB->play(masterIsA);
+//    };
     pthread_mutex_unlock(&mutex);
+    //__android_log_write(ANDROID_LOG_ERROR, "Superpowered", "onPlayPause mutex unlocked");
+
 
 }
 
