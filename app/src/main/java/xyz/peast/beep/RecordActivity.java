@@ -1,6 +1,5 @@
 package xyz.peast.beep;
 
-import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,7 +18,7 @@ public class RecordActivity extends AppCompatActivity {
     private Button mPlayButton;
     private boolean mIsRecording = false;
 
-    private boolean playing=false;
+    private boolean mIsPlaying =false;
 
 
     @Override
@@ -38,11 +37,26 @@ public class RecordActivity extends AppCompatActivity {
 
         mRecordButton = (Button) findViewById(R.id.record_button);
         mRecordButton.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "mIsRecording: " + mIsRecording);
-                mIsRecording = !mIsRecording;
-                toggleRecord(mIsRecording);
+                Log.d(TAG, "mIsPlaying: " + mIsPlaying);
+                if (!mIsPlaying) {
+                    Log.d(TAG, "mIsRecording: " + mIsRecording);
+                    mIsRecording = !mIsRecording;
+                    if (!mIsRecording) {
+                        //mIsRecording = !mIsRecording;
+                        toggleRecord(mIsRecording);
+                        mRecordButton.setText("Start Recording");
+                    }
+                    if (mIsRecording) {
+                        //mIsRecording = !mIsRecording;
+                        toggleRecord(mIsRecording);
+                        mRecordButton.setText("Stop Recording");
+                    }
+
+                }
             }
         });
 
@@ -50,18 +64,16 @@ public class RecordActivity extends AppCompatActivity {
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String path = "/data/data/xyz.peast.beep/files/temp.wav.wav";
-                playing = !playing;
-                //onPlayPause(playing);
-                Log.d(TAG, "playing java: " + playing);
-                onFileChange(path, 0, 0);
-                onPlayPause(path, playing, 0);
+                if (!mIsRecording) {
+                    String path = "/data/data/xyz.peast.beep/files/temp.wav.wav";
+                    mIsPlaying = !mIsPlaying;
+                    //onPlayPause(mIsPlaying);
+                    Log.d(TAG, "mIsPlaying java: " + mIsPlaying);
+                    onFileChange(path, 0, 0);
+                    onPlayPause(path, mIsPlaying, 0);
+                }
             }
         });
-
-
-
-
 
     }
 

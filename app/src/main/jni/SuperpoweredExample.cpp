@@ -9,6 +9,8 @@
 #include <string>
 
 static void playerEventCallbackA(void *clientData, SuperpoweredAdvancedAudioPlayerEvent event, void * __unused value) {
+    __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "playerCallbackA");
+
     if (event == SuperpoweredAdvancedAudioPlayerEvent_LoadSuccess) {
     	SuperpoweredAdvancedAudioPlayer *playerA = *((SuperpoweredAdvancedAudioPlayer **)clientData);
         //playerA->setBpm(126.0f);
@@ -132,7 +134,7 @@ void SuperpoweredExample::onPlayPause(const char *path, bool play, int size) {
     //audioSystem->start();
     //const char *path = "/data/data/xyz.peast.beep/files/d5925c56-c611-49ae-91bd-bc1d25ff6b56.mp3";
     //playerA->open(path, 0, size);
-
+    if (!isRecording) {
     playerA->setPosition(0, false, false);
     //playerA->seek(0);
     playerA->play(0);
@@ -148,6 +150,7 @@ void SuperpoweredExample::onPlayPause(const char *path, bool play, int size) {
 //        playerA->play(!masterIsA);
 //        playerB->play(masterIsA);
 //    };
+    }
     pthread_mutex_unlock(&mutex);
     //__android_log_write(ANDROID_LOG_ERROR, "Superpowered", "onPlayPause mutex unlocked");
 
@@ -213,19 +216,14 @@ void SuperpoweredExample::onFxValue(int ivalue) {
 }
 
 bool SuperpoweredExample::process(short int *output, unsigned int numberOfSamples) {
-    //unsigned int *a = &numberOfSamples;
-    //char * b = (char*) *a;
-    const char* numSamples =  (std::to_string(numberOfSamples)).c_str();
-    __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", numSamples);
-
-
-
+    //const char* numSamples =  (std::to_string(numberOfSamples)).c_str();
+    //__android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", numSamples);
 
     pthread_mutex_lock(&mutex);
     bool silence = false;
 
     if (isRecording) {
-        //__android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredExample", "process.. isRecording");
+        __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredExample", "process.. isRecording");
 
         SuperpoweredShortIntToFloat(output, recordBuffer, numberOfSamples, NULL);
         //SuperpoweredFloatToShortInt(recordBuffer, output, numberOfSamples);
@@ -241,12 +239,6 @@ bool SuperpoweredExample::process(short int *output, unsigned int numberOfSample
         silence = !playerA->process(stereoBuffer, false, numberOfSamples, volA, 0.0f,
                                          -1);
 
-//        if (playerB->process(stereoBuffer, !silence, numberOfSamples, volB, masterBpm,
-//                             msElapsedSinceLastBeatA))
-//            silence = false;
-//
-//        roll->bpm = flanger->bpm = (float) masterBpm; // Syncing fx is one line.
-//
 //        if (roll->process(silence ? NULL : stereoBuffer, stereoBuffer, numberOfSamples) &&
 //            silence)
 //            silence = false;
@@ -256,8 +248,6 @@ bool SuperpoweredExample::process(short int *output, unsigned int numberOfSample
 //            filter->process(stereoBuffer, stereoBuffer, numberOfSamples);
 //            flanger->process(stereoBuffer, stereoBuffer, numberOfSamples);
 //        };
-
-
 
         // The stereoBuffer is ready now, let's put the finished audio into the requested buffers.
         if (!silence) SuperpoweredFloatToShortInt(stereoBuffer, output, numberOfSamples);
@@ -285,6 +275,7 @@ void SuperpoweredExample::toggleRecord(bool record) {
         recorder->stop();
 
     }
+
     pthread_mutex_unlock(&mutex);
 }
 
