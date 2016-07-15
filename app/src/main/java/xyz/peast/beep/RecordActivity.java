@@ -1,10 +1,12 @@
 package xyz.peast.beep;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -20,11 +22,15 @@ public class RecordActivity extends AppCompatActivity {
 
     private boolean mIsPlaying =false;
 
+    private Context mContext;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
+
+        mContext = this;
 
         mAdView = (AdView) findViewById(R.id.adview);
         AdRequest adRequest = new AdRequest.Builder()
@@ -34,6 +40,7 @@ public class RecordActivity extends AppCompatActivity {
         mAdView.loadAd(adRequest);
 
         final String path = getIntent().getStringExtra(MainActivity.TEMP_FILE_PATH);
+        setUp();
 
         mRecordButton = (Button) findViewById(R.id.record_button);
         mRecordButton.setOnClickListener(new View.OnClickListener() {
@@ -76,6 +83,13 @@ public class RecordActivity extends AppCompatActivity {
         });
 
     }
+    private void testCallback() {
+        //Toast.makeText(mContext, "Callback", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "Played file ended");
+
+    }
+
+    private native void setUp();
 
     private native void SuperpoweredExample(int samplerate, int buffersize, String apkPath, int fileAoffset, int fileAlength, int fileBoffset, int fileBlength);
     private native void onPlayPause(String filepath, boolean play, int size);
