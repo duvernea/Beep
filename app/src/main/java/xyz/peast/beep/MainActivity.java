@@ -381,10 +381,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private native void setUp();
 
-
     private native void SuperpoweredExample(int samplerate, int buffersize, String apkPath);
     private native void onPlayPause(String filepath, boolean play, int size);
-    private native void onCrossfader(int value);
     private native void onFxSelect(int value);
     private native void onFxOff();
     private native void onFxValue(int value);

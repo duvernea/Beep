@@ -61,15 +61,6 @@ static void playerEventCallbackA(void *clientData, SuperpoweredAdvancedAudioPlay
     }
 }
 
-static void playerEventCallbackB(void *clientData, SuperpoweredAdvancedAudioPlayerEvent event, void * __unused value) {
-    if (event == SuperpoweredAdvancedAudioPlayerEvent_LoadSuccess) {
-    	SuperpoweredAdvancedAudioPlayer *playerB = *((SuperpoweredAdvancedAudioPlayer **)clientData);
-        //playerB->setBpm(123.0f);
-        //playerB->setFirstBeatMs(40);
-        //playerB->setPosition(playerB->firstBeatMs, false, false);
-    };
-}
-
 static bool audioProcessing(void *clientdata, short int *audioIO, int numberOfSamples, int __unused samplerate) {
 	return ((SuperpoweredExample *)clientdata)->process(audioIO, (unsigned int)numberOfSamples);
 }
@@ -83,13 +74,12 @@ static inline float floatToFrequency(float value) {
     return value < MAXFREQ ? value : MAXFREQ;
 }
 
-SuperpoweredExample::SuperpoweredExample(unsigned int samplerate, unsigned int buffersize, const char *path) : activeFx(0), crossValue(0.0f), volB(0.0f), volA(1.0f * headroom) {
+SuperpoweredExample::SuperpoweredExample(unsigned int samplerate, unsigned int buffersize, const char *path) : activeFx(0), volB(0.0f), volA(1.0f * headroom) {
     pthread_mutex_init(&mutex, NULL); // This will keep our player volumes and playback states in sync.
     stereoBuffer = (float *)memalign(16, (buffersize + 16) * sizeof(float) * 2);
     recordBuffer = (float *)memalign(16, (buffersize + 16) * sizeof(float) * 2);
 
     isRecording = false;
-
 
     playerA = new SuperpoweredAdvancedAudioPlayer(&playerA , playerEventCallbackA, samplerate, 0);
     //playerA->open(path, fileAoffset, fileAlength);
@@ -105,7 +95,6 @@ SuperpoweredExample::SuperpoweredExample(unsigned int samplerate, unsigned int b
     //filter->setResonantParameters(floatToFrequency(1.0f - .5f), 0.2f);
 
     filter = new SuperpoweredFilter(SuperpoweredFilter_Resonant_Lowpass, samplerate);
-
 
     filter->enable(false);
     flanger = new SuperpoweredFlanger(samplerate);
@@ -140,19 +129,7 @@ void SuperpoweredExample::onFileChange(const char *path, int fileOffset, int fil
     pthread_mutex_lock(&mutex);
     playerA->open(path);
     playerA->cachePosition(0, 255);
-    //playerA->setBpm(bpm);
-    //playerA->setFirstBeatMs(beatStart);
-    //playerA->setPosition(0, false, false);
-    //playerA->open(path, fileOffset, fileLength);
-    //__android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "onFileChange run");
-
-    //double a = .90;
-    //playerA->seek(a);
-    //playerA->setPosition(10, 1, 0);
-    //playerA->seek(50);
     pthread_mutex_unlock(&mutex);
-
-
 }
 
 void SuperpoweredExample::onPlayPause(const char *path, bool play, int size) {
@@ -183,26 +160,7 @@ void SuperpoweredExample::onPlayPause(const char *path, bool play, int size) {
     }
     pthread_mutex_unlock(&mutex);
     //__android_log_write(ANDROID_LOG_ERROR, "Superpowered", "onPlayPause mutex unlocked");
-
-
 }
-
-void SuperpoweredExample::onCrossfader(int value) {
-    pthread_mutex_lock(&mutex);
-    crossValue = float(value) * 0.01f;
-    if (crossValue < 0.01f) {
-        volA = 1.0f * headroom;
-        volB = 0.0f;
-    } else if (crossValue > 0.99f) {
-        volA = 0.0f;
-        volB = 1.0f * headroom;
-    } else { // constant power curve
-        volA = cosf(float(M_PI_2) * crossValue) * headroom;
-        volB = cosf(float(M_PI_2) * (1.0f - crossValue)) * headroom;
-    };
-    pthread_mutex_unlock(&mutex);
-}
-
 void SuperpoweredExample::onFxSelect(int value) {
 	__android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredExample", "FXSEL %i", value);
 	activeFx = (unsigned char)value;
@@ -213,10 +171,6 @@ void SuperpoweredExample::onFxOff() {
     roll->enable(false);
     flanger->enable(false);
 }
-
-
-
-
 
 void SuperpoweredExample::onFxValue(int ivalue) {
     float value = float(ivalue) * 0.01f;
@@ -262,7 +216,7 @@ bool SuperpoweredExample::process(short int *output, unsigned int numberOfSample
     }
     else {
 
-        bool masterIsA = (crossValue <= 0.5f);
+        bool masterIsA = true;
         double masterBpm = playerA->currentBpm;
         double msElapsedSinceLastBeatA = playerA->msElapsedSinceLastBeat; // When playerB needs it, playerA has already stepped this value, so save it now.
 
@@ -320,10 +274,6 @@ extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_onPlayPause(JNIEnv * 
     example->onPlayPause(path, play, size);
     javaEnvironment->ReleaseStringUTFChars(filepath, path);
 
-}
-
-extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_onCrossfader(JNIEnv * __unused javaEnvironment, jobject __unused obj, jint value) {
-	example->onCrossfader(value);
 }
 
 extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_onFxSelect(JNIEnv * __unused javaEnvironment, jobject __unused obj, jint value) {
