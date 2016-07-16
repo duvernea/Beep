@@ -17,6 +17,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerInParent="true"
         android:layout_marginTop="100dp"
+        android:background="@color/recordButtonStartRecording"
         />
     <Button
         android:id="@+id/play_button"

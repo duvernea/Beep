@@ -1,6 +1,7 @@
 package xyz.peast.beep;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -57,11 +58,13 @@ public class RecordActivity extends AppCompatActivity {
                         //mIsRecording = !mIsRecording;
                         toggleRecord(mIsRecording);
                         mRecordButton.setText("Start Recording");
+                        mRecordButton.setBackgroundColor(ContextCompat.getColor(mContext, R.color.recordButtonStartRecording));
                     }
                     if (mIsRecording) {
                         //mIsRecording = !mIsRecording;
                         toggleRecord(mIsRecording);
                         mRecordButton.setText("Stop Recording");
+                        mRecordButton.setBackgroundColor(ContextCompat.getColor(mContext, R.color.recordButtonStopRecording));
                     }
 
                 }
