@@ -45,7 +45,7 @@ model {
         }
     }
     android.ndk { // your application's native layer parameters
-        moduleName = "SuperpoweredExample"
+        moduleName = "SuperpoweredAudio"
         platformVersion = 23
         // this will not limit it to run on older devices, it's just the NDK platform to build with
         stl = "c++_static"
