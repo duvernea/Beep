@@ -202,10 +202,16 @@ bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples)
     bool silence = false;
 
     if (isRecording) {
-        __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", "process.. isRecording");
+        //__android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", "process.. isRecording");
 
         SuperpoweredShortIntToFloat(output, recordBuffer, numberOfSamples, NULL);
+        float* localAudioPointer = recordBuffer;
         //SuperpoweredFloatToShortInt(recordBuffer, output, numberOfSamples);
+        for (int i=0; i<numberOfSamples; i+=2) {
+            //__android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "test int = %d", i);
+            __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "float = %f", *localAudioPointer);
+            localAudioPointer+=2;
+        }
         recorder->process(recordBuffer, NULL, numberOfSamples);
         silence = !playerA->process(stereoBuffer, false, numberOfSamples, volB);
     }
