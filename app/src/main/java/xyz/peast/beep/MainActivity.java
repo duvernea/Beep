@@ -14,7 +14,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,19 +22,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public static final int TOP_BEEPS_LOADER = 0;
     public static final int BOARDS_LOADER = 1;
 
-    boolean playing = false;
+    boolean mIsPlaying = false;
     String mSamplerateString = null;
     String mBuffersizeString = null;
     boolean mSupportRecording;
@@ -178,11 +170,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                  onFileChange(path, 0, 0);
 
                  //Log.d(TAG, "getPackageResourcePath: " + getPackageResourcePath());
-                 playing = !playing;
-                 //onPlayPause(playing);
-                 Log.d(TAG, "playing java: " + playing);
+                 mIsPlaying = !mIsPlaying;
+                 //onPlayPause(mIsPlaying);
+                 Log.d(TAG, "mIsPlaying java: " + mIsPlaying);
                 mPath = path;
-                 onPlayPause(path, playing, 0);
+                 onPlayPause(path, mIsPlaying, 0);
              }
         });
 
@@ -260,14 +252,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setUp();
+    }
+
     public void SuperpoweredExample_PlayPause(View button) {  // Play/pause.
 
-        playing = !playing;
-        Log.d(TAG, "playing java: " + playing);
-        //onPlayPause(playing);
+        mIsPlaying = !mIsPlaying;
+        Log.d(TAG, "mIsPlaying java: " + mIsPlaying);
+        //onPlayPause(mIsPlaying);
 
         //Button b = (Button) findViewById(R.id.playPause);
-        //if (b != null) b.setText(playing ? "Pause" : "Play");
+        //if (b != null) b.setText(mIsPlaying ? "Pause" : "Play");
     }
     private void queryNativeAudioParameters() {
 
@@ -372,6 +371,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             mBoardsRecyclerViewAdapter.swapCursor(null);
         }
     }
+
+    private void playbackEndCallback() {
+        //Toast.makeText(mContext, "Callback", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "Played file ended");
+        mIsPlaying = false;
+        Log.d(TAG, "mIsPlaying: " + mIsPlaying);
+    }
+
+    private native void setUp();
+
+
     private native void SuperpoweredExample(int samplerate, int buffersize, String apkPath, int fileAoffset, int fileAlength, int fileBoffset, int fileBlength);
     private native void onPlayPause(String filepath, boolean play, int size);
     private native void onCrossfader(int value);

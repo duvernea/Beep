@@ -18,6 +18,7 @@ public class RecordActivity extends AppCompatActivity {
     private AdView mAdView;
     private Button mRecordButton;
     private Button mPlayButton;
+
     private boolean mIsRecording = false;
 
     private boolean mIsPlaying =false;
@@ -69,13 +70,18 @@ public class RecordActivity extends AppCompatActivity {
 
         mPlayButton = (Button) findViewById(R.id.play_button);
         mPlayButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
+                Log.d(TAG, "mIsPlaying start: " + mIsPlaying);
+                Log.d(TAG, "mIsRecording start: " + mIsPlaying);
+
+
                 if (!mIsRecording) {
                     String path = "/data/data/xyz.peast.beep/files/temp.wav.wav";
-                    mIsPlaying = !mIsPlaying;
+                    mIsPlaying = true;
                     //onPlayPause(mIsPlaying);
-                    Log.d(TAG, "mIsPlaying java: " + mIsPlaying);
+                    Log.d(TAG, "mIsPlaying play: " + mIsPlaying);
                     onFileChange(path, 0, 0);
                     onPlayPause(path, mIsPlaying, 0);
                 }
@@ -83,10 +89,11 @@ public class RecordActivity extends AppCompatActivity {
         });
 
     }
-    private void testCallback() {
+    private void playbackEndCallback() {
         //Toast.makeText(mContext, "Callback", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Played file ended");
-
+        mIsPlaying = false;
+        Log.d(TAG, "mIsPlaying: " + mIsPlaying);
     }
 
     private native void setUp();

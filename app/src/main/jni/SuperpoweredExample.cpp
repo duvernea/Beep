@@ -13,7 +13,10 @@ static jmethodID midIntegerInit;
 static JavaVM *jvm;
 static jclass activityClass;
 static jobject activityObj;
-static jmethodID testCallback;
+static jmethodID playbackEndCallbackRecord;
+static jmethodID playbackEndCallbackMain;
+static jmethodID playbackEndCallback;
+
 
 static void playerEventCallbackA(void *clientData, SuperpoweredAdvancedAudioPlayerEvent event, void * __unused value) {
     __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "playerCallbackA");
@@ -34,14 +37,13 @@ static void playerEventCallbackA(void *clientData, SuperpoweredAdvancedAudioPlay
         __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", "playerCallbackA EOF");
         SuperpoweredAdvancedAudioPlayer *playerA = *((SuperpoweredAdvancedAudioPlayer **)clientData);
         playerA->pause(0, 0);
-        //(environment)->CallVoidMethod(activityObj, testCallback);
         JNIEnv *env;
         jvm->AttachCurrentThread(&env, NULL);
+        playbackEndCallback = (env)->GetMethodID(activityClass, "playbackEndCallback", "()V");
 
 
-        //int status = jvm->GetEnv((void **)&env, JNI_VERSION_1_6);
-        if (env != NULL && activityObj != NULL && testCallback != NULL) {
-            (env)->CallVoidMethod(activityObj, testCallback);
+        if (env != NULL && activityObj != NULL && playbackEndCallback != NULL) {
+            (env)->CallVoidMethod(activityObj, playbackEndCallback);
         }
         jvm->DetachCurrentThread();
 
@@ -52,7 +54,6 @@ static void playerEventCallbackA(void *clientData, SuperpoweredAdvancedAudioPlay
             //if(status < 0)
 
             //g_vm->AttachCurrentThread((void **) &g_env, NULL) != 0)
-            //            (environment)->CallVoidMethod(activityObj, testCallback);
             //if (env )
             //assert (rs == JNI_OK);
             // Use the env pointer...
@@ -302,23 +303,15 @@ void SuperpoweredExample::toggleRecord(bool record) {
 
         playerA->pause();
         recorder->stop();
-
     }
-
     pthread_mutex_unlock(&mutex);
 }
 
-
-
-
-
-extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_SuperpoweredExample(JNIEnv *javaEnvironment, jobject __unused obj, jint samplerate, jint buffersize, jstring apkPath, jint fileAoffset, jint fileAlength, jint fileBoffset, jint fileBlength) {
+extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_SuperpoweredExample(JNIEnv *javaEnvironment, jobject thisObj, jint samplerate, jint buffersize, jstring apkPath, jint fileAoffset, jint fileAlength, jint fileBoffset, jint fileBlength) {
     const char *path = javaEnvironment->GetStringUTFChars(apkPath, JNI_FALSE);
-    __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredInitialPath", path);
-
+    //__android_log_write(ANDROID_LOG_ERROR, "SuperpoweredInitialPath", path);
     example = new SuperpoweredExample((unsigned int)samplerate, (unsigned int)buffersize, path, fileAoffset, fileAlength, fileBoffset, fileBlength);
     javaEnvironment->ReleaseStringUTFChars(apkPath, path);
-
 }
 
 extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_onPlayPause(JNIEnv * __unused javaEnvironment, jobject __unused obj, jstring filepath, jboolean play, jint size) {
@@ -348,39 +341,15 @@ extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_onFileChange(JNIEnv *
     const char *path = javaEnvironment->GetStringUTFChars(apkPath, JNI_FALSE);
     example->onFileChange(path, fileOffset, fileLength);
     javaEnvironment->ReleaseStringUTFChars(apkPath, path);
-    __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", path);
+    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredExample", path);
 
 }
 
 extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_SuperpoweredExample(JNIEnv *javaEnvironment, jobject thisObj, jint samplerate, jint buffersize, jstring apkPath, jint fileAoffset, jint fileAlength, jint fileBoffset, jint fileBlength) {
     const char *path = javaEnvironment->GetStringUTFChars(apkPath, JNI_FALSE);
-    __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredInitialPath", path);
-
+    //__android_log_write(ANDROID_LOG_ERROR, "SuperpoweredInitialPath", path);
     example = new SuperpoweredExample((unsigned int)samplerate, (unsigned int)buffersize, path, fileAoffset, fileAlength, fileBoffset, fileBlength);
     javaEnvironment->ReleaseStringUTFChars(apkPath, path);
-
-    //environment = javaEnvironment;
-    if (NULL == activityClass) {
-        printf("Find java.lang.Integer\n");
-        // FindClass returns a local reference
-        jclass thisClass = (javaEnvironment)->GetObjectClass(thisObj);
-        //jclass classIntegerLocal = (*env)->FindClass(env, "java/lang/Integer");
-        // Create a global reference from the local reference
-        //activityClass = (javaEnvironment)->NewGlobalRef(thisClass);
-        // No longer need the local reference, free it!
-        (javaEnvironment)->DeleteLocalRef(thisClass);
-        jclass cls = javaEnvironment->GetObjectClass(thisObj);
-        activityClass = (jclass) javaEnvironment->NewGlobalRef(cls);
-        activityObj = javaEnvironment->NewGlobalRef(thisObj);
-
-    }
-    if (NULL == testCallback) {
-        //printf("Get Method ID for java.lang.Integer's constructor\n");
-        //midIntegerInit = (javaEnvironment)->GetMethodID(classInteger, "<init>", "(I)V");
-        testCallback = (javaEnvironment)->GetMethodID(activityClass, "testCallback", "()V");
-
-    }
-    //(environment)->CallVoidMethod(activityObj, testCallback);
 
 }
 extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_onPlayPause(JNIEnv * __unused javaEnvironment, jobject __unused obj, jstring filepath, jboolean play, jint size) {
@@ -394,7 +363,7 @@ extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_onFileChange(JNIEnv
     const char *path = javaEnvironment->GetStringUTFChars(apkPath, JNI_FALSE);
     example->onFileChange(path, fileOffset, fileLength);
     javaEnvironment->ReleaseStringUTFChars(apkPath, path);
-    __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredExample", path);
+    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredExample", path);
 
 }
 
@@ -402,35 +371,63 @@ extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_toggleRecord(JNIEnv
     example->toggleRecord(record);
 }
 extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_setUp(JNIEnv *javaEnvironment, jobject thisObj) {
+    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredExample", "RecordActivity setup");
 
-    //environment = javaEnvironment->NewGlobalRef(javaEnvironment);
     javaEnvironment->GetJavaVM(&jvm);
-    //assert (rs == JNI_OK);
-    if (NULL == activityClass) {
-        printf("Find java.lang.Integer\n");
-        // FindClass returns a local reference
-        jclass thisClass = (javaEnvironment)->GetObjectClass(thisObj);
-        //jclass classIntegerLocal = (*env)->FindClass(env, "java/lang/Integer");
-        // Create a global reference from the local reference
-        //activityClass = (javaEnvironment)->NewGlobalRef(thisClass);
-        // No longer need the local reference, free it!
-        (javaEnvironment)->DeleteLocalRef(thisClass);
-        jclass cls = javaEnvironment->GetObjectClass(thisObj);
-        activityClass = (jclass) javaEnvironment->NewGlobalRef(cls);
+
+    // print out class name
+    jclass cls = javaEnvironment->GetObjectClass(thisObj);
+    jmethodID mid = javaEnvironment->GetMethodID(cls, "getClass", "()Ljava/lang/Class;");
+    jobject clsObj = javaEnvironment->CallObjectMethod(thisObj, mid);
+    cls = javaEnvironment->GetObjectClass(clsObj);
+    mid = javaEnvironment->GetMethodID(cls, "getName", "()Ljava/lang/String;");
+    jstring strObj = (jstring)javaEnvironment->CallObjectMethod(clsObj, mid);
+    const char* str = javaEnvironment->GetStringUTFChars(strObj, NULL);
+    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredExample", str);
+    javaEnvironment->ReleaseStringUTFChars(strObj, str);
+
+    jclass thisClass = (javaEnvironment)->GetObjectClass(thisObj);
+    if (activityClass == NULL) {
+        activityClass = (jclass) javaEnvironment->NewGlobalRef(thisClass);
         activityObj = javaEnvironment->NewGlobalRef(thisObj);
-
     }
-    if (NULL == testCallback) {
-        //printf("Get Method ID for java.lang.Integer's constructor\n");
-        //midIntegerInit = (javaEnvironment)->GetMethodID(classInteger, "<init>", "(I)V");
-        testCallback = (javaEnvironment)->GetMethodID(activityClass, "testCallback", "()V");
-
+    else if (activityClass != thisClass){
+        activityClass = (jclass) javaEnvironment->NewGlobalRef(thisClass);
+        activityObj = javaEnvironment->NewGlobalRef(thisObj);
     }
-    //(environment)->CallVoidMethod(activityObj, testCallback);
-
+    (javaEnvironment)->DeleteLocalRef(thisClass);
+//    if (NULL == playbackEndCallback) {
+//        playbackEndCallbackRecord = (javaEnvironment)->GetMethodID(activityClass, "playbackEndCallbackRecord", "()V");
+//    }
 }
+extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_setUp(JNIEnv *javaEnvironment, jobject thisObj) {
+    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredExample", "MainActivity setup");
 
 
+    javaEnvironment->GetJavaVM(&jvm);
 
+    // print out class name
+    jclass cls = javaEnvironment->GetObjectClass(thisObj);
+    jmethodID mid = javaEnvironment->GetMethodID(cls, "getClass", "()Ljava/lang/Class;");
+    jobject clsObj = javaEnvironment->CallObjectMethod(thisObj, mid);
+    cls = javaEnvironment->GetObjectClass(clsObj);
+    mid = javaEnvironment->GetMethodID(cls, "getName", "()Ljava/lang/String;");
+    jstring strObj = (jstring)javaEnvironment->CallObjectMethod(clsObj, mid);
+    const char* str = javaEnvironment->GetStringUTFChars(strObj, NULL);
+    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredExample", str);
+    javaEnvironment->ReleaseStringUTFChars(strObj, str);
 
-
+    jclass thisClass = (javaEnvironment)->GetObjectClass(thisObj);
+    if (activityClass == NULL) {
+        activityClass = (jclass) javaEnvironment->NewGlobalRef(thisClass);
+        activityObj = javaEnvironment->NewGlobalRef(thisObj);
+    }
+    else if (activityClass != thisClass){
+        activityClass = (jclass) javaEnvironment->NewGlobalRef(thisClass);
+        activityObj = javaEnvironment->NewGlobalRef(thisObj);
+    }
+    (javaEnvironment)->DeleteLocalRef(thisClass);
+//    if (NULL == playbackEndCallback) {
+//        playbackEndCallbackRecord = (javaEnvironment)->GetMethodID(activityClass, "playbackEndCallback", "()V");
+//    }
+}
