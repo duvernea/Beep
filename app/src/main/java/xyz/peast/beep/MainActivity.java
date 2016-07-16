@@ -248,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         String path = mContext.getFilesDir().getPath() + uniqueID;
         //String path = "/data/data/xyz.peast.beep/files/" + uniqueID;
         // Arguments: path to the APK file, offset and length of the two resource files, sample rate, audio buffer size.
-        SuperpoweredExample(Integer.parseInt(mSamplerateString), Integer.parseInt(mBuffersizeString), getPackageResourcePath()+"xx", fileAoffset, fileAlength, fileBoffset, fileBlength);
+        SuperpoweredExample(Integer.parseInt(mSamplerateString), Integer.parseInt(mBuffersizeString), getPackageResourcePath()+"xx");
 
 
     }
@@ -382,7 +382,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private native void setUp();
 
 
-    private native void SuperpoweredExample(int samplerate, int buffersize, String apkPath, int fileAoffset, int fileAlength, int fileBoffset, int fileBlength);
+    private native void SuperpoweredExample(int samplerate, int buffersize, String apkPath);
     private native void onPlayPause(String filepath, boolean play, int size);
     private native void onCrossfader(int value);
     private native void onFxSelect(int value);

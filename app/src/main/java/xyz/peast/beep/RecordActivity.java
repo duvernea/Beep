@@ -96,7 +96,7 @@ public class RecordActivity extends AppCompatActivity {
 
     private native void setUp();
 
-    private native void SuperpoweredExample(int samplerate, int buffersize, String apkPath, int fileAoffset, int fileAlength, int fileBoffset, int fileBlength);
+    private native void SuperpoweredExample(int samplerate, int buffersize, String apkPath);
     private native void onPlayPause(String filepath, boolean play, int size);
     private native void onFileChange(String apkPath, int fileOffset, int fileLength );
     private native void toggleRecord(boolean record);

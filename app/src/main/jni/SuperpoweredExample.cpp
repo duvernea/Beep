@@ -83,7 +83,7 @@ static inline float floatToFrequency(float value) {
     return value < MAXFREQ ? value : MAXFREQ;
 }
 
-SuperpoweredExample::SuperpoweredExample(unsigned int samplerate, unsigned int buffersize, const char *path, int fileAoffset, int fileAlength, int fileBoffset, int fileBlength) : activeFx(0), crossValue(0.0f), volB(0.0f), volA(1.0f * headroom) {
+SuperpoweredExample::SuperpoweredExample(unsigned int samplerate, unsigned int buffersize, const char *path) : activeFx(0), crossValue(0.0f), volB(0.0f), volA(1.0f * headroom) {
     pthread_mutex_init(&mutex, NULL); // This will keep our player volumes and playback states in sync.
     stereoBuffer = (float *)memalign(16, (buffersize + 16) * sizeof(float) * 2);
     recordBuffer = (float *)memalign(16, (buffersize + 16) * sizeof(float) * 2);
@@ -92,11 +92,11 @@ SuperpoweredExample::SuperpoweredExample(unsigned int samplerate, unsigned int b
 
 
     playerA = new SuperpoweredAdvancedAudioPlayer(&playerA , playerEventCallbackA, samplerate, 0);
-    playerA->open(path, fileAoffset, fileAlength);
-    playerB = new SuperpoweredAdvancedAudioPlayer(&playerB, playerEventCallbackB, samplerate, 0);
-    playerB->open(path, fileBoffset, fileBlength);
+    //playerA->open(path, fileAoffset, fileAlength);
+    //playerB = new SuperpoweredAdvancedAudioPlayer(&playerB, playerEventCallbackB, samplerate, 0);
+    //playerB->open(path, fileBoffset, fileBlength);
 
-    playerA->syncMode = playerB->syncMode = SuperpoweredAdvancedAudioPlayerSyncMode_None;
+    playerA->syncMode = SuperpoweredAdvancedAudioPlayerSyncMode_None;
 
     const char *temp = "/data/data/xyz.peast.beep/files/temp.wav";
     recorder = new SuperpoweredRecorder(temp, samplerate);
@@ -263,7 +263,7 @@ bool SuperpoweredExample::process(short int *output, unsigned int numberOfSample
     else {
 
         bool masterIsA = (crossValue <= 0.5f);
-        double masterBpm = masterIsA ? playerA->currentBpm : playerB->currentBpm;
+        double masterBpm = playerA->currentBpm;
         double msElapsedSinceLastBeatA = playerA->msElapsedSinceLastBeat; // When playerB needs it, playerA has already stepped this value, so save it now.
 
         silence = !playerA->process(stereoBuffer, false, numberOfSamples, volA, 0.0f,
@@ -310,7 +310,7 @@ void SuperpoweredExample::toggleRecord(bool record) {
 extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_SuperpoweredExample(JNIEnv *javaEnvironment, jobject thisObj, jint samplerate, jint buffersize, jstring apkPath, jint fileAoffset, jint fileAlength, jint fileBoffset, jint fileBlength) {
     const char *path = javaEnvironment->GetStringUTFChars(apkPath, JNI_FALSE);
     //__android_log_write(ANDROID_LOG_ERROR, "SuperpoweredInitialPath", path);
-    example = new SuperpoweredExample((unsigned int)samplerate, (unsigned int)buffersize, path, fileAoffset, fileAlength, fileBoffset, fileBlength);
+    example = new SuperpoweredExample((unsigned int)samplerate, (unsigned int)buffersize, path);
     javaEnvironment->ReleaseStringUTFChars(apkPath, path);
 }
 
@@ -347,8 +347,9 @@ extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_onFileChange(JNIEnv *
 
 extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_SuperpoweredExample(JNIEnv *javaEnvironment, jobject thisObj, jint samplerate, jint buffersize, jstring apkPath, jint fileAoffset, jint fileAlength, jint fileBoffset, jint fileBlength) {
     const char *path = javaEnvironment->GetStringUTFChars(apkPath, JNI_FALSE);
+    const char *recordFileName = javaEnvironment->GetStringUTFChars(apkPath, JNI_FALSE);
     //__android_log_write(ANDROID_LOG_ERROR, "SuperpoweredInitialPath", path);
-    example = new SuperpoweredExample((unsigned int)samplerate, (unsigned int)buffersize, path, fileAoffset, fileAlength, fileBoffset, fileBlength);
+    example = new SuperpoweredExample((unsigned int)samplerate, (unsigned int)buffersize, path);
     javaEnvironment->ReleaseStringUTFChars(apkPath, path);
 
 }

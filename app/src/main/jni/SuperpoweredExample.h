@@ -18,7 +18,7 @@ static const float headroom = powf(10.0f, -HEADROOM_DECIBEL * 0.025f);
 class SuperpoweredExample {
 public:
 
-	SuperpoweredExample(unsigned int samplerate, unsigned int buffersize, const char *path, int fileAoffset, int fileAlength, int fileBoffset, int fileBlength);
+	SuperpoweredExample(unsigned int samplerate, unsigned int buffersize, const char *path);
 	~SuperpoweredExample();
 
 	bool process(short int *output, unsigned int numberOfSamples);
@@ -33,7 +33,7 @@ public:
 private:
     pthread_mutex_t mutex;
     SuperpoweredAndroidAudioIO *audioSystem;
-    SuperpoweredAdvancedAudioPlayer *playerA, *playerB;
+    SuperpoweredAdvancedAudioPlayer *playerA;
     SuperpoweredRoll *roll;
     SuperpoweredFilter *filter;
     SuperpoweredFlanger *flanger;
