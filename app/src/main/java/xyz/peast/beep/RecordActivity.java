@@ -75,8 +75,6 @@ public class RecordActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Log.d(TAG, "mIsPlaying start: " + mIsPlaying);
                 Log.d(TAG, "mIsRecording start: " + mIsPlaying);
-
-
                 if (!mIsRecording) {
                     String path = "/data/data/xyz.peast.beep/files/temp.wav.wav";
                     mIsPlaying = true;
