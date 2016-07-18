@@ -5,6 +5,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -12,7 +14,7 @@ import android.widget.Toast;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
-public class RecordActivity extends AppCompatActivity {
+public class RecordActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
     private static final String TAG = RecordActivity.class.getSimpleName();
 
@@ -43,6 +45,11 @@ public class RecordActivity extends AppCompatActivity {
 
         final String path = getIntent().getStringExtra(MainActivity.TEMP_FILE_PATH);
         setUp();
+
+        SurfaceView surfaceView = (SurfaceView) findViewById(R.id.waveform_surface);
+        surfaceView.getHolder().addCallback(this);
+
+
 
         mRecordButton = (Button) findViewById(R.id.record_button);
         mRecordButton.setOnClickListener(new View.OnClickListener() {
@@ -90,11 +97,27 @@ public class RecordActivity extends AppCompatActivity {
         });
 
     }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+
+    }
+
     private void playbackEndCallback() {
         //Toast.makeText(mContext, "Callback", Toast.LENGTH_SHORT).show();
-        Log.d(TAG, "Played file ended");
+        //Log.d(TAG, "Played file ended");
         mIsPlaying = false;
-        Log.d(TAG, "mIsPlaying: " + mIsPlaying);
+        //Log.d(TAG, "mIsPlaying: " + mIsPlaying);
     }
 
     private native void setUp();
