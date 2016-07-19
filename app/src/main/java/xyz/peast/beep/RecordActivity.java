@@ -1,10 +1,15 @@
 package xyz.peast.beep;
 
+import android.app.ActivityManager;
 import android.content.Context;
+import android.content.pm.ConfigurationInfo;
+import android.opengl.GLSurfaceView;
+import android.support.v4.app.ActivityManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -14,7 +19,7 @@ import android.widget.Toast;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
-public class RecordActivity extends AppCompatActivity implements SurfaceHolder.Callback {
+public class RecordActivity extends AppCompatActivity  {
 
     private static final String TAG = RecordActivity.class.getSimpleName();
 
@@ -28,88 +33,92 @@ public class RecordActivity extends AppCompatActivity implements SurfaceHolder.C
 
     private Context mContext;
 
+    private GLSurfaceView mGlSurfaceView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
 
-        mContext = this;
+        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        ConfigurationInfo info = am.getDeviceConfigurationInfo();
+        boolean supportES2 = (info.reqGlEsVersion >= 0x20000);
+        if (supportES2) {
+            mContext = this;
 
-        mAdView = (AdView) findViewById(R.id.adview);
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice("839737069995AAD5519D71B8B267924D")
-                .build();
-        mAdView.loadAd(adRequest);
+            mAdView = (AdView) findViewById(R.id.adview);
+            AdRequest adRequest = new AdRequest.Builder()
+                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                    .addTestDevice("839737069995AAD5519D71B8B267924D")
+                    .build();
+            mAdView.loadAd(adRequest);
 
-        final String path = getIntent().getStringExtra(MainActivity.TEMP_FILE_PATH);
-        setUp();
+            final String path = getIntent().getStringExtra(MainActivity.TEMP_FILE_PATH);
+            setUp();
 
-        SurfaceView surfaceView = (SurfaceView) findViewById(R.id.waveform_surface);
-        surfaceView.getHolder().addCallback(this);
+            SurfaceView surfaceView = (SurfaceView) findViewById(R.id.waveform_surface);
+            mGlSurfaceView = (GLSurfaceView) findViewById(R.id.glsurface_view);
+            mGlSurfaceView.setEGLContextClientVersion(2);
+            //mGlSurfaceView = new GLSurfaceView(this);
+            mGlSurfaceView.setEGLConfigChooser(8,8,8,8,16,0);
+
+            mGlSurfaceView.setRenderer(new RendererWrapper());
+
+
+            //surfaceView.getHolder().addCallback(this);
 
 
 
-        mRecordButton = (Button) findViewById(R.id.record_button);
-        mRecordButton.setOnClickListener(new View.OnClickListener() {
+            mRecordButton = (Button) findViewById(R.id.record_button);
+            mRecordButton.setOnClickListener(new View.OnClickListener() {
 
 
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "mIsPlaying: " + mIsPlaying);
-                if (!mIsPlaying) {
-                    Log.d(TAG, "mIsRecording: " + mIsRecording);
-                    mIsRecording = !mIsRecording;
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "mIsPlaying: " + mIsPlaying);
+                    if (!mIsPlaying) {
+                        Log.d(TAG, "mIsRecording: " + mIsRecording);
+                        mIsRecording = !mIsRecording;
+                        if (!mIsRecording) {
+                            //mIsRecording = !mIsRecording;
+                            toggleRecord(mIsRecording);
+                            mRecordButton.setText("Start Recording");
+                            mRecordButton.setBackgroundColor(ContextCompat.getColor(mContext, R.color.recordButtonStartRecording));
+                        }
+                        if (mIsRecording) {
+                            //mIsRecording = !mIsRecording;
+                            toggleRecord(mIsRecording);
+                            mRecordButton.setText("Stop Recording");
+                            mRecordButton.setBackgroundColor(ContextCompat.getColor(mContext, R.color.recordButtonStopRecording));
+                        }
+
+                    }
+                }
+            });
+
+            mPlayButton = (Button) findViewById(R.id.play_button);
+            mPlayButton.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "mIsPlaying start: " + mIsPlaying);
+                    Log.d(TAG, "mIsRecording start: " + mIsPlaying);
                     if (!mIsRecording) {
-                        //mIsRecording = !mIsRecording;
-                        toggleRecord(mIsRecording);
-                        mRecordButton.setText("Start Recording");
-                        mRecordButton.setBackgroundColor(ContextCompat.getColor(mContext, R.color.recordButtonStartRecording));
+                        String path = "/data/data/xyz.peast.beep/files/temp.wav.wav";
+                        mIsPlaying = true;
+                        //onPlayPause(mIsPlaying);
+                        Log.d(TAG, "mIsPlaying play: " + mIsPlaying);
+                        onFileChange(path, 0, 0);
+                        onPlayPause(path, mIsPlaying, 0);
                     }
-                    if (mIsRecording) {
-                        //mIsRecording = !mIsRecording;
-                        toggleRecord(mIsRecording);
-                        mRecordButton.setText("Stop Recording");
-                        mRecordButton.setBackgroundColor(ContextCompat.getColor(mContext, R.color.recordButtonStopRecording));
-                    }
-
                 }
-            }
-        });
+            });
+        }
+        else {
+            Log.e("OpenGLES 2", "Your device doesn't support ES2. )" + info.reqGlEsVersion + ")");
+        }
 
-        mPlayButton = (Button) findViewById(R.id.play_button);
-        mPlayButton.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "mIsPlaying start: " + mIsPlaying);
-                Log.d(TAG, "mIsRecording start: " + mIsPlaying);
-                if (!mIsRecording) {
-                    String path = "/data/data/xyz.peast.beep/files/temp.wav.wav";
-                    mIsPlaying = true;
-                    //onPlayPause(mIsPlaying);
-                    Log.d(TAG, "mIsPlaying play: " + mIsPlaying);
-                    onFileChange(path, 0, 0);
-                    onPlayPause(path, mIsPlaying, 0);
-                }
-            }
-        });
-
-    }
-
-    @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
 
     }
 
@@ -126,6 +135,9 @@ public class RecordActivity extends AppCompatActivity implements SurfaceHolder.C
     private native void onPlayPause(String filepath, boolean play, int size);
     private native void onFileChange(String apkPath, int fileOffset, int fileLength );
     private native void toggleRecord(boolean record);
+
+
+
     static {
         System.loadLibrary("SuperpoweredAudio");
     }

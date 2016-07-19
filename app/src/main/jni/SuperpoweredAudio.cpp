@@ -6,16 +6,20 @@
 #include <SLES/OpenSLES.h>
 #include <SLES/OpenSLES_AndroidConfiguration.h>
 #include <android/log.h>
+#include <android/native_window.h>
+#include <android/native_window_jni.h>
 #include <string>
 
+
+
 static SuperpoweredAudio *myAudio = NULL;
-static jmethodID midIntegerInit;
+
 static JavaVM *jvm;
 static jclass activityClass;
 static jobject activityObj;
-static jmethodID playbackEndCallbackRecord;
-static jmethodID playbackEndCallbackMain;
 static jmethodID playbackEndCallback;
+
+
 
 
 static void playerEventCallbackA(void *clientData, SuperpoweredAdvancedAudioPlayerEvent event, void * __unused value) {
