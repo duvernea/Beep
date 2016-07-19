@@ -7,6 +7,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.opengl.GLSurfaceView.Renderer;
+import android.util.FloatMath;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
@@ -24,6 +25,7 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
     int mHeight;
 
     int _program = 0;
+    float _animation = 0.0f;
     float a = 0f;
 
     @Override
@@ -34,12 +36,12 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
         // set gl_Position (defined in the OpenGL language)
         // pass through program
         String vertexShaderSource = "" +
-                "" +
+                "uniform vec2 translate;" +
                 "attribute vec4 position;" +
                 "" +
                 "void main()" +
                 "{" +
-                "    gl_Position = position;" +
+                "    gl_Position = position + vec4(translate.x, translate.y, 0.0, 0.0);" +
                 "}";
         String fragmentShaderSource = "" +
                 "" +
@@ -96,6 +98,14 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
         //Log.d(TAG, "onDrawFrame");
         // sets background color - clear color buffer is the thing you see
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+
+
+        _animation += 0.01;
+
+        float translateX = (float) Math.sin(_animation);
+        float translateY = 0.5f;
+
+        GLES20.glUniform2f(GLES20.glGetUniformLocation(_program, "translate"), translateX, translateY);
 
         // 9 floats, if ignore 4th item
         float[] geometry =
