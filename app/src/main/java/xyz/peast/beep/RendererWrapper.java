@@ -6,8 +6,6 @@ import android.opengl.GLSurfaceView;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import android.opengl.GLSurfaceView.Renderer;
-import android.util.FloatMath;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
@@ -21,15 +19,48 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
 
     private static final String TAG = RendererWrapper.class.getSimpleName();
 
+    private static final String U_COLOR = "u_Color";
+    private int uColorLocation;
+    private static final String A_POSITION = "a_Position";
+    private int aPositionLocation;
+//    float[] mGeometry =
+//            {
+//                    -0.5f, -0.5f, 0.0f, 1.0f,
+//                    0.5f, -0.5f, 0.0f, 1.0f,
+//                    0.0f, 0.5f, 0.0f, 1.0f
+//            };
+    float[] mGeometry =
+        {
+                // Triangle 1
+                -.5f, -.5f, 0f, 1f,
+                .5f, .5f, 0f, 1f,
+                -.5f, .5f, 0f, 1f,
+                // Triangle 2
+                -.5f, -.5f, 0f, 1f,
+                .5f, -.5f, 0f, 1f,
+                .5f, .5f, 0f, 1f,
+                // Line 1
+                -.5f, 0f, 0f, 1f,
+                .5f, 0f, 0f, 1f,
+                // Points
+                0f, -.25f, 0f, 1f,
+                0f, .25f, 0f, 1f
+        };
+    private FloatBuffer vertexData;
+
     int mWidth;
     int mHeight;
 
-    int _program = 0;
+    int mProgram = 0;
     float _animation = 0.0f;
     float a = 0f;
 
+    private static final int VERTEX_COMPONENT_COUNT = 4;
+    private static final int BYTES_PER_FLOAT = 4;
+
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+        Log.d(TAG, "onSurfaceCreated run..");
 
         // write some programs that opengl will compile at hardware - executed on GPU
 
@@ -37,27 +68,29 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
         // pass through program
         String vertexShaderSource = "" +
                 "uniform vec2 translate;" +
-                "attribute vec4 position;" +
+                "attribute vec4 a_Position;" +
                 "" +
                 "void main()" +
                 "{" +
-                "    gl_Position = position + vec4(translate.x, translate.y, 0.0, 0.0);" +
+                "    gl_Position = a_Position + vec4(translate.x, translate.y, 0.0, 0.0);" +
+                "    gl_PointSize = 10.0;" +
                 "}";
         String fragmentShaderSource = "" +
                 "" +
-                "" +
+                "uniform vec4 u_Color;" +
                 "void main()" +
                 "{" +
-                "    gl_FragColor = vec4(0.8, 0.7, 0.6, 1.0);" +
+                "    gl_FragColor = u_Color;" +
                 "}";
 
+        // create vertex shader, compile code, log to output to see if errors
         int vertexShader = GLES20.glCreateShader(GLES20.GL_VERTEX_SHADER);
         GLES20.glShaderSource(vertexShader, vertexShaderSource);
         GLES20.glCompileShader(vertexShader);
         String vertexShaderCompileLog = GLES20.glGetShaderInfoLog(vertexShader);
         Log.d(TAG, "VertexShaderCompileLog: " + vertexShaderCompileLog);
 
-
+        // create fragment shader, compile code, log to output to see if errors
         int fragmentShader = GLES20.glCreateShader(GLES20.GL_FRAGMENT_SHADER);
         GLES20.glShaderSource(fragmentShader, fragmentShaderSource);
         GLES20.glCompileShader(fragmentShader);
@@ -65,16 +98,36 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
         Log.d(TAG, "FragmentShaderCompileLog: " + fragmentShaderCompileLog);
 
 
-        _program = GLES20.glCreateProgram();
-        GLES20.glAttachShader(_program, vertexShader);
-        GLES20.glAttachShader(_program, fragmentShader);
-        GLES20.glBindAttribLocation(_program, 0, "position");
-        GLES20.glLinkProgram(_program);
-        String programLinkLog = GLES20.glGetProgramInfoLog(_program);
+        // create the program and attach shaders
+        mProgram = GLES20.glCreateProgram();
+        GLES20.glAttachShader(mProgram, vertexShader);
+        GLES20.glAttachShader(mProgram, fragmentShader);
+        //GLES20.glBindAttribLocation(mProgram, 0, "position");
+        GLES20.glLinkProgram(mProgram);
+        String programLinkLog = GLES20.glGetProgramInfoLog(mProgram);
         Log.d(TAG, "ProgramLinkLog: " + programLinkLog);
 
-        GLES20.glUseProgram(_program);
+        GLES20.glUseProgram(mProgram);
 
+
+        aPositionLocation = GLES20.glGetAttribLocation(mProgram, A_POSITION);
+        uColorLocation = GLES20.glGetUniformLocation(mProgram, U_COLOR);
+        Log.d(TAG, "mGeometry.length = " + mGeometry.length);
+
+        vertexData = ByteBuffer.allocateDirect(mGeometry.length * BYTES_PER_FLOAT)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+        vertexData.put(mGeometry);
+        vertexData.position(0);
+
+        GLES20.glVertexAttribPointer(aPositionLocation, // attribute location
+                VERTEX_COMPONENT_COUNT, // number of floats per vertex
+                GLES20.GL_FLOAT, // data type
+                false, // normalized? - only used for integer data
+                0, // applies only when more than 1 attribute per array
+                vertexData);
+
+        GLES20.glEnableVertexAttribArray(aPositionLocation);
 
         // change default background color R G B A
         GLES20.glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
@@ -99,48 +152,59 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
         // sets background color - clear color buffer is the thing you see
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-
         _animation += 0.01;
+//        float translateX = (float) Math.sin(_animation);
+//        float translateY = 0.5f;
+        float translateX = 0f;
+        float translateY = 0f;
 
-        float translateX = (float) Math.sin(_animation);
-        float translateY = 0.5f;
+        // update u_Color in the shader
+        GLES20.glUniform4f(uColorLocation, 1.0f, 1.0f, 1.0f, 1.0f);
 
-        GLES20.glUniform2f(GLES20.glGetUniformLocation(_program, "translate"), translateX, translateY);
 
-        // 9 floats, if ignore 4th item
-        float[] geometry =
-                {
-                        -0.5f, -0.5f, 0.0f, 1.0f,
-                        0.5f, -0.5f, 0.0f, 1.0f,
-                        0.0f, 0.5f, 0.0f, 1.0f
-                };
-//        float[] geometry =
-//                {
-//                        -0.5f, -0.5f, 0.0f,
-//                        0.5f, -0.5f, 0.0f,
-//                        0.0f, 0.5f, 0.0f,
-//                };
-//        float[] geometry =
-//                {
-//                        mWidth/2, mHeight/2, 0.0f, 1.0f,
-//                        mWidth, mHeight, 0.0f, 1.0f,
-//                        mWidth, 0f, 0.0f, 1.0f
-//                };
-        ByteBuffer geometryByteBuffer = ByteBuffer.allocateDirect(geometry.length* 4); // 4 bytes per float
-        geometryByteBuffer.order(ByteOrder.nativeOrder());
-        FloatBuffer geometryBuffer = geometryByteBuffer.asFloatBuffer();
-        geometryBuffer.put(geometry);
-        geometryBuffer.position(0);
+        vertexData = ByteBuffer.allocateDirect(mGeometry.length * BYTES_PER_FLOAT)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+        vertexData.put(mGeometry);
+        vertexData.position(0);
+        GLES20.glUniform2f(GLES20.glGetUniformLocation(mProgram, "translate"), translateX, translateY);
 
-        // definie in moment, size number of elements per unit = 4
-        GLES20.glVertexAttribPointer(0,
-                4,
-                GLES20.GL_FLOAT, // type
-                false,  //normalized?
-                4 * 4,  // stride = 16 bytes from one float to the next
-                geometryBuffer); // the info
+//        ByteBuffer geometryByteBuffer = ByteBuffer.allocateDirect(mGeometry.length* BYTES_PER_FLOAT);
+//        geometryByteBuffer.order(ByteOrder.nativeOrder());
+//        FloatBuffer geometryBuffer = geometryByteBuffer.asFloatBuffer();
+//        geometryBuffer.put(mGeometry);
+//        geometryBuffer.position(0);
+
+//        GLES20.glVertexAttribPointer(0,
+//                4,
+//                GLES20.GL_FLOAT, // type
+//                false,  //normalized?
+//                4 * 4,  // stride = 16 bytes from one float to the next
+//                geometryBuffer); // the info
         // lines, points, or triangles
         GLES20.glEnableVertexAttribArray(0);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3);
+
+
+        // Draw 2 triangles (a rectangle)
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES,
+                0, //read in vertices starting at the beginning of our array
+                6); // number of vertices to read in
+
+        // Draw a line
+        GLES20.glUniform4f(uColorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
+        GLES20.glDrawArrays(GLES20.GL_LINES,
+                6, // start 6 vertices after first
+                2); // number of vertices to read in
+
+        // Draw 2 points
+        GLES20.glUniform4f(uColorLocation, 0.0f, 0.0f, 1.0f, 1.0f);
+        GLES20.glDrawArrays(GLES20.GL_POINTS,
+                8,
+                1);
+        GLES20.glUniform4f(uColorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
+        GLES20.glDrawArrays(GLES20.GL_POINTS,
+                9,
+                1);
+
     }
 }

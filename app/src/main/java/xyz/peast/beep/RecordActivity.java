@@ -34,6 +34,7 @@ public class RecordActivity extends AppCompatActivity  {
     private Context mContext;
 
     private GLSurfaceView mGlSurfaceView;
+    private boolean mRendererSet = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +64,7 @@ public class RecordActivity extends AppCompatActivity  {
             mGlSurfaceView.setEGLConfigChooser(8,8,8,8,16,0);
 
             mGlSurfaceView.setRenderer(new RendererWrapper());
+            mRendererSet = true;
 
 
             //surfaceView.getHolder().addCallback(this);
