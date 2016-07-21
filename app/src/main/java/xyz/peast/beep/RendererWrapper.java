@@ -2,6 +2,7 @@ package xyz.peast.beep;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.opengl.Matrix;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -22,6 +23,10 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
     //private static final String U_COLOR = "u_Color";
     private static final String A_COLOR = "a_Color";
     private static final String A_POSITION = "a_Position";
+    private static final String U_MATRIX = "u_Matrix";
+
+    private final float[] projectionMatrix = new float[16];
+    private int uMatrixLocation;
 
     private static final int POSITION_COMPONENT_COUNT = 2;
     private static final int BYTES_PER_FLOAT = 4;
@@ -59,17 +64,17 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
             {
                     // Triangle Fan
                     0f, 0f, 1f, 1f, 1f,
-                    -.5f, -.5f, .7f, .7f, .7f,
-                    .5f, -.5f, .7f, .7f, .7f,
-                    .5f, .5f, .7f, .7f, .7f,
-                    -.5f, .5f, .7f, .7f, .7f,
-                    -.5f, -.5f, .7f, .7f, .7f,
+                    -.5f, -.8f, .7f, .7f, .7f,
+                    .5f, -.8f, .7f, .7f, .7f,
+                    .5f, .8f, .7f, .7f, .7f,
+                    -.5f, .8f, .7f, .7f, .7f,
+                    -.5f, -.8f, .7f, .7f, .7f,
                     // Line 1
                     -.5f, 0f, 1f, 0f, 0f,
                     .5f, 0f, 0f, 1f, 0f,
                     // Points
-                    0f, -.25f, 0f, 0f, 1f,
-                    0f, .25f, 1f, 0f, 0f
+                    0f, -.4f, 0f, 0f, 1f,
+                    0f, .4f, 1f, 0f, 0f
             };
     private FloatBuffer vertexData;
 
@@ -92,6 +97,7 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
         // pass through program
         String vertexShaderSource = "" +
                 "uniform vec2 translate;" +
+                "uniform mat4 u_Matrix;" +
                 "attribute vec4 a_Position;" +
                 "attribute vec4 a_Color;" +
                 "varying vec4 v_Color;" +
@@ -99,7 +105,7 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
                 "void main()" +
                 "{" +
                 "    v_Color = a_Color;" +
-                "    gl_Position = a_Position + vec4(translate.x, translate.y, 0.0, 0.0);" +
+                "    gl_Position = u_Matrix * a_Position;" +
                 "    gl_PointSize = 10.0;" +
                 "}";
         String fragmentShaderSource = "" +
@@ -140,6 +146,7 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
         aPositionLocation = GLES20.glGetAttribLocation(mProgram, A_POSITION);
         //uColorLocation = GLES20.glGetUniformLocation(mProgram, U_COLOR);
         aColorLocation = GLES20.glGetAttribLocation(mProgram, A_COLOR);
+        uMatrixLocation = GLES20.glGetUniformLocation(mProgram, U_MATRIX);
 
         Log.d(TAG, "mGeometry.length = " + mGeometry.length);
 
@@ -174,11 +181,24 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
+
         mWidth = width;
         mHeight = height;
         // where inside of glport are we rendering to - top left corner, and set height/width
         // setting coordinate system
         GLES20.glViewport(0, 0, width, height);
+
+        final float aspectRatio = width > height ?
+                (float) width / (float) height :
+                (float) height / (float) width;
+        if (width > height) {
+            // Landscape
+            android.opengl.Matrix.orthoM(projectionMatrix, 0, -aspectRatio, aspectRatio, -1f, 1f, -1f, 1f);
+        }
+        else {
+            android.opengl.Matrix.orthoM(projectionMatrix, 0, -1f, 1f, -aspectRatio, aspectRatio, -1f, 1f);
+        }
+
         Log.d(TAG, "Width: " + width);
         Log.d(TAG, "Height: " + height);
 
@@ -190,6 +210,7 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
         //Log.d(TAG, "onDrawFrame");
         // sets background color - clear color buffer is the thing you see
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+        GLES20.glUniformMatrix4fv(uMatrixLocation, 1, false, projectionMatrix, 0);
 
         _animation += 0.01;
 //        float translateX = (float) Math.sin(_animation);
