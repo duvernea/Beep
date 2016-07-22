@@ -57,7 +57,7 @@ public class RecordActivity extends AppCompatActivity  {
             final String path = getIntent().getStringExtra(MainActivity.TEMP_FILE_PATH);
             setUp();
 
-            SurfaceView surfaceView = (SurfaceView) findViewById(R.id.waveform_surface);
+            //SurfaceView surfaceView = (SurfaceView) findViewById(R.id.waveform_surface);
             mGlSurfaceView = (GLSurfaceView) findViewById(R.id.glsurface_view);
             mGlSurfaceView.setEGLContextClientVersion(2);
             //mGlSurfaceView = new GLSurfaceView(this);
