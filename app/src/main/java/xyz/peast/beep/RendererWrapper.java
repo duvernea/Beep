@@ -1,5 +1,6 @@
 package xyz.peast.beep;
 
+import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
@@ -13,12 +14,16 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
+import xyz.peast.beep.util.TextResourceReader;
+
 /**
  * Created by duvernea on 7/18/16.
  */
 public class RendererWrapper implements GLSurfaceView.Renderer {
 
     private static final String TAG = RendererWrapper.class.getSimpleName();
+
+    private Context mContext;
 
     //private static final String U_COLOR = "u_Color";
     private static final String A_COLOR = "a_Color";
@@ -86,6 +91,9 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
     float a = 0f;
 
 
+    public RendererWrapper(Context context) {
+        mContext = context;
+    }
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -95,27 +103,32 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
 
         // set gl_Position (defined in the OpenGL language)
         // pass through program
-        String vertexShaderSource = "" +
-                "uniform vec2 translate;" +
-                "uniform mat4 u_Matrix;" +
-                "attribute vec4 a_Position;" +
-                "attribute vec4 a_Color;" +
-                "varying vec4 v_Color;" +
-                "" +
-                "void main()" +
-                "{" +
-                "    v_Color = a_Color;" +
-                "    gl_Position = u_Matrix * a_Position;" +
-                "    gl_PointSize = 10.0;" +
-                "}";
-        String fragmentShaderSource = "" +
-                "" +
-                "varying vec4 v_Color;" +
-                "void main()" +
-                "{" +
-                "    gl_FragColor = v_Color;" +
-                "}";
+//        String vertexShaderSource = "" +
+//                "uniform vec2 translate;" +
+//                "uniform mat4 u_Matrix;" +
+//                "attribute vec4 a_Position;" +
+//                "attribute vec4 a_Color;" +
+//                "varying vec4 v_Color;" +
+//                "" +
+//                "void main()" +
+//                "{" +
+//                "    v_Color = a_Color;" +
+//                "    gl_Position = u_Matrix * a_Position;" +
+//                "    gl_PointSize = 10.0;" +
+//                "}";
+//        String fragmentShaderSource = "" +
+//                "" +
+//                "varying vec4 v_Color;" +
+//                "void main()" +
+//                "{" +
+//                "    gl_FragColor = v_Color;" +
+//                "}";
 
+
+        String vertexShaderSource =
+                TextResourceReader.readTextFileFromResource(mContext,R.raw.simple_vertex_shader);
+        String fragmentShaderSource =
+                TextResourceReader.readTextFileFromResource(mContext, R.raw.simple_fragment_shader);
         // create vertex shader, compile code, log to output to see if errors
         int vertexShader = GLES20.glCreateShader(GLES20.GL_VERTEX_SHADER);
         GLES20.glShaderSource(vertexShader, vertexShaderSource);

@@ -63,7 +63,7 @@ public class RecordActivity extends AppCompatActivity  {
             //mGlSurfaceView = new GLSurfaceView(this);
             mGlSurfaceView.setEGLConfigChooser(8,8,8,8,16,0);
 
-            mGlSurfaceView.setRenderer(new RendererWrapper());
+            mGlSurfaceView.setRenderer(new RendererWrapper(mContext));
             mRendererSet = true;
 
 
