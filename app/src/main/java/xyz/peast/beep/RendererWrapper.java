@@ -124,11 +124,12 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
 //                "    gl_FragColor = v_Color;" +
 //                "}";
 
-
+        // Load shaders from glsl files
         String vertexShaderSource =
                 TextResourceReader.readTextFileFromResource(mContext,R.raw.simple_vertex_shader);
         String fragmentShaderSource =
                 TextResourceReader.readTextFileFromResource(mContext, R.raw.simple_fragment_shader);
+
         // create vertex shader, compile code, log to output to see if errors
         int vertexShader = GLES20.glCreateShader(GLES20.GL_VERTEX_SHADER);
         GLES20.glShaderSource(vertexShader, vertexShaderSource);

@@ -12,12 +12,11 @@ import java.nio.FloatBuffer;
  */
 public class VertexArray {
 
-    public static final int BYTES_PER_FLOAT = 4;
 
     private final FloatBuffer floatBuffer;
 
     public VertexArray (float[] vertexData) {
-        floatBuffer = ByteBuffer.allocateDirect(vertexData.length * BYTES_PER_FLOAT)
+        floatBuffer = ByteBuffer.allocateDirect(vertexData.length * Constants.BYTES_PER_FLOAT)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer()
                 .put(vertexData);
