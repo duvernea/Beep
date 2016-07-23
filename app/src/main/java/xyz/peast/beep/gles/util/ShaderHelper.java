@@ -1,4 +1,4 @@
-package xyz.peast.beep.util;
+package xyz.peast.beep.gles.util;
 
 import android.opengl.GLES20;
 import android.util.Log;

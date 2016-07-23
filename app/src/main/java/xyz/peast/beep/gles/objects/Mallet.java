@@ -1,9 +1,9 @@
-package xyz.peast.beep.objects;
+package xyz.peast.beep.gles.objects;
 
 import android.opengl.GLES20;
 
-import xyz.peast.beep.Constants;
-import xyz.peast.beep.VertexArray;
+import xyz.peast.beep.gles.Constants;
+import xyz.peast.beep.gles.VertexArray;
 
 /**
  * Created by duvernea on 7/23/16.
@@ -23,18 +23,18 @@ public class Mallet {
     public Mallet() {
         vertexArray = new VertexArray(VERTEX_DATA);
     }
-    public void bindData(ColorShaderProgram colorProgram) {
-        vertexArray.setVertexAttribPointer(
-                0,
-                colorProgram.getPositionAttributeLocation(),
-                POSITION_COMPONENT_COUNT,
-                STRIDE);
-        vertexArray.setVertexAttribPointer(
-                POSITION_COMPONENT_COUNT,
-                colorProgram.getColorAttributeLocation(),
-                COLOR_COMPONENT_COUNT,
-                STRIDE);
-    }
+//    public void bindData(ColorShaderProgram colorProgram) {
+//        vertexArray.setVertexAttribPointer(
+//                0,
+//                colorProgram.getPositionAttributeLocation(),
+//                POSITION_COMPONENT_COUNT,
+//                STRIDE);
+//        vertexArray.setVertexAttribPointer(
+//                POSITION_COMPONENT_COUNT,
+//                colorProgram.getColorAttributeLocation(),
+//                COLOR_COMPONENT_COUNT,
+//                STRIDE);
+//    }
     public void draw() {
         GLES20.glDrawArrays(GLES20.GL_POINTS, 0, 2);
     }

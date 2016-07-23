@@ -1,6 +1,5 @@
-package xyz.peast.beep;
+package xyz.peast.beep.gles;
 
-import android.opengl.GLES10;
 import android.opengl.GLES20;
 
 import java.nio.ByteBuffer;

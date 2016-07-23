@@ -1,4 +1,4 @@
-package xyz.peast.beep;
+package xyz.peast.beep.gles;
 
 import android.opengl.GLSurfaceView;
 

@@ -1,9 +1,8 @@
-package xyz.peast.beep;
+package xyz.peast.beep.gles;
 
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -14,8 +13,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-import xyz.peast.beep.util.ShaderHelper;
-import xyz.peast.beep.util.TextResourceReader;
+import xyz.peast.beep.R;
+import xyz.peast.beep.gles.util.ShaderHelper;
+import xyz.peast.beep.gles.util.TextResourceReader;
 
 /**
  * Created by duvernea on 7/18/16.
@@ -102,7 +102,7 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
 
         // Load shaders from glsl files
         String vertexShaderSource =
-                TextResourceReader.readTextFileFromResource(mContext,R.raw.simple_vertex_shader);
+                TextResourceReader.readTextFileFromResource(mContext, R.raw.simple_vertex_shader);
         String fragmentShaderSource =
                 TextResourceReader.readTextFileFromResource(mContext, R.raw.simple_fragment_shader);
 

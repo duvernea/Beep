@@ -1,4 +1,4 @@
-package xyz.peast.beep;
+package xyz.peast.beep.gles;
 
 /**
  * Created by duvernea on 7/22/16.

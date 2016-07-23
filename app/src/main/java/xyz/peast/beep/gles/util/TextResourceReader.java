@@ -1,9 +1,7 @@
-package xyz.peast.beep.util;
+package xyz.peast.beep.gles.util;
 
 import android.content.Context;
 import android.content.res.Resources;
-
-import com.google.android.gms.tasks.RuntimeExecutionException;
 
 import java.io.BufferedReader;
 import java.io.IOException;

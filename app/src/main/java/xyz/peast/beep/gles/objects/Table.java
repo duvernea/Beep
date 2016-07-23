@@ -1,9 +1,9 @@
-package xyz.peast.beep.objects;
+package xyz.peast.beep.gles.objects;
 
 import android.opengl.GLES20;
 
-import xyz.peast.beep.Constants;
-import xyz.peast.beep.VertexArray;
+import xyz.peast.beep.gles.Constants;
+import xyz.peast.beep.gles.VertexArray;
 
 /**
  * Created by duvernea on 7/22/16.
@@ -29,16 +29,16 @@ public class Table {
     public Table() {
         vertexArray = new VertexArray(VERTEX_DATA);
     }
-    public void bindData(TextureShaderProgram textureProgram) {
-        vertexArray.setVertexAttribPointer(0, textureProgram.getPositionAttributeLocation(),
-                POSITION_COMPONENT_COUNT,
-                STRIDE);
-        vertexArray.setVertexAttribPointer(
-                POSITION_COMPONENT_COUNT,
-                textureProgram.getTextureCoordinatesAttributeLocation(),
-                TEXTURE_COORDINATES_COMPONENT_COUNT,
-                STRIDE);
-    }
+//    public void bindData(TextureShaderProgram textureProgram) {
+//        vertexArray.setVertexAttribPointer(0, textureProgram.getPositionAttributeLocation(),
+//                POSITION_COMPONENT_COUNT,
+//                STRIDE);
+//        vertexArray.setVertexAttribPointer(
+//                POSITION_COMPONENT_COUNT,
+//                textureProgram.getTextureCoordinatesAttributeLocation(),
+//                TEXTURE_COORDINATES_COMPONENT_COUNT,
+//                STRIDE);
+//    }
     public void draw() {
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, 6);
     };
