@@ -61,7 +61,6 @@ public class ShaderHelper {
 
     public static int buildProgram(String vertexShaderSource, String fragmentShaderSource) {
 
-
         int program;
 
         // Compile the shaders
