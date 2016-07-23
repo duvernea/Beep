@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
+import xyz.peast.beep.util.ShaderHelper;
 import xyz.peast.beep.util.TextResourceReader;
 
 /**
@@ -99,63 +100,18 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         Log.d(TAG, "onSurfaceCreated run..");
 
-        // write some programs that opengl will compile at hardware - executed on GPU
-
-        // set gl_Position (defined in the OpenGL language)
-        // pass through program
-//        String vertexShaderSource = "" +
-//                "uniform vec2 translate;" +
-//                "uniform mat4 u_Matrix;" +
-//                "attribute vec4 a_Position;" +
-//                "attribute vec4 a_Color;" +
-//                "varying vec4 v_Color;" +
-//                "" +
-//                "void main()" +
-//                "{" +
-//                "    v_Color = a_Color;" +
-//                "    gl_Position = u_Matrix * a_Position;" +
-//                "    gl_PointSize = 10.0;" +
-//                "}";
-//        String fragmentShaderSource = "" +
-//                "" +
-//                "varying vec4 v_Color;" +
-//                "void main()" +
-//                "{" +
-//                "    gl_FragColor = v_Color;" +
-//                "}";
-
         // Load shaders from glsl files
         String vertexShaderSource =
                 TextResourceReader.readTextFileFromResource(mContext,R.raw.simple_vertex_shader);
         String fragmentShaderSource =
                 TextResourceReader.readTextFileFromResource(mContext, R.raw.simple_fragment_shader);
 
-        // create vertex shader, compile code, log to output to see if errors
-        int vertexShader = GLES20.glCreateShader(GLES20.GL_VERTEX_SHADER);
-        GLES20.glShaderSource(vertexShader, vertexShaderSource);
-        GLES20.glCompileShader(vertexShader);
-        String vertexShaderCompileLog = GLES20.glGetShaderInfoLog(vertexShader);
-        Log.d(TAG, "VertexShaderCompileLog: " + vertexShaderCompileLog);
+        int vertexShader = ShaderHelper.compileVertexShader(vertexShaderSource);
+        int fragmentShader = ShaderHelper.compileFragmentShader(fragmentShaderSource);
 
-        // create fragment shader, compile code, log to output to see if errors
-        int fragmentShader = GLES20.glCreateShader(GLES20.GL_FRAGMENT_SHADER);
-        GLES20.glShaderSource(fragmentShader, fragmentShaderSource);
-        GLES20.glCompileShader(fragmentShader);
-        String fragmentShaderCompileLog = GLES20.glGetShaderInfoLog(fragmentShader);
-        Log.d(TAG, "FragmentShaderCompileLog: " + fragmentShaderCompileLog);
-
-
-        // create the program and attach shaders
-        mProgram = GLES20.glCreateProgram();
-        GLES20.glAttachShader(mProgram, vertexShader);
-        GLES20.glAttachShader(mProgram, fragmentShader);
-        //GLES20.glBindAttribLocation(mProgram, 0, "position");
-        GLES20.glLinkProgram(mProgram);
-        String programLinkLog = GLES20.glGetProgramInfoLog(mProgram);
-        Log.d(TAG, "ProgramLinkLog: " + programLinkLog);
+        mProgram =ShaderHelper.linkProgram(vertexShader, fragmentShader);
 
         GLES20.glUseProgram(mProgram);
-
 
         aPositionLocation = GLES20.glGetAttribLocation(mProgram, A_POSITION);
         //uColorLocation = GLES20.glGetUniformLocation(mProgram, U_COLOR);
