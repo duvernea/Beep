@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
@@ -60,7 +61,17 @@ public class RecordActivity extends AppCompatActivity  {
             //mGlSurfaceView = new GLSurfaceView(this);
             mGlSurfaceView.setEGLConfigChooser(8,8,8,8,16,0);
 
-            mGlSurfaceView.setRenderer(new RendererWrapper(mContext));
+            RendererWrapper rendererWrapper = new RendererWrapper(mContext);
+            mGlSurfaceView.setRenderer(rendererWrapper);
+            mGlSurfaceView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event != null) {
+                        final float normalizedX = (event.getX() / (float) v.getWidth()) * 2 - 1;
+                        final float normalizedY = (event.getY() / (float) v.getHeight() * 2 - 1;
+                    }
+                }
+            });
             mRendererSet = true;
 
 
