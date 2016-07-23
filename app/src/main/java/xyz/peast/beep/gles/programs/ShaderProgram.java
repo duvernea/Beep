@@ -30,5 +30,4 @@ public class ShaderProgram {
         // Set current OpenGL shader program to this
         GLES20.glUseProgram(program);
     }
-
 }
