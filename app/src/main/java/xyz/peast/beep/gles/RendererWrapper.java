@@ -60,7 +60,7 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         mTable = new Table();
-        mMallet = new Mallet();
+        mMallet = new Mallet(0.08f, .15f, 32);
 
         textureShaderProgram = new TextureShaderProgram(mContext);
         colorShaderProgram = new ColorShaderProgram(mContext);
@@ -98,17 +98,30 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
         //Log.d(TAG, "onDrawFrame");
         // sets background color - clear color buffer is the thing you see
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+
+
         //GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         // Draw the table
+        positionTableInScene();
         textureShaderProgram.useProgram();
         textureShaderProgram.setUniforms(projectionMatrix, texture);
         mTable.bindData(textureShaderProgram);
         mTable.draw();
 
         // Draw the mallets
+        positionObjectInScene(0f, mMallet.height / 2f, 0.4f);
         colorShaderProgram.useProgram();
-        colorShaderProgram.setUniforms(projectionMatrix);
+        colorShaderProgram.setUniforms(projectionMatrix, 1f, 0f, 0f);
         mMallet.bindData(colorShaderProgram);
         mMallet.draw();
+
+//        positionObjectInScene(0f, mMallet.height / 2f, .4f);
+//        colorShaderProgram.setUniforms(projectionMatrix, 0f, 0f, 1f);
+//        mMallet.draw();
+    }
+    private void positionTableInScene() {
+    }
+    private void positionObjectInScene(float x, float y, float z) {
+
     }
 }
