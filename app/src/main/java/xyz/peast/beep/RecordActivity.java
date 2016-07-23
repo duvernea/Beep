@@ -61,14 +61,38 @@ public class RecordActivity extends AppCompatActivity  {
             //mGlSurfaceView = new GLSurfaceView(this);
             mGlSurfaceView.setEGLConfigChooser(8,8,8,8,16,0);
 
-            RendererWrapper rendererWrapper = new RendererWrapper(mContext);
+            final RendererWrapper rendererWrapper = new RendererWrapper(mContext);
             mGlSurfaceView.setRenderer(rendererWrapper);
             mGlSurfaceView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event != null) {
+                        // normalized back to openGL -1 to +1 scale
                         final float normalizedX = (event.getX() / (float) v.getWidth()) * 2 - 1;
-                        final float normalizedY = (event.getY() / (float) v.getHeight() * 2 - 1;
+                        final float normalizedY = (event.getY() / (float) v.getHeight()) * 2 - 1;
+                        Log.d(TAG, "Touch event X = " + normalizedX );
+                        Log.d(TAG, "Touch event Y = " + normalizedY );
+
+                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                            mGlSurfaceView.queueEvent(new Runnable() {
+                                @Override
+                                public void run() {
+                                    RendererWrapper.handleTouchPress(normalizedX, normalizedY);
+                                }
+                            });
+                        }
+                        else if (event.getAction() ==MotionEvent.ACTION_MOVE){
+                            mGlSurfaceView.queueEvent(new Runnable() {
+                                @Override
+                                public void run() {
+                                    rendererWrapper.handleTouchDrag(normalizedX, normalizedY);
+                                }
+                            });
+                        }
+                        return true;
+                    }
+                    else {
+                        return false;
                     }
                 }
             });
