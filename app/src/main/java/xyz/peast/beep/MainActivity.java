@@ -456,9 +456,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             public void onAnimationEnd(Animator animation) {
                 //mButton.setText(getResources().getString(R.string.button_joke_done));
                 //mPunchlineRevealed = true;
-                if (!directionUp) {
+                if (directionUp) {
+                    mMainFab.setImageResource(R.drawable.ic_keyboard_voice_white_24dp);
+                }
+                else if (!directionUp) {
                     mAdditionalFab.setVisibility(View.INVISIBLE);
                     mOverlay.setVisibility(View.INVISIBLE);
+                    mMainFab.setImageResource(R.drawable.ic_add_white_24dp);
                 }
 
             }
