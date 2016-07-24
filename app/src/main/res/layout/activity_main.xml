@@ -77,8 +77,37 @@
         android:layout_height="match_parent"
         android:background="#88000000"
         android:visibility="invisible"
-        android:id="@+id/frame_overlay"/>
+        android:id="@+id/frame_overlay"
+        android:fitsSystemWindows="true">
+    <TextView
+        android:id="@+id/fab_textview_record_beep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="@dimen/fab_textview_margin"
+        android:text="@string/fab_record_beep_text"
+        android:background="@drawable/rounded_corners_bg"
+        android:textColor="#000000"
+        android:layout_marginRight="88dp"
+        android:padding="4dp"
+        android:elevation="6dp"
+        android:textSize="@dimen/fab_textview_size" />
+    <TextView
+        android:id="@+id/fab_textview_create_board"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="@dimen/fab_textview_create_board_margin"
+        android:text="@string/fab_create_board_text"
+        android:background="@drawable/rounded_corners_bg"
+        android:textColor="#000000"
+        android:textSize="@dimen/fab_textview_size"
+        android:layout_marginRight="88dp"
+        android:padding="@dimen/fab_textview_padding"
+        android:elevation="6dp"/>
 
+
+    </FrameLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab2"

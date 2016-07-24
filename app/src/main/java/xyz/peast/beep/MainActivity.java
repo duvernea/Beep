@@ -420,12 +420,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         System.loadLibrary("SuperpoweredAudio");
     }
     public void animateButtonObject(int duration, final boolean directionUp) {
-        int translationPixels;
+        // fab = 56dp, fab margin = 16dp
+        float translationPx = getResources().getDimension(R.dimen.fab_size) + getResources().getDimension(R.dimen.fab_margin);
+        //int translationDp = 56 + 16 * 2;
+        //.d(TAG, "translationDp: " + translationDp);
+        // translationPx = Utility.dpToPx(translationDp);
+        //Log.d(TAG, "translationPx: " + translationPx);
+
+
+        float translationPixels;
         if (directionUp) {
-            translationPixels = -200;
+            translationPixels = -translationPx;
         }
         else {
-            translationPixels = 200;
+            translationPixels = translationPx;
         }
         mAdditionalFab.clearAnimation();
         ObjectAnimator animX = ObjectAnimator.ofFloat(mAdditionalFab, "translationY", translationPixels);

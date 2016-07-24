@@ -12,4 +12,8 @@
     <string name="record">Start Recording</string>
     <string name="next">Next</string>
 
+    // Main Activity
+    <string name="fab_record_beep_text">Record a Beep</string>
+    <string name="fab_create_board_text">Create a Board</string>
+
 </resources>

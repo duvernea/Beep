@@ -2,8 +2,7 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
-    <dimen name="fab_margin2">32dp</dimen>
+
 
     // height of appbar for main activity - includes large image
     <dimen name="appbar_height">320dp</dimen>
@@ -14,4 +13,18 @@
 
     // board items in list
     <dimen name="board_list_item_name_text_size">20dp</dimen>
+
+    // floating action button and text display
+    <dimen name ="fab_size">56dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="fab_margin2">32dp</dimen>
+    <dimen name="fab_textview_size">16sp</dimen>
+    <dimen name="fab_textview_padding">4dp</dimen>
+    // fab margin + (fab size - textview height) / 2
+    // 16 + (56 - (16sp+2*4dp))/2 = 32dp
+    <dimen name ="fab_textview_margin">32dp</dimen>
+    // fab margin * 2 + fab size + (fab size - textview height) / 2
+    // 16*2 + 56 + (56 -(16sp+2*4dp))/2
+    <dimen name ="fab_textview_create_board_margin">104dp</dimen>
+
 </resources>
