@@ -44,16 +44,24 @@ public class ObjectBuilder {
         return (numPoints + 1) * 2;
     }
 
-    private void appendBar(float width, float extention) {
+    private void appendBar(int barSide, float width, float extention) {
         final int startVertex = offset/FLOATS_PER_VERTEX;
         final int numVertices = 18;
+
+        boolean left;
+        if (barSide == Bar.BAR_LEFT) {
+            left = true;
+        }
+        else {
+            left = false;
+        }
         // Vertical Bar
         // vertex 1
         vertexData[offset++] = 0;
         vertexData[offset++] = 1;
         vertexData[offset++] = 0;
         // vertex 2
-        vertexData[offset++] = width;
+        vertexData[offset++] = left ? width : -width;
         vertexData[offset++] = 1;
         vertexData[offset++] = 0;
 
@@ -68,67 +76,65 @@ public class ObjectBuilder {
         vertexData[offset++] = 0;
 
         // vertex 5
-        vertexData[offset++] = width;
+        vertexData[offset++] = left ? width : -width;
         vertexData[offset++] = -1;
         vertexData[offset++] = 0;
 
         // vertex 6
-        vertexData[offset++] = width;
+        vertexData[offset++] = left ? width : -width;
         vertexData[offset++] = 1;
         vertexData[offset++] = 0;
 
         // Horizontal Marker Top
         // vertex 1
-        vertexData[offset++] = width;
+        vertexData[offset++] = left ? width : -width;
         vertexData[offset++] = 1;
         vertexData[offset++] = 0;
         // vertex 2
-        vertexData[offset++] = width+extention;
+        vertexData[offset++] = left ? width+extention: -(width+extention);
         vertexData[offset++] = 1;
         vertexData[offset++] = 0;
         // vertex 3
-        vertexData[offset++] = width;
+        vertexData[offset++] = left ? width : -width;
         vertexData[offset++] = 1-width;
         vertexData[offset++] = 0;
         // vertex 4
-        vertexData[offset++] = width;
+        vertexData[offset++] = left ? width : -width;
         vertexData[offset++] = 1-width;
         vertexData[offset++] = 0;
         // vertex 5
-        vertexData[offset++] = width+extention;
+        vertexData[offset++] = left ? width+extention : -(width+extention);
         vertexData[offset++] = 1-width;
         vertexData[offset++] = 0;
         // vertex 6
-        vertexData[offset++] = width+extention;
+        vertexData[offset++] = left ? width+extention : -(width+extention);
         vertexData[offset++] = 1;
         vertexData[offset++] = 0;
         // Horizontal Marker Bottom
         // vertex 1
-        vertexData[offset++] = width;
+        vertexData[offset++] = left ? width : -width;
         vertexData[offset++] = -1;
         vertexData[offset++] = 0;
         // vertex 2
-        vertexData[offset++] = width+extention;
+        vertexData[offset++] = left ? width+extention : -(width+extention);
         vertexData[offset++] = -1;
         vertexData[offset++] = 0;
         // vertex 3
-        vertexData[offset++] = width;
+        vertexData[offset++] = left ? width : -width;
         vertexData[offset++] = -1+width;
         vertexData[offset++] = 0;
         // vertex 4
-        vertexData[offset++] = width;
+        vertexData[offset++] = left ? width : -width;
         vertexData[offset++] = -1+width;
         vertexData[offset++] = 0;
         // vertex 5
-        vertexData[offset++] = width+extention;
+        vertexData[offset++] = left ? width+extention :-(width+extention);
         vertexData[offset++] = -1+width;
         vertexData[offset++] = 0;
         // vertex 6
-        vertexData[offset++] = width+extention;
+        vertexData[offset++] = left ? width+extention : -(width+extention);
         vertexData[offset++] = -1;
         vertexData[offset++] = 0;
-
-
 
         Log.d(TAG, "Bar start vertex: " + startVertex);
         Log.d(TAG, "Bar num vertex: " + numVertices);
@@ -142,10 +148,10 @@ public class ObjectBuilder {
 
     }
 
-    static GeneratedData createBar(float width, float extention) {
+    static GeneratedData createBar(int barside, float width, float extention) {
         // 2 triangles to draw a rectangle = 6 vertices
         ObjectBuilder builder = new ObjectBuilder(18);
-        builder.appendBar(width, extention);
+        builder.appendBar(barside, width, extention);
 
         return builder.build();
 
@@ -240,14 +246,12 @@ public class ObjectBuilder {
             vertexData[offset++] = zPosition;
             //vertexData[offset++] = 0;
 
-
             drawList.add(new DrawCommand() {
                 @Override
                 public void draw() {
                     GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, startVertex, numVertices);
                 }
             });
-
         }
     }
 

@@ -21,8 +21,11 @@ public class Bar {
     private final VertexArray vertexArray;
     private final List<ObjectBuilder.DrawCommand> drawList;
 
-    public Bar(float width, float extention) {
-        ObjectBuilder.GeneratedData generatedData = ObjectBuilder.createBar(width, extention);
+    public static final int BAR_LEFT = 1;
+    public static final int BAR_RIGHT = 2;
+
+    public Bar(int barSide, float width, float extention) {
+        ObjectBuilder.GeneratedData generatedData = ObjectBuilder.createBar(barSide, width, extention);
         this.width = width;
 
         vertexArray = new VertexArray(generatedData.vertexData);

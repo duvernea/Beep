@@ -7,11 +7,8 @@ import android.opengl.GLSurfaceView;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import android.opengl.Matrix;
 import android.util.Log;
-
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
 
 import xyz.peast.beep.R;
 import xyz.peast.beep.gles.objects.Bar;
@@ -20,8 +17,6 @@ import xyz.peast.beep.gles.objects.Table;
 import xyz.peast.beep.gles.programs.ColorShaderProgram;
 import xyz.peast.beep.gles.programs.TextureShaderProgram;
 import xyz.peast.beep.gles.util.Geometry;
-import xyz.peast.beep.gles.util.ShaderHelper;
-import xyz.peast.beep.gles.util.TextResourceReader;
 
 /**
  * Created by duvernea on 7/18/16.
@@ -35,13 +30,19 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
     private boolean malletPressed = false;
     private Geometry.Point blueMalletPosition;
 
-    private final float[] projectionMatrix = new float[16];
+    private boolean leftBarPressed = false;
+    private Geometry.Point mBarPosition;
+
+    private final float[] modelViewProjectionMatrix = new float[16];
+    private final float[] viewProjectionMatrix = new float[16];
     private final float[] modelMatrix = new float[16];
+    private final float[] viewMatrix = new float[16];
 
     private Table mTable;
     private Mallet mMallet;
 
-    private Bar mBar;
+    private Bar mBarLeft;
+    private Bar mBarRight;
 
     private TextureShaderProgram textureShaderProgram;
     private ColorShaderProgram colorShaderProgram;
@@ -54,6 +55,8 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
 
     int mWidth;
     int mHeight;
+
+    private float aspectRatio;
 //
 //    int mProgram = 0;
 //    float _animation = 0.0f;
@@ -71,7 +74,9 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
         mMallet = new Mallet(0.08f, .15f, 32);
         blueMalletPosition = new Geometry.Point(0f, mMallet.height / 2f, .4f);
 
-        mBar = new Bar(.04f, .2f);
+        mBarLeft = new Bar(Bar.BAR_LEFT,.04f, .2f);
+        mBarRight = new Bar(Bar.BAR_RIGHT, .04f, .2f);
+        mBarPosition = new Geometry.Point(0f, 0f, 0f);
 
         textureShaderProgram = new TextureShaderProgram(mContext);
         colorShaderProgram = new ColorShaderProgram(mContext);
@@ -89,18 +94,22 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
         // setting coordinate system
         GLES20.glViewport(0, 0, width, height);
 
-        final float aspectRatio = width > height ?
+        aspectRatio = width > height ?
                 (float) width / (float) height :
                 (float) height / (float) width;
         if (width > height) {
             // Landscape
-            android.opengl.Matrix.orthoM(projectionMatrix, 0, -aspectRatio, aspectRatio, -1f, 1f, -1f, 1f);
+            android.opengl.Matrix.orthoM(viewProjectionMatrix, 0, -aspectRatio, aspectRatio, -1f, 1f, -1f, 1f);
+            Log.d(TAG, "aspectRatio: " + aspectRatio);
         }
         else {
-            android.opengl.Matrix.orthoM(projectionMatrix, 0, -1f, 1f, -aspectRatio, aspectRatio, -1f, 1f);
+            android.opengl.Matrix.orthoM(viewProjectionMatrix, 0, -1f, 1f, -aspectRatio, aspectRatio, -1f, 1f);
         }
         Log.d(TAG, "Width: " + width);
         Log.d(TAG, "Height: " + height);
+
+        Matrix.setIdentityM(modelMatrix, 0);
+
     }
 
     @Override
@@ -109,35 +118,55 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
         //Log.d(TAG, "onDrawFrame");
         // sets background color - clear color buffer is the thing you see
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.multiplyMM(viewProjectionMatrix, 0, viewProjectionMatrix, 0, modelMatrix, 0 );
 
 
         //GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         // Draw the table
         positionTableInScene();
         textureShaderProgram.useProgram();
-        textureShaderProgram.setUniforms(projectionMatrix, texture);
+        textureShaderProgram.setUniforms(viewProjectionMatrix, texture);
         mTable.bindData(textureShaderProgram);
         mTable.draw();
 
         // Draw the mallets
-        positionObjectInScene(0f, mMallet.height / 2f, 0.4f);
+        //positionObjectInScene(0f, mMallet.height / 2f, 0.4f);
         colorShaderProgram.useProgram();
-        colorShaderProgram.setUniforms(projectionMatrix, 1f, 0f, 0f);
+        colorShaderProgram.setUniforms(viewProjectionMatrix, 1f, 0f, 0f);
         mMallet.bindData(colorShaderProgram);
         mMallet.draw();
 
-        //colorShaderProgram.setUniforms(projectionMatrix, 1f, 1f, 1f);
-        colorShaderProgram.setUniforms(projectionMatrix, 0f, 1f, 0f);
-        mBar.bindData(colorShaderProgram);
-        mBar.draw();
+        // Draw left bar slider
+        //colorShaderProgram.setUniforms(viewProjectionMatrix, 1f, 1f, 1f);
+
+        positionBarInScene(-aspectRatio);
+        colorShaderProgram.setUniforms(modelViewProjectionMatrix, 0f, 1f, 0f);
+        mBarLeft.bindData(colorShaderProgram);
+        mBarLeft.draw();
+
+        positionBarInScene(+aspectRatio);
+        colorShaderProgram.setUniforms(modelViewProjectionMatrix, 0f, 1f, 0f);
+        mBarRight.bindData(colorShaderProgram);
+        mBarRight.draw();
 
 //        positionObjectInScene(0f, mMallet.height / 2f, .4f);
-//        colorShaderProgram.setUniforms(projectionMatrix, 0f, 0f, 1f);
+//        colorShaderProgram.setUniforms(viewProjectionMatrix, 0f, 0f, 1f);
 //        mMallet.draw();
     }
     private void positionTableInScene() {
     }
     private void positionObjectInScene(float x, float y, float z) {
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.translateM(modelMatrix, 0, x, y, z);
+        Matrix.multiplyMM(modelViewProjectionMatrix, 0, viewProjectionMatrix, 0, modelMatrix, 0);
+
+    }
+    private void positionBarInScene(float x) {
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.translateM(modelMatrix, 0, x, 0, 0);
+        Matrix.multiplyMM(modelViewProjectionMatrix, 0, viewProjectionMatrix, 0, modelMatrix, 0);
+
 
     }
     public void handleTouchPress(float normalizedX, float normalizedY) {
@@ -145,10 +174,16 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
         Log.d(TAG, "Touch Press event Y = " + normalizedY );
         //Ray ray = convertNormalized2DPointToRay(normalizedX, normalizedY);
 
+        // Create a method that checks for intersection of left bar
+        //leftBarPressed = Geometry.intersects();
+
         //Sphere malletBoundingSphere
     }
     public void handleTouchDrag(float normalizedX, float normalizedY) {
         Log.d(TAG, "Touch Drag event X = " + normalizedX );
         Log.d(TAG, "Touch Drag event Y = " + normalizedY );
+        if (leftBarPressed) {
+            //leftBarPosition =
+        }
     }
 }
