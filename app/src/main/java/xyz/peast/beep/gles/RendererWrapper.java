@@ -14,10 +14,12 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import xyz.peast.beep.R;
+import xyz.peast.beep.gles.objects.Bar;
 import xyz.peast.beep.gles.objects.Mallet;
 import xyz.peast.beep.gles.objects.Table;
 import xyz.peast.beep.gles.programs.ColorShaderProgram;
 import xyz.peast.beep.gles.programs.TextureShaderProgram;
+import xyz.peast.beep.gles.util.Geometry;
 import xyz.peast.beep.gles.util.ShaderHelper;
 import xyz.peast.beep.gles.util.TextResourceReader;
 
@@ -30,11 +32,16 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
 
     private Context mContext;
 
+    private boolean malletPressed = false;
+    private Geometry.Point blueMalletPosition;
+
     private final float[] projectionMatrix = new float[16];
     private final float[] modelMatrix = new float[16];
 
     private Table mTable;
     private Mallet mMallet;
+
+    private Bar mBar;
 
     private TextureShaderProgram textureShaderProgram;
     private ColorShaderProgram colorShaderProgram;
@@ -56,11 +63,15 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         Log.d(TAG, "onSurfaceCreated run..");
 
+
         // change default background color R G B A
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         mTable = new Table();
         mMallet = new Mallet(0.08f, .15f, 32);
+        blueMalletPosition = new Geometry.Point(0f, mMallet.height / 2f, .4f);
+
+        mBar = new Bar(.04f, .2f);
 
         textureShaderProgram = new TextureShaderProgram(mContext);
         colorShaderProgram = new ColorShaderProgram(mContext);
@@ -115,6 +126,11 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
         mMallet.bindData(colorShaderProgram);
         mMallet.draw();
 
+        //colorShaderProgram.setUniforms(projectionMatrix, 1f, 1f, 1f);
+        colorShaderProgram.setUniforms(projectionMatrix, 0f, 1f, 0f);
+        mBar.bindData(colorShaderProgram);
+        mBar.draw();
+
 //        positionObjectInScene(0f, mMallet.height / 2f, .4f);
 //        colorShaderProgram.setUniforms(projectionMatrix, 0f, 0f, 1f);
 //        mMallet.draw();
@@ -123,5 +139,16 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
     }
     private void positionObjectInScene(float x, float y, float z) {
 
+    }
+    public void handleTouchPress(float normalizedX, float normalizedY) {
+        Log.d(TAG, "Touch Press event X = " + normalizedX );
+        Log.d(TAG, "Touch Press event Y = " + normalizedY );
+        //Ray ray = convertNormalized2DPointToRay(normalizedX, normalizedY);
+
+        //Sphere malletBoundingSphere
+    }
+    public void handleTouchDrag(float normalizedX, float normalizedY) {
+        Log.d(TAG, "Touch Drag event X = " + normalizedX );
+        Log.d(TAG, "Touch Drag event Y = " + normalizedY );
     }
 }

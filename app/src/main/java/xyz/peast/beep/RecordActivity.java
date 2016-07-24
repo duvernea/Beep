@@ -70,14 +70,13 @@ public class RecordActivity extends AppCompatActivity  {
                         // normalized back to openGL -1 to +1 scale
                         final float normalizedX = (event.getX() / (float) v.getWidth()) * 2 - 1;
                         final float normalizedY = (event.getY() / (float) v.getHeight()) * 2 - 1;
-                        Log.d(TAG, "Touch event X = " + normalizedX );
-                        Log.d(TAG, "Touch event Y = " + normalizedY );
+
 
                         if (event.getAction() == MotionEvent.ACTION_DOWN) {
                             mGlSurfaceView.queueEvent(new Runnable() {
                                 @Override
                                 public void run() {
-                                    RendererWrapper.handleTouchPress(normalizedX, normalizedY);
+                                    rendererWrapper.handleTouchPress(normalizedX, normalizedY);
                                 }
                             });
                         }
