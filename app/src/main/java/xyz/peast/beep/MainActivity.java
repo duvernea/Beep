@@ -1,5 +1,7 @@
 package xyz.peast.beep;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -23,6 +25,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -60,6 +63,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private RecyclerView mBoardsRecyclerView;
     private BoardRecyclerViewAdapter mBoardsRecyclerViewAdapter;
+
+    private FrameLayout mOverlay;
+
+    // false = normal activity. true = extra fab
+    FloatingActionButton mMainFab;
+    FloatingActionButton mAdditionalFab;
+    private boolean mFabState = false;
 
     // database projection for BEEPS
     private static final String[] BEEP_COLUMNS = {
@@ -116,15 +126,38 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-       FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mOverlay = (FrameLayout) findViewById(R.id.frame_overlay);
+
+        mOverlay.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(mContext, RecordActivity.class);
-                intent.putExtra(TEMP_FILE_PATH, mPath);
-                startActivity(intent);
+            public void onClick(View v) {
+                mOverlay.setVisibility(View.INVISIBLE);
+                animateButtonObject(100, false);
+                mFabState = false;
+
             }
         });
+
+        mMainFab = (FloatingActionButton) findViewById(R.id.fab);
+        mAdditionalFab = (FloatingActionButton) findViewById(R.id.fab2);
+
+            mMainFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mFabState == false) {
+                        mFabState = true;
+                        mOverlay.setVisibility(View.VISIBLE);
+                        mAdditionalFab.setVisibility(View.VISIBLE);
+                        animateButtonObject(100, true);
+                        return;
+                    }
+                    if (mFabState == true) {
+                        Intent intent = new Intent(mContext, RecordActivity.class);
+                        intent.putExtra(TEMP_FILE_PATH, mPath);
+                        startActivity(intent);
+                    }
+                }
+            });
 
         getLoaderManager().initLoader(TOP_BEEPS_LOADER, null, this);
         getLoaderManager().initLoader(BOARDS_LOADER, null, this);
@@ -165,10 +198,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 //                 }
                  //onFileChange(getPackageResourcePath(), fileAlength, fileAoffset);
                  //Log.d(TAG, "Size: " + size);
-
                  //int offset = 16384;
                  onFileChange(path, 0, 0);
-
                  //Log.d(TAG, "getPackageResourcePath: " + getPackageResourcePath());
                  mIsPlaying = !mIsPlaying;
                  //onPlayPause(mIsPlaying);
@@ -249,8 +280,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         //String path = "/data/data/xyz.peast.beep/files/" + uniqueID;
         // Arguments: path to the APK file, offset and length of the two resource files, sample rate, audio buffer size.
         SuperpoweredAudio(Integer.parseInt(mSamplerateString), Integer.parseInt(mBuffersizeString), getPackageResourcePath()+"xx");
-
-
     }
 
     @Override
@@ -389,5 +418,36 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private native void onFileChange(String apkPath, int fileOffset, int fileLength );
     static {
         System.loadLibrary("SuperpoweredAudio");
+    }
+    public void animateButtonObject(int duration, final boolean directionUp) {
+        int translationPixels;
+        if (directionUp) {
+            translationPixels = -200;
+        }
+        else {
+            translationPixels = 200;
+        }
+        mAdditionalFab.clearAnimation();
+        ObjectAnimator animX = ObjectAnimator.ofFloat(mAdditionalFab, "translationY", translationPixels);
+        animX.setStartDelay(100);
+        animX.setDuration(duration);
+        animX.start();
+        //mJokePunchlineTextView.setVisibility(View.VISIBLE);
+        animX.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                //mButton.setText(getResources().getString(R.string.button_joke_done));
+                //mPunchlineRevealed = true;
+                if (!directionUp) {
+                    mAdditionalFab.setVisibility(View.INVISIBLE);
+                }
+            }
+            @Override
+            public void onAnimationStart(Animator animation) {}
+            @Override
+            public void onAnimationCancel(Animator animation) {}
+            @Override
+            public void onAnimationRepeat(Animator animation) {}
+        });
     }
 }
