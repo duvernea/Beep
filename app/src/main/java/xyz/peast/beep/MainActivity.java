@@ -28,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
@@ -67,9 +68,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private FrameLayout mOverlay;
 
     // false = normal activity. true = extra fab
-    FloatingActionButton mMainFab;
-    FloatingActionButton mAdditionalFab;
+    private FloatingActionButton mMainFab;
+    private FloatingActionButton mAdditionalFab;
     private boolean mFabState = false;
+    private TextView mMainFabTextView;
+    private TextView mAdditionalFabTextView;
 
     // database projection for BEEPS
     private static final String[] BEEP_COLUMNS = {
@@ -131,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mOverlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOverlay.setVisibility(View.INVISIBLE);
                 animateButtonObject(100, false);
                 mFabState = false;
 
@@ -140,6 +142,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         mMainFab = (FloatingActionButton) findViewById(R.id.fab);
         mAdditionalFab = (FloatingActionButton) findViewById(R.id.fab2);
+        mMainFabTextView = (TextView) findViewById(R.id.fab_textview_record_beep);
+        mAdditionalFabTextView = (TextView) findViewById(R.id.fab_textview_create_board);
 
             mMainFab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -436,19 +440,27 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             translationPixels = translationPx;
         }
         mAdditionalFab.clearAnimation();
-        ObjectAnimator animX = ObjectAnimator.ofFloat(mAdditionalFab, "translationY", translationPixels);
-        animX.setStartDelay(100);
-        animX.setDuration(duration);
-        animX.start();
+        ObjectAnimator animFab2 = ObjectAnimator.ofFloat(mAdditionalFab, "translationY", translationPixels);
+        animFab2.setStartDelay(100);
+        animFab2.setDuration(duration);
+        ObjectAnimator animFab2TextView = ObjectAnimator.ofFloat(mAdditionalFabTextView,
+                "translationY",
+                translationPixels);
+        animFab2TextView.setStartDelay(100);
+        animFab2TextView.setDuration(duration);
+        animFab2.start();
+        animFab2TextView.start();
         //mJokePunchlineTextView.setVisibility(View.VISIBLE);
-        animX.addListener(new Animator.AnimatorListener() {
+        animFab2.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 //mButton.setText(getResources().getString(R.string.button_joke_done));
                 //mPunchlineRevealed = true;
                 if (!directionUp) {
                     mAdditionalFab.setVisibility(View.INVISIBLE);
+                    mOverlay.setVisibility(View.INVISIBLE);
                 }
+
             }
             @Override
             public void onAnimationStart(Animator animation) {}
