@@ -31,7 +31,9 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
     private Geometry.Point blueMalletPosition;
 
     private boolean leftBarPressed = false;
-    private Geometry.Point mBarPosition;
+    private boolean rightBarPressed = false;
+    private Geometry.Point leftBarPosition;
+    private Geometry.Point rightBarPosition;
 
     private final float[] modelViewProjectionMatrix = new float[16];
     private final float[] viewProjectionMatrix = new float[16];
@@ -76,7 +78,9 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
 
         mBarLeft = new Bar(Bar.BAR_LEFT,.04f, .2f);
         mBarRight = new Bar(Bar.BAR_RIGHT, .04f, .2f);
-        mBarPosition = new Geometry.Point(0f, 0f, 0f);
+        leftBarPosition = new Geometry.Point(0f, 0f, 0f);
+        rightBarPosition = new Geometry.Point(0f, 0f, 0f);
+
 
         textureShaderProgram = new TextureShaderProgram(mContext);
         colorShaderProgram = new ColorShaderProgram(mContext);
@@ -107,8 +111,11 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
         }
         Log.d(TAG, "Width: " + width);
         Log.d(TAG, "Height: " + height);
+        leftBarPosition = new Geometry.Point(-aspectRatio, 0f, 0f);
+        rightBarPosition = new Geometry.Point(aspectRatio, 0f, 0f);
 
         Matrix.setIdentityM(modelMatrix, 0);
+        //Matrix.multiplyMM(modelViewProjectionMatrix, 0, viewProjectionMatrix, 0, modelMatrix, 0);
 
     }
 
@@ -119,33 +126,43 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
         // sets background color - clear color buffer is the thing you see
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
         Matrix.setIdentityM(modelMatrix, 0);
-        Matrix.multiplyMM(viewProjectionMatrix, 0, viewProjectionMatrix, 0, modelMatrix, 0 );
+        Matrix.multiplyMM(modelViewProjectionMatrix, 0, viewProjectionMatrix, 0, modelMatrix, 0 );
+//        String temp = "";
+//        for (int i=0; i<viewProjectionMatrix.length; i++) {
+//            temp += " " + viewProjectionMatrix[i];
+//        }
+//        Log.d(TAG, "viewProjectionMatrix: " + temp);
+//        temp = "";
+//        for (int i=0; i<modelViewProjectionMatrix.length; i++) {
+//            temp += " " + modelViewProjectionMatrix[i];
+//        }
+//        Log.d(TAG, "modelviewProjectionMatrix: " + temp);
 
 
         //GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         // Draw the table
         positionTableInScene();
         textureShaderProgram.useProgram();
-        textureShaderProgram.setUniforms(viewProjectionMatrix, texture);
+        textureShaderProgram.setUniforms(modelViewProjectionMatrix, texture);
         mTable.bindData(textureShaderProgram);
         mTable.draw();
 
         // Draw the mallets
         //positionObjectInScene(0f, mMallet.height / 2f, 0.4f);
         colorShaderProgram.useProgram();
-        colorShaderProgram.setUniforms(viewProjectionMatrix, 1f, 0f, 0f);
+        colorShaderProgram.setUniforms(modelViewProjectionMatrix, 1f, 0f, 0f);
         mMallet.bindData(colorShaderProgram);
         mMallet.draw();
 
         // Draw left bar slider
         //colorShaderProgram.setUniforms(viewProjectionMatrix, 1f, 1f, 1f);
 
-        positionBarInScene(-aspectRatio);
+        positionBarInScene(leftBarPosition.x);
         colorShaderProgram.setUniforms(modelViewProjectionMatrix, 0f, 1f, 0f);
         mBarLeft.bindData(colorShaderProgram);
         mBarLeft.draw();
 
-        positionBarInScene(+aspectRatio);
+        positionBarInScene(rightBarPosition.x);
         colorShaderProgram.setUniforms(modelViewProjectionMatrix, 0f, 1f, 0f);
         mBarRight.bindData(colorShaderProgram);
         mBarRight.draw();
@@ -173,9 +190,23 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
         Log.d(TAG, "Touch Press event X = " + normalizedX );
         Log.d(TAG, "Touch Press event Y = " + normalizedY );
         //Ray ray = convertNormalized2DPointToRay(normalizedX, normalizedY);
-
+        rightBarPressed = false;
+        leftBarPressed = false;
         // Create a method that checks for intersection of left bar
-        //leftBarPressed = Geometry.intersects();
+
+        Log.d(TAG, "Leftbarposition: " + leftBarPosition.x);
+        float adjustedX = normalizedX * aspectRatio;
+        Log.d(TAG, "Adjusted X = " + adjustedX);
+        if (Math.abs(leftBarPosition.x - adjustedX) < .3) {
+            Log.d(TAG, "Leftbarpressed");
+            leftBarPressed = true;
+
+        }
+        if (Math.abs(rightBarPosition.x - adjustedX) < .3) {
+            Log.d(TAG, "Rightbarpressed");
+            rightBarPressed = true;
+
+        }
 
         //Sphere malletBoundingSphere
     }
@@ -184,6 +215,13 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
         Log.d(TAG, "Touch Drag event Y = " + normalizedY );
         if (leftBarPressed) {
             //leftBarPosition =
+            //Log.d(TAG, leftBarPressed and dragged)
+            leftBarPosition = new Geometry.Point(aspectRatio*normalizedX, normalizedY, 0);
+        }
+        if (rightBarPressed) {
+            //leftBarPosition =
+            //Log.d(TAG, leftBarPressed and dragged)
+            rightBarPosition = new Geometry.Point(aspectRatio*normalizedX, normalizedY, 0);
         }
     }
 }
