@@ -15,6 +15,8 @@ import android.widget.Button;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import java.util.UUID;
+
 import xyz.peast.beep.gles.RendererWrapper;
 
 public class RecordActivity extends AppCompatActivity  {
@@ -33,6 +35,8 @@ public class RecordActivity extends AppCompatActivity  {
 
     private GLSurfaceView mGlSurfaceView;
     private boolean mRendererSet = false;
+
+    private String mRecordFilePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +58,14 @@ public class RecordActivity extends AppCompatActivity  {
 
             final String path = getIntent().getStringExtra(MainActivity.TEMP_FILE_PATH);
             setUp();
-            String testString = "TESTING TESTING 123";
-            saveString(testString);
-            printString();
+            //String testString = "TESTING TESTING 123";
+            //saveString(testString);
+            //printString();
+            String uniqueID = UUID.randomUUID().toString();
+            String recordDir = mContext.getFilesDir().getAbsolutePath();
+            mRecordFilePath = recordDir + "/" + "TESTJAVA";
+            Log.d(TAG, "Record Path: " + mRecordFilePath);
+            setRecordPath(mRecordFilePath);
 
             //SurfaceView surfaceView = (SurfaceView) findViewById(R.id.waveform_surface);
             mGlSurfaceView = (GLSurfaceView) findViewById(R.id.glsurface_view);
@@ -139,12 +148,12 @@ public class RecordActivity extends AppCompatActivity  {
                     Log.d(TAG, "mIsPlaying start: " + mIsPlaying);
                     Log.d(TAG, "mIsRecording start: " + mIsPlaying);
                     if (!mIsRecording) {
-                        String path = "/data/data/xyz.peast.beep/files/temp.wav.wav";
+                        String path = "/data/data/xyz.peast.beep/files/temp.wav";
                         mIsPlaying = true;
                         //onPlayPause(mIsPlaying);
                         Log.d(TAG, "mIsPlaying play: " + mIsPlaying);
-                        onFileChange(path, 0, 0);
-                        onPlayPause(path, mIsPlaying, 0);
+                        onFileChange(mRecordFilePath + ".wav", 0, 0);
+                        onPlayPause(mRecordFilePath + ".wav", mIsPlaying, 0);
                     }
                 }
             });
@@ -172,6 +181,7 @@ public class RecordActivity extends AppCompatActivity  {
     private native void toggleRecord(boolean record);
     private native void saveString(String fileName);
     private native void printString();
+    private native void setRecordPath(String path);
 
 
     static {

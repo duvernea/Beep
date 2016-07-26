@@ -125,6 +125,8 @@ SuperpoweredAudio::~SuperpoweredAudio() {
 }
 void SuperpoweredAudio::onFileChange(const char *path, int fileOffset, int fileLength) {
     pthread_mutex_lock(&mutex);
+    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudioOnFileChange", path);
+
     playerA->open(path);
     playerA->cachePosition(0, 255);
     pthread_mutex_unlock(&mutex);
@@ -134,11 +136,29 @@ void SuperpoweredAudio::setFileName(jstring x)  {
 
 }
 void SuperpoweredAudio::printString() {
-    JNIEnv *env;
-    jvm->AttachCurrentThread(&env, NULL);
+    JNIEnv * env;
+    bool attached = false;
+    switch (jvm->GetEnv((void**)&env, JNI_VERSION_1_6))
+    {
+        case JNI_OK:
+            break;
+        case JNI_EDETACHED:
+            if (jvm->AttachCurrentThread(&env, NULL)!=0)
+            {
+                throw std::runtime_error("Could not attach current thread");
+            }
+            attached = true;
+            break;
+        case JNI_EVERSION:
+            throw std::runtime_error("Invalid java version");
+    }
     const char *a = env->GetStringUTFChars(filePath, JNI_FALSE);
     __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudioMember", a);
-
+    env->ReleaseStringUTFChars(filePath, a);
+    if (attached)
+    {
+        jvm->DetachCurrentThread();
+    }
 }
 
 void SuperpoweredAudio::onPlayPause(const char *path, bool play, int size) {
@@ -219,11 +239,11 @@ bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples)
         SuperpoweredShortIntToFloat(output, recordBuffer, numberOfSamples, NULL);
         float* localAudioPointer = recordBuffer;
         //SuperpoweredFloatToShortInt(recordBuffer, output, numberOfSamples);
-        for (int i=0; i<numberOfSamples; i+=2) {
-            //__android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "test int = %d", i);
-            __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "float = %f", *localAudioPointer);
-            localAudioPointer+=2;
-        }
+//        for (int i=0; i<numberOfSamples; i+=2) {
+//            //__android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "test int = %d", i);
+//            __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "float = %f", *localAudioPointer);
+//            localAudioPointer+=2;
+//        }
         recorder->process(recordBuffer, NULL, numberOfSamples);
         silence = !playerA->process(stereoBuffer, false, numberOfSamples, volB);
     }
@@ -254,6 +274,29 @@ bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples)
 }
 void SuperpoweredAudio::toggleRecord(bool record) {
     __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "toggleRecord called..");
+    JNIEnv * env;
+    bool attached = false;
+    switch (jvm->GetEnv((void**)&env, JNI_VERSION_1_6))
+    {
+        case JNI_OK:
+            break;
+        case JNI_EDETACHED:
+            if (jvm->AttachCurrentThread(&env, NULL)!=0)
+            {
+                throw std::runtime_error("Could not attach current thread");
+            }
+            attached = true;
+            break;
+        case JNI_EVERSION:
+            throw std::runtime_error("Invalid java version");
+    }
+    static const char *a = env->GetStringUTFChars(filePath, JNI_FALSE);
+    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudioMember", a);
+    //env->ReleaseStringUTFChars(filePath, a);
+    if (attached)
+    {
+        jvm->DetachCurrentThread();
+    }
 
     pthread_mutex_lock(&mutex);
     isRecording = record;
@@ -262,8 +305,9 @@ void SuperpoweredAudio::toggleRecord(bool record) {
 
         //playerA->open(musicpath, musicOffset, musicLength);
         //playerA->play(false);
-        const char *path = "/data/data/xyz.peast.beep/files/temp.wav";
-        recorder->start(path);
+        const char *path = "/data/data/xyz.peast.beep/files/testing.wav";
+        __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", a);
+        recorder->start(a);
     }
     else {
         __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "toggleRecord stopRecord");
@@ -304,7 +348,7 @@ extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_onFileChange(JNIEnv *
     const char *path = javaEnvironment->GetStringUTFChars(apkPath, JNI_FALSE);
     myAudio->onFileChange(path, fileOffset, fileLength);
     javaEnvironment->ReleaseStringUTFChars(apkPath, path);
-    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", path);
+    //__android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", path);
 
 }
 
@@ -338,13 +382,20 @@ extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_toggleRecord(JNIEnv
 extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_saveString(JNIEnv * __unused javaEnvironment, jobject __unused obj, jstring tempstring) {
     const char *filepath = javaEnvironment->GetStringUTFChars(tempstring, JNI_FALSE);
 
-    filePath = (jstring) javaEnvironment->NewGlobalRef(tempstring);
+    //filePath = (jstring) javaEnvironment->NewGlobalRef(tempstring);
     myAudio->setFileName(tempstring);
 }
 extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_printString(JNIEnv * __unused javaEnvironment, jobject __unused obj) {
     const char *filepath = javaEnvironment->GetStringUTFChars(filePath, JNI_FALSE);
     myAudio->printString();
     __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudioGlobal", filepath);
+}
+
+extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_setRecordPath(JNIEnv * javaEnvironment, jobject __unused obj, jstring path) {
+    filePath = (jstring) javaEnvironment->NewGlobalRef(path);
+//    const char *t = javaEnvironment->GetStringUTFChars(filePath, JNI_FALSE);
+//    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudioGlobal", t);
+//    javaEnvironment->ReleaseStringUTFChars(path, filepath);
 
 
 }
