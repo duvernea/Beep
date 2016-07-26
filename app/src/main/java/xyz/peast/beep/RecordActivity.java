@@ -54,6 +54,9 @@ public class RecordActivity extends AppCompatActivity  {
 
             final String path = getIntent().getStringExtra(MainActivity.TEMP_FILE_PATH);
             setUp();
+            String testString = "TESTING TESTING 123";
+            saveString(testString);
+            printString();
 
             //SurfaceView surfaceView = (SurfaceView) findViewById(R.id.waveform_surface);
             mGlSurfaceView = (GLSurfaceView) findViewById(R.id.glsurface_view);
@@ -70,7 +73,6 @@ public class RecordActivity extends AppCompatActivity  {
                         // normalized back to openGL -1 to +1 scale
                         final float normalizedX = (event.getX() / (float) v.getWidth()) * 2 - 1;
                         final float normalizedY = (event.getY() / (float) v.getHeight()) * 2 - 1;
-
 
                         if (event.getAction() == MotionEvent.ACTION_DOWN) {
                             mGlSurfaceView.queueEvent(new Runnable() {
@@ -168,7 +170,8 @@ public class RecordActivity extends AppCompatActivity  {
     private native void onPlayPause(String filepath, boolean play, int size);
     private native void onFileChange(String apkPath, int fileOffset, int fileLength );
     private native void toggleRecord(boolean record);
-
+    private native void saveString(String fileName);
+    private native void printString();
 
 
     static {

@@ -19,6 +19,8 @@ static jclass activityClass;
 static jobject activityObj;
 static jmethodID playbackEndCallback;
 
+static jstring filePath;
+
 
 
 
@@ -326,6 +328,17 @@ extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_onFileChange(JNIEnv
 extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_toggleRecord(JNIEnv * __unused javaEnvironment, jobject __unused obj, jboolean record) {
     myAudio->toggleRecord(record);
 }
+
+extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_saveString(JNIEnv * __unused javaEnvironment, jobject __unused obj, jstring tempstring) {
+    filePath = (jstring) javaEnvironment->NewGlobalRef(tempstring);
+}
+extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_printString(JNIEnv * __unused javaEnvironment, jobject __unused obj) {
+    const char *filepath = javaEnvironment->GetStringUTFChars(filePath, JNI_FALSE);
+
+    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", filepath);
+
+}
+
 extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_setUp(JNIEnv *javaEnvironment, jobject thisObj) {
     __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "RecordActivity setup");
 
