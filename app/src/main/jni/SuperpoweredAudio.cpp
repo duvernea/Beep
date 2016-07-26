@@ -10,8 +10,6 @@
 #include <android/native_window_jni.h>
 #include <string>
 
-
-
 static SuperpoweredAudio *myAudio = NULL;
 
 static JavaVM *jvm;
@@ -20,9 +18,6 @@ static jobject activityObj;
 static jmethodID playbackEndCallback;
 
 static jstring filePath;
-
-
-
 
 static void playerEventCallbackA(void *clientData, SuperpoweredAdvancedAudioPlayerEvent event, void * __unused value) {
     //__android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "playerCallbackA");
@@ -133,6 +128,17 @@ void SuperpoweredAudio::onFileChange(const char *path, int fileOffset, int fileL
     playerA->open(path);
     playerA->cachePosition(0, 255);
     pthread_mutex_unlock(&mutex);
+}
+void SuperpoweredAudio::setFileName(jstring x)  {
+    filename = x;
+
+}
+void SuperpoweredAudio::printString() {
+    JNIEnv *env;
+    jvm->AttachCurrentThread(&env, NULL);
+    const char *a = env->GetStringUTFChars(filePath, JNI_FALSE);
+    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudioMember", a);
+
 }
 
 void SuperpoweredAudio::onPlayPause(const char *path, bool play, int size) {
@@ -330,12 +336,16 @@ extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_toggleRecord(JNIEnv
 }
 
 extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_saveString(JNIEnv * __unused javaEnvironment, jobject __unused obj, jstring tempstring) {
+    const char *filepath = javaEnvironment->GetStringUTFChars(tempstring, JNI_FALSE);
+
     filePath = (jstring) javaEnvironment->NewGlobalRef(tempstring);
+    myAudio->setFileName(tempstring);
 }
 extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_printString(JNIEnv * __unused javaEnvironment, jobject __unused obj) {
     const char *filepath = javaEnvironment->GetStringUTFChars(filePath, JNI_FALSE);
+    myAudio->printString();
+    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudioGlobal", filepath);
 
-    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", filepath);
 
 }
 
@@ -371,7 +381,6 @@ extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_setUp(JNIEnv *javaE
 }
 extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_setUp(JNIEnv *javaEnvironment, jobject thisObj) {
     __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "MainActivity setup");
-
 
     javaEnvironment->GetJavaVM(&jvm);
 

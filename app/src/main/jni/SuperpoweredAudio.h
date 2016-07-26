@@ -11,6 +11,7 @@
 #include <SuperpoweredFlanger.h>
 #include <SuperpoweredRecorder.h>
 #include <AndroidIO/SuperpoweredAndroidAudioIO.h>
+#include <jni.h>
 
 #define HEADROOM_DECIBEL 3.0f
 static const float headroom = powf(10.0f, -HEADROOM_DECIBEL * 0.025f);
@@ -28,6 +29,8 @@ public:
 	void onFxValue(int value);
 	void onFileChange(const char *path, int fileOffset, int fileLength);
 	void toggleRecord(bool record);
+	void setFileName(jstring name);
+	void printString();
 
 private:
     pthread_mutex_t mutex;
@@ -42,6 +45,7 @@ private:
     unsigned char activeFx;
     float volA, volB;
 	bool isRecording;
+	jstring filename;
 };
 
 #endif
