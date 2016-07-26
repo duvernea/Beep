@@ -42,7 +42,7 @@ public class BeepDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_BOARD_TABLE = "CREATE TABLE " + BeepDbContract.BoardEntry.TABLE_NAME + " (" +
                 BeepDbContract.BoardEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 BeepDbContract.BoardEntry.COLUMN_NAME + " TEXT NOT NULL, " +
-                BeepDbContract.BeepEntry.COLUMN_DATE_CREATED + " INTEGER NOT NULL, " +
+                BeepDbContract.BoardEntry.COLUMN_DATE_CREATED + " INTEGER NOT NULL, " +
                 BeepDbContract.BoardEntry.COLUMN_IMAGE + " TEXT NOT NULL);";
         ;
 
