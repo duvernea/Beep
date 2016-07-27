@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mOverlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                animateButtonObject(100, false);
+                animateButtonObject(50, false);
                 mFabState = false;
 
             }
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         mFabState = true;
                         mOverlay.setVisibility(View.VISIBLE);
                         mAdditionalFab.setVisibility(View.VISIBLE);
-                        animateButtonObject(100, true);
+                        animateButtonObject(50, true);
                         return;
                     }
                     if (mFabState == true) {
@@ -176,39 +176,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                  Cursor cursor = (Cursor) parent.getItemAtPosition(position);
                  String beepName = cursor.getString(MainActivity.BEEPS_COL_NAME);
                  String audiofileName = cursor.getString(MainActivity.BEEPS_COL_AUDIO);
-//                 Log.d(TAG, audiofileName);
-//                 Toast.makeText(getApplicationContext(),
-//                         "Item Clicked: " + beepName, Toast.LENGTH_SHORT).show();
+
 
                  String path = "/data/data/xyz.peast.beep/files/" + audiofileName;
 
-                 //String path = mContext.getFilesDir().getpath + audiofileName;
-
-                 //Log.d(TAG, "file path: " + path);
-                 //File file = new File(path);
-                 //int size = (int) file.length();
-                 //byte[] bytes = new byte[size];
-
-//                 try {
-//                     BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
-//                     buf.read(bytes, 0, bytes.length);
-//                     buf.close();
-//                 } catch (FileNotFoundException e) {
-//                     // TODO Auto-generated catch block
-//                     e.printStackTrace();
-//                 } catch (IOException e) {
-//                     // TODO Auto-generated catch block
-//                     e.printStackTrace();
-//                 }
-                 //onFileChange(getPackageResourcePath(), fileAlength, fileAoffset);
-                 //Log.d(TAG, "Size: " + size);
-                 //int offset = 16384;
                  onFileChange(path, 0, 0);
                  //Log.d(TAG, "getPackageResourcePath: " + getPackageResourcePath());
                  mIsPlaying = !mIsPlaying;
-                 //onPlayPause(mIsPlaying);
                  Log.d(TAG, "mIsPlaying java: " + mIsPlaying);
-                mPath = path;
+                 mPath = path;
                  onPlayPause(path, mIsPlaying, 0);
              }
         });
@@ -283,13 +259,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         String path = mContext.getFilesDir().getPath() + uniqueID;
         //String path = "/data/data/xyz.peast.beep/files/" + uniqueID;
         // Arguments: path to the APK file, offset and length of the two resource files, sample rate, audio buffer size.
-        SuperpoweredAudio(Integer.parseInt(mSamplerateString), Integer.parseInt(mBuffersizeString), getPackageResourcePath()+"xx");
+        SuperpoweredAudio(Integer.parseInt(mSamplerateString), Integer.parseInt(mBuffersizeString));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        setUp();
+        setupAudio();
     }
 
     public void SuperpoweredExample_PlayPause(View button) {  // Play/pause.
@@ -411,18 +387,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mIsPlaying = false;
         //Log.d(TAG, "mIsPlaying: " + mIsPlaying);
     }
-
-    private native void setUp();
-
-    private native void SuperpoweredAudio(int samplerate, int buffersize, String apkPath);
-    private native void onPlayPause(String filepath, boolean play, int size);
-    private native void onFxSelect(int value);
-    private native void onFxOff();
-    private native void onFxValue(int value);
-    private native void onFileChange(String apkPath, int fileOffset, int fileLength );
-    static {
-        System.loadLibrary("SuperpoweredAudio");
-    }
     public void animateButtonObject(int duration, final boolean directionUp) {
         // fab = 56dp, fab margin = 16dp
         float translationPx = getResources().getDimension(R.dimen.fab_size) + getResources().getDimension(R.dimen.fab_margin);
@@ -430,7 +394,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         //.d(TAG, "translationDp: " + translationDp);
         // translationPx = Utility.dpToPx(translationDp);
         //Log.d(TAG, "translationPx: " + translationPx);
-
 
         float translationPixels;
         if (directionUp) {
@@ -441,12 +404,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
         mAdditionalFab.clearAnimation();
         ObjectAnimator animFab2 = ObjectAnimator.ofFloat(mAdditionalFab, "translationY", translationPixels);
-        animFab2.setStartDelay(100);
+        animFab2.setStartDelay(50);
         animFab2.setDuration(duration);
         ObjectAnimator animFab2TextView = ObjectAnimator.ofFloat(mAdditionalFabTextView,
                 "translationY",
                 translationPixels);
-        animFab2TextView.setStartDelay(100);
+        animFab2TextView.setStartDelay(50);
         animFab2TextView.setDuration(duration);
         animFab2.start();
         animFab2TextView.start();
@@ -464,7 +427,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     mOverlay.setVisibility(View.INVISIBLE);
                     mMainFab.setImageResource(R.drawable.ic_add_white_24dp);
                 }
-
             }
             @Override
             public void onAnimationStart(Animator animation) {}
@@ -473,5 +435,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             @Override
             public void onAnimationRepeat(Animator animation) {}
         });
+    }
+
+
+    // Native Audio - Load library and Functions
+    private native void setupAudio();
+    private native void SuperpoweredAudio(int samplerate, int buffersize);
+    private native void onPlayPause(String filepath, boolean play, int size);
+    private native void onFxSelect(int value);
+    private native void onFxOff();
+    private native void onFxValue(int value);
+    private native void onFileChange(String apkPath, int fileOffset, int fileLength );
+    static {
+        System.loadLibrary("SuperpoweredAudio");
     }
 }

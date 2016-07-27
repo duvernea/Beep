@@ -19,7 +19,7 @@ static const float headroom = powf(10.0f, -HEADROOM_DECIBEL * 0.025f);
 class SuperpoweredAudio {
 public:
 
-	SuperpoweredAudio(unsigned int samplerate, unsigned int buffersize, const char *path);
+	SuperpoweredAudio(unsigned int samplerate, unsigned int buffersize);
 	~SuperpoweredAudio();
 
 	bool process(short int *output, unsigned int numberOfSamples);
@@ -43,7 +43,7 @@ private:
     float *stereoBuffer;
 	float *recordBuffer;
     unsigned char activeFx;
-    float volA, volB;
+    float volA;
 	bool isRecording;
 	jstring filename;
 };

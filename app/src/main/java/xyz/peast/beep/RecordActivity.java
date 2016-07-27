@@ -63,14 +63,8 @@ public class RecordActivity extends AppCompatActivity {
 
             // Superpowered Audio Setup
             final String path = getIntent().getStringExtra(MainActivity.TEMP_FILE_PATH);
-            setUp();
-            //superAudio = new SuperAudio(this);
-            //superAudio.setUp();
-            //superAudio.set
-            //SuperAudio.setUp();
-            //String testString = "TESTING TESTING 123";
-            //saveString(testString);
-            //printString();
+            setupAudio();
+
             String uniqueID = UUID.randomUUID().toString();
             String recordDir = mContext.getFilesDir().getAbsolutePath();
             mRecordFilePath = recordDir + "/" + uniqueID + "TESTJAVA";
@@ -118,16 +112,9 @@ public class RecordActivity extends AppCompatActivity {
                 }
             });
             mRendererSet = true;
-
-
             //surfaceView.getHolder().addCallback(this);
-
-
-
             mRecordButton = (Button) findViewById(R.id.record_button);
             mRecordButton.setOnClickListener(new View.OnClickListener() {
-
-
                 @Override
                 public void onClick(View v) {
                     Log.d(TAG, "mIsPlaying: " + mIsPlaying);
@@ -146,7 +133,6 @@ public class RecordActivity extends AppCompatActivity {
                             mRecordButton.setText("Stop Recording");
                             mRecordButton.setBackgroundColor(ContextCompat.getColor(mContext, R.color.recordButtonStopRecording));
                         }
-
                     }
                 }
             });
@@ -173,27 +159,27 @@ public class RecordActivity extends AppCompatActivity {
             Log.e("OpenGLES 2", "Your device doesn't support ES2. )" + info.reqGlEsVersion + ")");
         }
     }
-    public class MyReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Toast.makeText(context, "Playback ended.", Toast.LENGTH_LONG).show();
-        }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setupAudio();
+        mIsRecording = false;
+        mIsPlaying =false;
     }
+
     private void playbackEndCallback() {
-        //Toast.makeText(mContext, "Callback", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Played file ended");
         mIsPlaying = false;
         //Log.d(TAG, "mIsPlaying: " + mIsPlaying);
     }
 
-    private native void setUp();
+    private native void setupAudio();
 
-    private native void SuperpoweredAudio(int samplerate, int buffersize, String apkPath);
+    private native void SuperpoweredAudio(int samplerate, int buffersize);
     private native void onPlayPause(String filepath, boolean play, int size);
     private native void onFileChange(String apkPath, int fileOffset, int fileLength );
     private native void toggleRecord(boolean record);
-    private native void saveString(String fileName);
-    private native void printString();
+
     private native void setRecordPath(String path);
 
     static {
