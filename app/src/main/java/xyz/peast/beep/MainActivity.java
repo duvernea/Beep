@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     // false = normal activity. true = extra fab
     private FloatingActionButton mMainFab;
     private FloatingActionButton mAdditionalFab;
-    private boolean mFabState = false;
+    private boolean mFabMenuState = false;
     private TextView mMainFabTextView;
     private TextView mAdditionalFabTextView;
 
@@ -134,9 +134,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mOverlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                animateButtonObject(50, false);
-                mFabState = false;
-
+                animateButtonObject(100, false);
+                mFabMenuState = false;
             }
         });
 
@@ -148,18 +147,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             mMainFab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (mFabState == false) {
-                        mFabState = true;
-                        mOverlay.setVisibility(View.VISIBLE);
-                        mAdditionalFab.setVisibility(View.VISIBLE);
-                        animateButtonObject(50, true);
-                        return;
-                    }
-                    if (mFabState == true) {
-                        Intent intent = new Intent(mContext, RecordActivity.class);
-                        intent.putExtra(TEMP_FILE_PATH, mPath);
-                        startActivity(intent);
-                    }
+                    setMenuState(mFabMenuState);
+
                 }
             });
 
@@ -266,6 +255,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onResume() {
         super.onResume();
         setupAudio();
+        resetMenuState();
     }
 
     public void SuperpoweredExample_PlayPause(View button) {  // Play/pause.
@@ -386,6 +376,27 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Log.d(TAG, "Played file ended");
         mIsPlaying = false;
         //Log.d(TAG, "mIsPlaying: " + mIsPlaying);
+    }
+
+    private void resetMenuState() {
+        mFabMenuState = false;
+        mOverlay.setVisibility(View.INVISIBLE);
+        mAdditionalFab.setVisibility(View.INVISIBLE);
+        mMainFab.setImageResource(R.drawable.ic_add_white_24dp);
+    }
+    private void setMenuState(boolean fabMenuState) {
+        if (!fabMenuState) {
+            mFabMenuState = true;
+            mOverlay.setVisibility(View.VISIBLE);
+            mAdditionalFab.setVisibility(View.VISIBLE);
+            animateButtonObject(50, true);
+            return;
+        }
+        if (fabMenuState) {
+            Intent intent = new Intent(mContext, RecordActivity.class);
+            intent.putExtra(TEMP_FILE_PATH, mPath);
+            startActivity(intent);
+        }
     }
     public void animateButtonObject(int duration, final boolean directionUp) {
         // fab = 56dp, fab margin = 16dp
