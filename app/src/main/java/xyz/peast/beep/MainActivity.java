@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    private static final String FAB_MENU_STATE = "fab_menu_state";
+
     public static final int TOP_BEEPS_LOADER = 0;
     public static final int BOARDS_LOADER = 1;
 
@@ -114,6 +116,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public static final String TEMP_FILE_PATH = "file_path";
     private String mPath;
 
+    private boolean mDeviceRotated = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +134,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setSupportActionBar(toolbar);
 
         mOverlay = (FrameLayout) findViewById(R.id.frame_overlay);
+        mMainFab = (FloatingActionButton) findViewById(R.id.fab);
+        mAdditionalFab = (FloatingActionButton) findViewById(R.id.fab2);
+        mMainFabTextView = (TextView) findViewById(R.id.fab_textview_record_beep);
+        mAdditionalFabTextView = (TextView) findViewById(R.id.fab_textview_create_board);
+
 
         mOverlay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,18 +148,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         });
 
-        mMainFab = (FloatingActionButton) findViewById(R.id.fab);
-        mAdditionalFab = (FloatingActionButton) findViewById(R.id.fab2);
-        mMainFabTextView = (TextView) findViewById(R.id.fab_textview_record_beep);
-        mAdditionalFabTextView = (TextView) findViewById(R.id.fab_textview_create_board);
 
-            mMainFab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    setMenuState(mFabMenuState);
+        mMainFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setMenuState(mFabMenuState);
 
-                }
-            });
+            }
+        });
 
         getLoaderManager().initLoader(TOP_BEEPS_LOADER, null, this);
         getLoaderManager().initLoader(BOARDS_LOADER, null, this);
@@ -205,57 +210,44 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // Get the device's sample rate and buffer size to enable low-latency Android audio output, if available.
         // get the min buffer size
         // check if recording is possible
+
         queryNativeAudioParameters();
         Log.d(TAG, "sampleRateString: " + mSamplerateString);
         Log.d(TAG, "buffersizeString: " + mBuffersizeString);
 
-        // NOTE: This is temp code that will be deleted
-
-        // Files under res/raw are not zipped, just copied into the APK. Get the offset and length to know where our files are located.
-
-        AssetFileDescriptor fd0 = getResources().openRawResourceFd(R.raw.lycka), fd1 = getResources().openRawResourceFd(R.raw.king);
-
-        int fileAoffset = (int)fd0.getStartOffset(), fileAlength = (int)fd0.getLength(), fileBoffset = (int)fd1.getStartOffset(), fileBlength = (int)fd1.getLength();
-        try {
-            fd0.getParcelFileDescriptor().close();
-            fd1.getParcelFileDescriptor().close();
-        } catch (IOException e) {
-            android.util.Log.d("", "Close error.");
-        }
-        String uniqueID = UUID.randomUUID().toString();
-        uniqueID += ".mp3";
-        Log.d(TAG, "getresourcepath: " + getPackageResourcePath());
-        InputStream in = mContext.getResources().openRawResource(R.raw.beep);
-        OutputStream out = null;
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        int size = 0;
-        byte[] buffer = new byte[1024];
-
-        try {
-            while ((size = in.read(buffer, 0, 1024)) >=0) {
-                outputStream.write(buffer, 0, size);
-            }
-            in.close();
-            buffer=outputStream.toByteArray();
-
-            FileOutputStream fos = mContext.openFileOutput(uniqueID, Context.MODE_PRIVATE);
-            fos.write(buffer);
-            fos.close();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        String path = mContext.getFilesDir().getPath() + uniqueID;
-        //String path = "/data/data/xyz.peast.beep/files/" + uniqueID;
-        // Arguments: path to the APK file, offset and length of the two resource files, sample rate, audio buffer size.
         SuperpoweredAudio(Integer.parseInt(mSamplerateString), Integer.parseInt(mBuffersizeString));
+
+        if (savedInstanceState != null) {
+            mFabMenuState = savedInstanceState.getBoolean(FAB_MENU_STATE);
+            if (mFabMenuState) {
+                mOverlay.setVisibility(View.VISIBLE);
+                mAdditionalFab.setVisibility(View.VISIBLE);
+                animateButtonObject(0, true);
+            }
+            mDeviceRotated = true;
+        }
+        else {
+            mDeviceRotated = false;
+        }
+
     }
 
     @Override
     protected void onResume() {
+        Log.d(TAG, "onResume run");
         super.onResume();
         setupAudio();
-        resetMenuState();
+        // Back button from other activity / etc - reset the menu state
+        if (!mDeviceRotated) {
+            Log.d(TAG, "onResume back button pushed");
+            resetMenuState();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(FAB_MENU_STATE, mFabMenuState);
     }
 
     public void SuperpoweredExample_PlayPause(View button) {  // Play/pause.
@@ -379,10 +371,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void resetMenuState() {
-        mFabMenuState = false;
-        mOverlay.setVisibility(View.INVISIBLE);
-        mAdditionalFab.setVisibility(View.INVISIBLE);
-        mMainFab.setImageResource(R.drawable.ic_add_white_24dp);
+            mFabMenuState = false;
+            mOverlay.setVisibility(View.INVISIBLE);
+            mAdditionalFab.setVisibility(View.INVISIBLE);
+            mMainFab.setImageResource(R.drawable.ic_add_white_24dp);
     }
     private void setMenuState(boolean fabMenuState) {
         if (!fabMenuState) {
@@ -395,6 +387,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (fabMenuState) {
             Intent intent = new Intent(mContext, RecordActivity.class);
             intent.putExtra(TEMP_FILE_PATH, mPath);
+            mDeviceRotated = false;
             startActivity(intent);
         }
     }
