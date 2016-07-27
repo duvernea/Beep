@@ -1,7 +1,9 @@
 package xyz.peast.beep;
 
 import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.support.v4.content.ContextCompat;
@@ -11,6 +13,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -19,7 +22,7 @@ import java.util.UUID;
 
 import xyz.peast.beep.gles.RendererWrapper;
 
-public class RecordActivity extends AppCompatActivity  {
+public class RecordActivity extends AppCompatActivity {
 
     private static final String TAG = RecordActivity.class.getSimpleName();
 
@@ -37,6 +40,8 @@ public class RecordActivity extends AppCompatActivity  {
     private boolean mRendererSet = false;
 
     private String mRecordFilePath;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,16 +61,22 @@ public class RecordActivity extends AppCompatActivity  {
                     .build();
             mAdView.loadAd(adRequest);
 
+            // Superpowered Audio Setup
             final String path = getIntent().getStringExtra(MainActivity.TEMP_FILE_PATH);
             setUp();
+            //superAudio = new SuperAudio(this);
+            //superAudio.setUp();
+            //superAudio.set
+            //SuperAudio.setUp();
             //String testString = "TESTING TESTING 123";
             //saveString(testString);
             //printString();
             String uniqueID = UUID.randomUUID().toString();
             String recordDir = mContext.getFilesDir().getAbsolutePath();
-            mRecordFilePath = recordDir + "/" + "TESTJAVA";
+            mRecordFilePath = recordDir + "/" + uniqueID + "TESTJAVA";
             Log.d(TAG, "Record Path: " + mRecordFilePath);
             setRecordPath(mRecordFilePath);
+            //SuperAudio.setRecordPath(mRecordFilePath);
 
             //SurfaceView surfaceView = (SurfaceView) findViewById(R.id.waveform_surface);
             mGlSurfaceView = (GLSurfaceView) findViewById(R.id.glsurface_view);
@@ -161,14 +172,16 @@ public class RecordActivity extends AppCompatActivity  {
         else {
             Log.e("OpenGLES 2", "Your device doesn't support ES2. )" + info.reqGlEsVersion + ")");
         }
-
-
-
     }
-
+    public class MyReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context, "Playback ended.", Toast.LENGTH_LONG).show();
+        }
+    }
     private void playbackEndCallback() {
         //Toast.makeText(mContext, "Callback", Toast.LENGTH_SHORT).show();
-        //Log.d(TAG, "Played file ended");
+        Log.d(TAG, "Played file ended");
         mIsPlaying = false;
         //Log.d(TAG, "mIsPlaying: " + mIsPlaying);
     }
@@ -182,7 +195,6 @@ public class RecordActivity extends AppCompatActivity  {
     private native void saveString(String fileName);
     private native void printString();
     private native void setRecordPath(String path);
-
 
     static {
         System.loadLibrary("SuperpoweredAudio");

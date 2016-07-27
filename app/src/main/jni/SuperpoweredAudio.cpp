@@ -1,4 +1,5 @@
 #include "SuperpoweredAudio.h"
+#include "jniapi.h.h"
 #include <SuperpoweredSimple.h>
 #include <jni.h>
 #include <stdio.h>
@@ -18,6 +19,9 @@ static jobject activityObj;
 static jmethodID playbackEndCallback;
 
 static jstring filePath;
+
+// New function declarations
+void setup(JNIEnv *javaEnvironment, jobject thisObj);
 
 static void playerEventCallbackA(void *clientData, SuperpoweredAdvancedAudioPlayerEvent event, void * __unused value) {
     //__android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "playerCallbackA");
@@ -396,57 +400,34 @@ extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_setRecordPath(JNIEn
 //    const char *t = javaEnvironment->GetStringUTFChars(filePath, JNI_FALSE);
 //    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudioGlobal", t);
 //    javaEnvironment->ReleaseStringUTFChars(path, filepath);
-
-
 }
 
 extern "C" JNIEXPORT void Java_xyz_peast_beep_RecordActivity_setUp(JNIEnv *javaEnvironment, jobject thisObj) {
-    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "RecordActivity setup");
-
-    javaEnvironment->GetJavaVM(&jvm);
-
-    // print out class name
-    jclass cls = javaEnvironment->GetObjectClass(thisObj);
-    jmethodID mid = javaEnvironment->GetMethodID(cls, "getClass", "()Ljava/lang/Class;");
-    jobject clsObj = javaEnvironment->CallObjectMethod(thisObj, mid);
-    cls = javaEnvironment->GetObjectClass(clsObj);
-    mid = javaEnvironment->GetMethodID(cls, "getName", "()Ljava/lang/String;");
-    jstring strObj = (jstring)javaEnvironment->CallObjectMethod(clsObj, mid);
-    const char* str = javaEnvironment->GetStringUTFChars(strObj, NULL);
-    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", str);
-    javaEnvironment->ReleaseStringUTFChars(strObj, str);
-
-    jclass thisClass = (javaEnvironment)->GetObjectClass(thisObj);
-    if (activityClass == NULL) {
-        activityClass = (jclass) javaEnvironment->NewGlobalRef(thisClass);
-        activityObj = javaEnvironment->NewGlobalRef(thisObj);
-    }
-    else if (activityClass != thisClass){
-        activityClass = (jclass) javaEnvironment->NewGlobalRef(thisClass);
-        activityObj = javaEnvironment->NewGlobalRef(thisObj);
-    }
-    (javaEnvironment)->DeleteLocalRef(thisClass);
-//    if (NULL == playbackEndCallback) {
-//        playbackEndCallbackRecord = (javaEnvironment)->GetMethodID(activityClass, "playbackEndCallbackRecord", "()V");
-//    }
+    setup(javaEnvironment, thisObj);
 }
 extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_setUp(JNIEnv *javaEnvironment, jobject thisObj) {
-    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "MainActivity setup");
+    setup(javaEnvironment, thisObj);
+}
 
+/* Helper Functions */
+// Set the static Activity Class to be the current activity
+void setup(JNIEnv *javaEnvironment, jobject thisObj) {
     javaEnvironment->GetJavaVM(&jvm);
 
-    // print out class name
-    jclass cls = javaEnvironment->GetObjectClass(thisObj);
-    jmethodID mid = javaEnvironment->GetMethodID(cls, "getClass", "()Ljava/lang/Class;");
-    jobject clsObj = javaEnvironment->CallObjectMethod(thisObj, mid);
-    cls = javaEnvironment->GetObjectClass(clsObj);
-    mid = javaEnvironment->GetMethodID(cls, "getName", "()Ljava/lang/String;");
-    jstring strObj = (jstring)javaEnvironment->CallObjectMethod(clsObj, mid);
-    const char* str = javaEnvironment->GetStringUTFChars(strObj, NULL);
-    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", str);
-    javaEnvironment->ReleaseStringUTFChars(strObj, str);
+/*************     Print Activity Class Name     *********************************
+//    jclass cls = javaEnvironment->GetObjectClass(thisObj);
+//    jmethodID mid = javaEnvironment->GetMethodID(cls, "getClass", "()Ljava/lang/Class;");
+//    jobject clsObj = javaEnvironment->CallObjectMethod(thisObj, mid);
+//    cls = javaEnvironment->GetObjectClass(clsObj);
+//    mid = javaEnvironment->GetMethodID(cls, "getName", "()Ljava/lang/String;");
+//    jstring strObj = (jstring)javaEnvironment->CallObjectMethod(clsObj, mid);
+//    const char* str = javaEnvironment->GetStringUTFChars(strObj, NULL);
+//    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", str);
+//    javaEnvironment->ReleaseStringUTFChars(strObj, str);
+ *********************************************************************************/
 
     jclass thisClass = (javaEnvironment)->GetObjectClass(thisObj);
+
     if (activityClass == NULL) {
         activityClass = (jclass) javaEnvironment->NewGlobalRef(thisClass);
         activityObj = javaEnvironment->NewGlobalRef(thisObj);
@@ -456,7 +437,5 @@ extern "C" JNIEXPORT void Java_xyz_peast_beep_MainActivity_setUp(JNIEnv *javaEnv
         activityObj = javaEnvironment->NewGlobalRef(thisObj);
     }
     (javaEnvironment)->DeleteLocalRef(thisClass);
-//    if (NULL == playbackEndCallback) {
-//        playbackEndCallbackRecord = (javaEnvironment)->GetMethodID(activityClass, "playbackEndCallback", "()V");
-//    }
+
 }

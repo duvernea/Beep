@@ -409,7 +409,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         //Toast.makeText(mContext, "Callback", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Played file ended");
         mIsPlaying = false;
-        Log.d(TAG, "mIsPlaying: " + mIsPlaying);
+        //Log.d(TAG, "mIsPlaying: " + mIsPlaying);
     }
 
     private native void setUp();
