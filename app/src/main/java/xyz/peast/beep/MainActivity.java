@@ -116,7 +116,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public static final String TEMP_FILE_PATH = "file_path";
     private String mPath;
 
-    private boolean mDeviceRotated = false;
 
 
     @Override
@@ -153,7 +152,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             @Override
             public void onClick(View view) {
                 setMenuState(mFabMenuState);
-
             }
         });
 
@@ -164,23 +162,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mTopBeepsGridView = (GridView) findViewById(R.id.top_beeps_gridview);
         mTopBeepsGridView.setAdapter(mBeepAdapter);
         mTopBeepsGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-             @Override
-             public void onItemClick(AdapterView<?> parent, View view,
-                                     int position, long id) {
-                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
-                 String beepName = cursor.getString(MainActivity.BEEPS_COL_NAME);
-                 String audiofileName = cursor.getString(MainActivity.BEEPS_COL_AUDIO);
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                Cursor cursor = (Cursor) parent.getItemAtPosition(position);
+                String beepName = cursor.getString(MainActivity.BEEPS_COL_NAME);
+                String audiofileName = cursor.getString(MainActivity.BEEPS_COL_AUDIO);
 
 
-                 String path = "/data/data/xyz.peast.beep/files/" + audiofileName;
+                String path = "/data/data/xyz.peast.beep/files/" + audiofileName;
 
-                 onFileChange(path, 0, 0);
-                 //Log.d(TAG, "getPackageResourcePath: " + getPackageResourcePath());
-                 mIsPlaying = !mIsPlaying;
-                 Log.d(TAG, "mIsPlaying java: " + mIsPlaying);
-                 mPath = path;
-                 onPlayPause(path, mIsPlaying, 0);
-             }
+                onFileChange(path, 0, 0);
+                //Log.d(TAG, "getPackageResourcePath: " + getPackageResourcePath());
+                mIsPlaying = !mIsPlaying;
+                Log.d(TAG, "mIsPlaying java: " + mIsPlaying);
+                mPath = path;
+                onPlayPause(path, mIsPlaying, 0);
+            }
         });
 
         mBoardAdapter = new BoardAdapter(mContext, null, 0);
@@ -192,11 +190,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         mBoardsRecyclerViewAdapter = new BoardRecyclerViewAdapter(mContext,
                 new BoardRecyclerViewAdapter.BoardAdapterOnClickHandler() {
-            @Override
-            public void onClick(BoardRecyclerViewAdapter.BoardViewHolder vh) {
-                Toast.makeText(mContext, "recyclerview clicked " + vh.getAdapterPosition(), Toast.LENGTH_SHORT).show();
-            }
-        }, null, 0);
+                    @Override
+                    public void onClick(BoardRecyclerViewAdapter.BoardViewHolder vh) {
+                        Toast.makeText(mContext, "recyclerview clicked " + vh.getAdapterPosition(), Toast.LENGTH_SHORT).show();
+                    }
+                }, null, 0);
 
         mBoardsRecyclerView = (RecyclerView) findViewById(R.id.boards_recyclerview);
         mBoardsRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
@@ -219,36 +217,25 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         if (savedInstanceState != null) {
             mFabMenuState = savedInstanceState.getBoolean(FAB_MENU_STATE);
-            if (mFabMenuState) {
-                mOverlay.setVisibility(View.VISIBLE);
-                mAdditionalFab.setVisibility(View.VISIBLE);
-                animateButtonObject(0, true);
-            }
-            mDeviceRotated = true;
         }
-        else {
-            mDeviceRotated = false;
-        }
-
     }
 
     @Override
     protected void onResume() {
         Log.d(TAG, "onResume run");
         super.onResume();
+        resetMenuState(mFabMenuState);
         setupAudio();
         // Back button from other activity / etc - reset the menu state
-        if (!mDeviceRotated) {
-            Log.d(TAG, "onResume back button pushed");
-            resetMenuState();
-        }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(FAB_MENU_STATE, mFabMenuState);
+        mFabMenuState = false;
     }
+
 
     public void SuperpoweredExample_PlayPause(View button) {  // Play/pause.
 
@@ -370,12 +357,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         //Log.d(TAG, "mIsPlaying: " + mIsPlaying);
     }
 
-    private void resetMenuState() {
-            mFabMenuState = false;
+    private void resetMenuState(boolean fabstate) {
+        if (!fabstate) {
             mOverlay.setVisibility(View.INVISIBLE);
             mAdditionalFab.setVisibility(View.INVISIBLE);
             mMainFab.setImageResource(R.drawable.ic_add_white_24dp);
+        }
+        else {
+            mOverlay.setVisibility(View.VISIBLE);
+            mAdditionalFab.setVisibility(View.VISIBLE);
+            animateButtonObject(0, true);
+        }
     }
+
     private void setMenuState(boolean fabMenuState) {
         if (!fabMenuState) {
             mFabMenuState = true;
@@ -387,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (fabMenuState) {
             Intent intent = new Intent(mContext, RecordActivity.class);
             intent.putExtra(TEMP_FILE_PATH, mPath);
-            mDeviceRotated = false;
+            mFabMenuState = false;
             startActivity(intent);
         }
     }
