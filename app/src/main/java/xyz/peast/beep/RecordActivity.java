@@ -41,8 +41,6 @@ public class RecordActivity extends AppCompatActivity {
 
     private String mRecordFilePath;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -165,6 +163,13 @@ public class RecordActivity extends AppCompatActivity {
         setupAudio();
         mIsRecording = false;
         mIsPlaying =false;
+        mGlSurfaceView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mGlSurfaceView.onPause();
     }
 
     private void playbackEndCallback() {
