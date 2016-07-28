@@ -25,6 +25,9 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
 
     private static final String TAG = RendererWrapper.class.getSimpleName();
 
+    private final float leftBound = -1f;
+    private final float rightBound = 1f;
+
     private Context mContext;
 
     private boolean malletPressed = false;
@@ -76,8 +79,8 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
         mMallet = new Mallet(0.08f, .15f, 32);
         blueMalletPosition = new Geometry.Point(0f, mMallet.height / 2f, .4f);
 
-        mBarLeft = new Bar(Bar.BAR_LEFT,.04f, .2f);
-        mBarRight = new Bar(Bar.BAR_RIGHT, .04f, .2f);
+        mBarLeft = new Bar(Bar.BAR_LEFT,.04f, .1f);
+        mBarRight = new Bar(Bar.BAR_RIGHT, .04f, .1f);
         leftBarPosition = new Geometry.Point(0f, 0f, 0f);
         rightBarPosition = new Geometry.Point(0f, 0f, 0f);
 
@@ -197,12 +200,12 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
         Log.d(TAG, "Leftbarposition: " + leftBarPosition.x);
         float adjustedX = normalizedX * aspectRatio;
         Log.d(TAG, "Adjusted X = " + adjustedX);
-        if (Math.abs(leftBarPosition.x - adjustedX) < .3) {
+        if (Math.abs(leftBarPosition.x - adjustedX) < .2) {
             Log.d(TAG, "Leftbarpressed");
             leftBarPressed = true;
 
         }
-        if (Math.abs(rightBarPosition.x - adjustedX) < .3) {
+        if (Math.abs(rightBarPosition.x - adjustedX) < .2) {
             Log.d(TAG, "Rightbarpressed");
             rightBarPressed = true;
 
@@ -211,17 +214,30 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
         //Sphere malletBoundingSphere
     }
     public void handleTouchDrag(float normalizedX, float normalizedY) {
+        // Minimum left to right bar separation
+        float minBarSeparation = .3f;
         Log.d(TAG, "Touch Drag event X = " + normalizedX );
         Log.d(TAG, "Touch Drag event Y = " + normalizedY );
         if (leftBarPressed) {
             //leftBarPosition =
             //Log.d(TAG, leftBarPressed and dragged)
-            leftBarPosition = new Geometry.Point(aspectRatio*normalizedX, normalizedY, 0);
+            leftBarPosition = new Geometry.Point(
+                    clamp(normalizedX*aspectRatio, leftBound*aspectRatio, rightBarPosition.x-minBarSeparation),
+                    normalizedY,
+                    0);
+            //leftBarPosition = new Geometry.Point(aspectRatio*normalizedX, normalizedY, 0);
         }
         if (rightBarPressed) {
             //leftBarPosition =
             //Log.d(TAG, leftBarPressed and dragged)
-            rightBarPosition = new Geometry.Point(aspectRatio*normalizedX, normalizedY, 0);
+            rightBarPosition = new Geometry.Point(
+                    clamp(normalizedX*aspectRatio, leftBarPosition.x+minBarSeparation, rightBound*aspectRatio),
+                    normalizedY,
+                    0);
+            //rightBarPosition = new Geometry.Point(aspectRatio*normalizedX, normalizedY, 0);
         }
+    }
+    private float clamp(float value, float min, float max) {
+        return Math.min(max, Math.max(value, min));
     }
 }
