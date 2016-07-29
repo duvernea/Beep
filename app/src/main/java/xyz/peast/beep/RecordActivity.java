@@ -30,6 +30,9 @@ public class RecordActivity extends AppCompatActivity {
     private Button mRecordButton;
     private Button mPlayButton;
 
+    private Button mNextButton;
+    private Button mRedoButton;
+
     private boolean mIsRecording = false;
 
     private boolean mIsPlaying =false;
@@ -55,6 +58,9 @@ public class RecordActivity extends AppCompatActivity {
         boolean supportES2 = (info.reqGlEsVersion >= 0x20000);
         if (supportES2) {
             mContext = this;
+
+            mRedoButton = (Button) findViewById(R.id.redo_record_button);
+            mNextButton = (Button) findViewById(R.id.next_button);
 
             mAdView = (AdView) findViewById(R.id.adview);
             AdRequest adRequest = new AdRequest.Builder()
@@ -125,26 +131,15 @@ public class RecordActivity extends AppCompatActivity {
             mRecordButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "mIsPlaying: " + mIsPlaying);
-                    if (!mIsPlaying) {
-                        Log.d(TAG, "mIsRecording: " + mIsRecording);
-                        mIsRecording = !mIsRecording;
-                        if (!mIsRecording) {
-                            //mIsRecording = !mIsRecording;
-                            toggleRecord(mIsRecording);
-                            mRecordButton.setText("Start Recording");
-                            mRecordButton.setBackgroundColor(ContextCompat.getColor(mContext, R.color.recordButtonStartRecording));
-                        }
-                        if (mIsRecording) {
-                            //mIsRecording = !mIsRecording;
-                            toggleRecord(mIsRecording);
-                            mRecordButton.setText("Stop Recording");
-                            mRecordButton.setBackgroundColor(ContextCompat.getColor(mContext, R.color.recordButtonStopRecording));
-                        }
-                    }
+                    handleRecordButtonPress();
                 }
             });
-
+            mRedoButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    handleRedoButtonPress();
+                }
+            });
             mPlayButton = (Button) findViewById(R.id.play_button);
             mPlayButton.setOnClickListener(new View.OnClickListener() {
 
@@ -180,6 +175,49 @@ public class RecordActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         mGlSurfaceView.onPause();
+    }
+    private void setMenuState(boolean state) {
+        if (state) {
+            mRecordButton.setVisibility(View.GONE);
+            mRedoButton.setVisibility(View.VISIBLE);
+            mNextButton.setVisibility(View.VISIBLE);
+        }
+        else {
+            mRecordButton.setVisibility(View.VISIBLE);
+            mRedoButton.setVisibility(View.GONE);
+            mNextButton.setVisibility(View.GONE);
+        }
+    }
+    private void handleRecordButtonPress() {
+        Log.d(TAG, "mIsPlaying: " + mIsPlaying);
+        if (!mIsPlaying) {
+            Log.d(TAG, "mIsRecording: " + mIsRecording);
+            mIsRecording = !mIsRecording;
+            if (!mIsRecording) {
+                //mIsRecording = !mIsRecording;
+                toggleRecord(mIsRecording);
+                mMenuState = true;
+                setMenuState(mMenuState);
+                //mRecordButton.setText("Start Recording");
+                //mRecordButton.setBackgroundColor(ContextCompat.getColor(mContext, R.color.recordButtonStartRecording));
+            }
+            if (mIsRecording) {
+                //mIsRecording = !mIsRecording;
+                toggleRecord(mIsRecording);
+                mRecordButton.setText("Stop Recording");
+                mRecordButton.setBackgroundColor(ContextCompat.getColor(mContext, R.color.recordButtonStopRecording));
+            }
+        }
+    }
+    private void handleRedoButtonPress() {
+        if (!mIsPlaying) {
+            mMenuState = false;
+            mIsRecording = true;
+            mRecordButton.setText("Stop Recording");
+            mRecordButton.setBackgroundColor(ContextCompat.getColor(mContext, R.color.recordButtonStopRecording));
+            setMenuState(mMenuState);
+            toggleRecord(mIsRecording);
+        }
     }
 
     private void playbackEndCallback() {

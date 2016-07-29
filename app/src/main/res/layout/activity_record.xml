@@ -43,13 +43,18 @@
     <Button
         android:layout_width="0dp"
         android:layout_height="64dp"
+        android:id="@+id/redo_record_button"
         android:text="@string/redo_recording"
+        android:background="@color/recordButtonStopRecording"
+
         android:visibility="gone"
         android:layout_weight="1" />
     <Button
         android:layout_width="0dp"
         android:layout_height="64dp"
+        android:id="@+id/next_button"
         android:text="@string/next_recording"
+        android:background="@color/recordButtonStartRecording"
         android:visibility="gone"
         android:layout_weight="1" />
 </LinearLayout>
