@@ -11,6 +11,8 @@
     // Record Activity
     <string name="record">Start Recording</string>
     <string name="next">Next</string>
+    <string name="redo_recording">Redo</string>
+    <string name="next_recording">Next</string>
 
     // Main Activity
     <string name="fab_record_beep_text">Record a Beep</string>

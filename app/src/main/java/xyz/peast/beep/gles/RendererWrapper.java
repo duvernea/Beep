@@ -125,7 +125,7 @@ public class RendererWrapper implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 gl) {
 
-        //Log.d(TAG, "onDrawFrame");
+        Log.d(TAG, "onDrawFrame");
         // sets background color - clear color buffer is the thing you see
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
         Matrix.setIdentityM(modelMatrix, 0);

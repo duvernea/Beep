@@ -7,7 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="xyz.peast.beep.RecordActivity">
-
     <android.opengl.GLSurfaceView
         android:layout_width="match_parent"
         android:layout_height="200dp"
@@ -23,28 +22,45 @@
         <!--android:layout_below="@id/glsurface_view"-->
         <!--android:visibility="invisible"-->
         <!--/>-->
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/glsurface_view"
+    android:id="@+id/button_frame_layout"
+    android:orientation="horizontal"
+    android:gravity="center_horizontal">
+    // Initial Start Recording Button
     <Button
         android:id="@+id/record_button"
         android:layout_width="160dp"
         android:layout_height="64dp"
         android:text="@string/record"
         android:gravity="center"
-        android:layout_below="@+id/glsurface_view"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
-        android:layout_centerHorizontal="true"
         android:background="@color/recordButtonStartRecording"
-        />
+        android:visibility="visible" />
+    <Button
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:text="@string/redo_recording"
+        android:visibility="gone"
+        android:layout_weight="1" />
+    <Button
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:text="@string/next_recording"
+        android:visibility="gone"
+        android:layout_weight="1" />
+</LinearLayout>
     <Button
         android:id="@+id/play_button"
         android:layout_width="150dp"
         android:layout_height="58dp"
         android:text="PLAY"
-        android:layout_below="@id/record_button"
+        android:layout_below="@id/button_frame_layout"
         android:layout_centerInParent="true"
-        android:layout_marginTop="100dp"
-        />
-
+        android:layout_marginTop="100dp" />
     <com.google.android.gms.ads.AdView
         android:id="@+id/adview"
         android:layout_width="wrap_content"

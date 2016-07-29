@@ -41,6 +41,10 @@ public class RecordActivity extends AppCompatActivity {
 
     private String mRecordFilePath;
 
+    // false = initial - start record state
+    // true = after recording
+    private boolean mMenuState = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,6 +114,12 @@ public class RecordActivity extends AppCompatActivity {
                 }
             });
             mRendererSet = true;
+            // Rendering mode is CONTINUOUS by default
+            //mGlSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+            mGlSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+
+            // This only calls ondrawFrame 1 time
+            mGlSurfaceView.requestRender();
             //surfaceView.getHolder().addCallback(this);
             mRecordButton = (Button) findViewById(R.id.record_button);
             mRecordButton.setOnClickListener(new View.OnClickListener() {
