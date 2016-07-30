@@ -39,27 +39,44 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:background="@color/recordButtonStartRecording"
-        android:visibility="visible" />
+        android:visibility="visible"
+        android:textColor="@color/white_ee"
+
+        />
     <Button
         android:layout_width="0dp"
         android:layout_height="64dp"
         android:id="@+id/redo_record_button"
         android:text="@string/redo_recording"
         android:background="@color/recordButtonStopRecording"
-
+        android:textSize="@dimen/button_text_size"
+        android:textColor="@color/white_ee"
         android:visibility="gone"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:drawableLeft="@drawable/ic_mic_white_48dp"
+        android:paddingLeft="@dimen/button_icon_padding_to_edge"
+        android:textAllCaps="false"
+        />
     <Button
         android:layout_width="0dp"
         android:layout_height="64dp"
         android:id="@+id/next_button"
         android:text="@string/next_recording"
+        android:drawableRight="@drawable/ic_forward_white_48dp"
+        android:paddingRight="@dimen/button_icon_padding_to_edge"
+        android:textColor="@color/white_ee"
+
+        android:textSize="@dimen/button_text_size"
         android:background="@color/recordButtonStartRecording"
         android:visibility="gone"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:textAllCaps="false"
+        />
 </LinearLayout>
     <Button
         android:id="@+id/play_button"
+        android:textSize="@dimen/button_text_size"
+
         android:layout_width="150dp"
         android:layout_height="58dp"
         android:text="PLAY"

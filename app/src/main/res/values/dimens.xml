@@ -27,4 +27,8 @@
     // 16*2 + 56 + (56 -(16sp+2*4dp))/2
     <dimen name ="fab_textview_create_board_margin">104dp</dimen>
 
+    // Record Activity
+    <dimen name="button_text_size">20sp</dimen>
+    <dimen name="button_icon_padding_to_edge">20dp</dimen>
+
 </resources>
