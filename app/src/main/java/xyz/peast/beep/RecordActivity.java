@@ -86,7 +86,7 @@ public class RecordActivity extends AppCompatActivity {
             mGlSurfaceView = (GLSurfaceView) findViewById(R.id.glsurface_view);
             mGlSurfaceView.setEGLContextClientVersion(2);
             //mGlSurfaceView = new GLSurfaceView(this);
-            mGlSurfaceView.setEGLConfigChooser(8,8,8,8,16,0);
+            mGlSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 
             final RendererWrapper rendererWrapper = new RendererWrapper(mContext);
             mGlSurfaceView.setRenderer(rendererWrapper);
@@ -105,8 +105,7 @@ public class RecordActivity extends AppCompatActivity {
                                     rendererWrapper.handleTouchPress(normalizedX, normalizedY);
                                 }
                             });
-                        }
-                        else if (event.getAction() ==MotionEvent.ACTION_MOVE){
+                        } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
                             mGlSurfaceView.queueEvent(new Runnable() {
                                 @Override
                                 public void run() {
@@ -115,8 +114,7 @@ public class RecordActivity extends AppCompatActivity {
                             });
                         }
                         return true;
-                    }
-                    else {
+                    } else {
                         return false;
                     }
                 }
@@ -164,17 +162,23 @@ public class RecordActivity extends AppCompatActivity {
                     }
                 }
             });
-        }
-        else {
+        } else {
             Log.e("OpenGLES 2", "Your device doesn't support ES2. )" + info.reqGlEsVersion + ")");
         }
+
+        if (savedInstanceState != null) {
+            mMenuState = savedInstanceState.getBoolean(BUTTON_MENU_STATE);
+        }
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         setupAudio();
         mIsRecording = false;
         mIsPlaying =false;
+        setupAudio();
+        resetMenuState(mMenuState);
         mGlSurfaceView.onResume();
     }
 
@@ -195,6 +199,16 @@ public class RecordActivity extends AppCompatActivity {
             mNextButton.setVisibility(View.GONE);
         }
     }
+    private void resetMenuState(boolean state) {
+        if (state) {
+            mRecordButton.setVisibility(View.GONE);
+            mRedoButton.setVisibility(View.VISIBLE);
+            mNextButton.setVisibility(View.VISIBLE);
+        }
+        else {
+        }
+    }
+
     private void handleRecordButtonPress() {
         Log.d(TAG, "mIsPlaying: " + mIsPlaying);
         if (!mIsPlaying) {
