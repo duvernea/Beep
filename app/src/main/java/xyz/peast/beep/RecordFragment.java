@@ -55,6 +55,10 @@ public class RecordFragment extends Fragment {
     // true = after recording
     private boolean mMenuState = false;
 
+    public interface RecordCallback{
+        public void onRecordNextButton();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
@@ -255,7 +259,7 @@ public class RecordFragment extends Fragment {
         }
     }
     private void handleNextButtonPress() {
-
+        ((RecordCallback) getActivity()).onRecordNextButton();
     }
     public void onPlaybackEnd() {
         Log.d(TAG, "Played file ended");

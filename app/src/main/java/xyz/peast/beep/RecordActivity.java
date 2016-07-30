@@ -8,10 +8,15 @@ import android.util.Log;
 /**
  * Created by duvernea on 7/30/16.
  */
-public class RecordActivity extends AppCompatActivity {
+public class RecordActivity extends AppCompatActivity implements RecordFragment.RecordCallback {
     private static final String TAG = RecordActivity.class.getSimpleName();
 
     private static final String RECORD_FRAGMENT_TAG = "record_fragment_tag";
+
+    @Override
+    public void onRecordNextButton() {
+        Log.d(TAG, "Next button pusehd.");
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
