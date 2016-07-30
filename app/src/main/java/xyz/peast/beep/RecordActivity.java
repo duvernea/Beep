@@ -26,6 +26,8 @@ public class RecordActivity extends AppCompatActivity {
 
     private static final String TAG = RecordActivity.class.getSimpleName();
 
+    private static final String BUTTON_MENU_STATE = "button_menu_state";
+
     private AdView mAdView;
     private Button mRecordButton;
     private Button mPlayButton;
@@ -140,6 +142,12 @@ public class RecordActivity extends AppCompatActivity {
                     handleRedoButtonPress();
                 }
             });
+            mNextButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    handleNextButtonPress();
+                }
+            });
             mPlayButton = (Button) findViewById(R.id.play_button);
             mPlayButton.setOnClickListener(new View.OnClickListener() {
 
@@ -148,7 +156,6 @@ public class RecordActivity extends AppCompatActivity {
                     Log.d(TAG, "mIsPlaying start: " + mIsPlaying);
                     Log.d(TAG, "mIsRecording start: " + mIsPlaying);
                     if (!mIsRecording) {
-                        String path = "/data/data/xyz.peast.beep/files/temp.wav";
                         mIsPlaying = true;
                         //onPlayPause(mIsPlaying);
                         Log.d(TAG, "mIsPlaying play: " + mIsPlaying);
@@ -204,7 +211,7 @@ public class RecordActivity extends AppCompatActivity {
             if (mIsRecording) {
                 //mIsRecording = !mIsRecording;
                 toggleRecord(mIsRecording);
-                mRecordButton.setText("Stop Recording");
+                mRecordButton.setText(getResources().getString(R.string.stop_recording));
                 mRecordButton.setBackgroundColor(ContextCompat.getColor(mContext, R.color.recordButtonStopRecording));
             }
         }
@@ -213,17 +220,26 @@ public class RecordActivity extends AppCompatActivity {
         if (!mIsPlaying) {
             mMenuState = false;
             mIsRecording = true;
-            mRecordButton.setText("Stop Recording");
+            mRecordButton.setText(getResources().getString(R.string.stop_recording));
             mRecordButton.setBackgroundColor(ContextCompat.getColor(mContext, R.color.recordButtonStopRecording));
             setMenuState(mMenuState);
             toggleRecord(mIsRecording);
         }
+    }
+    private void handleNextButtonPress() {
+
     }
 
     private void playbackEndCallback() {
         Log.d(TAG, "Played file ended");
         mIsPlaying = false;
         //Log.d(TAG, "mIsPlaying: " + mIsPlaying);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(BUTTON_MENU_STATE, mMenuState);
     }
 
     private native void setupAudio();

@@ -9,7 +9,8 @@
     <string name="content_authority" translatable="false">xyz.peast.beep</string>
 
     // Record Activity
-    <string name="record">Start Recording</string>
+    <string name="start_recording">Start Recording</string>
+    <string name="stop_recording">Stop Recording</string>
     <string name="next">Next</string>
     <string name="redo_recording">Redo</string>
     <string name="next_recording">Next</string>
