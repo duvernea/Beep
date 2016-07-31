@@ -19,9 +19,12 @@ public class RecordActivity extends AppCompatActivity implements RecordFragment.
     public void onRecordNextButton() {
         Log.d(TAG, "Next button pusehd.");
         SaveFragment saveFragment = new SaveFragment();
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
+                R.anim.enter_from_left, R.anim.exit_to_right);
         transaction.replace(R.id.record_container, saveFragment, SAVE_FRAGMENT_TAG);
-        transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+
         transaction.addToBackStack(SAVE_FRAGMENT_TAG);
         transaction.commit();
     }

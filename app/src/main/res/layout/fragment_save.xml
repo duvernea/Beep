@@ -32,7 +32,8 @@
             <ImageView
                 android:layout_width="@dimen/image_size_save_activity"
                 android:layout_height="@dimen/image_size_save_activity"
-                android:src="@drawable/beep_item_temp"/>
+                android:src="@drawable/beep_item_temp"
+                android:layout_marginRight="16dp" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -44,7 +45,8 @@
                     android:textSize="@dimen/save_fragment_label_size"/>
                 <EditText
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
