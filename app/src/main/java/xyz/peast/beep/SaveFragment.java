@@ -30,8 +30,11 @@ public class SaveFragment extends Fragment {
         mContext = getActivity();
 
         mBoardSpinner = (Spinner) rootView.findViewById(R.id.board_name_spinner);
-        String[] spinnerItems = new String[] {"myBeeps", "Sweetie", "Mom & Dad", "Work Crewz"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, spinnerItems);
+        // Create new item should have a special icon, like a plus sign or something
+        String[] spinnerItems = new String[] {"myBeeps", "Sweetie", "Mom & Dad", "Work Crewz", "Create New"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                mContext, R.layout.spinner_row, R.id.spinner_item_textview, spinnerItems);
+
         mBoardSpinner.setAdapter(adapter);
         return rootView;
     }

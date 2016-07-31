@@ -45,9 +45,12 @@
                     android:textSize="@dimen/save_fragment_label_size"/>
 
                 <EditText
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"/>
+                    android:maxLines="1"
+                    android:text="Beep01"
+                    android:maxLength="12"
+                    android:layout_marginRight="48dp"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -57,7 +60,9 @@
                 <Spinner
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/board_name_spinner"></Spinner>
+                    android:id="@+id/board_name_spinner"
+                    android:background="@drawable/spinner_bg"
+                    android:drawableRight="@drawable/ic_forward_white_48dp"></Spinner>
 
             </LinearLayout>
         </LinearLayout>
