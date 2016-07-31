@@ -80,7 +80,7 @@
         <Button
             android:layout_width="0dp"
             android:layout_height="64dp"
-            android:id="@+id/redo_record_button"
+            android:id="@+id/delete_button"
             android:text="Delete"
             android:background="@color/recordButtonStopRecording"
             android:textSize="@dimen/button_text_size"
@@ -92,7 +92,7 @@
         <Button
             android:layout_width="0dp"
             android:layout_height="64dp"
-            android:id="@+id/next_button"
+            android:id="@+id/save_button"
             android:text="@string/save"
             android:textColor="@color/white_ee"
 

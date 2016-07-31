@@ -1,6 +1,7 @@
 package xyz.peast.beep;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,11 +15,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+
+import xyz.peast.beep.data.BeepDbContract;
 
 /**
  * Created by duvernea on 7/30/16.
@@ -34,6 +38,8 @@ public class SaveFragment extends Fragment {
     private Spinner mBoardSpinner;
     private ImageView mBeepImage;
 
+    private Button mSaveButton;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -44,12 +50,22 @@ public class SaveFragment extends Fragment {
 
         mBoardSpinner = (Spinner) rootView.findViewById(R.id.board_name_spinner);
         mBeepImage = (ImageView) rootView.findViewById(R.id.beep_image);
+        mSaveButton = (Button) rootView.findViewById(R.id.save_button);
+
         mBeepImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                 photoPickerIntent.setType("image/*");
                 startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+            }
+        });
+        mSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ContentValues contentValues = new ContentValues();
+                // TODO name, board, time, audio file, image uri, etc
+                mContext.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, contentValues);
             }
         });
         // Create new item should have a special icon, like a plus sign or something
