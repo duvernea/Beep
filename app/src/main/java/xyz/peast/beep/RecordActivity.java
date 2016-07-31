@@ -2,6 +2,7 @@ package xyz.peast.beep;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -12,10 +13,17 @@ public class RecordActivity extends AppCompatActivity implements RecordFragment.
     private static final String TAG = RecordActivity.class.getSimpleName();
 
     private static final String RECORD_FRAGMENT_TAG = "record_fragment_tag";
+    private static final String SAVE_FRAGMENT_TAG = "save_fragment_tag";
 
     @Override
     public void onRecordNextButton() {
         Log.d(TAG, "Next button pusehd.");
+        SaveFragment saveFragment = new SaveFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.record_container, saveFragment, SAVE_FRAGMENT_TAG);
+        transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        transaction.addToBackStack(SAVE_FRAGMENT_TAG);
+        transaction.commit();
     }
 
     @Override

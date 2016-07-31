@@ -7,13 +7,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".RecordActivity">
-    <android.opengl.GLSurfaceView
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:id="@+id/glsurface_view"
-        android:layout_alignParentTop="true"
-        android:layout_margin="8dp"
-        android:maxWidth="500dp"/>
+    <!--<android.opengl.GLSurfaceView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="200dp"-->
+        <!--android:id="@+id/glsurface_view"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_margin="8dp"-->
+        <!--android:maxWidth="500dp"/>-->
     <!--<SurfaceView-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="200dp"-->
@@ -22,67 +22,75 @@
     <!--android:layout_below="@id/glsurface_view"-->
     <!--android:visibility="invisible"-->
     <!--/>-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/image_title_board_linearlayout"
+            android:layout_margin="8dp">
+            <ImageView
+                android:layout_width="@dimen/image_size_save_activity"
+                android:layout_height="@dimen/image_size_save_activity"
+                android:src="@drawable/beep_item_temp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_selection_textview"
+                    android:textSize="@dimen/save_fragment_label_size"/>
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/board_selection_textview"
+                    android:textSize="@dimen/save_fragment_label_size"/>
+                />
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+        </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/glsurface_view"
+        android:layout_below="@+id/image_title_board_linearlayout"
         android:id="@+id/button_frame_layout"
         android:orientation="horizontal"
         android:gravity="center_horizontal">
-        // Initial Start Recording Button
-        <Button
-            android:id="@+id/record_button"
-            android:layout_width="160dp"
-            android:layout_height="64dp"
-            android:text="@string/start_recording"
-            android:gravity="center"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:background="@color/recordButtonStartRecording"
-            android:visibility="visible"
-            android:textColor="@color/white_ee"
-
-            />
         <Button
             android:layout_width="0dp"
             android:layout_height="64dp"
             android:id="@+id/redo_record_button"
-            android:text="@string/redo_recording"
+            android:text="Delete"
             android:background="@color/recordButtonStopRecording"
             android:textSize="@dimen/button_text_size"
             android:textColor="@color/white_ee"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_weight="1"
-            android:drawableLeft="@drawable/ic_mic_white_48dp"
-            android:paddingLeft="@dimen/button_icon_padding_to_edge"
             android:textAllCaps="false"
             />
         <Button
             android:layout_width="0dp"
             android:layout_height="64dp"
             android:id="@+id/next_button"
-            android:text="@string/next_recording"
-            android:drawableRight="@drawable/ic_forward_white_48dp"
-            android:paddingRight="@dimen/button_icon_padding_to_edge"
+            android:text="@string/save"
             android:textColor="@color/white_ee"
 
             android:textSize="@dimen/button_text_size"
             android:background="@color/recordButtonStartRecording"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_weight="1"
             android:textAllCaps="false"
             />
     </LinearLayout>
-    <Button
-        android:id="@+id/play_button"
-        android:textSize="@dimen/button_text_size"
 
-        android:layout_width="150dp"
-        android:layout_height="58dp"
-        android:text="PLAY"
-        android:layout_below="@id/button_frame_layout"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="100dp" />
     <com.google.android.gms.ads.AdView
         android:id="@+id/adview"
         android:layout_width="wrap_content"

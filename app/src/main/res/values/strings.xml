@@ -14,9 +14,15 @@
     <string name="next">Next</string>
     <string name="redo_recording">Redo</string>
     <string name="next_recording">Next</string>
+    // Save Fragment
+    <string name="save">Save</string>
+    <string name="title_selection_textview">Title Name</string>
+    <string name="board_selection_textview">Board Name</string>
+
 
     // Main Activity
     <string name="fab_record_beep_text">Record a Beep</string>
     <string name="fab_create_board_text">Create a Board</string>
+
 
 </resources>
