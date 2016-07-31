@@ -43,6 +43,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/title_selection_textview"
                     android:textSize="@dimen/save_fragment_label_size"/>
+
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -53,9 +54,10 @@
                     android:text="@string/board_selection_textview"
                     android:textSize="@dimen/save_fragment_label_size"/>
                 />
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/board_name_spinner"></Spinner>
 
             </LinearLayout>
         </LinearLayout>
