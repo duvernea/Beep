@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
@@ -49,14 +50,22 @@ public class SaveFragment extends Fragment implements LocationListener {
     private ImageView mBeepImage;
 
     private Button mSaveButton;
+    private EditText mBeepNameEditText;
+
+    private Uri mImageUri = null;
 
     private LocationManager mLocationManager;
+
+    private String mRecordFileName;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
         View rootView = inflater.inflate(R.layout.fragment_save, container, false);
+
+        Bundle bundle = this.getArguments();
+        mRecordFileName = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME);
 
         mContext = getActivity();
         mLocationManager = (LocationManager)
@@ -65,6 +74,7 @@ public class SaveFragment extends Fragment implements LocationListener {
         mBoardSpinner = (Spinner) rootView.findViewById(R.id.board_name_spinner);
         mBeepImage = (ImageView) rootView.findViewById(R.id.beep_image);
         mSaveButton = (Button) rootView.findViewById(R.id.save_button);
+        mBeepNameEditText = (EditText) rootView.findViewById(R.id.beep_name_edittext);
 
         mAdView = (AdView) rootView.findViewById(R.id.adview);
         AdRequest adRequest = new AdRequest.Builder()
@@ -86,7 +96,7 @@ public class SaveFragment extends Fragment implements LocationListener {
             public void onClick(View v) {
                 ContentValues contentValues = new ContentValues();
                 // TODO name, board, time, audio file, image uri, etc
-                insertContent("tempname", "tempimage", "tempaudiofile", 1000);
+                insertContent("tempimage", "tempaudiofile", 1000);
             }
         });
         // Create new item should have a special icon, like a plus sign or something
@@ -95,6 +105,8 @@ public class SaveFragment extends Fragment implements LocationListener {
                 mContext, R.layout.spinner_row, R.id.spinner_item_textview, spinnerItems);
 
         mBoardSpinner.setAdapter(adapter);
+
+        mImageUri = Uri.parse("/temp/test/junk");
         return rootView;
     }
 
@@ -107,8 +119,8 @@ public class SaveFragment extends Fragment implements LocationListener {
             case SELECT_PHOTO:
                 if (resultCode == Activity.RESULT_OK) {
                     try {
-                        final Uri imageUri = data.getData();
-                        final InputStream imageStream = mContext.getContentResolver().openInputStream(imageUri);
+                        mImageUri = data.getData();
+                        final InputStream imageStream = mContext.getContentResolver().openInputStream(mImageUri);
                         final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
 
 //                        int nh = (int) ( mBeepImage.getHeight() * (512.0 / mBeepImage.getWidth()) );
@@ -145,7 +157,7 @@ public class SaveFragment extends Fragment implements LocationListener {
                 }
         }
     }
-    void insertContent(String beepname, String imageFile, String audioFile, int board) {
+    void insertContent(String imageFile, String audioFile, int board) {
         //beepRowIds[0] = (int) ContentUris.parseId(beepUri);
 
         // Get GPS coordinates
@@ -187,9 +199,11 @@ public class SaveFragment extends Fragment implements LocationListener {
             mostRecentLocation = null;
         }
         ContentValues contentValues = new ContentValues();
-        contentValues.put(BeepDbContract.BeepEntry.COLUMN_NAME, beepname);
-        contentValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, imageFile);
-        contentValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, audioFile);
+
+        String beepName = mBeepNameEditText.getText().toString();
+        contentValues.put(BeepDbContract.BeepEntry.COLUMN_NAME, beepName);
+        contentValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, mImageUri.toString());
+        contentValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, mRecordFileName);
         if (mostRecentLocation != null) {
             contentValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LAT, mostRecentLocation.getLatitude());
             contentValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LONG, mostRecentLocation.getLongitude());

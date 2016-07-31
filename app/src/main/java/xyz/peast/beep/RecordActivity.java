@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import java.util.UUID;
+
 /**
  * Created by duvernea on 7/30/16.
  */
@@ -15,11 +17,19 @@ public class RecordActivity extends AppCompatActivity implements RecordFragment.
     private static final String RECORD_FRAGMENT_TAG = "record_fragment_tag";
     private static final String SAVE_FRAGMENT_TAG = "save_fragment_tag";
 
+    // no file extension
+    public static final String RECORD_FILE_UNIQUE_NAME = "record_file_name";
+
+    private static String mRecordFileName;
+
     @Override
     public void onRecordNextButton() {
         Log.d(TAG, "Next button pusehd.");
         SaveFragment saveFragment = new SaveFragment();
 
+        Bundle bundle = new Bundle();
+        bundle.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
+        saveFragment.setArguments(bundle);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
                 R.anim.enter_from_left, R.anim.exit_to_right);
@@ -34,7 +44,12 @@ public class RecordActivity extends AppCompatActivity implements RecordFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
 
+        mRecordFileName =UUID.randomUUID().toString();
+        Bundle bundle = new Bundle();
+        bundle.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
+
         RecordFragment recordFragment = new RecordFragment();
+        recordFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.record_container, recordFragment, RECORD_FRAGMENT_TAG)
                 .commit();

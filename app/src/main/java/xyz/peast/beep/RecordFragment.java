@@ -90,7 +90,10 @@ public class RecordFragment extends Fragment {
             }
             ((RecordActivity) mActivity).setupAudio();
 
-            String uniqueID = UUID.randomUUID().toString();
+            Bundle bundle = this.getArguments();
+            String uniqueID = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME);
+
+            //String uniqueID = UUID.randomUUID().toString();
             String recordDir = mContext.getFilesDir().getAbsolutePath();
             mRecordFilePath = recordDir + "/" + uniqueID + "TESTJAVA";
             Log.d(TAG, "Record Path: " + mRecordFilePath);
