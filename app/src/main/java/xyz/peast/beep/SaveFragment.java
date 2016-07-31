@@ -1,11 +1,15 @@
 package xyz.peast.beep;
 
 import android.app.Activity;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,13 +28,14 @@ import com.google.android.gms.ads.AdView;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Calendar;
 
 import xyz.peast.beep.data.BeepDbContract;
 
 /**
  * Created by duvernea on 7/30/16.
  */
-public class SaveFragment extends Fragment {
+public class SaveFragment extends Fragment implements LocationListener {
 
     private static final String TAG = SaveFragment.class.getSimpleName();
 
@@ -45,6 +50,8 @@ public class SaveFragment extends Fragment {
 
     private Button mSaveButton;
 
+    private LocationManager mLocationManager;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -52,6 +59,8 @@ public class SaveFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_save, container, false);
 
         mContext = getActivity();
+        mLocationManager = (LocationManager)
+                mContext.getSystemService(Context.LOCATION_SERVICE);
 
         mBoardSpinner = (Spinner) rootView.findViewById(R.id.board_name_spinner);
         mBeepImage = (ImageView) rootView.findViewById(R.id.beep_image);
@@ -77,7 +86,7 @@ public class SaveFragment extends Fragment {
             public void onClick(View v) {
                 ContentValues contentValues = new ContentValues();
                 // TODO name, board, time, audio file, image uri, etc
-                mContext.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, contentValues);
+                insertContent("tempname", "tempimage", "tempaudiofile", 1000);
             }
         });
         // Create new item should have a special icon, like a plus sign or something
@@ -136,4 +145,79 @@ public class SaveFragment extends Fragment {
                 }
         }
     }
+    void insertContent(String beepname, String imageFile, String audioFile, int board) {
+        //beepRowIds[0] = (int) ContentUris.parseId(beepUri);
+
+        // Get GPS coordinates
+        Location mostRecentLocation;
+        try {
+            Location locationGPS = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            Location locationNetwork = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            if (locationGPS == null || locationNetwork == null) {
+                if (locationGPS == null) {
+                    if (locationNetwork == null) {
+                        mostRecentLocation = null;
+                    }
+                    else {
+                        mostRecentLocation = locationNetwork;
+                    }
+                }
+                else {
+                    mostRecentLocation = locationGPS;
+                }
+            }
+            else if (locationGPS.getTime() > locationNetwork.getTime()) {
+                mostRecentLocation = locationGPS;
+            }
+            else {
+                mostRecentLocation = locationNetwork;
+            }
+            Log.d(TAG, "mostRecentLocation Lat: " + mostRecentLocation.getLatitude());
+            Log.d(TAG, "mostRecentLocation Long: " + mostRecentLocation.getLongitude());
+
+//            int timeWindow = 2 * 60 * 1000; // 2 minutes
+//            if(mostRecentLocation.getTime() > Calendar.getInstance().getTimeInMillis() - timeWindow) {
+//            }
+//            else {
+//                //mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this)
+//            }
+        }
+        catch (SecurityException e) {
+            // Handle if GPS not enabled
+            mostRecentLocation = null;
+        }
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(BeepDbContract.BeepEntry.COLUMN_NAME, beepname);
+        contentValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, imageFile);
+        contentValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, audioFile);
+        if (mostRecentLocation != null) {
+            contentValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LAT, mostRecentLocation.getLatitude());
+            contentValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LONG, mostRecentLocation.getLongitude());
+        }
+        contentValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, audioFile);
+        contentValues.put(BeepDbContract.BeepEntry.COLUMN_PRIVACY, 1);
+        contentValues.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, 0);
+        contentValues.put(BeepDbContract.BeepEntry.COLUMN_DATE_CREATED, Calendar.getInstance().getTimeInMillis());
+        contentValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, board);
+
+        Uri uri = mContext.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, contentValues);
+        Log.d(TAG, "end of insert into ContentProvider");
+    }
+    public void onLocationChanged(Location location) {
+        if (location != null) {
+            Log.v("Location Changed", location.getLatitude() + " and " + location.getLongitude());
+            try {
+                mLocationManager.removeUpdates(this);
+                // update the contentvalues and insert
+            }
+            catch (SecurityException e) {
+                // Handle if GPS not enabled
+            }
+        }
+    }
+
+    // Required functions
+    public void onProviderDisabled(String arg0) {}
+    public void onProviderEnabled(String arg0) {}
+    public void onStatusChanged(String arg0, int arg1, Bundle arg2) {}
 }
