@@ -19,6 +19,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
@@ -34,6 +37,8 @@ public class SaveFragment extends Fragment {
     private static final int SELECT_PHOTO = 1;
 
     private Context mContext;
+
+    private AdView mAdView;
 
     private Spinner mBoardSpinner;
     private ImageView mBeepImage;
@@ -51,6 +56,13 @@ public class SaveFragment extends Fragment {
         mBoardSpinner = (Spinner) rootView.findViewById(R.id.board_name_spinner);
         mBeepImage = (ImageView) rootView.findViewById(R.id.beep_image);
         mSaveButton = (Button) rootView.findViewById(R.id.save_button);
+
+        mAdView = (AdView) rootView.findViewById(R.id.adview);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice("839737069995AAD5519D71B8B267924D")
+                .build();
+        mAdView.loadAd(adRequest);
 
         mBeepImage.setOnClickListener(new View.OnClickListener() {
             @Override
