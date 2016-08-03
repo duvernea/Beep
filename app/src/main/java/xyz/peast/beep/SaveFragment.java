@@ -2,11 +2,13 @@ package xyz.peast.beep;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -21,6 +23,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -33,6 +36,7 @@ import com.google.android.gms.ads.AdView;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import xyz.peast.beep.data.BeepDbContract;
@@ -64,6 +68,8 @@ public class SaveFragment extends Fragment implements LocationListener {
 
     private Location mMostRecentLocation;
 
+    private int mNumberOfBoards;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -93,13 +99,14 @@ public class SaveFragment extends Fragment implements LocationListener {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG, "Spinner Item Selected");
-                if (position == 4) {
+                if (position == mNumberOfBoards) {
                     Log.d(TAG, "create new board selected on spinner");
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                     builder.setTitle("Create new Board");
                     final EditText input = new EditText(mContext);
                     input.setInputType(InputType.TYPE_CLASS_TEXT);
                     builder.setView(input);
+
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -112,6 +119,7 @@ public class SaveFragment extends Fragment implements LocationListener {
                             contentValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, tempImageUri);
                             Uri uri = mContext.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, contentValues);
                             Log.d(TAG, "end of insert board into ContentProvider uri = " + uri.toString());
+
                         }
                     });
                     builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -120,7 +128,10 @@ public class SaveFragment extends Fragment implements LocationListener {
                             dialog.cancel();
                         }
                     });
-                    builder.show();
+                    Dialog dialog = builder.create();
+                    dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+                    dialog.show();
                 }
             }
 
@@ -146,8 +157,36 @@ public class SaveFragment extends Fragment implements LocationListener {
                 insertContent();
             }
         });
+        String[] mProjection =
+                {
+                        BeepDbContract.BoardEntry._ID,
+                        BeepDbContract.BoardEntry.COLUMN_NAME
+                };
         // Create new item should have a special icon, like a plus sign or something
-        String[] spinnerItems = new String[]{"myBeeps", "Sweetie", "Mom & Dad", "Work Crewz", "Create New"};
+        Cursor cursor = mContext.getContentResolver().query(BeepDbContract.BoardEntry.CONTENT_URI,
+                mProjection,
+                null,
+                null,
+                null);
+
+        Log.d(TAG, "Cursor count, #boards returned" + cursor.getCount());
+
+        mNumberOfBoards = cursor.getCount();
+        ArrayList<String> spinnerItems = new ArrayList<String>();
+        cursor.moveToFirst();
+
+        for(int i = 0; i < cursor.getCount(); i++){
+            String row = cursor.getString(
+                    cursor.getColumnIndex(BeepDbContract.BoardEntry.COLUMN_NAME));
+            spinnerItems.add(row);
+            cursor.moveToNext();
+        }
+        // Add item for creating new cursor
+        spinnerItems.add("Create New");
+
+        //String[] spinnerItemsTest = {"test", "test2"};
+
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 mContext, R.layout.spinner_row, R.id.spinner_item_textview, spinnerItems);
 
