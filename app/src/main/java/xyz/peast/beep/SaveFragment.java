@@ -99,7 +99,7 @@ public class SaveFragment extends Fragment implements LocationListener {
             public void onClick(View v) {
                 ContentValues contentValues = new ContentValues();
                 // TODO name, board, time, audio file, image uri, etc
-                insertContent("tempimage", "tempaudiofile", 1000);
+                insertContent();
             }
         });
         // Create new item should have a special icon, like a plus sign or something
@@ -160,7 +160,7 @@ public class SaveFragment extends Fragment implements LocationListener {
                 }
         }
     }
-    void insertContent(String imageFile, String audioFile, int board) {
+    void insertContent() {
         //beepRowIds[0] = (int) ContentUris.parseId(beepUri);
 
         getLocation();
@@ -174,11 +174,22 @@ public class SaveFragment extends Fragment implements LocationListener {
             contentValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LAT, mMostRecentLocation.getLatitude());
             contentValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LONG, mMostRecentLocation.getLongitude());
         }
-        contentValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, audioFile);
+
+        contentValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, mRecordFileName);
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_PRIVACY, 1);
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, 0);
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_DATE_CREATED, Calendar.getInstance().getTimeInMillis());
-        contentValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, board);
+
+        String boardSelected = mBoardSpinner.getSelectedItem().toString();
+        Log.d(TAG, "spinner getselecteditem to string " + boardSelected);
+
+        long spinnerSelectedItemId =  mBoardSpinner.getSelectedItemId();
+        Log.d(TAG, "spinner selected item ID " + spinnerSelectedItemId);
+
+        int spinnerSelectedItemPosition  = mBoardSpinner.getSelectedItemPosition();
+        Log.d(TAG, "spinner selected item position " + spinnerSelectedItemPosition);
+
+        contentValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, boardSelected);
 
         Uri uri = mContext.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, contentValues);
         Log.d(TAG, "end of insert into ContentProvider");
