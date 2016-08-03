@@ -58,6 +58,8 @@ public class SaveFragment extends Fragment implements LocationListener {
 
     private String mRecordFileName;
 
+    private Location mMostRecentLocation;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -66,6 +68,7 @@ public class SaveFragment extends Fragment implements LocationListener {
 
         Bundle bundle = this.getArguments();
         mRecordFileName = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME);
+        Log.d(TAG, "Record File Name: " + mRecordFileName);
 
         mContext = getActivity();
         mLocationManager = (LocationManager)
@@ -160,53 +163,16 @@ public class SaveFragment extends Fragment implements LocationListener {
     void insertContent(String imageFile, String audioFile, int board) {
         //beepRowIds[0] = (int) ContentUris.parseId(beepUri);
 
-        // Get GPS coordinates
-        Location mostRecentLocation;
-        try {
-            Location locationGPS = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            Location locationNetwork = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            if (locationGPS == null || locationNetwork == null) {
-                if (locationGPS == null) {
-                    if (locationNetwork == null) {
-                        mostRecentLocation = null;
-                    }
-                    else {
-                        mostRecentLocation = locationNetwork;
-                    }
-                }
-                else {
-                    mostRecentLocation = locationGPS;
-                }
-            }
-            else if (locationGPS.getTime() > locationNetwork.getTime()) {
-                mostRecentLocation = locationGPS;
-            }
-            else {
-                mostRecentLocation = locationNetwork;
-            }
-            Log.d(TAG, "mostRecentLocation Lat: " + mostRecentLocation.getLatitude());
-            Log.d(TAG, "mostRecentLocation Long: " + mostRecentLocation.getLongitude());
-
-//            int timeWindow = 2 * 60 * 1000; // 2 minutes
-//            if(mostRecentLocation.getTime() > Calendar.getInstance().getTimeInMillis() - timeWindow) {
-//            }
-//            else {
-//                //mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this)
-//            }
-        }
-        catch (SecurityException e) {
-            // Handle if GPS not enabled
-            mostRecentLocation = null;
-        }
+        getLocation();
         ContentValues contentValues = new ContentValues();
 
         String beepName = mBeepNameEditText.getText().toString();
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_NAME, beepName);
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, mImageUri.toString());
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, mRecordFileName);
-        if (mostRecentLocation != null) {
-            contentValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LAT, mostRecentLocation.getLatitude());
-            contentValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LONG, mostRecentLocation.getLongitude());
+        if (mMostRecentLocation != null) {
+            contentValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LAT, mMostRecentLocation.getLatitude());
+            contentValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LONG, mMostRecentLocation.getLongitude());
         }
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, audioFile);
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_PRIVACY, 1);
@@ -217,6 +183,48 @@ public class SaveFragment extends Fragment implements LocationListener {
         Uri uri = mContext.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, contentValues);
         Log.d(TAG, "end of insert into ContentProvider");
     }
+    private void getLocation() {
+        // Get GPS coordinates
+
+        try {
+            Location locationGPS = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            Location locationNetwork = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            if (locationGPS == null || locationNetwork == null) {
+                if (locationGPS == null) {
+                    if (locationNetwork == null) {
+                        mMostRecentLocation = null;
+                    }
+                    else {
+                        mMostRecentLocation = locationNetwork;
+                    }
+                }
+                else {
+                    mMostRecentLocation = locationGPS;
+                }
+            }
+            else if (locationGPS.getTime() > locationNetwork.getTime()) {
+                mMostRecentLocation = locationGPS;
+            }
+            else {
+                mMostRecentLocation = locationNetwork;
+            }
+            Log.d(TAG, "mostRecentLocation Lat: " + mMostRecentLocation.getLatitude());
+            Log.d(TAG, "mostRecentLocation Long: " + mMostRecentLocation.getLongitude());
+
+//            int timeWindow = 2 * 60 * 1000; // 2 minutes
+//            if(mostRecentLocation.getTime() > Calendar.getInstance().getTimeInMillis() - timeWindow) {
+//            }
+//            else {
+//                //mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this)
+//            }
+        }
+        catch (SecurityException e) {
+            // Handle if GPS not enabled
+            mMostRecentLocation = null;
+        }
+    }
+
+
     public void onLocationChanged(Location location) {
         if (location != null) {
             Log.v("Location Changed", location.getLatitude() + " and " + location.getLongitude());

@@ -92,6 +92,8 @@ public class RecordFragment extends Fragment {
 
             Bundle bundle = this.getArguments();
             String uniqueID = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME);
+            Log.d(TAG, "Record File Name: " + uniqueID);
+
 
             //String uniqueID = UUID.randomUUID().toString();
             String recordDir = mContext.getFilesDir().getAbsolutePath();
