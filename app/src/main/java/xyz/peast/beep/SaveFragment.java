@@ -1,9 +1,11 @@
 package xyz.peast.beep;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,10 +16,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -85,6 +89,38 @@ public class SaveFragment extends Fragment implements LocationListener {
                 .addTestDevice("839737069995AAD5519D71B8B267924D")
                 .build();
         mAdView.loadAd(adRequest);
+        mBoardSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG, "Spinner Item Selected");
+                if (position == 4) {
+                    Log.d(TAG, "create new board selected on spinner");
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle("Create new Board");
+                    final EditText input = new EditText(mContext);
+                    input.setInputType(InputType.TYPE_CLASS_TEXT);
+                    builder.setView(input);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                    builder.show();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         mBeepImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,6 +148,7 @@ public class SaveFragment extends Fragment implements LocationListener {
         mImageUri = Uri.parse("/temp/test/junk");
         return rootView;
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
