@@ -65,7 +65,7 @@ public class SaveFragment extends Fragment implements LocationListener {
     private Location mMostRecentLocation;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
         View rootView = inflater.inflate(R.layout.fragment_save, container, false);
@@ -103,13 +103,21 @@ public class SaveFragment extends Fragment implements LocationListener {
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-
+                            String newBoard = input.getText().toString();
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put(BeepDbContract.BoardEntry.COLUMN_NAME, newBoard);
+                            contentValues.put(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED, Calendar.getInstance().getTimeInMillis());
+                            // TODO - need default image resources to use
+                            String tempImageUri = "";
+                            contentValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, tempImageUri);
+                            Uri uri = mContext.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, contentValues);
+                            Log.d(TAG, "end of insert board into ContentProvider uri = " + uri.toString());
                         }
                     });
                     builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-
+                            dialog.cancel();
                         }
                     });
                     builder.show();
@@ -229,7 +237,7 @@ public class SaveFragment extends Fragment implements LocationListener {
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, boardSelected);
 
         Uri uri = mContext.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, contentValues);
-        Log.d(TAG, "end of insert into ContentProvider");
+        Log.d(TAG, "end of insert beep into ContentProvider uri = " + uri.toString());
     }
     private void getLocation() {
         // Get GPS coordinates
