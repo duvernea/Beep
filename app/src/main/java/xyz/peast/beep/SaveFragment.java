@@ -70,6 +70,9 @@ public class SaveFragment extends Fragment implements LocationListener {
 
     private int mNumberOfBoards;
 
+    private ArrayAdapter<String> mSpinnerAdapter;
+    private ArrayList<String> mSpinnerItems;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -119,7 +122,8 @@ public class SaveFragment extends Fragment implements LocationListener {
                             contentValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, tempImageUri);
                             Uri uri = mContext.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, contentValues);
                             Log.d(TAG, "end of insert board into ContentProvider uri = " + uri.toString());
-
+                            mSpinnerItems.add(newBoard);
+                            mSpinnerAdapter.notifyDataSetChanged();
                         }
                     });
                     builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -172,25 +176,25 @@ public class SaveFragment extends Fragment implements LocationListener {
         Log.d(TAG, "Cursor count, #boards returned" + cursor.getCount());
 
         mNumberOfBoards = cursor.getCount();
-        ArrayList<String> spinnerItems = new ArrayList<String>();
+        mSpinnerItems = new ArrayList<String>();
         cursor.moveToFirst();
 
         for(int i = 0; i < cursor.getCount(); i++){
             String row = cursor.getString(
                     cursor.getColumnIndex(BeepDbContract.BoardEntry.COLUMN_NAME));
-            spinnerItems.add(row);
+            mSpinnerItems.add(row);
             cursor.moveToNext();
         }
         // Add item for creating new cursor
-        spinnerItems.add("Create New");
+        mSpinnerItems.add("Create New");
 
         //String[] spinnerItemsTest = {"test", "test2"};
 
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                mContext, R.layout.spinner_row, R.id.spinner_item_textview, spinnerItems);
+        mSpinnerAdapter = new ArrayAdapter<String>(
+                mContext, R.layout.spinner_row, R.id.spinner_item_textview, mSpinnerItems);
 
-        mBoardSpinner.setAdapter(adapter);
+        mBoardSpinner.setAdapter(mSpinnerAdapter);
 
         mImageUri = Uri.parse("/temp/test/junk");
         return rootView;
