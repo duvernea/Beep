@@ -121,9 +121,12 @@ public class SaveFragment extends Fragment implements LocationListener {
                             String tempImageUri = "";
                             contentValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, tempImageUri);
                             Uri uri = mContext.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, contentValues);
+                            int insertedRow = (int) ContentUris.parseId(uri);
+                            Log.d(TAG, "inserted Row into Board db: " + insertedRow);
                             Log.d(TAG, "end of insert board into ContentProvider uri = " + uri.toString());
-                            mSpinnerItems.add(newBoard);
+                            mSpinnerItems.add(mSpinnerItems.size()-1, newBoard);
                             mSpinnerAdapter.notifyDataSetChanged();
+                            mNumberOfBoards +=1;
                         }
                     });
                     builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
