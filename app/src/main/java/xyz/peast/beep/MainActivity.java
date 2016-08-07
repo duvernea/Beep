@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final String FAB_MENU_STATE = "fab_menu_state";
+    protected static final String BOARD_CLICKED = "board_selected";
+    protected static final String BOARD_NAME_SELECTED = "board_name_selected";
 
     public static final int TOP_BEEPS_LOADER = 0;
     public static final int BOARDS_LOADER = 1;
@@ -111,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -184,7 +186,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 new BoardRecyclerViewAdapter.BoardAdapterOnClickHandler() {
                     @Override
                     public void onClick(BoardRecyclerViewAdapter.BoardViewHolder vh) {
-                        Toast.makeText(mContext, "recyclerview clicked " + vh.getAdapterPosition(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(mContext, "recyclerview clicked " + vh.getAdapterPosition(), Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(mContext, BoardActivity.class);
+                        intent.putExtra(BOARD_CLICKED, vh.getAdapterPosition());
+                        intent.putExtra(BOARD_NAME_SELECTED, vh.mBoardNameTextView.getText().toString());
+                        mFabMenuState = false;
+                        startActivity(intent);
                     }
                 }, null, 0);
 
