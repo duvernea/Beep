@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
@@ -45,10 +46,6 @@ public class BoardSpinnerAdapter extends ArrayAdapter<Board> implements SpinnerA
     public View getView(int position, View convertView, ViewGroup parent) {
         super.getView(position, convertView, parent);
         TextView label = new TextView(context);
-//        label.setTextColor(Color.RED);
-//        label.setText(values.get(position).getName());
-//
-//        return label;
 
         View v = convertView;
 
@@ -84,8 +81,10 @@ public class BoardSpinnerAdapter extends ArrayAdapter<Board> implements SpinnerA
         tv.setText(this.getItem(position).getName());
         int numValues = values.size();
         if (position == numValues - 1) {
-            tv.setTextColor(Color.BLUE);
+            tv.setTextColor(Color.BLACK);
             tv.setTypeface(null, Typeface.BOLD);
+            ImageView imageview = (ImageView) v.findViewById(R.id.create_new_board_icon);
+            imageview.setVisibility(View.VISIBLE);
         }
 //        switch (position) {
 //            case numValues:
