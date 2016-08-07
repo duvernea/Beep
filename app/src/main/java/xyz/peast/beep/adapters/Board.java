@@ -17,35 +17,35 @@ public class Board {
         mDate = date;
     }
 
-    public int getmKey() {
+    public int getKey() {
         return mKey;
     }
 
-    public void setmKey(int key) {
+    public void setKey(int key) {
         mKey = key;
     }
 
-    public String getmName() {
+    public String getName() {
         return mName;
     }
 
-    public void setmName(String name) {
+    public void setName(String name) {
         mName = name;
     }
 
-    public String getmImage() {
+    public String getImage() {
         return mImage;
     }
 
-    public void setmImage(String image) {
+    public void setImage(String image) {
         mImage = image;
     }
 
-    public long getmDate() {
+    public long getDate() {
         return mDate;
     }
 
-    public void setmDate(long date) {
+    public void setDate(long date) {
         mDate = date;
     }
 }

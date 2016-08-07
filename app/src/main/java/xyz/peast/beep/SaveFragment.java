@@ -25,7 +25,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -39,6 +38,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import xyz.peast.beep.adapters.Board;
+import xyz.peast.beep.adapters.BoardSpinnerAdapter;
 import xyz.peast.beep.data.BeepDbContract;
 
 /**
@@ -70,8 +71,8 @@ public class SaveFragment extends Fragment implements LocationListener {
 
     private int mNumberOfBoards;
 
-    private ArrayAdapter<String> mSpinnerAdapter;
-    private ArrayList<String> mSpinnerItems;
+    private ArrayList<Board> mSpinnerItems;
+    private BoardSpinnerAdapter mBoardSpinnerAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -93,7 +94,7 @@ public class SaveFragment extends Fragment implements LocationListener {
         mBeepNameEditText = (EditText) rootView.findViewById(R.id.beep_name_edittext);
 
         mAdView = (AdView) rootView.findViewById(R.id.adview);
-        AdRequest adRequest = new AdRequest.Builder()
+        final AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .addTestDevice("839737069995AAD5519D71B8B267924D")
                 .build();
@@ -113,19 +114,21 @@ public class SaveFragment extends Fragment implements LocationListener {
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            String newBoard = input.getText().toString();
+                            String newBoardName = input.getText().toString();
                             ContentValues contentValues = new ContentValues();
-                            contentValues.put(BeepDbContract.BoardEntry.COLUMN_NAME, newBoard);
-                            contentValues.put(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED, Calendar.getInstance().getTimeInMillis());
+                            contentValues.put(BeepDbContract.BoardEntry.COLUMN_NAME, newBoardName);
+                            long currentTime = Calendar.getInstance().getTimeInMillis();
+                            contentValues.put(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED, currentTime);
                             // TODO - need default image resources to use
                             String tempImageUri = "";
                             contentValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, tempImageUri);
                             Uri uri = mContext.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, contentValues);
                             int insertedRow = (int) ContentUris.parseId(uri);
                             Log.d(TAG, "inserted Row into Board db: " + insertedRow);
-                            Log.d(TAG, "end of insert board into ContentProvider uri = " + uri.toString());
-                            mSpinnerItems.add(mSpinnerItems.size()-1, newBoard);
-                            mSpinnerAdapter.notifyDataSetChanged();
+                            //mSpinnerItems.add(mSpinnerItems.size()-1, newBoard);
+                            Board newBoardz = new Board(insertedRow, newBoardName, tempImageUri, currentTime);
+                            mSpinnerItems.add(mSpinnerItems.size()-1, newBoardz);
+                            mBoardSpinnerAdapter.notifyDataSetChanged();
                             mNumberOfBoards +=1;
                         }
                     });
@@ -179,25 +182,34 @@ public class SaveFragment extends Fragment implements LocationListener {
         Log.d(TAG, "Cursor count, #boards returned" + cursor.getCount());
 
         mNumberOfBoards = cursor.getCount();
-        mSpinnerItems = new ArrayList<String>();
+        //mSpinnerItems = new ArrayList<String>();
         cursor.moveToFirst();
+        mSpinnerItems = new ArrayList<Board>();
+
 
         for(int i = 0; i < cursor.getCount(); i++){
             String row = cursor.getString(
                     cursor.getColumnIndex(BeepDbContract.BoardEntry.COLUMN_NAME));
-            mSpinnerItems.add(row);
+            //mSpinnerItems.add(row);
+            Board temp = new Board(0, row, "temp", 242);
+            mSpinnerItems.add(temp);
             cursor.moveToNext();
         }
         // Add item for creating new cursor
-        mSpinnerItems.add("Create New");
+        Board createNew = new Board(-1, "Create New", "N/A", 0);
+        //mSpinnerItems.add("Create New");
+        mSpinnerItems.add(createNew);
 
         //String[] spinnerItemsTest = {"test", "test2"};
+        //mSpinnerItems = new ArrayList<String>();
 
+        mBoardSpinnerAdapter = new BoardSpinnerAdapter(mContext,
+                R.layout.spinner_row, R.id.spinner_item_textview, mSpinnerItems);
 
-        mSpinnerAdapter = new ArrayAdapter<String>(
-                mContext, R.layout.spinner_row, R.id.spinner_item_textview, mSpinnerItems);
+        //mSpinnerAdapter = new ArrayAdapter<String>(
+                //mContext, R.layout.spinner_row, R.id.spinner_item_textview, mSpinnerItems);
 
-        mBoardSpinner.setAdapter(mSpinnerAdapter);
+        mBoardSpinner.setAdapter(mBoardSpinnerAdapter);
 
         mImageUri = Uri.parse("/temp/test/junk");
         return rootView;
