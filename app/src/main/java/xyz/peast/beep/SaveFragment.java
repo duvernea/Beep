@@ -191,6 +191,7 @@ public class SaveFragment extends Fragment implements LocationListener {
             String row = cursor.getString(
                     cursor.getColumnIndex(BeepDbContract.BoardEntry.COLUMN_NAME));
             //mSpinnerItems.add(row);
+            //String key = cursor.getInt(cursor.getColumnIndex())
             Board temp = new Board(0, row, "temp", 242);
             mSpinnerItems.add(temp);
             cursor.moveToNext();
@@ -291,8 +292,10 @@ public class SaveFragment extends Fragment implements LocationListener {
 
         int spinnerSelectedItemPosition  = mBoardSpinner.getSelectedItemPosition();
         Log.d(TAG, "spinner selected item position " + spinnerSelectedItemPosition);
+        Board selected = mSpinnerItems.get(spinnerSelectedItemPosition);
+        int selectedKey = selected.getKey();
 
-        contentValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, boardSelected);
+        contentValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, selectedKey);
 
         Uri uri = mContext.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, contentValues);
         Log.d(TAG, "end of insert beep into ContentProvider uri = " + uri.toString());
