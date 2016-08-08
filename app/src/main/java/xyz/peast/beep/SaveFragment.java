@@ -322,8 +322,10 @@ public class SaveFragment extends Fragment implements LocationListener {
             else {
                 mMostRecentLocation = locationNetwork;
             }
-            Log.d(TAG, "mostRecentLocation Lat: " + mMostRecentLocation.getLatitude());
-            Log.d(TAG, "mostRecentLocation Long: " + mMostRecentLocation.getLongitude());
+            if (mMostRecentLocation != null) {
+                Log.d(TAG, "mostRecentLocation Lat: " + mMostRecentLocation.getLatitude());
+                Log.d(TAG, "mostRecentLocation Long: " + mMostRecentLocation.getLongitude());
+            }
 
 //            int timeWindow = 2 * 60 * 1000; // 2 minutes
 //            if(mostRecentLocation.getTime() > Calendar.getInstance().getTimeInMillis() - timeWindow) {

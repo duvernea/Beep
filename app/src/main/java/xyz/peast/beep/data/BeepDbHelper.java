@@ -26,8 +26,8 @@ public class BeepDbHelper extends SQLiteOpenHelper {
                 BeepDbContract.BeepEntry.COLUMN_NAME + " TEXT NOT NULL, " +
                 BeepDbContract.BeepEntry.COLUMN_IMAGE + " TEXT NOT NULL, " +
                 BeepDbContract.BeepEntry.COLUMN_AUDIO + " TEXT NOT NULL, " +
-                BeepDbContract.BeepEntry.COLUMN_COORD_LAT + " FLOAT NOT NULL, " +
-                BeepDbContract.BeepEntry.COLUMN_COORD_LONG + " FLOAT NOT NULL, " +
+                BeepDbContract.BeepEntry.COLUMN_COORD_LAT + " FLOAT, " +
+                BeepDbContract.BeepEntry.COLUMN_COORD_LONG + " FLOAT, " +
                 BeepDbContract.BeepEntry.COLUMN_PRIVACY + " BOOLEAN NOT NULL, " +
                 BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT + " INTEGER NOT NULL, " +
                 BeepDbContract.BeepEntry.COLUMN_DATE_CREATED + " INTEGER NOT NULL, " +

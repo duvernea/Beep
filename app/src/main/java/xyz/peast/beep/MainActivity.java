@@ -243,6 +243,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // Back button from other activity / etc - reset the menu state
     }
 
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
