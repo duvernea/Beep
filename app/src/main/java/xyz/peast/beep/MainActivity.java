@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public static final String TEMP_FILE_PATH = "file_path";
     private String mPath;
 
+    private boolean mAudioState = false;
 
 
     @Override
@@ -209,14 +210,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // get the min buffer size
         // check if recording is possible
 
-        queryNativeAudioParameters();
-        Log.d(TAG, "sampleRateString: " + mSamplerateString);
-        Log.d(TAG, "buffersizeString: " + mBuffersizeString);
+        if (savedInstanceState == null) {
+            Log.d(TAG, "onCreate savedINstanceState = null");
 
-        SuperpoweredAudio(Integer.parseInt(mSamplerateString), Integer.parseInt(mBuffersizeString));
-
+        }
         if (savedInstanceState != null) {
+            Log.d(TAG, "onCreate savedINstanceState != null");
+
             mFabMenuState = savedInstanceState.getBoolean(FAB_MENU_STATE);
+        }
+        if (savedInstanceState == null) {
+            mAudioState = false;
+        }
+        else {
+            mAudioState = true;
         }
     }
 
@@ -225,7 +232,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Log.d(TAG, "onResume run");
         super.onResume();
         resetMenuState(mFabMenuState);
-        setupAudio();
+
+        if (!mAudioState) {
+            queryNativeAudioParameters();
+            Log.d(TAG, "sampleRateString: " + mSamplerateString);
+            Log.d(TAG, "buffersizeString: " + mBuffersizeString);
+            SuperpoweredAudio(Integer.parseInt(mSamplerateString), Integer.parseInt(mBuffersizeString));
+            setupAudio();
+        }
         // Back button from other activity / etc - reset the menu state
     }
 
