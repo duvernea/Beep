@@ -119,8 +119,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mContext = this;
 
         // Delete all old data. Insert mock data.
-        InsertData.insertData(this);
-        InsertData.insertSoundFile(this);
+        if (savedInstanceState == null) {
+            InsertData.insertData(this);
+            InsertData.insertSoundFile(this);
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

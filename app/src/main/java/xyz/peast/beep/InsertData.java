@@ -152,6 +152,7 @@ public class InsertData {
 
         String fileName;
         fileName = createFileFromRaw(context, R.raw.bad);
+        Log.d(TAG, "Bad sound file: " + fileName);
         // update audio file path for beep in mock data
         ContentValues updatedValues = new ContentValues();
         updatedValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, fileName);
