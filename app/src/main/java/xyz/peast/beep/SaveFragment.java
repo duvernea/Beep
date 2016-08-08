@@ -172,7 +172,6 @@ public class SaveFragment extends Fragment implements LocationListener {
                         BeepDbContract.BoardEntry._ID,
                         BeepDbContract.BoardEntry.COLUMN_NAME
                 };
-        // Create new item should have a special icon, like a plus sign or something
         Cursor cursor = mContext.getContentResolver().query(BeepDbContract.BoardEntry.CONTENT_URI,
                 mProjection,
                 null,
@@ -190,9 +189,11 @@ public class SaveFragment extends Fragment implements LocationListener {
         for(int i = 0; i < cursor.getCount(); i++){
             String row = cursor.getString(
                     cursor.getColumnIndex(BeepDbContract.BoardEntry.COLUMN_NAME));
+            String key = cursor.getString(
+                    cursor.getColumnIndex(BeepDbContract.BoardEntry._ID));
             //mSpinnerItems.add(row);
             //String key = cursor.getInt(cursor.getColumnIndex())
-            Board temp = new Board(0, row, "temp", 242);
+            Board temp = new Board(Integer.parseInt(key), row, "temp", 242);
             mSpinnerItems.add(temp);
             cursor.moveToNext();
         }
