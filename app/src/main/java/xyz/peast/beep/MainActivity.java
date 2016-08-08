@@ -28,7 +28,6 @@ import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import xyz.peast.beep.adapters.BeepAdapter;
 import xyz.peast.beep.adapters.BoardAdapter;
@@ -40,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final String FAB_MENU_STATE = "fab_menu_state";
-    protected static final String BOARD_CLICKED = "board_selected";
+    protected static final String BOARD_KEY_CLICKED = "board_selected";
     protected static final String BOARD_NAME_SELECTED = "board_name_selected";
 
     public static final int TOP_BEEPS_LOADER = 0;
@@ -188,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     public void onClick(BoardRecyclerViewAdapter.BoardViewHolder vh) {
                         //Toast.makeText(mContext, "recyclerview clicked " + vh.getAdapterPosition(), Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(mContext, BoardActivity.class);
-                        intent.putExtra(BOARD_CLICKED, vh.getAdapterPosition());
+                        intent.putExtra(BOARD_KEY_CLICKED, vh.getBoardKey());
                         intent.putExtra(BOARD_NAME_SELECTED, vh.mBoardNameTextView.getText().toString());
                         mFabMenuState = false;
                         startActivity(intent);

@@ -81,13 +81,22 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
+            Log.d(TAG, "onClick getAdapterPosition = " + adapterPosition);
             mCursor.moveToPosition(adapterPosition);
-
             mClickHandler.onClick(this);
+        }
+        public int getBoardKey() {
+            int adapterPosition = getAdapterPosition();
+            Log.d(TAG, "getBoardKey getAdapterPosition = " + adapterPosition);
+            mCursor.moveToPosition(adapterPosition);
+            int boardKey = mCursor.getInt(MainActivity.BOARDS_BOARD_ID);
+            Log.d(TAG, "getBoardKey = " + boardKey);
 
-
+            return boardKey;
         }
     }
+
+
     public static interface BoardAdapterOnClickHandler {
         void onClick(BoardViewHolder vh);
     }

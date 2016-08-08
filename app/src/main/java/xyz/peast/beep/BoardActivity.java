@@ -18,12 +18,16 @@ import xyz.peast.beep.data.BeepDbContract;
 
 public class BoardActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private static final String TAG = BoardActivity.class.getSimpleName();
+
     private static final int BEEPS_LOADER = 1;
 
     Context mContext;
 
     private BeepAdapter mBeepAdapter;
     private GridView mBeepsGridView;
+
+    private int mBoardKey;
 
 
 
@@ -37,6 +41,8 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         Intent intent = getIntent();
 
         String boardName = intent.getStringExtra(MainActivity.BOARD_NAME_SELECTED);
+        mBoardKey = intent.getIntExtra(MainActivity.BOARD_KEY_CLICKED, -1);
+        Log.d(TAG, "mBoardKey" + mBoardKey);
 
         TextView textView = (TextView) findViewById(R.id.board_name_textview);
 
@@ -55,14 +61,25 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         Uri uri;
         if (id == BEEPS_LOADER) {
             uri = BeepDbContract.BeepEntry.CONTENT_URI;
+            String whereClause = BeepDbContract.BeepEntry.COLUMN_BOARD_KEY+"=?";
+            String [] whereArgs = {mBoardKey+""};
             loader = new CursorLoader(mContext,
                     uri,
-                    null,
-                    null,
-                    null,
-                    null);
+                    null,  // projection
+                    whereClause,  // where clause
+                    whereArgs,  // where clause value
+                    null);  // sort order
         }
-        else {
+//
+//        String select = "((" + Contacts.DISPLAY_NAME + " NOTNULL) AND ("
+//                + Contacts.HAS_PHONE_NUMBER + "=1) AND ("
+//                + Contacts.DISPLAY_NAME + " != '' ))";
+//        return new CursorLoader(getActivity(), baseUri,
+//                CONTACTS_SUMMARY_PROJECTION, select, null,
+//                Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
+//    }
+
+    else {
             loader = null;
         }
         // sort by top plays and only get the top 3
@@ -72,6 +89,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (loader.getId() == BEEPS_LOADER) {
+            Log.d(TAG, "onLoadFinished getCount: " + data.getCount());
             mBeepAdapter.swapCursor(data);
             mBeepAdapter.notifyDataSetChanged();
         }

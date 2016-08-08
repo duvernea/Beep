@@ -36,16 +36,19 @@ public class InsertData {
         boardValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
         boardValues.put(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED, 1467857522);
 
-        Uri boardUri = context.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, boardValues);
+        Uri sweetieBoardUri = context.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, boardValues);
+        int sweetieKey = (int) ContentUris.parseId(sweetieBoardUri);
 
-        Log.d(TAG, "Sweetie Uri: " + boardUri);
+        Log.d(TAG, "Sweetie Uri: " + sweetieBoardUri);
         boardValues = new ContentValues();
         boardValues.put(BeepDbContract.BoardEntry.COLUMN_NAME, "Mom and Dad");
         boardValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, "1111111-792b-44eb-9715-cc96da9ce1c4");
         boardValues.put(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED, 1467857522);
 
-        boardUri = context.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, boardValues);
-        Log.d(TAG, "Mom and Dad Uri: " + boardUri);
+        Uri momDadboardUri = context.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, boardValues);
+        int momDadKey = (int) ContentUris.parseId(momDadboardUri);
+
+        Log.d(TAG, "Mom and Dad Uri: " + momDadboardUri);
         boardValues = new ContentValues();
         boardValues.put(BeepDbContract.BoardEntry.COLUMN_NAME, "Work Crew");
         boardValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, "2222222-792b-44eb-9715-cc96da9ce1c4");
@@ -53,8 +56,10 @@ public class InsertData {
 
         int[] rowIds = new int[6];
 
-        boardUri = context.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, boardValues);
-        Log.d(TAG, "Work Crew: " + boardUri);
+        Uri workCrewBoardUri = context.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, boardValues);
+        int workCrewKey = (int) ContentUris.parseId(workCrewBoardUri);
+
+        Log.d(TAG, "Work Crew: " + workCrewBoardUri);
 
         ContentValues beepValues = new ContentValues();
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_NAME, "bad");
@@ -65,7 +70,7 @@ public class InsertData {
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_PRIVACY, 1);
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, 10000);
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_DATE_CREATED, 1467857522);
-        beepValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, 1);
+        beepValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, sweetieKey);
 
         Uri beepUri = context.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, beepValues);
         beepRowIds[0] = (int) ContentUris.parseId(beepUri);
@@ -79,7 +84,7 @@ public class InsertData {
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_PRIVACY, 1);
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, 50);
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_DATE_CREATED, 1467857522);
-        beepValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, 1);
+        beepValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, sweetieKey);
 
         beepUri = context.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, beepValues);
         beepRowIds[1] = (int) ContentUris.parseId(beepUri);
@@ -93,7 +98,7 @@ public class InsertData {
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_PRIVACY, 1);
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, 200);
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_DATE_CREATED, 1467857522);
-        beepValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, 2);
+        beepValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, workCrewKey);
 
         beepUri = context.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, beepValues);
         beepRowIds[2] = (int) ContentUris.parseId(beepUri);
@@ -107,7 +112,7 @@ public class InsertData {
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_PRIVACY, 1);
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, 100);
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_DATE_CREATED, 1467857522);
-        beepValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, 2);
+        beepValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, workCrewKey);
 
         beepUri = context.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, beepValues);
         beepRowIds[3] = (int) ContentUris.parseId(beepUri);
@@ -122,7 +127,7 @@ public class InsertData {
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_PRIVACY, 1);
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, 5);
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_DATE_CREATED, 1467857522);
-        beepValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, 2);
+        beepValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, momDadKey);
 
         beepUri = context.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, beepValues);
         beepRowIds[4] = (int) ContentUris.parseId(beepUri);
@@ -137,7 +142,7 @@ public class InsertData {
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_PRIVACY, 1);
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, 5000);
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_DATE_CREATED, 1467857522);
-        beepValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, 1);
+        beepValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, workCrewKey);
 
         beepUri = context.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, beepValues);
         beepRowIds[5] = (int) ContentUris.parseId(beepUri);
