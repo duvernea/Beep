@@ -144,6 +144,9 @@ void SuperpoweredAudio::printString() {
         jvm->DetachCurrentThread();
     }
 }
+void SuperpoweredAudio::onPlayerPause() {
+    playerA->pause();
+}
 
 void SuperpoweredAudio::onPlayPause(const char *path, bool play, int size) {
     //__android_log_write(ANDROID_LOG_ERROR, "SuperpoweredPATH", path);
@@ -321,6 +324,16 @@ void Java_xyz_peast_beep_MainActivity_onPlayPause(JNIEnv * __unused javaEnvironm
     javaEnvironment->ReleaseStringUTFChars(filepath, path);
 
 }
+//onPlayerPause
+extern "C" JNIEXPORT
+void Java_xyz_peast_beep_MainActivity_onPlayerPause(JNIEnv * __unused javaEnvironment, jobject __unused obj) {
+
+    myAudio->onPlayerPause();
+
+}
+
+
+
 //onFxSelect
 extern "C" JNIEXPORT
 void Java_xyz_peast_beep_MainActivity_onFxSelect(JNIEnv * __unused javaEnvironment, jobject __unused obj, jint value) {

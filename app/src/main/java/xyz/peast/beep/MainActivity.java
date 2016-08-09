@@ -14,6 +14,7 @@ import android.media.AudioRecord;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -225,6 +226,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         else {
             mAudioState = true;
         }
+        Log.d(TAG, "internal content uri: " + MediaStore.Images.Thumbnails.INTERNAL_CONTENT_URI);
     }
 
     @Override
@@ -243,6 +245,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // Back button from other activity / etc - reset the menu state
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        onPlayerPause();
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -250,8 +257,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         outState.putBoolean(FAB_MENU_STATE, mFabMenuState);
         mFabMenuState = false;
     }
-
-
     public void SuperpoweredExample_PlayPause(View button) {  // Play/pause.
 
         mIsPlaying = !mIsPlaying;
@@ -455,6 +460,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private native void setupAudio();
     private native void SuperpoweredAudio(int samplerate, int buffersize);
     private native void onPlayPause(String filepath, boolean play, int size);
+    private native void onPlayerPause();
     private native void onFxSelect(int value);
     private native void onFxOff();
     private native void onFxValue(int value);
