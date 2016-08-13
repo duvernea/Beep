@@ -119,31 +119,7 @@ void SuperpoweredAudio::setFileName(jstring x)  {
     filename = x;
 
 }
-void SuperpoweredAudio::printString() {
-    JNIEnv * env;
-    bool attached = false;
-    switch (jvm->GetEnv((void**)&env, JNI_VERSION_1_6))
-    {
-        case JNI_OK:
-            break;
-        case JNI_EDETACHED:
-            if (jvm->AttachCurrentThread(&env, NULL)!=0)
-            {
-                throw std::runtime_error("Could not attach current thread");
-            }
-            attached = true;
-            break;
-        case JNI_EVERSION:
-            throw std::runtime_error("Invalid java version");
-    }
-    const char *a = env->GetStringUTFChars(filePath, JNI_FALSE);
-    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudioMember", a);
-    env->ReleaseStringUTFChars(filePath, a);
-    if (attached)
-    {
-        jvm->DetachCurrentThread();
-    }
-}
+
 void SuperpoweredAudio::onPlayerPause() {
     playerA->pause();
 }
@@ -315,21 +291,29 @@ void Java_xyz_peast_beep_MainActivity_SuperpoweredAudio(JNIEnv *javaEnvironment,
     myAudio = new SuperpoweredAudio((unsigned int) samplerate, (unsigned int) buffersize);
     //javaEnvironment->ReleaseStringUTFChars(apkPath, path);
 }
-//onPlayPause
+//onPlayPause - Main Activity
 extern "C" JNIEXPORT
 void Java_xyz_peast_beep_MainActivity_onPlayPause(JNIEnv * __unused javaEnvironment, jobject __unused obj, jstring filepath, jboolean play, jint size) {
     const char *path = javaEnvironment->GetStringUTFChars(filepath, JNI_FALSE);
-
     myAudio->onPlayPause(path, play, size);
     javaEnvironment->ReleaseStringUTFChars(filepath, path);
-
 }
-//onPlayerPause
+//onPlayPause - Board Activity
+extern "C" JNIEXPORT
+void Java_xyz_peast_beep_BoardActivity_onPlayPause(JNIEnv * __unused javaEnvironment, jobject __unused obj, jstring filepath, jboolean play, jint size) {
+    const char *path = javaEnvironment->GetStringUTFChars(filepath, JNI_FALSE);
+    myAudio->onPlayPause(path, play, size);
+    javaEnvironment->ReleaseStringUTFChars(filepath, path);
+}
+//onPlayerPause - MainActivity
 extern "C" JNIEXPORT
 void Java_xyz_peast_beep_MainActivity_onPlayerPause(JNIEnv * __unused javaEnvironment, jobject __unused obj) {
-
     myAudio->onPlayerPause();
-
+}
+//onPlayerPause - BoardActivity
+extern "C" JNIEXPORT
+void Java_xyz_peast_beep_BoardActivity_onPlayerPause(JNIEnv * __unused javaEnvironment, jobject __unused obj) {
+    myAudio->onPlayerPause();
 }
 
 
@@ -351,6 +335,14 @@ void Java_xyz_peast_beep_MainActivity_onFxValue(JNIEnv * __unused javaEnvironmen
 //onFileChange
 extern "C"JNIEXPORT
 void Java_xyz_peast_beep_MainActivity_onFileChange(JNIEnv * __unused javaEnvironment, jobject, jstring apkPath, jint fileOffset, jint fileLength ) {
+    const char *path = javaEnvironment->GetStringUTFChars(apkPath, JNI_FALSE);
+    myAudio->onFileChange(path, fileOffset, fileLength);
+    javaEnvironment->ReleaseStringUTFChars(apkPath, path);
+    //__android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", path);
+}
+//onFileChange - Board Activity
+extern "C"JNIEXPORT
+void Java_xyz_peast_beep_BoardActivity_onFileChange(JNIEnv * __unused javaEnvironment, jobject, jstring apkPath, jint fileOffset, jint fileLength ) {
     const char *path = javaEnvironment->GetStringUTFChars(apkPath, JNI_FALSE);
     myAudio->onFileChange(path, fileOffset, fileLength);
     javaEnvironment->ReleaseStringUTFChars(apkPath, path);
@@ -407,6 +399,11 @@ extern "C" JNIEXPORT
 void Java_xyz_peast_beep_MainActivity_setupAudio(JNIEnv *javaEnvironment, jobject thisObj) {
     setup(javaEnvironment, thisObj);
 }
+extern "C" JNIEXPORT
+void Java_xyz_peast_beep_BoardActivity_setupAudio(JNIEnv *javaEnvironment, jobject thisObj) {
+    setup(javaEnvironment, thisObj);
+}
+
 
 /***************************  Helper Functions ***************************************/
 
@@ -414,19 +411,20 @@ void Java_xyz_peast_beep_MainActivity_setupAudio(JNIEnv *javaEnvironment, jobjec
 void setup(JNIEnv *javaEnvironment, jobject thisObj) {
     javaEnvironment->GetJavaVM(&jvm);
 
-/*************     Print Activity Class Name     *********************************
-//    jclass cls = javaEnvironment->GetObjectClass(thisObj);
-//    jmethodID mid = javaEnvironment->GetMethodID(cls, "getClass", "()Ljava/lang/Class;");
-//    jobject clsObj = javaEnvironment->CallObjectMethod(thisObj, mid);
-//    cls = javaEnvironment->GetObjectClass(clsObj);
-//    mid = javaEnvironment->GetMethodID(cls, "getName", "()Ljava/lang/String;");
-//    jstring strObj = (jstring)javaEnvironment->CallObjectMethod(clsObj, mid);
-//    const char* str = javaEnvironment->GetStringUTFChars(strObj, NULL);
-//    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", str);
-//    javaEnvironment->ReleaseStringUTFChars(strObj, str);
- *********************************************************************************/
+//*************     Print Activity Class Name     *********************************
+    jclass cls = javaEnvironment->GetObjectClass(thisObj);
+    jmethodID mid = javaEnvironment->GetMethodID(cls, "getClass", "()Ljava/lang/Class;");
+    jobject clsObj = javaEnvironment->CallObjectMethod(thisObj, mid);
+    cls = javaEnvironment->GetObjectClass(clsObj);
+    mid = javaEnvironment->GetMethodID(cls, "getName", "()Ljava/lang/String;");
+    jstring strObj = (jstring)javaEnvironment->CallObjectMethod(clsObj, mid);
+    const char* str = javaEnvironment->GetStringUTFChars(strObj, NULL);
+    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", str);
+    javaEnvironment->ReleaseStringUTFChars(strObj, str);
+ //*********************************************************************************/
 
     jclass thisClass = (javaEnvironment)->GetObjectClass(thisObj);
+
 
     if (activityClass == NULL) {
         activityClass = (jclass) javaEnvironment->NewGlobalRef(thisClass);

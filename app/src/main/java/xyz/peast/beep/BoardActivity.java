@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -29,7 +31,9 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
 
     private int mBoardKey;
 
-
+    private String mPath;
+    private boolean mIsPlaying = false;
+    private boolean mAudioState = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +56,54 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         mBeepAdapter = new BeepAdapter(mContext, null, 0);
         mBeepsGridView = (GridView) findViewById(R.id.beeps_gridview);
         mBeepsGridView.setAdapter(mBeepAdapter);
+        mBeepsGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                Cursor cursor = (Cursor) parent.getItemAtPosition(position);
+                String beepName = cursor.getString(MainActivity.BEEPS_COL_NAME);
+                String audiofileName = cursor.getString(MainActivity.BEEPS_COL_AUDIO);
 
+
+                String path = "/data/data/xyz.peast.beep/files/" + audiofileName;
+
+                onFileChange(path, 0, 0);
+                //Log.d(TAG, "getPackageResourcePath: " + getPackageResourcePath());
+                mIsPlaying = !mIsPlaying;
+                Log.d(TAG, "mIsPlaying java: " + mIsPlaying);
+                mPath = path;
+                onPlayPause(path, mIsPlaying, 0);
+            }
+        });
+        if (savedInstanceState == null) {
+            mAudioState = false;
+        }
+        else {
+            mAudioState = true;
+        }
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        onPlayerPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!mAudioState) {
+            Log.d(TAG, "onResume !mAudioState)");
+            setupAudio();
+        }
+    }
+
+    private void playbackEndCallback() {
+        //Toast.makeText(mContext, "Callback", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "Played file ended");
+        mIsPlaying = false;
+        //Log.d(TAG, "mIsPlaying: " + mIsPlaying);
     }
 
     @Override
@@ -100,5 +151,15 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         if (loader.getId() == BEEPS_LOADER) {
             mBeepAdapter.swapCursor(null);
         }
+    }
+    // Native Audio - Load library and Functions
+    private native void setupAudio();
+    private native void onPlayPause(String filepath, boolean play, int size);
+    private native void onFileChange(String apkPath, int fileOffset, int fileLength );
+    private native void onPlayerPause();
+
+
+    static {
+        System.loadLibrary("SuperpoweredAudio");
     }
 }
