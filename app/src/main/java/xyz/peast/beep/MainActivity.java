@@ -112,6 +112,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private boolean mAudioState = false;
 
+    public static final String FIRST_TIME_RUN = "first_run";
+    public boolean firstTimeRun = true;
+
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -119,11 +122,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_main);
 
         mContext = this;
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            firstTimeRun = getIntent().getExtras().getBoolean(FIRST_TIME_RUN);
+        }
 
         // Delete all old data. Insert mock data.
         if (savedInstanceState == null) {
-            InsertData.insertData(this);
-            InsertData.insertSoundFile(this);
+            // if returning from BoardActivity
+            if (firstTimeRun) {
+                InsertData.insertData(this);
+                InsertData.insertSoundFile(this);
+            }
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

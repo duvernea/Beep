@@ -111,6 +111,9 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     public void onBackPressed()
     {
         Intent intent = new Intent(this,MainActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(MainActivity.FIRST_TIME_RUN, false);
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 
