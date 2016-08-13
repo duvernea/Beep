@@ -81,7 +81,7 @@ public class SaveFragment extends Fragment implements LocationListener {
         View rootView = inflater.inflate(R.layout.fragment_save, container, false);
 
         Bundle bundle = this.getArguments();
-        mRecordFileName = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME);
+        mRecordFileName = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME) + ".wav";
         Log.d(TAG, "Record File Name: " + mRecordFileName);
 
         mContext = getActivity();

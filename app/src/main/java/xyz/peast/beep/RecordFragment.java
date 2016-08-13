@@ -97,7 +97,7 @@ public class RecordFragment extends Fragment {
 
             //String uniqueID = UUID.randomUUID().toString();
             String recordDir = mContext.getFilesDir().getAbsolutePath();
-            mRecordFilePath = recordDir + "/" + uniqueID + "TESTJAVA";
+            mRecordFilePath = recordDir + "/" + uniqueID;
             Log.d(TAG, "Record Path: " + mRecordFilePath);
             ((RecordActivity) mActivity).setRecordPath(mRecordFilePath);
 
