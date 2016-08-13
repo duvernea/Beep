@@ -98,6 +98,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
             Log.d(TAG, "onResume !mAudioState)");
             setupAudio();
         }
+        startupAudio();
     }
 
     private void playbackEndCallback() {
@@ -159,6 +160,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     private native void onFileChange(String apkPath, int fileOffset, int fileLength );
     private native void onPlayerPause();
     private native void shutdownAudio();
+    private native void startupAudio();
 
 
     static {

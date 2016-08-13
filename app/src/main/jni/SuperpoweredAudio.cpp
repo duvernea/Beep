@@ -167,6 +167,9 @@ void SuperpoweredAudio::onFxOff() {
 void SuperpoweredAudio::shutdownAudio() {
     audioSystem->stop();
 }
+void SuperpoweredAudio::startupAudio() {
+    audioSystem->start();
+}
 
 void SuperpoweredAudio::onFxValue(int ivalue) {
     float value = float(ivalue) * 0.01f;
@@ -422,9 +425,13 @@ void Java_xyz_peast_beep_BoardActivity_setupAudio(JNIEnv *javaEnvironment, jobje
 }
 extern "C" JNIEXPORT
 void Java_xyz_peast_beep_BoardActivity_shutdownAudio(JNIEnv *javaEnvironment, jobject thisObj) {
-    setup(javaEnvironment, thisObj);
+    //setup(javaEnvironment, thisObj);
     myAudio->shutdownAudio();
-
+}
+extern "C" JNIEXPORT
+void Java_xyz_peast_beep_BoardActivity_startupAudio(JNIEnv *javaEnvironment, jobject thisObj) {
+    //setup(javaEnvironment, thisObj);
+    myAudio->startupAudio();
 }
 
 

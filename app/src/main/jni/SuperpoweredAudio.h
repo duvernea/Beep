@@ -32,6 +32,7 @@ public:
 	void toggleRecord(bool record);
 	void setFileName(jstring name);
 	void shutdownAudio();
+	void startupAudio();
 
 private:
     pthread_mutex_t mutex;
