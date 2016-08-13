@@ -56,6 +56,13 @@ public class RecordActivity extends AppCompatActivity implements RecordFragment.
 
         supportPostponeEnterTransition();
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        shutdownAudio();
+    }
+
     private void playbackEndCallback() {
         Log.d(TAG, "Played file ended");
         //Log.d(TAG, "mIsPlaying: " + mIsPlaying);
@@ -72,6 +79,7 @@ public class RecordActivity extends AppCompatActivity implements RecordFragment.
     public native void toggleRecord(boolean record);
 
     public native void setRecordPath(String path);
+    public native void shutdownAudio();
 
     static {
         System.loadLibrary("SuperpoweredAudio");

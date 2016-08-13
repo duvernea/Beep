@@ -429,6 +429,11 @@ void Java_xyz_peast_beep_BoardActivity_shutdownAudio(JNIEnv *javaEnvironment, jo
     myAudio->shutdownAudio();
 }
 extern "C" JNIEXPORT
+void Java_xyz_peast_beep_RecordActivity_shutdownAudio(JNIEnv *javaEnvironment, jobject thisObj) {
+    //setup(javaEnvironment, thisObj);
+    myAudio->shutdownAudio();
+}
+extern "C" JNIEXPORT
 void Java_xyz_peast_beep_BoardActivity_startupAudio(JNIEnv *javaEnvironment, jobject thisObj) {
     //setup(javaEnvironment, thisObj);
     myAudio->startupAudio();
