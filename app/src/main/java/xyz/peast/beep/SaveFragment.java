@@ -165,6 +165,17 @@ public class SaveFragment extends Fragment implements LocationListener {
                 ContentValues contentValues = new ContentValues();
                 // TODO name, board, time, audio file, image uri, etc
                 insertContent();
+                Intent intent = new Intent(mContext, BoardActivity.class);
+                int spinnerSelectedItemPosition  = mBoardSpinner.getSelectedItemPosition();
+                Log.d(TAG, "spinner selected item position " + spinnerSelectedItemPosition);
+                Board selected = mSpinnerItems.get(spinnerSelectedItemPosition);
+                int selectedKey = selected.getKey();
+                intent.putExtra(MainActivity.BOARD_KEY_CLICKED, selectedKey);
+                String boardSelectedString = mBoardSpinnerAdapter.getItem(spinnerSelectedItemPosition).getName();
+
+                Log.d(TAG, "spinner getselecteditem to string " + boardSelectedString);
+                intent.putExtra(MainActivity.BOARD_NAME_SELECTED, boardSelectedString);
+                startActivity(intent);
             }
         });
         String[] mProjection =
@@ -285,16 +296,19 @@ public class SaveFragment extends Fragment implements LocationListener {
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, 0);
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_DATE_CREATED, Calendar.getInstance().getTimeInMillis());
 
-        String boardSelected = mBoardSpinner.getSelectedItem().toString();
-        Log.d(TAG, "spinner getselecteditem to string " + boardSelected);
-
-        long spinnerSelectedItemId =  mBoardSpinner.getSelectedItemId();
-        Log.d(TAG, "spinner selected item ID " + spinnerSelectedItemId);
-
+//        String boardSelected = mBoardSpinner.getSelectedItem().toString();
+//        Log.d(TAG, "spinner getselecteditem to string " + boardSelected);
+//
+//        long spinnerSelectedItemId =  mBoardSpinner.getSelectedItemId();
+//        Log.d(TAG, "spinner selected item ID " + spinnerSelectedItemId);
+//
         int spinnerSelectedItemPosition  = mBoardSpinner.getSelectedItemPosition();
         Log.d(TAG, "spinner selected item position " + spinnerSelectedItemPosition);
         Board selected = mSpinnerItems.get(spinnerSelectedItemPosition);
         int selectedKey = selected.getKey();
+        String boardSelectedString = mBoardSpinnerAdapter.getItem(spinnerSelectedItemPosition).getName();
+        Log.d(TAG, "spinner selected item string " + boardSelectedString);
+
 
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, selectedKey);
 

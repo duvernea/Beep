@@ -48,4 +48,6 @@ public class Board {
     public void setDate(long date) {
         mDate = date;
     }
+
+
 }
