@@ -31,6 +31,7 @@ public:
 	void onFileChange(const char *path, int fileOffset, int fileLength);
 	void toggleRecord(bool record);
 	void setFileName(jstring name);
+	void shutdownAudio();
 
 private:
     pthread_mutex_t mutex;

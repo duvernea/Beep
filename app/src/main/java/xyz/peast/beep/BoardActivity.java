@@ -88,6 +88,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     protected void onPause() {
         super.onPause();
         onPlayerPause();
+        shutdownAudio();
     }
 
     @Override
@@ -157,6 +158,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     private native void onPlayPause(String filepath, boolean play, int size);
     private native void onFileChange(String apkPath, int fileOffset, int fileLength );
     private native void onPlayerPause();
+    private native void shutdownAudio();
 
 
     static {

@@ -45,6 +45,8 @@ static void playerEventCallbackA(void *clientData, SuperpoweredAdvancedAudioPlay
 }
 static bool audioProcessing(void *clientdata, short int *audioIO, int numberOfSamples, int __unused samplerate) {
 	return ((SuperpoweredAudio *)clientdata)->process(audioIO, (unsigned int)numberOfSamples);
+
+
 }
 #define MINFREQ 60.0f
 #define MAXFREQ 20000.0f
@@ -162,6 +164,9 @@ void SuperpoweredAudio::onFxOff() {
     roll->enable(false);
     flanger->enable(false);
 }
+void SuperpoweredAudio::shutdownAudio() {
+    audioSystem->stop();
+}
 
 void SuperpoweredAudio::onFxValue(int ivalue) {
     float value = float(ivalue) * 0.01f;
@@ -192,15 +197,16 @@ void SuperpoweredAudio::onFxValue(int ivalue) {
 
 bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples) {
     //const char* numSamples =  (std::to_string(numberOfSamples)).c_str();
-
     pthread_mutex_lock(&mutex);
     bool silence = false;
 
     if (isRecording) {
+        //__android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", "process record start");
+
         //__android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", "process.. isRecording");
 
         SuperpoweredShortIntToFloat(output, recordBuffer, numberOfSamples, NULL);
-        float* localAudioPointer = recordBuffer;
+        float *localAudioPointer = recordBuffer;
         //SuperpoweredFloatToShortInt(recordBuffer, output, numberOfSamples);
 //        for (int i=0; i<numberOfSamples; i+=2) {
 //            //__android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "test int = %d", i);
@@ -209,6 +215,9 @@ bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples)
 //        }
         recorder->process(recordBuffer, NULL, numberOfSamples);
         silence = !playerA->process(stereoBuffer, false, numberOfSamples);
+        //__android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", "process end");
+
+
     }
     else {
 
@@ -217,7 +226,7 @@ bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples)
         double msElapsedSinceLastBeatA = playerA->msElapsedSinceLastBeat; // When playerB needs it, playerA has already stepped this value, so save it now.
 
         silence = !playerA->process(stereoBuffer, false, numberOfSamples, volA, 0.0f,
-                                         -1);
+                                    -1);
 
 //        if (roll->process(silence ? NULL : stereoBuffer, stereoBuffer, numberOfSamples) &&
 //            silence)
@@ -232,7 +241,15 @@ bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples)
         // The stereoBuffer is ready now, let's put the finished audio into the requested buffers.
         if (!silence) SuperpoweredFloatToShortInt(stereoBuffer, output, numberOfSamples);
     }
+//    if (silence == 1) {
+//        __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", "silence true");
+//    }
+//    else {
+//        __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", "silence false");
+//    }
+
     pthread_mutex_unlock(&mutex);
+
     return !silence;
 }
 void SuperpoweredAudio::toggleRecord(bool record) {
@@ -403,6 +420,13 @@ extern "C" JNIEXPORT
 void Java_xyz_peast_beep_BoardActivity_setupAudio(JNIEnv *javaEnvironment, jobject thisObj) {
     setup(javaEnvironment, thisObj);
 }
+extern "C" JNIEXPORT
+void Java_xyz_peast_beep_BoardActivity_shutdownAudio(JNIEnv *javaEnvironment, jobject thisObj) {
+    setup(javaEnvironment, thisObj);
+    myAudio->shutdownAudio();
+
+}
+
 
 
 /***************************  Helper Functions ***************************************/
