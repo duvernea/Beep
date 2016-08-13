@@ -2,6 +2,9 @@ package xyz.peast.beep.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +20,9 @@ import xyz.peast.beep.R;
  */
 public class BeepAdapter extends CursorAdapter {
 
-    private Context mContext;
+    private static final String TAG = BeepAdapter.class.getSimpleName();
+
+    //private Context mContext;
     private TextView mBeepTextView;
 
     public BeepAdapter(Context context, Cursor c, int flags) {
@@ -39,8 +44,19 @@ public class BeepAdapter extends CursorAdapter {
         // get and set data for this view
         String beepName = cursor.getString(MainActivity.BEEPS_COL_NAME);
         String beepImage = cursor.getString(MainActivity.BEEPS_COL_IMAGE);
+        Log.d(TAG, "beepImage: " + beepImage);
 
         viewHolder.mBeepNameTextView.setText(beepName);
+        if (beepImage == null || beepImage.equals("")) {
+            // Do nothing, use the default imageview
+        }
+        else {
+            String imageDir = context.getFilesDir().getAbsolutePath();
+            String imagePath = imageDir + "/" + beepImage;
+            Log.d(TAG, "BeepAdapter image file" + imagePath);
+            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+            viewHolder.mBeepImageView.setImageBitmap(bitmap);
+        }
 
         // TODO - set image
 

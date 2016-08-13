@@ -24,7 +24,7 @@ public class BeepDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_BEEP_TABLE = "CREATE TABLE " + BeepDbContract.BeepEntry.TABLE_NAME + " (" +
                 BeepDbContract.BeepEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 BeepDbContract.BeepEntry.COLUMN_NAME + " TEXT NOT NULL, " +
-                BeepDbContract.BeepEntry.COLUMN_IMAGE + " TEXT NOT NULL, " +
+                BeepDbContract.BeepEntry.COLUMN_IMAGE + " TEXT, " +
                 BeepDbContract.BeepEntry.COLUMN_AUDIO + " TEXT NOT NULL, " +
                 BeepDbContract.BeepEntry.COLUMN_COORD_LAT + " FLOAT, " +
                 BeepDbContract.BeepEntry.COLUMN_COORD_LONG + " FLOAT, " +

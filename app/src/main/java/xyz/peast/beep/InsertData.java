@@ -63,7 +63,7 @@ public class InsertData {
 
         ContentValues beepValues = new ContentValues();
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_NAME, "bad");
-        beepValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
+        //beepValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LAT, 178.1234);
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LONG, 92.1234);
@@ -77,7 +77,7 @@ public class InsertData {
 
         beepValues = new ContentValues();
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_NAME, "beep");
-        beepValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
+        //beepValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LAT, 178.1234);
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LONG, 92.1234);
@@ -91,7 +91,7 @@ public class InsertData {
 
         beepValues = new ContentValues();
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_NAME, "cuckoo");
-        beepValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
+        //beepValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LAT, 178.1234);
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LONG, 92.1234);
@@ -105,7 +105,7 @@ public class InsertData {
 
         beepValues = new ContentValues();
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_NAME, "kevin");
-        beepValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
+        //beepValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LAT, 178.1234);
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LONG, 92.1234);
@@ -120,7 +120,7 @@ public class InsertData {
 
         beepValues = new ContentValues();
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_NAME, "meat");
-        beepValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
+        //beepValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LAT, 178.1234);
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LONG, 92.1234);
@@ -135,7 +135,7 @@ public class InsertData {
 
         beepValues = new ContentValues();
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_NAME, "nah");
-        beepValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
+        //beepValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LAT, 178.1234);
         beepValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LONG, 92.1234);

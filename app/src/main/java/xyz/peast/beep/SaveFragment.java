@@ -34,6 +34,8 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -73,6 +75,8 @@ public class SaveFragment extends Fragment implements LocationListener {
 
     private ArrayList<Board> mSpinnerItems;
     private BoardSpinnerAdapter mBoardSpinnerAdapter;
+
+    private Bitmap mImageBitmap;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -267,6 +271,8 @@ public class SaveFragment extends Fragment implements LocationListener {
                                     selectedImage.getWidth()
                             );
                         }
+                        mImageBitmap = centerCropBmp;
+
                         
                         mBeepImage.setImageBitmap(centerCropBmp);
                     } catch (FileNotFoundException e) {
@@ -279,12 +285,18 @@ public class SaveFragment extends Fragment implements LocationListener {
     void insertContent() {
         //beepRowIds[0] = (int) ContentUris.parseId(beepUri);
 
+        String imageDir = mContext.getFilesDir().getAbsolutePath();
+
+        String tempFileName = "temp.jpg";
+        saveBitmap(imageDir + "/" + tempFileName);
+
         getLocation();
         ContentValues contentValues = new ContentValues();
 
         String beepName = mBeepNameEditText.getText().toString();
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_NAME, beepName);
-        contentValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, mImageUri.toString());
+        //contentValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, mImageUri.toString());
+        contentValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, tempFileName);
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, mRecordFileName);
         if (mMostRecentLocation != null) {
             contentValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LAT, mMostRecentLocation.getLatitude());
@@ -314,6 +326,29 @@ public class SaveFragment extends Fragment implements LocationListener {
 
         Uri uri = mContext.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, contentValues);
         Log.d(TAG, "end of insert beep into ContentProvider uri = " + uri.toString());
+    }
+    private void saveBitmap(String filename) {
+        FileOutputStream out = null;
+
+        try {
+            out = new FileOutputStream(filename);
+            // TODO compression should be done on a different thread
+            //mImageBitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+            mImageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, out); // bmp is your Bitmap instance
+
+
+            // PNG is a lossless format, the compression factor (100) is ignored
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
     private void getLocation() {
         // Get GPS coordinates
