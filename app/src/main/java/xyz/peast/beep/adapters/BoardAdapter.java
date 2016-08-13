@@ -57,4 +57,5 @@ public class BoardAdapter extends CursorAdapter {
         }
     }
 
+
 }

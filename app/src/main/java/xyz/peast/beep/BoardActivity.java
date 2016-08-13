@@ -107,6 +107,12 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         mIsPlaying = false;
         //Log.d(TAG, "mIsPlaying: " + mIsPlaying);
     }
+    @Override
+    public void onBackPressed()
+    {
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent);
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
