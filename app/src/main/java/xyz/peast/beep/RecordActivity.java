@@ -11,11 +11,13 @@ import java.util.UUID;
 /**
  * Created by duvernea on 7/30/16.
  */
-public class RecordActivity extends AppCompatActivity implements RecordFragment.RecordCallback {
+public class RecordActivity extends AppCompatActivity
+        implements RecordFragment.RecordCallback, SaveFragment.SaveCallback {
     private static final String TAG = RecordActivity.class.getSimpleName();
 
     private static final String RECORD_FRAGMENT_TAG = "record_fragment_tag";
     private static final String SAVE_FRAGMENT_TAG = "save_fragment_tag";
+    private static final String SHARE_FRAGMENT_TAG = "share_fragment_tag";
 
     // no file extension
     public static final String RECORD_FILE_UNIQUE_NAME = "record_file_name";
@@ -24,7 +26,7 @@ public class RecordActivity extends AppCompatActivity implements RecordFragment.
 
     @Override
     public void onRecordNextButton() {
-        Log.d(TAG, "Next button pusehd.");
+        Log.d(TAG, "Next button pushed.");
         SaveFragment saveFragment = new SaveFragment();
 
         Bundle bundle = new Bundle();
@@ -37,6 +39,22 @@ public class RecordActivity extends AppCompatActivity implements RecordFragment.
 
         transaction.addToBackStack(SAVE_FRAGMENT_TAG);
         transaction.commit();
+    }
+
+    @Override
+    public void onSaveNextButton() {
+        Log.d(TAG, "Save button pushed.");
+        ShareFragment shareFragment = new ShareFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
+        shareFragment.setArguments(bundle);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
+                R.anim.enter_from_left, R.anim.exit_to_right);
+        transaction.replace(R.id.record_container, shareFragment, SHARE_FRAGMENT_TAG);
+        transaction.addToBackStack(SHARE_FRAGMENT_TAG);
+        transaction.commit();
+
     }
 
     @Override

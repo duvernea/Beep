@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_record"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RecordActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/image_title_board_linearlayout"
+        android:layout_margin="8dp">
+        <ImageView
+            android:layout_width="@dimen/image_size_save_activity"
+            android:layout_height="@dimen/image_size_save_activity"
+            android:src="@drawable/beep_item_temp"
+            android:layout_marginRight="16dp"
+            android:id="@+id/beep_image"
+            android:scaleType="centerCrop"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_selection_textview"
+                android:textSize="@dimen/save_fragment_label_size"
+                android:textStyle="bold"/>
+
+            />
+
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/image_title_board_linearlayout"
+        android:id="@+id/button_frame_layout"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal">
+        <!--<Button-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="64dp"-->
+            <!--android:id="@+id/delete_button"-->
+            <!--android:text="Delete"-->
+            <!--android:background="@color/recordButtonStopRecording"-->
+            <!--android:textSize="@dimen/button_text_size"-->
+            <!--android:textColor="@color/white_ee"-->
+            <!--android:visibility="visible"-->
+            <!--android:layout_weight="1"-->
+            <!--android:textAllCaps="false"-->
+            <!--/>-->
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:id="@+id/save_button"
+            android:text="@string/share"
+            android:textColor="@color/white_ee"
+
+            android:textSize="@dimen/button_text_size"
+            android:background="@color/recordButtonStartRecording"
+            android:visibility="visible"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            />
+    </LinearLayout>
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        ads:adSize="SMART_BANNER"
+        ads:adUnitId="@string/banner_ad_unit_id">
+    </com.google.android.gms.ads.AdView>
+</RelativeLayout>

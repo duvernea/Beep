@@ -79,6 +79,10 @@ public class SaveFragment extends Fragment implements LocationListener {
 
     private Bitmap mImageBitmap;
 
+    public interface SaveCallback{
+        public void onSaveNextButton();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -170,17 +174,20 @@ public class SaveFragment extends Fragment implements LocationListener {
                 ContentValues contentValues = new ContentValues();
                 // TODO name, board, time, audio file, image uri, etc
                 insertContent();
-                Intent intent = new Intent(mContext, BoardActivity.class);
                 int spinnerSelectedItemPosition  = mBoardSpinner.getSelectedItemPosition();
                 Log.d(TAG, "spinner selected item position " + spinnerSelectedItemPosition);
                 Board selected = mSpinnerItems.get(spinnerSelectedItemPosition);
                 int selectedKey = selected.getKey();
-                intent.putExtra(MainActivity.BOARD_KEY_CLICKED, selectedKey);
-                String boardSelectedString = mBoardSpinnerAdapter.getItem(spinnerSelectedItemPosition).getName();
 
-                Log.d(TAG, "spinner getselecteditem to string " + boardSelectedString);
-                intent.putExtra(MainActivity.BOARD_NAME_SELECTED, boardSelectedString);
-                startActivity(intent);
+                // TODO This will move to the Share Fragment
+//                Intent intent = new Intent(mContext, BoardActivity.class);
+//                intent.putExtra(MainActivity.BOARD_KEY_CLICKED, selectedKey);
+//                String boardSelectedString = mBoardSpinnerAdapter.getItem(spinnerSelectedItemPosition).getName();
+//                Log.d(TAG, "spinner getselecteditem to string " + boardSelectedString);
+//                intent.putExtra(MainActivity.BOARD_NAME_SELECTED, boardSelectedString);
+//                startActivity(intent);
+                ((SaveCallback) getActivity()).onSaveNextButton();
+
             }
         });
         String[] mProjection =

@@ -19,10 +19,16 @@
     <string name="title_selection_textview">Title Name</string>
     <string name="board_selection_textview">Board Name</string>
 
+    // Share Fragment
+    <string name="share">Share</string>
+
 
     // Main Activity
     <string name="fab_record_beep_text">Record a Beep</string>
     <string name="fab_create_board_text">Create a Board</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>
