@@ -18,7 +18,6 @@ static jclass activityClass;
 static jobject activityObj;
 static jmethodID playbackEndCallback;
 
-static jstring filePath;
 
 // New function declarations
 void setup(JNIEnv *javaEnvironment, jobject thisObj);
@@ -116,10 +115,6 @@ void SuperpoweredAudio::onFileChange(const char *path, int fileOffset, int fileL
     playerA->open(path);
     playerA->cachePosition(0, 255);
     pthread_mutex_unlock(&mutex);
-}
-void SuperpoweredAudio::setFileName(jstring x)  {
-    filename = x;
-
 }
 
 void SuperpoweredAudio::onPlayerPause() {
@@ -255,31 +250,40 @@ bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples)
 
     return !silence;
 }
+void SuperpoweredAudio::setRecordFileName(std::string filename) {
+    recordFileName = filename;
+}
+
 void SuperpoweredAudio::toggleRecord(bool record) {
     __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "toggleRecord called..");
-    JNIEnv * env;
-    bool attached = false;
-    switch (jvm->GetEnv((void**)&env, JNI_VERSION_1_6))
-    {
-        case JNI_OK:
-            break;
-        case JNI_EDETACHED:
-            if (jvm->AttachCurrentThread(&env, NULL)!=0)
-            {
-                throw std::runtime_error("Could not attach current thread");
-            }
-            attached = true;
-            break;
-        case JNI_EVERSION:
-            throw std::runtime_error("Invalid java version");
-    }
-    static const char *a = env->GetStringUTFChars(filePath, JNI_FALSE);
-    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudioMember", a);
-    //env->ReleaseStringUTFChars(filePath, a);
-    if (attached)
-    {
-        jvm->DetachCurrentThread();
-    }
+
+//    JNIEnv * env;
+//    bool attached = false;
+//    switch (jvm->GetEnv((void**)&env, JNI_VERSION_1_6))
+//    {
+//        case JNI_OK:
+//            break;
+//        case JNI_EDETACHED:
+//            if (jvm->AttachCurrentThread(&env, NULL)!=0)
+//            {
+//                throw std::runtime_error("Could not attach current thread");
+//            }
+//            attached = true;
+//            break;
+//        case JNI_EVERSION:
+//            throw std::runtime_error("Invalid java version");
+//    }
+//    static const char *a = env->GetStringUTFChars(filePath, JNI_FALSE);
+////    static const char *b = env->GetStringUTFChars(filename, JNI_FALSE);
+//    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudioMember a", a);
+//    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudioMember b", b);
+//
+//
+//    //env->ReleaseStringUTFChars(filePath, a);
+//    if (attached)
+//    {
+//        jvm->DetachCurrentThread();
+//    }
 
     pthread_mutex_lock(&mutex);
     isRecording = record;
@@ -288,9 +292,10 @@ void SuperpoweredAudio::toggleRecord(bool record) {
 
         //playerA->open(musicpath, musicOffset, musicLength);
         //playerA->play(false);
-        const char *path = "/data/data/xyz.peast.beep/files/testing.wav";
-        __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", a);
-        recorder->start(a);
+        //const char *path = "/data/data/xyz.peast.beep/files/testing.wav";
+        const char *b = recordFileName.c_str();
+        __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", b);
+        recorder->start(b);
     }
     else {
         __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "toggleRecord stopRecord");
@@ -405,7 +410,13 @@ void Java_xyz_peast_beep_RecordActivity_toggleRecord(JNIEnv * __unused javaEnvir
 //setRecordPath
 extern "C" JNIEXPORT
 void Java_xyz_peast_beep_RecordActivity_setRecordPath(JNIEnv * javaEnvironment, jobject __unused obj, jstring path) {
-    filePath = (jstring) javaEnvironment->NewGlobalRef(path);
+
+    const char *tempChars = javaEnvironment->GetStringUTFChars(path,NULL);
+    std::string tempString;
+    tempString=tempChars;
+    myAudio->setRecordFileName(tempString);
+    javaEnvironment->ReleaseStringUTFChars(path,tempChars);
+
 //    const char *t = javaEnvironment->GetStringUTFChars(filePath, JNI_FALSE);
 //    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudioGlobal", t);
 //    javaEnvironment->ReleaseStringUTFChars(path, filepath);
