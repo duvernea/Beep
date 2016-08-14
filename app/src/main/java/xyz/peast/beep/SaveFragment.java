@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.UUID;
 
 import xyz.peast.beep.adapters.Board;
 import xyz.peast.beep.adapters.BoardSpinnerAdapter;
@@ -284,26 +285,30 @@ public class SaveFragment extends Fragment implements LocationListener {
     }
     void insertContent() {
         //beepRowIds[0] = (int) ContentUris.parseId(beepUri);
+        ContentValues contentValues = new ContentValues();
 
-        String imageDir = mContext.getFilesDir().getAbsolutePath();
 
-        String tempFileName = "temp.jpg";
-        saveBitmap(imageDir + "/" + tempFileName);
+        if (mImageBitmap != null) {
+            String imageDir = mContext.getFilesDir().getAbsolutePath();
+
+            String uniqueName = UUID.randomUUID().toString() + ".jpg";
+
+            //String tempFileName = "temp.jpg";
+            saveBitmap(imageDir + "/" + uniqueName);
+            contentValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, uniqueName);
+        }
 
         getLocation();
-        ContentValues contentValues = new ContentValues();
 
         String beepName = mBeepNameEditText.getText().toString();
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_NAME, beepName);
         //contentValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, mImageUri.toString());
-        contentValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, tempFileName);
+
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, mRecordFileName);
         if (mMostRecentLocation != null) {
             contentValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LAT, mMostRecentLocation.getLatitude());
             contentValues.put(BeepDbContract.BeepEntry.COLUMN_COORD_LONG, mMostRecentLocation.getLongitude());
         }
-
-        contentValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, mRecordFileName);
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_PRIVACY, 1);
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, 0);
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_DATE_CREATED, Calendar.getInstance().getTimeInMillis());

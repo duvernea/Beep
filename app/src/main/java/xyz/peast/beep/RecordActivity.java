@@ -47,6 +47,7 @@ public class RecordActivity extends AppCompatActivity implements RecordFragment.
         mRecordFileName =UUID.randomUUID().toString();
         Bundle bundle = new Bundle();
         bundle.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
+        Log.d(TAG, "mRecordFileName: " + mRecordFileName);
 
         RecordFragment recordFragment = new RecordFragment();
         recordFragment.setArguments(bundle);
