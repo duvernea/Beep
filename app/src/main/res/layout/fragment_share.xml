@@ -20,7 +20,7 @@
             android:layout_height="@dimen/image_size_save_activity"
             android:src="@drawable/beep_item_temp"
             android:layout_marginRight="16dp"
-            android:id="@+id/beep_image"
+            android:id="@+id/beep_imageview"
             android:scaleType="centerCrop"/>
         <LinearLayout
             android:layout_width="match_parent"

@@ -78,9 +78,10 @@ public class SaveFragment extends Fragment implements LocationListener {
     private BoardSpinnerAdapter mBoardSpinnerAdapter;
 
     private Bitmap mImageBitmap;
+    private String mImageFileName;
 
     public interface SaveCallback{
-        public void onSaveNextButton(String beepName);
+        public void onSaveNextButton(String beepName, String audioFile, String imageFile);
     }
 
     @Override
@@ -185,7 +186,10 @@ public class SaveFragment extends Fragment implements LocationListener {
 //                Log.d(TAG, "spinner getselecteditem to string " + boardSelectedString);
 //                intent.putExtra(MainActivity.BOARD_NAME_SELECTED, boardSelectedString);
 //                startActivity(intent);
-                ((SaveCallback) getActivity()).onSaveNextButton(mBeepNameEditText.getText().toString()
+                ((SaveCallback) getActivity()).onSaveNextButton(mBeepNameEditText.getText().toString(),
+                        mRecordFileName,
+                        mImageFileName
+
                 );
 
             }
@@ -298,11 +302,10 @@ public class SaveFragment extends Fragment implements LocationListener {
         if (mImageBitmap != null) {
             String imageDir = mContext.getFilesDir().getAbsolutePath();
 
-            String uniqueName = UUID.randomUUID().toString() + ".jpg";
-
+            mImageFileName = UUID.randomUUID().toString() + ".jpg";
             //String tempFileName = "temp.jpg";
-            saveBitmap(imageDir + "/" + uniqueName);
-            contentValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, uniqueName);
+            saveBitmap(imageDir + "/" + mImageFileName);
+            contentValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, mImageFileName);
         }
 
         getLocation();
