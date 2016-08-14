@@ -21,6 +21,7 @@ public class RecordActivity extends AppCompatActivity
 
     // no file extension
     public static final String RECORD_FILE_UNIQUE_NAME = "record_file_name";
+    public static final String BEEP_NAME = "beep_name";
 
     private static String mRecordFileName;
 
@@ -42,11 +43,12 @@ public class RecordActivity extends AppCompatActivity
     }
 
     @Override
-    public void onSaveNextButton() {
+    public void onSaveNextButton(String beepname) {
         Log.d(TAG, "Save button pushed.");
         ShareFragment shareFragment = new ShareFragment();
         Bundle bundle = new Bundle();
         bundle.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
+        bundle.putString(BEEP_NAME, beepname);
         shareFragment.setArguments(bundle);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,

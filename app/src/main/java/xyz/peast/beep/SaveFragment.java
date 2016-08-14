@@ -80,7 +80,7 @@ public class SaveFragment extends Fragment implements LocationListener {
     private Bitmap mImageBitmap;
 
     public interface SaveCallback{
-        public void onSaveNextButton();
+        public void onSaveNextButton(String beepName);
     }
 
     @Override
@@ -171,7 +171,6 @@ public class SaveFragment extends Fragment implements LocationListener {
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ContentValues contentValues = new ContentValues();
                 // TODO name, board, time, audio file, image uri, etc
                 insertContent();
                 int spinnerSelectedItemPosition  = mBoardSpinner.getSelectedItemPosition();
@@ -186,7 +185,8 @@ public class SaveFragment extends Fragment implements LocationListener {
 //                Log.d(TAG, "spinner getselecteditem to string " + boardSelectedString);
 //                intent.putExtra(MainActivity.BOARD_NAME_SELECTED, boardSelectedString);
 //                startActivity(intent);
-                ((SaveCallback) getActivity()).onSaveNextButton();
+                ((SaveCallback) getActivity()).onSaveNextButton(mBeepNameEditText.getText().toString()
+                );
 
             }
         });
