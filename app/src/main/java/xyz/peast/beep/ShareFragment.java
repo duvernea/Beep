@@ -35,6 +35,7 @@ public class ShareFragment extends Fragment {
     private TextView mBeepNameTextView;
     private ImageView mBeepImageView;
     private Button mShareButton;
+    private Button mDontShareButton;
 
     private String mBoardName;
     private int mBoardKey;
@@ -55,6 +56,7 @@ public class ShareFragment extends Fragment {
         mBeepNameTextView = (TextView) rootView.findViewById(R.id.beep_name_textview);
         mBeepImageView = (ImageView) rootView.findViewById(R.id.beep_imageview);
         mShareButton = (Button) rootView.findViewById(R.id.share_button);
+        mDontShareButton = (Button) rootView.findViewById(R.id.no_button);
 
         Bundle bundle = this.getArguments();
         mRecordFileName = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME) + ".wav";
@@ -73,6 +75,16 @@ public class ShareFragment extends Fragment {
         Log.d(TAG, "BeepAdapter image file" + imagePath);
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
         mBeepImageView.setImageBitmap(bitmap);
+
+        mDontShareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, BoardActivity.class);
+                intent.putExtra(MainActivity.BOARD_KEY_CLICKED, mBoardKey);
+                intent.putExtra(MainActivity.BOARD_NAME_SELECTED, mBoardName);
+                startActivity(intent);
+            }
+        });
 
         mShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
