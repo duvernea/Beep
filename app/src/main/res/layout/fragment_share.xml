@@ -60,6 +60,19 @@
         <Button
             android:layout_width="0dp"
             android:layout_height="64dp"
+            android:id="@+id/no_button"
+            android:text="@string/no"
+            android:textColor="@color/white_ee"
+
+            android:textSize="@dimen/button_text_size"
+            android:background="@color/recordButtonStopRecording"
+            android:visibility="visible"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            />
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="64dp"
             android:id="@+id/share_button"
             android:text="@string/share"
             android:textColor="@color/white_ee"
@@ -70,6 +83,7 @@
             android:layout_weight="1"
             android:textAllCaps="false"
             />
+
     </LinearLayout>
 
     <com.google.android.gms.ads.AdView

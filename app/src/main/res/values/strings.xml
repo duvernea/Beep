@@ -21,6 +21,7 @@
 
     // Share Fragment
     <string name="share">Share</string>
+    <string name="no">Nope.</string>
 
 
     // Main Activity

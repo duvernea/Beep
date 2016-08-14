@@ -180,7 +180,7 @@ public class SaveFragment extends Fragment implements LocationListener {
                 Board selected = mSpinnerItems.get(spinnerSelectedItemPosition);
                 int selectedKey = selected.getKey();
                 String boardname = selected.getName();
-                
+
                 ((SaveCallback) getActivity()).onSaveNextButton(mBeepNameEditText.getText().toString(),
                         mRecordFileName,
                         mImageFileName,

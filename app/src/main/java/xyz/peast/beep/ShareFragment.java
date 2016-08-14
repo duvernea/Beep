@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.File;
 
 
 public class ShareFragment extends Fragment {
@@ -65,11 +68,35 @@ public class ShareFragment extends Fragment {
         mShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO This will move to the Share Fragment
-                Intent intent = new Intent(mContext, BoardActivity.class);
-                intent.putExtra(MainActivity.BOARD_KEY_CLICKED, mBoardKey);
-                intent.putExtra(MainActivity.BOARD_NAME_SELECTED, mBoardName);
-                startActivity(intent);
+                String audioPath = mContext.getFilesDir().getAbsolutePath();
+                audioPath += "/" + mRecordFileName;
+                Log.d(TAG, "audioPath: " + audioPath);
+                Uri fileUri;
+                //= Uri.parse(audioPath);
+                File requestFile = new File(audioPath);
+                try {
+                    fileUri = FileProvider.getUriForFile(
+                            mContext,
+                            "xyz.peast.beep.fileprovider",
+                            requestFile);
+                } catch (IllegalArgumentException e) {
+                    fileUri = null;
+                    Log.e("File Selector",
+                            "The selected file can't be shared: ");
+                }
+                if (fileUri != null) {
+                    Log.d(TAG, "fileUri: " + fileUri);
+                }
+                Intent share = new Intent(Intent.ACTION_SEND);
+
+                share.setType("audio/*");
+                share.putExtra(Intent.EXTRA_STREAM, fileUri);
+                startActivity(Intent.createChooser(share, "Share Sound File"));
+
+//                Intent intent = new Intent(mContext, BoardActivity.class);
+//                intent.putExtra(MainActivity.BOARD_KEY_CLICKED, mBoardKey);
+//                intent.putExtra(MainActivity.BOARD_NAME_SELECTED, mBoardName);
+//                startActivity(intent);
             }
         });
 
