@@ -81,7 +81,8 @@ public class SaveFragment extends Fragment implements LocationListener {
     private String mImageFileName;
 
     public interface SaveCallback{
-        public void onSaveNextButton(String beepName, String audioFile, String imageFile);
+        public void onSaveNextButton(String beepName, String audioFile, String imageFile,
+                                     String boardname, int boardkey);
     }
 
     @Override
@@ -178,20 +179,14 @@ public class SaveFragment extends Fragment implements LocationListener {
                 Log.d(TAG, "spinner selected item position " + spinnerSelectedItemPosition);
                 Board selected = mSpinnerItems.get(spinnerSelectedItemPosition);
                 int selectedKey = selected.getKey();
-
-                // TODO This will move to the Share Fragment
-//                Intent intent = new Intent(mContext, BoardActivity.class);
-//                intent.putExtra(MainActivity.BOARD_KEY_CLICKED, selectedKey);
-//                String boardSelectedString = mBoardSpinnerAdapter.getItem(spinnerSelectedItemPosition).getName();
-//                Log.d(TAG, "spinner getselecteditem to string " + boardSelectedString);
-//                intent.putExtra(MainActivity.BOARD_NAME_SELECTED, boardSelectedString);
-//                startActivity(intent);
+                String boardname = selected.getName();
+                
                 ((SaveCallback) getActivity()).onSaveNextButton(mBeepNameEditText.getText().toString(),
                         mRecordFileName,
-                        mImageFileName
-
+                        mImageFileName,
+                        boardname,
+                        selectedKey
                 );
-
             }
         });
         String[] mProjection =
@@ -211,7 +206,6 @@ public class SaveFragment extends Fragment implements LocationListener {
         //mSpinnerItems = new ArrayList<String>();
         cursor.moveToFirst();
         mSpinnerItems = new ArrayList<Board>();
-
 
         for(int i = 0; i < cursor.getCount(); i++){
             String row = cursor.getString(

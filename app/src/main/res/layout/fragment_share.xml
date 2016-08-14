@@ -60,7 +60,7 @@
         <Button
             android:layout_width="0dp"
             android:layout_height="64dp"
-            android:id="@+id/save_button"
+            android:id="@+id/share_button"
             android:text="@string/share"
             android:textColor="@color/white_ee"
 
