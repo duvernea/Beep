@@ -27,6 +27,8 @@ public class ShareFragment extends Fragment {
 
     private static final String TAG = ShareFragment.class.getSimpleName();
 
+    private static final int SHARE_BEEP = 1;
+
     private Context mContext;
     private String mRecordFileName;
 
@@ -37,6 +39,8 @@ public class ShareFragment extends Fragment {
     private String mBoardName;
     private int mBoardKey;
     private String mBeepName;
+
+    private String mNewTempFilePath;
 
 
     public ShareFragment() {
@@ -78,9 +82,9 @@ public class ShareFragment extends Fragment {
                 audioPath += "/" + mRecordFileName;
                 Log.d(TAG, "audioPath: " + audioPath);
                 File requestFile = new File(audioPath);
-                String newFilePath = mContext.getFilesDir().getAbsolutePath();
-                newFilePath += "/" + mBeepName + ".wav";
-                File renamedFile = new File(newFilePath);
+                mNewTempFilePath = mContext.getFilesDir().getAbsolutePath();
+                mNewTempFilePath += "/" + mBeepName + ".wav";
+                File renamedFile = new File(mNewTempFilePath);
                 try {
                     FileInputStream inStream = new FileInputStream(requestFile);
                     FileOutputStream outStream = new FileOutputStream(renamedFile);
@@ -115,15 +119,22 @@ public class ShareFragment extends Fragment {
                 share.putExtra(Intent.EXTRA_STREAM, fileUri);
                 startActivity(Intent.createChooser(share, "Share Sound File"));
 
-//                Intent intent = new Intent(mContext, BoardActivity.class);
-//                intent.putExtra(MainActivity.BOARD_KEY_CLICKED, mBoardKey);
-//                intent.putExtra(MainActivity.BOARD_NAME_SELECTED, mBoardName);
-//                startActivity(intent);
+                startActivityForResult (share, SHARE_BEEP);
             }
         });
 
         return rootView;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        File file = new File(mNewTempFilePath);
+        boolean deleted = file.delete();
+
+        Intent intent = new Intent(mContext, BoardActivity.class);
+        intent.putExtra(MainActivity.BOARD_KEY_CLICKED, mBoardKey);
+        intent.putExtra(MainActivity.BOARD_NAME_SELECTED, mBoardName);
+        startActivity(intent);
+    }
 
 }
