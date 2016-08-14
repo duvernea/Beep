@@ -17,6 +17,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 
 
 public class ShareFragment extends Fragment {
@@ -32,6 +36,7 @@ public class ShareFragment extends Fragment {
 
     private String mBoardName;
     private int mBoardKey;
+    private String mBeepName;
 
 
     public ShareFragment() {
@@ -53,8 +58,8 @@ public class ShareFragment extends Fragment {
         mBoardName = bundle.getString(RecordActivity.BOARD_NAME);
         mBoardKey = bundle.getInt(RecordActivity.BOARD_KEY);
 
-        String beepname = bundle.getString(RecordActivity.BEEP_NAME);
-        mBeepNameTextView.setText(beepname);
+        mBeepName = bundle.getString(RecordActivity.BEEP_NAME);
+        mBeepNameTextView.setText(mBeepName);
         Log.d(TAG, "Record File Name: " + mRecordFileName);
         Log.d(TAG, "Image File Name: " + imagefile);
 
@@ -68,17 +73,34 @@ public class ShareFragment extends Fragment {
         mShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 String audioPath = mContext.getFilesDir().getAbsolutePath();
                 audioPath += "/" + mRecordFileName;
                 Log.d(TAG, "audioPath: " + audioPath);
+                File requestFile = new File(audioPath);
+                String newFilePath = mContext.getFilesDir().getAbsolutePath();
+                newFilePath += "/" + mBeepName + ".wav";
+                File renamedFile = new File(newFilePath);
+                try {
+                    FileInputStream inStream = new FileInputStream(requestFile);
+                    FileOutputStream outStream = new FileOutputStream(renamedFile);
+                    FileChannel inChannel = inStream.getChannel();
+                    FileChannel outChannel = outStream.getChannel();
+                    inChannel.transferTo(0, inChannel.size(), outChannel);
+                    inStream.close();
+                    outStream.close();
+                }
+                catch (IOException ioe) {
+                    Log.d(TAG, "IO Exception caught");
+                }
+
                 Uri fileUri;
                 //= Uri.parse(audioPath);
-                File requestFile = new File(audioPath);
                 try {
                     fileUri = FileProvider.getUriForFile(
                             mContext,
                             "xyz.peast.beep.fileprovider",
-                            requestFile);
+                            renamedFile);
                 } catch (IllegalArgumentException e) {
                     fileUri = null;
                     Log.e("File Selector",
