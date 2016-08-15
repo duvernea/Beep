@@ -82,7 +82,18 @@
         android:text="PLAY"
         android:layout_below="@id/button_frame_layout"
         android:layout_centerInParent="true"
-        android:layout_marginTop="100dp" />
+        android:layout_marginTop="30dp" />
+    <Button
+        android:id="@+id/createwavtest_button"
+        android:textSize="@dimen/button_text_size"
+
+        android:layout_width="150dp"
+        android:layout_height="58dp"
+        android:text="createWavTest"
+        android:layout_below="@id/play_button"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="20dp" />
+
     <com.google.android.gms.ads.AdView
         android:id="@+id/adview"
         android:layout_width="wrap_content"

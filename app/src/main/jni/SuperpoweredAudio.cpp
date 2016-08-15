@@ -1,6 +1,7 @@
 #include "SuperpoweredAudio.h"
 #include "jniapi.h.h"
 #include <SuperpoweredSimple.h>
+#include <SuperpoweredDecoder.h>
 #include <jni.h>
 #include <stdio.h>
 #include <android/log.h>
@@ -191,6 +192,42 @@ void SuperpoweredAudio::onFxValue(int ivalue) {
             filter->enable(false);
             roll->enable(false);
     };
+}
+void SuperpoweredAudio::createWav() {
+    const char * temppath = "/data/data/xyz.peast.beep/files/createwavtest.wav";
+
+    const char *recordedFile = recordFileName.c_str();
+    const char *testFile = "data/data/xyz.peast.beep/files/04505f9a-2ab1-496b-acd3-6f26d9466892.wav";
+
+
+
+    SuperpoweredDecoder *decoder = new SuperpoweredDecoder();
+    const char *openError = decoder->open(testFile, false, 0, 0);
+    if (openError) {
+        __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", openError);
+        delete decoder;
+        return;
+    }
+    FILE *fd = createWAV(temppath, decoder->samplerate, 2);
+
+
+    // int buffer for values from decoder
+    short int *intBuffer = (short int *)malloc(decoder->samplesPerFrame * 2 * sizeof(short int) + 16384);
+
+    // processing
+    while (true) {
+        unsigned int samplesDecoded = decoder->samplesPerFrame;
+
+        if (decoder->decode(intBuffer, &samplesDecoded) == SUPERPOWEREDDECODER_ERROR) break;
+        if (samplesDecoded < 1) break;
+
+        fwrite(intBuffer, 1, samplesDecoded * 4, fd);
+    }
+    int numsamples = 44100*3;
+
+    closeWAV(fd);
+    delete decoder;
+    free(intBuffer);
 }
 
 bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples) {
@@ -402,6 +439,13 @@ void Java_xyz_peast_beep_RecordActivity_onFileChange(JNIEnv * __unused javaEnvir
     __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", path);
 
 }
+//createWAV
+extern "C" JNIEXPORT
+void Java_xyz_peast_beep_RecordActivity_createWav(JNIEnv * javaEnvironment, jobject) {
+    myAudio->createWav();
+}
+
+
 //toggleRecord
 extern "C" JNIEXPORT
 void Java_xyz_peast_beep_RecordActivity_toggleRecord(JNIEnv * __unused javaEnvironment, jobject __unused obj, jboolean record) {

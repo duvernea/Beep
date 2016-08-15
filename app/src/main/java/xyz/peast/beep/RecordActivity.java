@@ -111,6 +111,7 @@ public class RecordActivity extends AppCompatActivity
 
     public native void setRecordPath(String path);
     public native void shutdownAudio();
+    public native void createWav();
 
     static {
         System.loadLibrary("SuperpoweredAudio");

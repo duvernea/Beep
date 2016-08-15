@@ -39,6 +39,8 @@ public class RecordFragment extends Fragment {
     private Button mNextButton;
     private Button mRedoButton;
 
+    private Button mCreateWavButton;
+
     private boolean mIsRecording = false;
 
     private boolean mIsPlaying =false;
@@ -74,6 +76,7 @@ public class RecordFragment extends Fragment {
 
             mRedoButton = (Button) rootView.findViewById(R.id.redo_record_button);
             mNextButton = (Button) rootView.findViewById(R.id.next_button);
+            mCreateWavButton = (Button) rootView.findViewById(R.id.createwavtest_button);
 
             mAdView = (AdView) rootView.findViewById(R.id.adview);
             AdRequest adRequest = new AdRequest.Builder()
@@ -103,6 +106,14 @@ public class RecordFragment extends Fragment {
 
 
             //SuperAudio.setRecordPath(mRecordFilePath);
+
+            mCreateWavButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ((RecordActivity) mActivity).createWav();
+
+                }
+            });
 
             //SurfaceView surfaceView = (SurfaceView) findViewById(R.id.waveform_surface);
             mGlSurfaceView = (GLSurfaceView) rootView.findViewById(R.id.glsurface_view);
