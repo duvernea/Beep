@@ -235,19 +235,43 @@ bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples)
     pthread_mutex_lock(&mutex);
     bool silence = false;
 
+
+
+
+
     if (isRecording) {
+
+        // short int -32,768 to 32,767
+        short int *localAudioPointer = output;
+        float RMS =0;
+        //SuperpoweredFloatToShortInt(recordBuffer, output, numberOfSamples);
+        for (int i=0; i<numberOfSamples; i+=1) {
+            //__android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "test int = %d", i);
+            //__android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "float = %f", *localAudioPointer);
+            RMS += (*localAudioPointer) * (*localAudioPointer);
+            localAudioPointer+=1;
+        }
+        RMS = RMS / 2 / numberOfSamples;
+
+        char array[40];
+        sprintf(array, "%f", RMS);
+        __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio Buffer RMS value", array );
         //__android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", "process record start");
 
         //__android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", "process.. isRecording");
 
         SuperpoweredShortIntToFloat(output, recordBuffer, numberOfSamples, NULL);
-        float *localAudioPointer = recordBuffer;
-        //SuperpoweredFloatToShortInt(recordBuffer, output, numberOfSamples);
-//        for (int i=0; i<numberOfSamples; i+=2) {
+//        float *localAudioPointer = recordBuffer;
+//        float RMS =0;
+//        //SuperpoweredFloatToShortInt(recordBuffer, output, numberOfSamples);
+//        for (int i=0; i<numberOfSamples; i+=1) {
 //            //__android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "test int = %d", i);
-//            __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "float = %f", *localAudioPointer);
-//            localAudioPointer+=2;
+//           // __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "float = %f", *localAudioPointer);
+//            RMS += (*localAudioPointer) * (*localAudioPointer);
+//            localAudioPointer+=1;
 //        }
+
+
         recorder->process(recordBuffer, NULL, numberOfSamples);
         silence = !playerA->process(stereoBuffer, false, numberOfSamples);
         //__android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", "process end");
