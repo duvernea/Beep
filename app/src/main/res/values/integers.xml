@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <integer
+        name="max_beep_size"
+        >12</integer>
+    <integer
+        name="max_board_size"
+        >12</integer>
+</resources>

@@ -8,6 +8,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,7 +19,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.InputFilter;
 import android.text.InputType;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,8 +30,10 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TableLayout;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -119,8 +124,28 @@ public class SaveFragment extends Fragment implements LocationListener {
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                     builder.setTitle("Create new Board");
                     final EditText input = new EditText(mContext);
+                    input.setMaxLines(1);
+                    input.setSingleLine();
+
+                    FrameLayout container = new FrameLayout(mContext);
+                    FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+                    Resources resources = mContext.getResources();
+                    DisplayMetrics metrics = resources.getDisplayMetrics();
+                    float marginDpLeft = 16;
+                    float marginDpRight = 64;
+                    float pxLeft = marginDpLeft * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+                    float pxRight = marginDpRight * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+                    
+                    params.leftMargin = (int) pxLeft;
+                    params.rightMargin = (int) pxRight;
+                    input.setLayoutParams(params);
+                    container.addView(input);
+
+                    int maxLength = getResources().getInteger(R.integer.max_board_size);
+                    input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxLength)});
                     input.setInputType(InputType.TYPE_CLASS_TEXT);
-                    builder.setView(input);
+                    builder.setView(container);
 
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override

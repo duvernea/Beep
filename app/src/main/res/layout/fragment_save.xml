@@ -52,9 +52,10 @@
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:text="Beep01"
-                    android:maxLength="12"
-                    android:layout_marginRight="48dp"
-                    android:id="@+id/beep_name_edittext"/>
+                    android:maxLength="@integer/max_beep_size"
+                    android:layout_marginRight="40dp"
+                    android:id="@+id/beep_name_edittext"
+                    android:singleLine="true"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

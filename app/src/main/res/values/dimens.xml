@@ -34,4 +34,6 @@
     <dimen name="image_size_save_activity">160dp</dimen>
     <dimen name="save_fragment_label_size">20sp</dimen>
     <dimen name="spinner_item_textsize">20sp</dimen>
+
+
 </resources>
