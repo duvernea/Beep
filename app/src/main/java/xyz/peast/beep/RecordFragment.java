@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -38,6 +39,8 @@ public class RecordFragment extends Fragment {
 
     private Button mNextButton;
     private Button mRedoButton;
+
+    private ProgressBar mProgressBar;
 
     private Button mCreateWavButton;
 
@@ -77,6 +80,8 @@ public class RecordFragment extends Fragment {
             mRedoButton = (Button) rootView.findViewById(R.id.redo_record_button);
             mNextButton = (Button) rootView.findViewById(R.id.next_button);
             mCreateWavButton = (Button) rootView.findViewById(R.id.createwavtest_button);
+            mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressbar_level);
+            mProgressBar.setMax(32768*32768/2);  // 32768 = 16 bit signed int max
 
             mAdView = (AdView) rootView.findViewById(R.id.adview);
             AdRequest adRequest = new AdRequest.Builder()
@@ -281,6 +286,10 @@ public class RecordFragment extends Fragment {
         Log.d(TAG, "Played file ended");
         mIsPlaying = false;
         //Log.d(TAG, "mIsPlaying: " + mIsPlaying);
+    }
+    public void onBufferCallback(float rmsValue) {
+        mProgressBar.setProgress((int) rmsValue);
+        Log.d(TAG, "onBufferCallback, Fragment RMS Value:" + rmsValue);
     }
 
 

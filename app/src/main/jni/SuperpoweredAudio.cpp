@@ -18,6 +18,7 @@ static JavaVM *jvm;
 static jclass activityClass;
 static jobject activityObj;
 static jmethodID playbackEndCallback;
+static jmethodID recordLevelCallback;
 
 
 // New function declarations
@@ -253,9 +254,21 @@ bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples)
         }
         RMS = RMS / 2 / numberOfSamples;
 
-        char array[40];
-        sprintf(array, "%f", RMS);
-        __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio Buffer RMS value", array );
+        //char array[40];
+        //sprintf(array, "%f", RMS);
+        //__android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio Buffer RMS value", array );
+
+        JNIEnv *env;
+        jvm->AttachCurrentThread(&env, NULL);
+        // callback to the android activity to update state
+        recordLevelCallback = (env)->GetMethodID(activityClass, "onBufferCallback", "(F)V");
+
+        if (env != NULL && activityObj != NULL && recordLevelCallback != NULL) {
+            (env)->CallVoidMethod(activityObj, recordLevelCallback, (jfloat) RMS);
+        }
+        jvm->DetachCurrentThread();
+
+
         //__android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", "process record start");
 
         //__android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", "process.. isRecording");

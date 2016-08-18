@@ -100,6 +100,11 @@ public class RecordActivity extends AppCompatActivity
         RecordFragment recordFragment = (RecordFragment) getSupportFragmentManager().findFragmentByTag(RECORD_FRAGMENT_TAG);
         recordFragment.onPlaybackEnd();
     }
+    private void onBufferCallback(float rmsValue) {
+        //Log.d(TAG, "onBufferCallback from process");
+        RecordFragment recordFragment = (RecordFragment) getSupportFragmentManager().findFragmentByTag(RECORD_FRAGMENT_TAG);
+        recordFragment.onBufferCallback(rmsValue);
+    }
 
 
     public native void setupAudio();
