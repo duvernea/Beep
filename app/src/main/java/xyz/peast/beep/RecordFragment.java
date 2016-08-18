@@ -81,7 +81,10 @@ public class RecordFragment extends Fragment {
             mNextButton = (Button) rootView.findViewById(R.id.next_button);
             mCreateWavButton = (Button) rootView.findViewById(R.id.createwavtest_button);
             mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressbar_level);
-            mProgressBar.setMax(32768*32768/2);  // 32768 = 16 bit signed int max
+            //mProgressBar.setMax(32768*32768/2);  // 32768 = 16 bit signed int max
+            double powerdB = 10f*Math.log10(32768*32768/2);
+            mProgressBar.setMax(40);
+            mProgressBar.setScaleY(3f);
 
             mAdView = (AdView) rootView.findViewById(R.id.adview);
             AdRequest adRequest = new AdRequest.Builder()
@@ -288,8 +291,22 @@ public class RecordFragment extends Fragment {
         //Log.d(TAG, "mIsPlaying: " + mIsPlaying);
     }
     public void onBufferCallback(float rmsValue) {
-        mProgressBar.setProgress((int) rmsValue);
-        Log.d(TAG, "onBufferCallback, Fragment RMS Value:" + rmsValue);
+
+        double powerdB = 10f*Math.log10(rmsValue);
+
+        // limit dynamic range
+        double power2 = powerdB - 35;
+        if (power2> 40) {
+            powerdB = 40;
+        }
+        if (power2 < 0) {
+            power2 = 0;
+        }
+
+        mProgressBar.setProgress((int) power2);
+        Log.d(TAG, "powerdB: " + (int) power2);
+        //Log.d(TAG, "onBufferCallback, Fragment RMS Value:" + rmsValue);
+        //Log.d(TAG, "(int) RMS Value" + (int) rmsValue);
     }
 
 
