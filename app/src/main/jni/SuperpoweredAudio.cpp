@@ -11,6 +11,7 @@
 #include <android/native_window.h>
 #include <android/native_window_jni.h>
 #include <string>
+#include <math.h>
 
 static SuperpoweredAudio *myAudio = NULL;
 
@@ -252,7 +253,7 @@ bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples)
             RMS += (*localAudioPointer) * (*localAudioPointer);
             localAudioPointer+=1;
         }
-        RMS = RMS / 2 / numberOfSamples;
+        RMS = sqrtl(RMS / numberOfSamples);
 
         //char array[40];
         //sprintf(array, "%f", RMS);

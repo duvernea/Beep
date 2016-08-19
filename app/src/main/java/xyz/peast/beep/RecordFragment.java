@@ -60,6 +60,10 @@ public class RecordFragment extends Fragment {
     // true = after recording
     private boolean mMenuState = false;
 
+    private static final int MAX_DIPLAYED_POWER=70;
+    private static final int MIN_DIPLAYED_POWER=30;
+    private double lastRMSValue=0;
+
     public interface RecordCallback{
         public void onRecordNextButton();
     }
@@ -83,7 +87,7 @@ public class RecordFragment extends Fragment {
             mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressbar_level);
             //mProgressBar.setMax(32768*32768/2);  // 32768 = 16 bit signed int max
             double powerdB = 10f*Math.log10(32768*32768/2);
-            mProgressBar.setMax(40);
+            mProgressBar.setMax(MAX_DIPLAYED_POWER);
             mProgressBar.setScaleY(3f);
 
             mAdView = (AdView) rootView.findViewById(R.id.adview);
@@ -291,23 +295,27 @@ public class RecordFragment extends Fragment {
         //Log.d(TAG, "mIsPlaying: " + mIsPlaying);
     }
     public void onBufferCallback(float rmsValue) {
+        //Log.d(TAG, "rmsValue digital: "+ rmsValue);
 
-        double powerdB = 10f*Math.log10(rmsValue);
+        double powerCurrentBufferdB = 20f*Math.log10(rmsValue);
+        Log.d(TAG, "current buffer powerdB: "+ powerCurrentBufferdB);
 
+        double averagedPowerDb = (lastRMSValue + powerCurrentBufferdB)/2;
+        Log.d(TAG, "averaged buffers powerdB: "+ averagedPowerDb);
+        lastRMSValue = powerCurrentBufferdB;
+        // set displayed dynamic range between lowCutoff and highCutoff
+        averagedPowerDb = averagedPowerDb - MIN_DIPLAYED_POWER;
         // limit dynamic range
-        double power2 = powerdB - 35;
-        if (power2> 40) {
-            powerdB = 40;
+        if (averagedPowerDb> MAX_DIPLAYED_POWER-MIN_DIPLAYED_POWER ) {
+            averagedPowerDb = MAX_DIPLAYED_POWER;
         }
-        if (power2 < 0) {
-            power2 = 0;
+        if (averagedPowerDb < MIN_DIPLAYED_POWER) {
+            averagedPowerDb = 0;
         }
 
-        mProgressBar.setProgress((int) power2);
-        Log.d(TAG, "powerdB: " + (int) power2);
+        mProgressBar.setProgress((int) averagedPowerDb);
+        //Log.d(TAG, "powerdB: " + (int) power2);
         //Log.d(TAG, "onBufferCallback, Fragment RMS Value:" + rmsValue);
         //Log.d(TAG, "(int) RMS Value" + (int) rmsValue);
     }
-
-
 }
