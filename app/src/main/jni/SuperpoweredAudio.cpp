@@ -112,12 +112,12 @@ SuperpoweredAudio::~SuperpoweredAudio() {
     pthread_mutex_destroy(&mutex);
 }
 void SuperpoweredAudio::onFileChange(const char *path, int fileOffset, int fileLength) {
-    pthread_mutex_lock(&mutex);
+    //pthread_mutex_lock(&mutex);
     __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudioOnFileChange", path);
 
     playerA->open(path);
     playerA->cachePosition(0, 255);
-    pthread_mutex_unlock(&mutex);
+    //pthread_mutex_unlock(&mutex);
 }
 
 void SuperpoweredAudio::onPlayerPause() {
@@ -127,7 +127,7 @@ void SuperpoweredAudio::onPlayerPause() {
 void SuperpoweredAudio::onPlayPause(const char *path, bool play, int size) {
     //__android_log_write(ANDROID_LOG_ERROR, "SuperpoweredPATH", path);
 
-    pthread_mutex_lock(&mutex);
+    //pthread_mutex_lock(&mutex);
 
     //audioSystem->start();
     //const char *path = "/data/data/xyz.peast.beep/files/d5925c56-c611-49ae-91bd-bc1d25ff6b56.mp3";
@@ -149,7 +149,7 @@ void SuperpoweredAudio::onPlayPause(const char *path, bool play, int size) {
 //        playerB->play(masterIsA);
 //    };
     }
-    pthread_mutex_unlock(&mutex);
+    //pthread_mutex_unlock(&mutex);
     //__android_log_write(ANDROID_LOG_ERROR, "Superpowered", "onPlayPause mutex unlocked");
 }
 void SuperpoweredAudio::onFxSelect(int value) {
@@ -234,7 +234,7 @@ void SuperpoweredAudio::createWav() {
 
 bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples) {
     //const char* numSamples =  (std::to_string(numberOfSamples)).c_str();
-    pthread_mutex_lock(&mutex);
+    //pthread_mutex_lock(&mutex);
     bool silence = false;
 
 
@@ -321,7 +321,7 @@ bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples)
 //        __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", "silence false");
 //    }
 
-    pthread_mutex_unlock(&mutex);
+    //pthread_mutex_unlock(&mutex);
 
     return !silence;
 }
@@ -360,7 +360,7 @@ void SuperpoweredAudio::toggleRecord(bool record) {
 //        jvm->DetachCurrentThread();
 //    }
 
-    pthread_mutex_lock(&mutex);
+    //pthread_mutex_lock(&mutex);
     isRecording = record;
     if (isRecording) {
         __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "toggleRecord startRecord");
@@ -378,7 +378,7 @@ void SuperpoweredAudio::toggleRecord(bool record) {
         playerA->pause();
         recorder->stop();
     }
-    pthread_mutex_unlock(&mutex);
+    //pthread_mutex_unlock(&mutex);
 }
 
 /***************************  Native Function Calls ***************************************/
