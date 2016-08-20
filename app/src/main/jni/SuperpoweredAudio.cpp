@@ -274,7 +274,7 @@ bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples)
 
         //__android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", "process.. isRecording");
 
-        SuperpoweredShortIntToFloat(output, recordBuffer, numberOfSamples, NULL);
+        SuperpoweredShortIntToFloat(output, recordBuffer, (unsigned int) numberOfSamples);
 //        float *localAudioPointer = recordBuffer;
 //        float RMS =0;
 //        //SuperpoweredFloatToShortInt(recordBuffer, output, numberOfSamples);
