@@ -531,6 +531,11 @@ void Java_xyz_peast_beep_BoardActivity_startupAudio(JNIEnv *javaEnvironment, job
     //setup(javaEnvironment, thisObj);
     myAudio->startupAudio();
 }
+extern "C" JNIEXPORT
+void Java_xyz_peast_beep_RecordActivity_startupAudio(JNIEnv *javaEnvironment, jobject thisObj) {
+    //setup(javaEnvironment, thisObj);
+    myAudio->startupAudio();
+}
 
 
 

@@ -91,9 +91,21 @@ public class RecordActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        super.onResume();
+//        if (!mAudioState) {
+//            Log.d(TAG, "onResume !mAudioState)");
+//            setupAudio();
+//        }
+        startupAudio();
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         shutdownAudio();
+        Log.d(TAG, "onPause");
     }
 
     private void playbackEndCallback() {
@@ -118,6 +130,8 @@ public class RecordActivity extends AppCompatActivity
 
     public native void setRecordPath(String path);
     public native void shutdownAudio();
+    private native void startupAudio();
+
     public native void createWav();
 
     static {

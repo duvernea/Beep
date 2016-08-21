@@ -227,6 +227,7 @@ public class RecordFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume");
         mIsRecording = false;
         mIsPlaying =false;
         ((RecordActivity) mActivity).setupAudio();
