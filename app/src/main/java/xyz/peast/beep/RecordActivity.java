@@ -79,13 +79,15 @@ public class RecordActivity extends AppCompatActivity
         bundle.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
         Log.d(TAG, "mRecordFileName: " + mRecordFileName);
 
-        RecordFragment recordFragment = new RecordFragment();
-        recordFragment.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.record_container, recordFragment, RECORD_FRAGMENT_TAG)
-                .commit();
+        if (savedInstanceState == null) {
+            RecordFragment recordFragment = new RecordFragment();
+            recordFragment.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.record_container, recordFragment, RECORD_FRAGMENT_TAG)
+                    .commit();
 
-        supportPostponeEnterTransition();
+            supportPostponeEnterTransition();
+        }
     }
 
     @Override
