@@ -1,6 +1,7 @@
 package xyz.peast.beep;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -74,18 +75,19 @@ public class RecordActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
 
-        mRecordFileName =UUID.randomUUID().toString();
+
         Bundle bundle = new Bundle();
         bundle.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
         Log.d(TAG, "mRecordFileName: " + mRecordFileName);
 
         if (savedInstanceState == null) {
+            mRecordFileName =UUID.randomUUID().toString();
+
             RecordFragment recordFragment = new RecordFragment();
             recordFragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.record_container, recordFragment, RECORD_FRAGMENT_TAG)
                     .commit();
-
             supportPostponeEnterTransition();
         }
     }
@@ -106,6 +108,12 @@ public class RecordActivity extends AppCompatActivity
         super.onPause();
         shutdownAudio();
         Log.d(TAG, "onPause");
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
     }
 
     private void playbackEndCallback() {
