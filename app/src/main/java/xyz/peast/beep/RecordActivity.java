@@ -85,9 +85,13 @@ public class RecordActivity extends AppCompatActivity
 
             RecordFragment recordFragment = new RecordFragment();
             recordFragment.setArguments(bundle);
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.record_container, recordFragment, RECORD_FRAGMENT_TAG)
-                    .commit();
+
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.add(R.id.record_container, recordFragment, RECORD_FRAGMENT_TAG);
+
+            transaction.addToBackStack(RECORD_FRAGMENT_TAG);
+
+            transaction.commit();
             supportPostponeEnterTransition();
         }
     }
@@ -118,8 +122,22 @@ public class RecordActivity extends AppCompatActivity
     private void playbackEndCallback() {
         Log.d(TAG, "Played file ended");
         //Log.d(TAG, "mIsPlaying: " + mIsPlaying);
-        RecordFragment recordFragment = (RecordFragment) getSupportFragmentManager().findFragmentByTag(RECORD_FRAGMENT_TAG);
-        recordFragment.onPlaybackEnd();
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            // No fragments on backstack - do nothing
+        }
+        else {
+            String tag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName();
+            Log.d(TAG, "fragment tag: " +tag );
+            if (tag == SAVE_FRAGMENT_TAG) {
+                // TODO - do something when playback ends in save fragment
+            }
+            else if (tag == RECORD_FRAGMENT_TAG) {
+                RecordFragment recordFragment = (RecordFragment) getSupportFragmentManager().findFragmentByTag(RECORD_FRAGMENT_TAG);
+                recordFragment.onPlaybackEnd();
+            }
+        }
+
+
     }
     private void onBufferCallback(float rmsValue) {
         //Log.d(TAG, "onBufferCallback from process");
