@@ -57,6 +57,8 @@ public class SaveFragment extends Fragment implements LocationListener {
 
     private static final String TAG = SaveFragment.class.getSimpleName();
 
+    private static final String IMAGE_FILE_NAME = "image_file_name";
+
     private static final int SELECT_PHOTO = 1;
 
     private Context mContext;
@@ -98,6 +100,7 @@ public class SaveFragment extends Fragment implements LocationListener {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+        Log.d(TAG, "onCreateView");
 
         View rootView = inflater.inflate(R.layout.fragment_save, container, false);
 
@@ -282,9 +285,35 @@ public class SaveFragment extends Fragment implements LocationListener {
         });
 
         mImageUri = Uri.parse("/temp/test/junk");
+
+        if (savedInstanceState != null) {
+            mImageFileName = savedInstanceState.getString(IMAGE_FILE_NAME);
+        }
+
+        if (mImageFileName != null) {
+
+            //String tempFileName = "temp.jpg";
+            String imageDir = mContext.getFilesDir().getAbsolutePath();
+            String imagePath = imageDir + "/" + mImageFileName;
+            Log.d(TAG, "BeepAdapter image file " + imagePath);
+            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+            mBeepImage.setImageBitmap(bitmap);
+        }
+
         return rootView;
     }
 
+//    @Override
+//    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+//        super.onViewStateRestored(savedInstanceState);
+//        if (mImageFileName != null) {
+//            Log.d(TAG, mImageFileName);
+//        }
+//        if (savedInstanceState != null) {
+//            String image = savedInstanceState.getString(IMAGE_FILE_NAME);
+//            Log.d(TAG, "onviewrestored image: " + image);
+//        }
+//    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -383,6 +412,14 @@ public class SaveFragment extends Fragment implements LocationListener {
         Uri uri = mContext.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, contentValues);
         Log.d(TAG, "end of insert beep into ContentProvider uri = " + uri.toString());
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(IMAGE_FILE_NAME, mImageFileName);
+        Log.d(TAG, "onSaveInstanceState");
+    }
+
     private void saveBitmap(String filename) {
         FileOutputStream out = null;
 
