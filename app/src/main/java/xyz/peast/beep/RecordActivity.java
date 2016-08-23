@@ -75,13 +75,13 @@ public class RecordActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
 
-
-        Bundle bundle = new Bundle();
-        bundle.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
         Log.d(TAG, "mRecordFileName: " + mRecordFileName);
 
         if (savedInstanceState == null) {
             mRecordFileName =UUID.randomUUID().toString();
+            Log.d(TAG, "savedInstanceState is null, filename: " + mRecordFileName);
+            Bundle bundle = new Bundle();
+            bundle.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
 
             RecordFragment recordFragment = new RecordFragment();
             recordFragment.setArguments(bundle);
@@ -94,7 +94,6 @@ public class RecordActivity extends AppCompatActivity
 
     @Override
     protected void onResume() {
-        super.onResume();
         super.onResume();
 //        if (!mAudioState) {
 //            Log.d(TAG, "onResume !mAudioState)");

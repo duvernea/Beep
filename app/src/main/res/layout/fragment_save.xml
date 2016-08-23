@@ -29,13 +29,25 @@
             android:orientation="horizontal"
             android:id="@+id/image_title_board_linearlayout"
             android:layout_margin="8dp">
-            <ImageView
+            <FrameLayout
                 android:layout_width="@dimen/image_size_save_activity"
                 android:layout_height="@dimen/image_size_save_activity"
-                android:src="@drawable/beep_item_temp"
-                android:layout_marginRight="16dp"
-                android:id="@+id/beep_image"
-                android:scaleType="centerCrop"/>
+                android:layout_marginRight="16dp">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/beep_item_temp"
+
+                    android:id="@+id/beep_image"
+                    android:scaleType="centerCrop"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_add_circle_outline_black_36dp"
+                    android:layout_gravity="bottom|right"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginRight="8dp"/>
+            </FrameLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -62,20 +74,29 @@
                     android:text="@string/board_selection_textview"
                     android:textSize="@dimen/save_fragment_label_size"
                     android:textStyle="bold"/>
-                />
+
                 <Spinner
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/board_name_spinner"
                     android:background="@drawable/spinner_bg"
-                    android:drawableRight="@drawable/ic_forward_white_48dp"></Spinner>
+                    android:drawableRight="@drawable/ic_forward_white_48dp">
+                </Spinner>
 
             </LinearLayout>
         </LinearLayout>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:text="Re-play"
+        android:id="@+id/replay_button"
+        android:layout_below="@+id/image_title_board_linearlayout"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/image_title_board_linearlayout"
+        android:layout_below="@+id/replay_button"
         android:id="@+id/button_frame_layout"
         android:orientation="horizontal"
         android:gravity="center_horizontal">

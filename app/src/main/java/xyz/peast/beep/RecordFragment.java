@@ -290,6 +290,7 @@ public class RecordFragment extends Fragment {
     private void handleNextButtonPress() {
         ((RecordCallback) getActivity()).onRecordNextButton();
     }
+
     public void onPlaybackEnd() {
         Log.d(TAG, "Played file ended");
         mIsPlaying = false;

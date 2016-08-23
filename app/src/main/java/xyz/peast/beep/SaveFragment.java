@@ -69,6 +69,8 @@ public class SaveFragment extends Fragment implements LocationListener {
     private Button mSaveButton;
     private EditText mBeepNameEditText;
 
+    private Button mReplayButton;
+
     private Uri mImageUri = null;
 
     private LocationManager mLocationManager;
@@ -84,6 +86,9 @@ public class SaveFragment extends Fragment implements LocationListener {
 
     private Bitmap mImageBitmap;
     private String mImageFileName;
+
+    private boolean mIsPlaying;
+    private Activity mActivity;
 
     public interface SaveCallback{
         public void onSaveNextButton(String beepName, String audioFile, String imageFile,
@@ -108,6 +113,7 @@ public class SaveFragment extends Fragment implements LocationListener {
         mBeepImage = (ImageView) rootView.findViewById(R.id.beep_image);
         mSaveButton = (Button) rootView.findViewById(R.id.save_button);
         mBeepNameEditText = (EditText) rootView.findViewById(R.id.beep_name_edittext);
+        mReplayButton = (Button) rootView.findViewById(R.id.replay_button);
 
         mAdView = (AdView) rootView.findViewById(R.id.adview);
         final AdRequest adRequest = new AdRequest.Builder()
@@ -258,6 +264,22 @@ public class SaveFragment extends Fragment implements LocationListener {
                 //mContext, R.layout.spinner_row, R.id.spinner_item_textview, mSpinnerItems);
 
         mBoardSpinner.setAdapter(mBoardSpinnerAdapter);
+
+        mActivity = getActivity();
+
+        String recordDir = mContext.getFilesDir().getAbsolutePath();
+        final String filePath = recordDir + "/" + mRecordFileName;
+        Log.d(TAG, "filePath: " + filePath);
+
+        mReplayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mIsPlaying = true;
+                Log.d(TAG, "mIsPlaying play: " + mIsPlaying);
+                ((RecordActivity) mActivity).onFileChange(filePath, 0, 0);
+                ((RecordActivity) mActivity).onPlayPause(filePath, mIsPlaying, 0);
+            }
+        });
 
         mImageUri = Uri.parse("/temp/test/junk");
         return rootView;
