@@ -1,6 +1,7 @@
 package xyz.peast.beep;
 
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -63,7 +64,25 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
                 String beepName = cursor.getString(MainActivity.BEEPS_COL_NAME);
                 String audiofileName = cursor.getString(MainActivity.BEEPS_COL_AUDIO);
+                int beepKey = cursor.getInt(MainActivity.BEEPS_COL_BEEP_ID);
+                int playCount = cursor.getInt(MainActivity.BEEPS_COL_PLAY_COUNT);
+                Log.d(TAG, "current play count: " + playCount);
+//                int update (Uri uri,
+//                        ContentValues values,
+//                        String selection,
+//                        String[] selectionArgs)
+                ContentValues values = new ContentValues();
+                //mContext.getContentResolver().update()
+                values.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, playCount + 1);
 
+                Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
+                String whereClause = BeepDbContract.BeepEntry._ID+"=?";
+                String [] whereArgs = {beepKey+""};
+                mContext.getContentResolver().update(
+                        uri,
+                        values,
+                        whereClause,
+                        whereArgs);
 
                 String path = "/data/data/xyz.peast.beep/files/" + audiofileName;
 
