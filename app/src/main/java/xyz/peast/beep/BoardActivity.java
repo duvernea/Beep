@@ -67,12 +67,8 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                 int beepKey = cursor.getInt(MainActivity.BEEPS_COL_BEEP_ID);
                 int playCount = cursor.getInt(MainActivity.BEEPS_COL_PLAY_COUNT);
                 Log.d(TAG, "current play count: " + playCount);
-//                int update (Uri uri,
-//                        ContentValues values,
-//                        String selection,
-//                        String[] selectionArgs)
+
                 ContentValues values = new ContentValues();
-                //mContext.getContentResolver().update()
                 values.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, playCount + 1);
 
                 Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
