@@ -6,8 +6,8 @@
     android:minHeight="?android:attr/listPreferredItemHeight">
 
     <ImageView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:id="@+id/board_imageview"
         android:layout_gravity="center_vertical"
         android:src="@drawable/beep_item_temp"
