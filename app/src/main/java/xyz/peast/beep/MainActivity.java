@@ -2,6 +2,7 @@ package xyz.peast.beep;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.Context;
@@ -17,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     boolean mSupportRecording;
 
     private Context mContext;
+    private Activity mActivity;
     private BeepAdapter mBeepAdapter;
     private GridView mTopBeepsGridView;
 
@@ -123,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_main);
 
         mContext = this;
+        mActivity = this;
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
@@ -222,7 +226,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         intent.putExtra(BOARD_KEY_CLICKED, vh.getBoardKey());
                         intent.putExtra(BOARD_NAME_SELECTED, vh.mBoardNameTextView.getText().toString());
                         mFabMenuState = false;
-                        startActivity(intent);
+                        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
+                            Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                                    mActivity, vh.mBoardImageView, getResources().getString(R.string.board_image_trans)).toBundle();
+                            startActivity(intent, bundle);
+                        }
+                        else {
+                            startActivity(intent);
+                        }
+//
                     }
                 }, null, 0);
 

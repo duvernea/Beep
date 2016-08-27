@@ -11,7 +11,8 @@
         android:id="@+id/board_imageview"
         android:layout_gravity="center_vertical"
         android:src="@drawable/beep_item_temp"
-        android:layout_marginLeft="8dp"/>
+        android:layout_marginLeft="8dp"
+        android:transitionName="@string/board_image_trans"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

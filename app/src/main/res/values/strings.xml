@@ -27,6 +27,7 @@
     // Main Activity
     <string name="fab_record_beep_text">Record a Beep</string>
     <string name="fab_create_board_text">Create a Board</string>
+    <string name="board_image_trans">board_image_transition</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
