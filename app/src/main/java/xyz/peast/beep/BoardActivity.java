@@ -1,5 +1,6 @@
 package xyz.peast.beep;
 
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.Context;
@@ -106,6 +107,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         shutdownAudio();
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -125,11 +127,12 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     @Override
     public void onBackPressed()
     {
-        Intent intent = new Intent(this,MainActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(MainActivity.FIRST_TIME_RUN, false);
-        intent.putExtras(bundle);
-        startActivity(intent);
+//        Intent intent = new Intent(this,MainActivity.class);
+//        Bundle bundle = new Bundle();
+//        bundle.putBoolean(MainActivity.FIRST_TIME_RUN, false);
+//        intent.putExtras(bundle);
+//        startActivity(intent);
+        supportFinishAfterTransition();
     }
 
     @Override
