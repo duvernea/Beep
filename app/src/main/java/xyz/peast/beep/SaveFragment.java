@@ -124,6 +124,71 @@ public class SaveFragment extends Fragment implements LocationListener {
                 .addTestDevice("839737069995AAD5519D71B8B267924D")
                 .build();
         mAdView.loadAd(adRequest);
+        mBeepNameEditText.setClickable(true);
+        mBeepNameEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle("Beep name");
+                    final EditText input = new EditText(mContext);
+                    input.setMaxLines(1);
+                    input.setSingleLine();
+                    input.setText(mBeepNameEditText.getText());
+                    input.setSelectAllOnFocus(true);
+
+                    FrameLayout container = new FrameLayout(mContext);
+                    FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+                    Resources resources = mContext.getResources();
+                    DisplayMetrics metrics = resources.getDisplayMetrics();
+                    float marginDpLeft = 16;
+                    float marginDpRight = 64;
+                    float pxLeft = marginDpLeft * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+                    float pxRight = marginDpRight * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+
+                    params.leftMargin = (int) pxLeft;
+                    params.rightMargin = (int) pxRight;
+                    input.setLayoutParams(params);
+                    container.addView(input);
+
+                    int maxLength = getResources().getInteger(R.integer.max_beep_size);
+                    input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxLength)});
+                    input.setInputType(InputType.TYPE_CLASS_TEXT);
+                    builder.setView(container);
+
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String newBeepName = input.getText().toString();
+                            mBeepNameEditText.setText(newBeepName);
+                            //ContentValues contentValues = new ContentValues();
+                            //contentValues.put(BeepDbContract.BoardEntry.COLUMN_NAME, newBoardName);
+                            //long currentTime = Calendar.getInstance().getTimeInMillis();
+                            //contentValues.put(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED, currentTime);
+                            //String tempImageUri = "";
+                            //contentValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, tempImageUri);
+                            //Uri uri = mContext.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, contentValues);
+                            //int insertedRow = (int) ContentUris.parseId(uri);
+                            //Log.d(TAG, "inserted Row into Board db: " + insertedRow);
+                            //mSpinnerItems.add(mSpinnerItems.size()-1, newBoard);
+                            //Board newBoardz = new Board(insertedRow, newBoardName, tempImageUri, currentTime);
+                            //mSpinnerItems.add(mSpinnerItems.size()-1, newBoardz);
+                            //mBoardSpinnerAdapter.notifyDataSetChanged();
+                            //mNumberOfBoards +=1;
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    Dialog dialog = builder.create();
+                    dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+                    dialog.show();
+            }
+        });
         mBoardSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
