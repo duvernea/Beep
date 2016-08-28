@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,6 +38,8 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     private boolean mIsPlaying = false;
     private boolean mAudioState = false;
 
+    private String mLastActivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +48,8 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         mContext = this;
 
         Intent intent = getIntent();
+        mLastActivity = intent.getExtras().getString("Uniqid");
+
 
         String boardName = intent.getStringExtra(MainActivity.BOARD_NAME_SELECTED);
         mBoardKey = intent.getIntExtra(MainActivity.BOARD_KEY_CLICKED, -1);
@@ -127,12 +132,19 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     @Override
     public void onBackPressed()
     {
-//        Intent intent = new Intent(this,MainActivity.class);
 //        Bundle bundle = new Bundle();
 //        bundle.putBoolean(MainActivity.FIRST_TIME_RUN, false);
 //        intent.putExtras(bundle);
 //        startActivity(intent);
-        supportFinishAfterTransition();
+        Log.d(TAG, "mLastActivity: " + mLastActivity);
+        if (mLastActivity.equals("From_MainActivity")){
+            supportFinishAfterTransition();
+        }
+        else if (mLastActivity.equals("From_ShareFragment")) {
+        Intent intent = new Intent(this,MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
     }
 
     @Override
