@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.media.AudioFormat;
 import android.media.AudioManager;
@@ -119,24 +120,28 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public static final String FIRST_TIME_RUN = "first_run";
     public boolean firstTimeRun = true;
 
+    SharedPreferences mSharedPrefs = null;
+
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mSharedPrefs = getSharedPreferences("xyz.peast.beep", MODE_PRIVATE);
+
 
         mContext = this;
         mActivity = this;
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
-        if (extras != null) {
-            firstTimeRun = getIntent().getExtras().getBoolean(FIRST_TIME_RUN);
-        }
+//        if (extras != null) {
+//            firstTimeRun = getIntent().getExtras().getBoolean(FIRST_TIME_RUN);
+//        }
 
         // Delete all old data. Insert mock data.
         if (savedInstanceState == null) {
             // if returning from BoardActivity
-            if (firstTimeRun) {
+            if (mSharedPrefs.getBoolean("firstrun", true)) {
                 InsertData.insertData(this);
                 InsertData.insertSoundFile(this);
             }
@@ -225,6 +230,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         Intent intent = new Intent(mContext, BoardActivity.class);
                         intent.putExtra(BOARD_KEY_CLICKED, vh.getBoardKey());
                         intent.putExtra(BOARD_NAME_SELECTED, vh.mBoardNameTextView.getText().toString());
+                        intent.putExtra("Uniqid","From_MainActivity");
                         mFabMenuState = false;
                         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
                             Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
@@ -273,6 +279,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onResume() {
         Log.d(TAG, "onResume run");
         super.onResume();
+        if (mSharedPrefs.getBoolean("firstrun", true)) {
+            // Do first run stuff here then set 'firstrun' as false
+            // using the following line to edit/commit prefs
+            mSharedPrefs.edit().putBoolean("firstrun", false).apply();
+        }
         resetMenuState(mFabMenuState);
 
         if (!mAudioState) {
