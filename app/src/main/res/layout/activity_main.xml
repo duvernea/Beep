@@ -53,11 +53,13 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/app_name_img"
+                    android:src="@drawable/color_logo"
                     android:contentDescription="@string/app_name"
                     android:layout_gravity="center_horizontal"
                     android:adjustViewBounds="true"
                     app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
                      />
 
             </android.support.v7.widget.Toolbar>
