@@ -45,7 +45,7 @@
         </activity>
         <activity android:name=".BoardActivity"
             android:label="BoardActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBarNotTranslucent">
 
         </activity>
         <activity
