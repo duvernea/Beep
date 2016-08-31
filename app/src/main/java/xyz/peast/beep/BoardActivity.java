@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -46,6 +47,9 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         setContentView(R.layout.activity_board);
 
         mContext = this;
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
         mLastActivity = intent.getExtras().getString("Uniqid");
