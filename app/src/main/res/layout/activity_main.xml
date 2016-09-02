@@ -35,7 +35,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:fitsSystemWindows="true"
-                android:src="@drawable/beeptemp"
+                android:src="@drawable/main_banner"
                 app:layout_collapseMode="parallax"
                 android:adjustViewBounds="true"
 
