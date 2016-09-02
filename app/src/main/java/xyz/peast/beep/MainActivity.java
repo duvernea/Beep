@@ -127,8 +127,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mSharedPrefs = getSharedPreferences("xyz.peast.beep", MODE_PRIVATE);
 
+        mSharedPrefs = getSharedPreferences("xyz.peast.beep", MODE_PRIVATE);
+        Log.d(TAG, "msharedPrefs"+mSharedPrefs.getBoolean("firstrun", true));
 
         mContext = this;
         mActivity = this;
