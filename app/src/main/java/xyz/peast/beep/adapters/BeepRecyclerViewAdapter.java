@@ -2,6 +2,8 @@ package xyz.peast.beep.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,7 +20,6 @@ import xyz.peast.beep.R;
  */
 public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerViewAdapter.BeepViewHolder> {
 
-
     private static final String TAG = BeepRecyclerViewAdapter.class.getSimpleName();
 
     private Cursor mCursor;
@@ -33,8 +34,6 @@ public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerVi
         // mEmptyView = emptyview;
         mClickHandler = dh;
     }
-
-
 
     @Override
     public BeepViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -51,11 +50,20 @@ public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerVi
         Log.d(TAG, "onBindViewHolder called");
         mCursor.moveToPosition(position);
         String beepName = mCursor.getString(MainActivity.BEEPS_COL_NAME);
-        String boardImage = mCursor.getString(MainActivity.BEEPS_COL_IMAGE);
+        String beepImage = mCursor.getString(MainActivity.BEEPS_COL_IMAGE);
         holder.mBeepNameTextView.setText(beepName);
+        if (beepImage == null || beepImage.equals("")) {
+            // Do nothing, use the default imageview
+        }
+        else {
+            String imageDir = mContext.getFilesDir().getAbsolutePath();
+            String imagePath = imageDir + "/" + beepImage;
+            Log.d(TAG, "BeepAdapter image file" + imagePath);
+            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+            holder.mBeepImageView.setImageBitmap(bitmap);
+        }
 
         // TODO - set image
-
     }
 
     @Override
@@ -84,17 +92,16 @@ public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerVi
             mCursor.moveToPosition(adapterPosition);
             mClickHandler.onClick(this);
         }
-//        public int getBoardKey() {
-//            int adapterPosition = getAdapterPosition();
-//            Log.d(TAG, "getBoardKey getAdapterPosition = " + adapterPosition);
-//            mCursor.moveToPosition(adapterPosition);
-//            int boardKey = mCursor.getInt(MainActivity.BOARDS_BOARD_ID);
-//            Log.d(TAG, "getBoardKey = " + boardKey);
-//
-//            return boardKey;
-//        }
-    }
+        public int getBeepKey() {
+            int adapterPosition = getAdapterPosition();
+            Log.d(TAG, "getBeep getAdapterPosition = " + adapterPosition);
+            mCursor.moveToPosition(adapterPosition);
+            int beepKey = mCursor.getInt(MainActivity.BEEPS_COL_BEEP_ID);
+            Log.d(TAG, "getBeepKey = " + beepKey);
 
+            return beepKey;
+        }
+    }
 
     public static interface BeepAdapterOnClickHandler {
         void onClick(BeepViewHolder vh);
@@ -107,6 +114,4 @@ public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerVi
     public Cursor getCursor() {
         return mCursor;
     }
-
-
 }

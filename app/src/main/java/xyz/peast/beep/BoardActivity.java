@@ -9,9 +9,14 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.StrictMode;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +25,9 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import xyz.peast.beep.adapters.BeepAdapter;
+import xyz.peast.beep.adapters.BeepRecyclerViewAdapter;
+import xyz.peast.beep.adapters.BoardAdapter;
+import xyz.peast.beep.adapters.BoardRecyclerViewAdapter;
 import xyz.peast.beep.data.BeepDbContract;
 
 public class BoardActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -30,7 +38,6 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
 
     Context mContext;
 
-    private BeepAdapter mBeepAdapter;
     private GridView mBeepsGridView;
 
     private int mBoardKey;
@@ -40,6 +47,11 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     private boolean mAudioState = false;
 
     private String mLastActivity;
+
+    private BeepAdapter mBeepAdapter;
+
+    private RecyclerView mBeepsRecyclerView;
+    private BeepRecyclerViewAdapter mBeepsRecyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,58 +76,104 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         textView.setText(boardName);
 
         getLoaderManager().initLoader(BEEPS_LOADER, null, this);
+
         mBeepAdapter = new BeepAdapter(mContext, null, 0);
-        mBeepsGridView = (GridView) findViewById(R.id.beeps_gridview);
-        mBeepsGridView.setAdapter(mBeepAdapter);
-        mBeepsGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                Cursor cursor = (Cursor) parent.getItemAtPosition(position);
-                String beepName = cursor.getString(MainActivity.BEEPS_COL_NAME);
-                String audiofileName = cursor.getString(MainActivity.BEEPS_COL_AUDIO);
-                int beepKey = cursor.getInt(MainActivity.BEEPS_COL_BEEP_ID);
-                int playCount = cursor.getInt(MainActivity.BEEPS_COL_PLAY_COUNT);
-                Log.d(TAG, "current play count: " + playCount);
 
-                ContentValues values = new ContentValues();
-                values.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, playCount + 1);
+        // TODO - set emptyView for recyclerview
+        // View rootView = getLayoutinflater.inflate(....)
+        // findViewById...
+        // View emptyView =
 
-                Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
-                String whereClause = BeepDbContract.BeepEntry._ID+"=?";
-                String [] whereArgs = {beepKey+""};
-                mContext.getContentResolver().update(
-                        uri,
-                        values,
-                        whereClause,
-                        whereArgs);
+        mBeepsRecyclerViewAdapter = new BeepRecyclerViewAdapter(mContext,
+                new BeepRecyclerViewAdapter.BeepAdapterOnClickHandler() {
+                    @Override
+                    public void onClick(BeepRecyclerViewAdapter.BeepViewHolder vh) {
+                        Cursor cursor = mBeepsRecyclerViewAdapter.getCursor();
+                        cursor.moveToPosition(vh.getPosition());
+                        String beepName = cursor.getString(MainActivity.BEEPS_COL_NAME);
+                        String audiofileName = cursor.getString(MainActivity.BEEPS_COL_AUDIO);
+                        int key = vh.getBeepKey();
+                        Log.d(TAG, "beep key pressed: " + key);
+                        int playCount = cursor.getInt(MainActivity.BEEPS_COL_PLAY_COUNT);
+                        Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
 
-                String path = "/data/data/xyz.peast.beep/files/" + audiofileName;
+                        ContentValues values = new ContentValues();
+                        values.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, playCount + 1);
+                        //                Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
+                        String whereClause = BeepDbContract.BeepEntry._ID+"=?";
+                        String [] whereArgs = {key+""};
+                        mContext.getContentResolver().update(
+                                uri,
+                                values,
+                                whereClause,
+                                whereArgs);
 
-                onFileChange(path, 0, 0);
-                //Log.d(TAG, "getPackageResourcePath: " + getPackageResourcePath());
-                mIsPlaying = !mIsPlaying;
-                Log.d(TAG, "mIsPlaying java: " + mIsPlaying);
-                mPath = path;
-                onPlayPause(path, mIsPlaying, 0);
-            }
-        });
+                        String path = "/data/data/xyz.peast.beep/files/" + audiofileName;
+
+                        onFileChange(path, 0, 0);
+                        //Log.d(TAG, "getPackageResourcePath: " + getPackageResourcePath());
+                        mIsPlaying = !mIsPlaying;
+                        Log.d(TAG, "mIsPlaying java: " + mIsPlaying);
+                        mPath = path;
+                        onPlayPause(path, mIsPlaying, 0);
+
+//
+                    }
+                }, null, 0);
+
+        mBeepsRecyclerView = (RecyclerView) findViewById(R.id.beeps_recyclerview);
+        mBeepsRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        //mBeepsRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        mBeepsRecyclerView.setAdapter(mBeepsRecyclerViewAdapter);
+        mBeepsRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
+
+//        mBeepsGridView.setAdapter(mBeepAdapter);
+//        mBeepsGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view,
+//                                    int position, long id) {
+//                Cursor cursor = (Cursor) parent.getItemAtPosition(position);
+//                String beepName = cursor.getString(MainActivity.BEEPS_COL_NAME);
+//                String audiofileName = cursor.getString(MainActivity.BEEPS_COL_AUDIO);
+//                int beepKey = cursor.getInt(MainActivity.BEEPS_COL_BEEP_ID);
+//                int playCount = cursor.getInt(MainActivity.BEEPS_COL_PLAY_COUNT);
+//                Log.d(TAG, "current play count: " + playCount);
+//
+//                ContentValues values = new ContentValues();
+//                values.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, playCount + 1);
+//
+//                Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
+//                String whereClause = BeepDbContract.BeepEntry._ID+"=?";
+//                String [] whereArgs = {beepKey+""};
+//                mContext.getContentResolver().update(
+//                        uri,
+//                        values,
+//                        whereClause,
+//                        whereArgs);
+//
+//                String path = "/data/data/xyz.peast.beep/files/" + audiofileName;
+//
+//                onFileChange(path, 0, 0);
+//                //Log.d(TAG, "getPackageResourcePath: " + getPackageResourcePath());
+//                mIsPlaying = !mIsPlaying;
+//                Log.d(TAG, "mIsPlaying java: " + mIsPlaying);
+//                mPath = path;
+//                onPlayPause(path, mIsPlaying, 0);
+//            }
+//        });
         if (savedInstanceState == null) {
             mAudioState = false;
         }
         else {
             mAudioState = true;
         }
-
     }
-
     @Override
     protected void onPause() {
         super.onPause();
         onPlayerPause();
         shutdownAudio();
     }
-
 
     @Override
     protected void onResume() {
@@ -134,8 +192,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         //Log.d(TAG, "mIsPlaying: " + mIsPlaying);
     }
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
 //        Bundle bundle = new Bundle();
 //        bundle.putBoolean(MainActivity.FIRST_TIME_RUN, false);
 //        intent.putExtras(bundle);
@@ -145,12 +202,11 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
             supportFinishAfterTransition();
         }
         else if (mLastActivity.equals("From_ShareFragment")) {
-        Intent intent = new Intent(this,MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+            Intent intent = new Intent(this,MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
     }
-    }
-
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         CursorLoader loader;
@@ -174,7 +230,6 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
 //                CONTACTS_SUMMARY_PROJECTION, select, null,
 //                Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
 //    }
-
     else {
             loader = null;
         }
@@ -186,16 +241,16 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (loader.getId() == BEEPS_LOADER) {
             Log.d(TAG, "onLoadFinished getCount: " + data.getCount());
-            mBeepAdapter.swapCursor(data);
-            mBeepAdapter.notifyDataSetChanged();
+            mBeepsRecyclerViewAdapter.swapCursor(data);
+            mBeepsRecyclerViewAdapter.notifyDataSetChanged();
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        if (loader.getId() == BEEPS_LOADER) {
-            mBeepAdapter.swapCursor(null);
-        }
+        //if (loader.getId() == BEEPS_LOADER) {
+        mBeepsRecyclerViewAdapter.swapCursor(null);
+        //}
     }
     // Native Audio - Load library and Functions
     private native void setupAudio();

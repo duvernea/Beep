@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private GridView mTopBeepsGridView;
 
     private BoardAdapter mBoardAdapter;
-    private ListView mBoardsListView;
 
     private RecyclerView mBoardsRecyclerView;
     private BoardRecyclerViewAdapter mBoardsRecyclerViewAdapter;
@@ -204,7 +203,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         whereClause,
                         whereArgs);
 
-
                 String path = "/data/data/xyz.peast.beep/files/" + audiofileName;
 
                 onFileChange(path, 0, 0);
@@ -339,7 +337,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             mSupportRecording = false;
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

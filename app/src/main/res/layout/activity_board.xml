@@ -43,49 +43,53 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         >
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="?android:attr/listPreferredItemHeight"
-        android:id="@+id/board_header"
-        android:background="@color/colorPrimary">
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:id="@+id/board_imageview"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/beep_item_temp"
-            android:layout_marginLeft="8dp"
-            android:transitionName="@string/board_image_trans"/>
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/board_name_textview"
-            android:textColor="@android:color/white"
-            android:layout_gravity="center_vertical"
-            android:textSize="24sp"
-            android:layout_marginLeft="16dp"
-            android:gravity="center_vertical" />
-    </LinearLayout>
+            android:orientation="vertical">
 
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="?android:attr/listPreferredItemHeight"
+                android:id="@+id/board_header"
+                android:background="@color/colorPrimary">
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:id="@+id/board_imageview"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/beep_item_temp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:transitionName="@string/board_image_trans"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/board_name_textview"
+                    android:textColor="@android:color/white"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="24sp"
+                    android:layout_marginLeft="16dp"
+                    android:gravity="center_vertical" />
+            </LinearLayout>
 
-    <GridView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/beeps_gridview"
-        android:numColumns="3"
-        android:horizontalSpacing="2dp"
-        android:padding="2dp"
-        android:background="@android:color/darker_gray"
-        />
-    </LinearLayout>
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/beeps_recyclerview"/>
 
+    <!--<GridView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:numColumns="3"-->
+        <!--android:horizontalSpacing="2dp"-->
+        <!--android:padding="2dp"-->
+        <!--android:background="@android:color/darker_gray"-->
+        <!--/>-->
+        </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
-
 </android.support.design.widget.CoordinatorLayout>
