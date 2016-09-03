@@ -8,10 +8,12 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.StrictMode;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -23,6 +25,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
+
 
 import xyz.peast.beep.adapters.BeepAdapter;
 import xyz.peast.beep.adapters.BeepRecyclerViewAdapter;
@@ -125,7 +128,16 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         mBeepsRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         //mBeepsRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mBeepsRecyclerView.setAdapter(mBeepsRecyclerViewAdapter);
-        mBeepsRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
+        //mBeepsRecyclerView.addItemDecoration(new SimpleDividerItemDecorationGrid(this,
+        //        SimpleDividerItemDecorationGrid.GRID_STROKE));
+//        int numColumns = 3;
+//
+//        Drawable horizontalDivider = ContextCompat.getDrawable(this, R.drawable.line_divider);
+//        Drawable verticalDivider = ContextCompat.getDrawable(this, R.drawable.line_divider);
+//
+//        mBeepsRecyclerView.setLayoutManager(new GridLayoutManager(this, numColumns));
+//
+//        mBeepsRecyclerView.addItemDecoration(new GridDividerItemDecoration(horizontalDivider, verticalDivider, numColumns));
 
 //        mBeepsGridView.setAdapter(mBeepAdapter);
 //        mBeepsGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
