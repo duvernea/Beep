@@ -76,6 +76,14 @@
                     android:layout_marginLeft="16dp"
                     android:gravity="center_vertical" />
             </LinearLayout>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:id="@+id/random_beep_button"
+                android:layout_margin="8dp"
+                android:text="random"
+                android:textSize="24dp"
+                android:background="@color/colorAccent"/>
 
             <android.support.v7.widget.RecyclerView
                 android:layout_width="match_parent"
