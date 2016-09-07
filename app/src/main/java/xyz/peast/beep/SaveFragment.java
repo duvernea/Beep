@@ -38,6 +38,7 @@ import android.widget.TableLayout;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -49,6 +50,7 @@ import java.util.UUID;
 import xyz.peast.beep.adapters.Board;
 import xyz.peast.beep.adapters.BoardSpinnerAdapter;
 import xyz.peast.beep.data.BeepDbContract;
+import xyz.peast.beep.services.BeepService;
 
 /**
  * Created by duvernea on 7/30/16.
@@ -58,6 +60,8 @@ public class SaveFragment extends Fragment implements LocationListener {
     private static final String TAG = SaveFragment.class.getSimpleName();
 
     private static final String IMAGE_FILE_NAME = "image_file_name";
+
+    public static final String COMPRESS_IMAGE_FILE_URI = "COMPRESS_IMAGE_FILE_URI";
 
     private static final int SELECT_PHOTO = 1;
 
@@ -91,6 +95,8 @@ public class SaveFragment extends Fragment implements LocationListener {
 
     private boolean mIsPlaying;
     private Activity mActivity;
+
+    private Intent mServiceIntent;
 
     public interface SaveCallback{
         public void onSaveNextButton(String beepName, String audioFile, String imageFile,
@@ -439,8 +445,20 @@ public class SaveFragment extends Fragment implements LocationListener {
 
             mImageFileName = UUID.randomUUID().toString() + ".jpg";
             //String tempFileName = "temp.jpg";
-            saveBitmap(imageDir + "/" + mImageFileName);
-            contentValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, mImageFileName);
+            mServiceIntent = new Intent(getActivity(), BeepService.class);
+
+            //Convert to byte array
+            //ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            //mImageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            //byte[] byteArray = stream.toByteArray();
+            Bundle bundle = new Bundle();
+            bundle.putString(COMPRESS_IMAGE_FILE_URI, mImageUri.toString());
+            mServiceIntent.putExtras(bundle);
+
+            getActivity().startService(mServiceIntent);
+            //saveBitmap(imageDir + "/" + mImageFileName);
+
+            //contentValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, mImageFileName);
         }
 
         getLocation();
