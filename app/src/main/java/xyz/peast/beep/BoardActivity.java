@@ -1,5 +1,7 @@
 package xyz.peast.beep;
 
+import android.animation.AnimatorInflater;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.ContentValues;
@@ -78,6 +80,9 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
 
         TextView textView = (TextView) findViewById(R.id.board_name_textview);
         mRandomButton = (Button) findViewById(R.id.random_beep_button);
+//        ObjectAnimator objAnim = (ObjectAnimator) AnimatorInflater.loadAnimator(mContext, R.animator.button_anim);
+//        objAnim.setTarget(mRandomButton);
+//        objAnim.start();
 
         textView.setText(boardName);
 

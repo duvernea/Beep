@@ -14,14 +14,25 @@
         android:id="@+id/beep_imageview"
         android:adjustViewBounds="true"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="34dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/gradient_imageview" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:layout_gravity="bottom"
+        android:background="#50000000" />
+
     <TextView
         android:id="@+id/beep_name_textview"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
+
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
 
         android:text="Best bear*"
-        android:background="#80f19985"
         android:textStyle="normal|bold"
         android:gravity="center"
         android:textColor="#ffffff"
@@ -29,5 +40,5 @@
         android:paddingBottom="@dimen/beep_item_name_padding_top_bottom"
         android:paddingTop="@dimen/beep_item_name_padding_top_bottom"
 
-        android:layout_gravity="bottom"/>
+        android:layout_gravity="bottom|center"/>
 </FrameLayout>
