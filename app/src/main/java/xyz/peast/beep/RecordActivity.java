@@ -1,5 +1,6 @@
 package xyz.peast.beep;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
@@ -25,6 +26,7 @@ public class RecordActivity extends AppCompatActivity
     // extra arguments
     public static final String RECORD_FILE_UNIQUE_NAME = "record_file_name";
     public static final String IMAGE_FILE_UNIQUE_NAME = "image_file_name";
+    public static final String IMAGE_FILE_URI_UNCOMPRESSED = "uncompressed_image_uri";
     public static final String BEEP_NAME = "beep_name";
     public static final String BOARD_NAME = "board_name";
     public static final String BOARD_KEY = "board_key";
@@ -50,14 +52,14 @@ public class RecordActivity extends AppCompatActivity
     }
 
     @Override
-    public void onSaveNextButton(String beepname, String audiofile, String imagefile,
+    public void onSaveNextButton(String beepname, String audiofile, Uri imageUri,
                                  String boardName, int boardKey) {
         Log.d(TAG, "Save button pushed.");
         ShareFragment shareFragment = new ShareFragment();
         Bundle bundle = new Bundle();
         bundle.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
         bundle.putString(BEEP_NAME, beepname);
-        bundle.putString(IMAGE_FILE_UNIQUE_NAME, imagefile);
+        bundle.putString(IMAGE_FILE_URI_UNCOMPRESSED, imageUri.toString());
         bundle.putString(BOARD_NAME, boardName);
         bundle.putInt(BOARD_KEY, boardKey);
         shareFragment.setArguments(bundle);

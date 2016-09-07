@@ -1,6 +1,10 @@
 package xyz.peast.beep.services;
 
 import android.app.IntentService;
+import android.content.ContentProvider;
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,6 +19,8 @@ import java.io.InputStream;
 import java.util.UUID;
 
 import xyz.peast.beep.SaveFragment;
+import xyz.peast.beep.Utility;
+import xyz.peast.beep.data.BeepDbContract;
 
 /**
  * Created by duverneay on 9/6/16.
@@ -31,7 +37,10 @@ public class BeepService extends IntentService {
         Log.d(TAG, "onHandleIntent");
         Bundle bundle = intent.getExtras();
         String imageUriString = bundle.getString(SaveFragment.COMPRESS_IMAGE_FILE_URI);
+        String beepUriString = bundle.getString(SaveFragment.BEEP_URI);
+        Uri beepUri = Uri.parse(beepUriString);
         Uri imageUri = Uri.parse(imageUriString);
+        Log.d(TAG, "beepUri: " + beepUri);
 
         // New compressed file name and path
         String imageDir = getApplicationContext().getFilesDir().getAbsolutePath();
@@ -39,50 +48,15 @@ public class BeepService extends IntentService {
 
         FileOutputStream out = null;
 
-        Bitmap bitmap = null;
-
         String compressedImageFilePath = imageDir + "/" + compressedImageFilename;
 
-        try {
-            final InputStream imageStream = getApplicationContext().getContentResolver().openInputStream(imageUri);
-            final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+        Bitmap bitmap = Utility.centerCropBitmap(this, imageUri);
 
-//                        int nh = (int) ( mBeepImage.getHeight() * (512.0 / mBeepImage.getWidth()) );
-//                        Bitmap scaled = Bitmap.createScaledBitmap(selectedImage, 512, nh, true);
-
-            // Center crop
-            Bitmap centerCropBmp;
-            if (selectedImage.getWidth() >= selectedImage.getHeight()){
-
-                centerCropBmp = Bitmap.createBitmap(
-                        selectedImage,
-                        selectedImage.getWidth()/2 - selectedImage.getHeight()/2,
-                        0,
-                        selectedImage.getHeight(),
-                        selectedImage.getHeight()
-                );
-            }
-            else{
-
-                centerCropBmp = Bitmap.createBitmap(
-                        selectedImage,
-                        0,
-                        selectedImage.getHeight()/2 - selectedImage.getWidth()/2,
-                        selectedImage.getWidth(),
-                        selectedImage.getWidth()
-                );
-            }
-            bitmap = centerCropBmp;
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
         try {
             out = new FileOutputStream(compressedImageFilePath);
             if (bitmap != null) {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, out); // bmp is your Bitmap instance
                 Log.d(TAG, "compressing bitmap, 50%" + compressedImageFilename);
-
             }
             // PNG is a lossless format, the compression factor (100) is ignored
         } catch (Exception e) {
@@ -96,5 +70,16 @@ public class BeepService extends IntentService {
                 e.printStackTrace();
             }
         }
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, compressedImageFilename);
+        String whereClause = BeepDbContract.BeepEntry._ID+"=?";
+        int key = (int) ContentUris.parseId(beepUri);
+        String [] whereArgs = {key+""};
+
+        int numRows = this.getContentResolver().
+                update(BeepDbContract.BeepEntry.CONTENT_URI, contentValues, whereClause, whereArgs);
+
+        Log.d(TAG, "num rows updated "  + numRows);
     }
 }

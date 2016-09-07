@@ -62,6 +62,7 @@ public class SaveFragment extends Fragment implements LocationListener {
     private static final String IMAGE_FILE_NAME = "image_file_name";
 
     public static final String COMPRESS_IMAGE_FILE_URI = "COMPRESS_IMAGE_FILE_URI";
+    public static final String BEEP_URI = "beep_uri";
 
     private static final int SELECT_PHOTO = 1;
 
@@ -99,7 +100,7 @@ public class SaveFragment extends Fragment implements LocationListener {
     private Intent mServiceIntent;
 
     public interface SaveCallback{
-        public void onSaveNextButton(String beepName, String audioFile, String imageFile,
+        public void onSaveNextButton(String beepName, String audioFile, Uri imageUri,
                                      String boardname, int boardkey);
     }
 
@@ -288,7 +289,7 @@ public class SaveFragment extends Fragment implements LocationListener {
 
                 ((SaveCallback) getActivity()).onSaveNextButton(mBeepNameEditText.getText().toString(),
                         mRecordFileName,
-                        mImageFileName,
+                        mImageUri,
                         boardname,
                         selectedKey
                 );
@@ -355,8 +356,6 @@ public class SaveFragment extends Fragment implements LocationListener {
             }
         });
 
-        mImageUri = Uri.parse("/temp/test/junk");
-
         if (savedInstanceState != null) {
             mImageFileName = savedInstanceState.getString(IMAGE_FILE_NAME);
         }
@@ -394,44 +393,9 @@ public class SaveFragment extends Fragment implements LocationListener {
         switch (requestCode) {
             case SELECT_PHOTO:
                 if (resultCode == Activity.RESULT_OK) {
-                    try {
-                        mImageUri = data.getData();
-                        final InputStream imageStream = mContext.getContentResolver().openInputStream(mImageUri);
-                        final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-
-//                        int nh = (int) ( mBeepImage.getHeight() * (512.0 / mBeepImage.getWidth()) );
-//                        Bitmap scaled = Bitmap.createScaledBitmap(selectedImage, 512, nh, true);
-
-                        // Center crop
-                        Bitmap centerCropBmp;
-                        if (selectedImage.getWidth() >= selectedImage.getHeight()){
-
-                            centerCropBmp = Bitmap.createBitmap(
-                                    selectedImage,
-                                    selectedImage.getWidth()/2 - selectedImage.getHeight()/2,
-                                    0,
-                                    selectedImage.getHeight(),
-                                    selectedImage.getHeight()
-                            );
-
-                        }else{
-
-                            centerCropBmp = Bitmap.createBitmap(
-                                    selectedImage,
-                                    0,
-                                    selectedImage.getHeight()/2 - selectedImage.getWidth()/2,
-                                    selectedImage.getWidth(),
-                                    selectedImage.getWidth()
-                            );
-                        }
-                        mImageBitmap = centerCropBmp;
-
-                        
-                        mBeepImage.setImageBitmap(centerCropBmp);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-
+                    mImageUri = data.getData();
+                    mImageBitmap = Utility.centerCropBitmap(mContext, data.getData());
+                    mBeepImage.setImageBitmap(mImageBitmap);
                 }
         }
     }
@@ -445,17 +409,7 @@ public class SaveFragment extends Fragment implements LocationListener {
 
             mImageFileName = UUID.randomUUID().toString() + ".jpg";
             //String tempFileName = "temp.jpg";
-            mServiceIntent = new Intent(getActivity(), BeepService.class);
 
-            //Convert to byte array
-            //ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            //mImageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            //byte[] byteArray = stream.toByteArray();
-            Bundle bundle = new Bundle();
-            bundle.putString(COMPRESS_IMAGE_FILE_URI, mImageUri.toString());
-            mServiceIntent.putExtras(bundle);
-
-            getActivity().startService(mServiceIntent);
             //saveBitmap(imageDir + "/" + mImageFileName);
 
             //contentValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, mImageFileName);
@@ -494,6 +448,18 @@ public class SaveFragment extends Fragment implements LocationListener {
 
         Uri uri = mContext.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, contentValues);
         Log.d(TAG, "end of insert beep into ContentProvider uri = " + uri.toString());
+        mServiceIntent = new Intent(getActivity(), BeepService.class);
+
+        //Convert to byte array
+        //ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        //mImageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        //byte[] byteArray = stream.toByteArray();
+        Bundle bundle = new Bundle();
+        bundle.putString(COMPRESS_IMAGE_FILE_URI, mImageUri.toString());
+        bundle.putString(BEEP_URI, uri.toString());
+        mServiceIntent.putExtras(bundle);
+
+        getActivity().startService(mServiceIntent);
     }
 
     @Override

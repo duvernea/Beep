@@ -61,6 +61,7 @@ public class ShareFragment extends Fragment {
         Bundle bundle = this.getArguments();
         mRecordFileName = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME) + ".wav";
         String imagefile = bundle.getString(RecordActivity.IMAGE_FILE_UNIQUE_NAME);
+        String imageUri = bundle.getString(RecordActivity.IMAGE_FILE_URI_UNCOMPRESSED);
         mBoardName = bundle.getString(RecordActivity.BOARD_NAME);
         mBoardKey = bundle.getInt(RecordActivity.BOARD_KEY);
 
@@ -71,11 +72,11 @@ public class ShareFragment extends Fragment {
         Log.d(TAG, "Image File Name: " + imagefile);
 
         mContext = getActivity();
-        if (imagefile != null) {
+        if (imageUri != null) {
             String imageDir = mContext.getFilesDir().getAbsolutePath();
             String imagePath = imageDir + "/" + imagefile;
             Log.d(TAG, "BeepAdapter image file" + imagePath);
-            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+            Bitmap bitmap = Utility.centerCropBitmap(mContext, Uri.parse(imageUri));
             mBeepImageView.setImageBitmap(bitmap);
         }
 
