@@ -51,147 +51,142 @@ import xyz.peast.beep.services.BeepService;
 public class SaveFragment extends Fragment implements LocationListener {
 
     private static final String TAG = SaveFragment.class.getSimpleName();
+    private Context mContext;
+    private Activity mActivity;
 
+    // KEYs for onSaveInstanceState
     private static final String IMAGE_FILE_NAME = "image_file_name";
     private static final String IMAGE_FILE_URI = "image_file_uri";
     private static final String IMAGE_FILE_PATH = "image_file_path";
 
+    // KEYs for Service Intent extras
     public static final String COMPRESS_IMAGE_FILE_URI = "COMPRESS_IMAGE_FILE_URI";
     public static final String BEEP_URI = "beep_uri";
 
+    // Request Code for Photo Picker Intent
     private static final int SELECT_PHOTO = 1;
 
-    private Context mContext;
+    // Service for saving, compressing, resizing images
+    private Intent mServiceIntent;
 
-    private AdView mAdView;
-
+    // Views
     private Spinner mBoardSpinner;
     private ImageView mBeepImage;
-
     private Button mSaveButton;
     private EditText mBeepNameEditText;
-
     private Button mReplayButton;
-
-    private Uri mImageUri = null;
-    private String mImagePath = null;
-
-    private LocationManager mLocationManager;
-
-    private String mRecordFileName;
-
-    private Location mMostRecentLocation;
-
-    private int mNumberOfBoards;
-
+    private AdView mAdView;
+    // Spinner for Board selection and creation
     private ArrayList<Board> mSpinnerItems;
     private BoardSpinnerAdapter mBoardSpinnerAdapter;
 
+    // Selected Image in Picker - Uri and Path
+    private Uri mImageUri = null;
+    private String mImagePath = null;
+    // Image Bitmap and Image FileName
     private Bitmap mImageBitmap;
     private String mImageFileName;
 
+    // Location variables
+    private LocationManager mLocationManager;
+    private Location mMostRecentLocation;
+
+    // Audio variables
     private boolean mIsPlaying;
-    private Activity mActivity;
 
-    private Intent mServiceIntent;
+    private String mRecordFileName;
+    private int mNumberOfBoards;
 
+    // SaveCallback interface - implemented in RecordActivity
     public interface SaveCallback{
         public void onSaveNextButton(String beepName, String audioFile, Uri imageUri,
                                      String boardname, int boardkey);
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         Log.d(TAG, "onCreateView");
+        mContext = getActivity();
+        mActivity = getActivity();
 
         View rootView = inflater.inflate(R.layout.fragment_save, container, false);
 
+        // Record File Unique Name is generated in RecordActivity and passed into the Fragment
         Bundle bundle = this.getArguments();
         mRecordFileName = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME) + ".wav";
-        Log.d(TAG, "Record File Name: " + mRecordFileName);
 
-        mContext = getActivity();
+        // Get Location manager, so that GPS coordinates can be saved
         mLocationManager = (LocationManager)
                 mContext.getSystemService(Context.LOCATION_SERVICE);
 
+        // Initialize views
         mBoardSpinner = (Spinner) rootView.findViewById(R.id.board_name_spinner);
         mBeepImage = (ImageView) rootView.findViewById(R.id.beep_image);
         mSaveButton = (Button) rootView.findViewById(R.id.save_button);
         mBeepNameEditText = (EditText) rootView.findViewById(R.id.beep_name_edittext);
         mReplayButton = (Button) rootView.findViewById(R.id.replay_button);
 
+        // Initilize Ads
         mAdView = (AdView) rootView.findViewById(R.id.adview);
         final AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .addTestDevice("839737069995AAD5519D71B8B267924D")
                 .build();
         mAdView.loadAd(adRequest);
+
+        // EditText for setting Beep Name - onClick opens Dialog for entering text
         mBeepNameEditText.setClickable(true);
         mBeepNameEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                    builder.setTitle("Beep name");
-                    final EditText input = new EditText(mContext);
-                    input.setMaxLines(1);
-                    input.setSingleLine();
-                    input.setText(mBeepNameEditText.getText());
-                    input.setSelectAllOnFocus(true);
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle("Beep name");
+                final EditText input = new EditText(mContext);
+                input.setMaxLines(1);
+                input.setSingleLine();
+                input.setText(mBeepNameEditText.getText());
+                input.setSelectAllOnFocus(true);
 
-                    FrameLayout container = new FrameLayout(mContext);
-                    FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                FrameLayout container = new FrameLayout(mContext);
+                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-                    Resources resources = mContext.getResources();
-                    DisplayMetrics metrics = resources.getDisplayMetrics();
-                    float marginDpLeft = 16;
-                    float marginDpRight = 64;
-                    float pxLeft = marginDpLeft * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
-                    float pxRight = marginDpRight * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+                Resources resources = mContext.getResources();
+                DisplayMetrics metrics = resources.getDisplayMetrics();
+                float marginDpLeft = 16;
+                float marginDpRight = 64;
+                float pxLeft = marginDpLeft * ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+                float pxRight = marginDpRight * ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
 
-                    params.leftMargin = (int) pxLeft;
-                    params.rightMargin = (int) pxRight;
-                    input.setLayoutParams(params);
-                    container.addView(input);
+                params.leftMargin = (int) pxLeft;
+                params.rightMargin = (int) pxRight;
+                input.setLayoutParams(params);
+                container.addView(input);
 
-                    int maxLength = getResources().getInteger(R.integer.max_beep_size);
-                    input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxLength)});
-                    input.setInputType(InputType.TYPE_CLASS_TEXT);
-                    builder.setView(container);
+                int maxLength = getResources().getInteger(R.integer.max_beep_size);
+                input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(container);
 
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String newBeepName = input.getText().toString();
-                            mBeepNameEditText.setText(newBeepName);
-                            //ContentValues contentValues = new ContentValues();
-                            //contentValues.put(BeepDbContract.BoardEntry.COLUMN_NAME, newBoardName);
-                            //long currentTime = Calendar.getInstance().getTimeInMillis();
-                            //contentValues.put(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED, currentTime);
-                            //String tempImageUri = "";
-                            //contentValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, tempImageUri);
-                            //Uri uri = mContext.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, contentValues);
-                            //int insertedRow = (int) ContentUris.parseId(uri);
-                            //Log.d(TAG, "inserted Row into Board db: " + insertedRow);
-                            //mSpinnerItems.add(mSpinnerItems.size()-1, newBoard);
-                            //Board newBoardz = new Board(insertedRow, newBoardName, tempImageUri, currentTime);
-                            //mSpinnerItems.add(mSpinnerItems.size()-1, newBoardz);
-                            //mBoardSpinnerAdapter.notifyDataSetChanged();
-                            //mNumberOfBoards +=1;
-                        }
-                    });
-                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-                    Dialog dialog = builder.create();
-                    dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String newBeepName = input.getText().toString();
+                        mBeepNameEditText.setText(newBeepName);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                Dialog dialog = builder.create();
+                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
-                    dialog.show();
+                dialog.show();
             }
         });
+        // Spinner for setting Board Name - onItemSelected - select board or create new
         mBoardSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -205,22 +200,22 @@ public class SaveFragment extends Fragment implements LocationListener {
                     input.setSingleLine();
 
                     FrameLayout container = new FrameLayout(mContext);
-                    FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
                     Resources resources = mContext.getResources();
                     DisplayMetrics metrics = resources.getDisplayMetrics();
                     float marginDpLeft = 16;
                     float marginDpRight = 64;
-                    float pxLeft = marginDpLeft * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
-                    float pxRight = marginDpRight * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
-                    
+                    float pxLeft = marginDpLeft * ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+                    float pxRight = marginDpRight * ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+
                     params.leftMargin = (int) pxLeft;
                     params.rightMargin = (int) pxRight;
                     input.setLayoutParams(params);
                     container.addView(input);
 
                     int maxLength = getResources().getInteger(R.integer.max_board_size);
-                    input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxLength)});
+                    input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
                     input.setInputType(InputType.TYPE_CLASS_TEXT);
                     builder.setView(container);
 
@@ -240,9 +235,9 @@ public class SaveFragment extends Fragment implements LocationListener {
                             Log.d(TAG, "inserted Row into Board db: " + insertedRow);
                             //mSpinnerItems.add(mSpinnerItems.size()-1, newBoard);
                             Board newBoardz = new Board(insertedRow, newBoardName, tempImageUri, currentTime);
-                            mSpinnerItems.add(mSpinnerItems.size()-1, newBoardz);
+                            mSpinnerItems.add(mSpinnerItems.size() - 1, newBoardz);
                             mBoardSpinnerAdapter.notifyDataSetChanged();
-                            mNumberOfBoards +=1;
+                            mNumberOfBoards += 1;
                         }
                     });
                     builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -260,10 +255,9 @@ public class SaveFragment extends Fragment implements LocationListener {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
-
+        // BeepImage selected, launch the photo picker
         mBeepImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -272,6 +266,7 @@ public class SaveFragment extends Fragment implements LocationListener {
                 startActivityForResult(photoPickerIntent, SELECT_PHOTO);
             }
         });
+        // Save Button onClick - run the Callback in RecordActivity
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -291,6 +286,7 @@ public class SaveFragment extends Fragment implements LocationListener {
                 );
             }
         });
+        // Get the data to populate the Board Spinner
         String[] mProjection =
                 {
                         BeepDbContract.BoardEntry._ID,
@@ -305,8 +301,8 @@ public class SaveFragment extends Fragment implements LocationListener {
         Log.d(TAG, "Cursor count, #boards returned" + cursor.getCount());
 
         mNumberOfBoards = cursor.getCount();
-        //mSpinnerItems = new ArrayList<String>();
         cursor.moveToFirst();
+        // Populate the Board Spinner
         mSpinnerItems = new ArrayList<Board>();
 
         for(int i = 0; i < cursor.getCount(); i++){
@@ -314,34 +310,25 @@ public class SaveFragment extends Fragment implements LocationListener {
                     cursor.getColumnIndex(BeepDbContract.BoardEntry.COLUMN_NAME));
             String key = cursor.getString(
                     cursor.getColumnIndex(BeepDbContract.BoardEntry._ID));
-            //mSpinnerItems.add(row);
-            //String key = cursor.getInt(cursor.getColumnIndex())
             Board temp = new Board(Integer.parseInt(key), row, "temp", 242);
             mSpinnerItems.add(temp);
             cursor.moveToNext();
         }
         // Add item for creating new cursor
         Board createNew = new Board(-1, "Create New", "N/A", 0);
-        //mSpinnerItems.add("Create New");
         mSpinnerItems.add(createNew);
-
-        //String[] spinnerItemsTest = {"test", "test2"};
-        //mSpinnerItems = new ArrayList<String>();
 
         mBoardSpinnerAdapter = new BoardSpinnerAdapter(mContext,
                 R.layout.spinner_row, R.id.spinner_item_textview, mSpinnerItems);
 
-        //mSpinnerAdapter = new ArrayAdapter<String>(
-                //mContext, R.layout.spinner_row, R.id.spinner_item_textview, mSpinnerItems);
-
         mBoardSpinner.setAdapter(mBoardSpinnerAdapter);
 
-        mActivity = getActivity();
-
+        // Audio File Name path
         String recordDir = mContext.getFilesDir().getAbsolutePath();
         final String filePath = recordDir + "/" + mRecordFileName;
         Log.d(TAG, "filePath: " + filePath);
 
+        // Replay audio button
         mReplayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -351,30 +338,25 @@ public class SaveFragment extends Fragment implements LocationListener {
                 ((RecordActivity) mActivity).onPlayPause(filePath, mIsPlaying, 0);
             }
         });
-
+        // Set the Image Uri, Path, and restore bitmap if previous state saved
         if (savedInstanceState != null) {
             mImageUri = Uri.parse(savedInstanceState.getString(IMAGE_FILE_URI));
             mImagePath = savedInstanceState.getString(IMAGE_FILE_PATH);
         }
-
         if (mImagePath != null) {
-
             // Downsample bitmap
             Bitmap bitmap = Utility.subsampleBitmap(mContext, mImagePath, 360, 360);
             // Center crop bitmap
             mImageBitmap = Utility.centerCropBitmap(mContext, bitmap);
-
             mBeepImage.setImageBitmap(mImageBitmap);
         }
-
         return rootView;
     }
-
+    // Callback after image selected in photo picker
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, "onActivityResult run");
-
         switch (requestCode) {
             case SELECT_PHOTO:
                 if (resultCode == Activity.RESULT_OK) {
@@ -390,22 +372,17 @@ public class SaveFragment extends Fragment implements LocationListener {
                 }
         }
     }
+    // Insert beep into database
     void insertContent() {
         //beepRowIds[0] = (int) ContentUris.parseId(beepUri);
         ContentValues contentValues = new ContentValues();
 
-
         if (mImageBitmap != null) {
             String imageDir = mContext.getFilesDir().getAbsolutePath();
-
             mImageFileName = UUID.randomUUID().toString() + ".jpg";
-            //String tempFileName = "temp.jpg";
-
             //saveBitmap(imageDir + "/" + mImageFileName);
-
             //contentValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, mImageFileName);
         }
-
         getLocation();
 
         String beepName = mBeepNameEditText.getText().toString();
@@ -421,12 +398,6 @@ public class SaveFragment extends Fragment implements LocationListener {
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, 0);
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_DATE_CREATED, Calendar.getInstance().getTimeInMillis());
 
-//        String boardSelected = mBoardSpinner.getSelectedItem().toString();
-//        Log.d(TAG, "spinner getselecteditem to string " + boardSelected);
-//
-//        long spinnerSelectedItemId =  mBoardSpinner.getSelectedItemId();
-//        Log.d(TAG, "spinner selected item ID " + spinnerSelectedItemId);
-//
         int spinnerSelectedItemPosition  = mBoardSpinner.getSelectedItemPosition();
         Log.d(TAG, "spinner selected item position " + spinnerSelectedItemPosition);
         Board selected = mSpinnerItems.get(spinnerSelectedItemPosition);
@@ -434,17 +405,11 @@ public class SaveFragment extends Fragment implements LocationListener {
         String boardSelectedString = mBoardSpinnerAdapter.getItem(spinnerSelectedItemPosition).getName();
         Log.d(TAG, "spinner selected item string " + boardSelectedString);
 
-
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, selectedKey);
 
         Uri uri = mContext.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, contentValues);
         Log.d(TAG, "end of insert beep into ContentProvider uri = " + uri.toString());
         mServiceIntent = new Intent(getActivity(), BeepService.class);
-        //Utility.subsampleBitmap(mContext, mImageUri);
-        //Convert to byte array
-        //ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        //mImageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        //byte[] byteArray = stream.toByteArray();
 
         Bundle bundle = new Bundle();
         bundle.putString(COMPRESS_IMAGE_FILE_URI, mImageUri.toString());
@@ -454,6 +419,7 @@ public class SaveFragment extends Fragment implements LocationListener {
         getActivity().startService(mServiceIntent);
     }
 
+    // Save Image items
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -462,10 +428,10 @@ public class SaveFragment extends Fragment implements LocationListener {
         if (mImageUri != null) {
             outState.putString(IMAGE_FILE_URI, mImageUri.toString());
         }
-
         Log.d(TAG, "onSaveInstanceState");
     }
 
+    // Get location - currently just uses last known location to save battery and avoid network/GPS issues
     private void getLocation() {
         // Get GPS coordinates
         try {
@@ -504,6 +470,7 @@ public class SaveFragment extends Fragment implements LocationListener {
             mMostRecentLocation = null;
         }
     }
+    // Remove updates - don't care
     public void onLocationChanged(Location location) {
         if (location != null) {
             Log.v("Location Changed", location.getLatitude() + " and " + location.getLongitude());
@@ -516,7 +483,6 @@ public class SaveFragment extends Fragment implements LocationListener {
             }
         }
     }
-
     // Required functions
     public void onProviderDisabled(String arg0) {}
     public void onProviderEnabled(String arg0) {}
