@@ -68,11 +68,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private FloatingActionButton mAdditionalFab;
     // false = normal activity state. true = extra fab and overlay
     private boolean mFabMenuState = false;
-
-    public static final String TEMP_FILE_PATH = "file_path";
-
-    private String mPath;
-
+    
     // Audio
     private boolean mAudioState = false;
     boolean mIsPlaying = false;
@@ -95,22 +91,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
-//        if (extras != null) {
-//            firstTimeRun = getIntent().getExtras().getBoolean(FIRST_TIME_RUN);
-//        }
 
         // Delete all old data. Insert mock data.
         if (savedInstanceState == null) {
-            // if returning from BoardActivity
+            // if first time run, populate database
             if (mSharedPrefs.getBoolean(Constants.SHARED_PREF_FIRST_RUN, true)) {
                 InsertData.insertData(this);
                 InsertData.insertSoundFile(this);
             }
         }
-
+        // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        // Set views
         mOverlay = (FrameLayout) findViewById(R.id.frame_overlay);
         mMainFab = (FloatingActionButton) findViewById(R.id.fab);
         mAdditionalFab = (FloatingActionButton) findViewById(R.id.fab2);
@@ -118,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mAdditionalFabTextView = (TextView) findViewById(R.id.fab_textview_create_board);
 
 
+        // Set listeners for overlay and Fabs
         mOverlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,8 +119,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 mFabMenuState = false;
             }
         });
-
-
         mMainFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         });
 
+        // Initialize loaders for top beeps and boards
         getLoaderManager().initLoader(TOP_BEEPS_LOADER, null, this);
         getLoaderManager().initLoader(BOARDS_LOADER, null, this);
 
@@ -167,7 +160,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 String path = "/data/data/xyz.peast.beep/files/" + audiofileName;
 
                 onFileChange(path, 0, 0);
-                //Log.d(TAG, "getPackageResourcePath: " + getPackageResourcePath());
                 mIsPlaying = !mIsPlaying;
                 Log.d(TAG, "mIsPlaying java: " + mIsPlaying);
                 mPath = path;
@@ -209,14 +201,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mBoardsRecyclerView.setAdapter(mBoardsRecyclerViewAdapter);
         mBoardsRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
 
-
-        // Get the sample rate and buffer size, if possible from the device
-        // Set to 44.1k samples/s and 512 frame buffer
-        // A frame = sample size * channels (stereo with 16bit samples = 32 bits (4 bytes)/frame)
-        // Get the device's sample rate and buffer size to enable low-latency Android audio output, if available.
-        // get the min buffer size
-        // check if recording is possible
-
         if (savedInstanceState == null) {
             Log.d(TAG, "onCreate savedINstanceState = null");
 
@@ -239,13 +223,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onResume() {
         Log.d(TAG, "onResume run");
         super.onResume();
-        if (mSharedPrefs.getBoolean("firstrun", true)) {
+        if (mSharedPrefs.getBoolean(Constants.SHARED_PREF_FIRST_RUN, true)) {
             // Do first run stuff here then set 'firstrun' as false
             // using the following line to edit/commit prefs
-            mSharedPrefs.edit().putBoolean("firstrun", false).apply();
+            mSharedPrefs.edit().putBoolean(Constants.SHARED_PREF_FIRST_RUN, false).apply();
         }
         resetMenuState(mFabMenuState);
 
+        // Setup audio if not set
         if (!mAudioState) {
             queryNativeAudioParameters();
             Log.d(TAG, "sampleRateString: " + mSamplerateString);
@@ -253,7 +238,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             SuperpoweredAudio(Integer.parseInt(mSamplerateString), Integer.parseInt(mBuffersizeString));
             setupAudio();
         }
-        // Back button from other activity / etc - reset the menu state
     }
 
     @Override
@@ -279,7 +263,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
     private void queryNativeAudioParameters() {
 
-
+        // Get the sample rate and buffer size, if possible from the device
+        // Set to 44.1k samples/s and 512 frame buffer
+        // A frame = sample size * channels (stereo with 16bit samples = 32 bits (4 bytes)/frame)
+        // Get the device's sample rate and buffer size to enable low-latency Android audio output, if available.
+        // get the min buffer size
+        // check if recording is possible
         if (Build.VERSION.SDK_INT >= 17) {
             AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
             mSamplerateString = audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE);
@@ -410,7 +399,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
         if (fabMenuState) {
             Intent intent = new Intent(mContext, RecordActivity.class);
-            intent.putExtra(TEMP_FILE_PATH, mPath);
             mFabMenuState = false;
             startActivity(intent);
         }

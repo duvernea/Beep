@@ -204,10 +204,6 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     }
     @Override
     public void onBackPressed() {
-//        Bundle bundle = new Bundle();
-//        bundle.putBoolean(MainActivity.FIRST_TIME_RUN, false);
-//        intent.putExtras(bundle);
-//        startActivity(intent);
         Log.d(TAG, "mLastActivity: " + mLastActivity);
         if (mLastActivity.equals("From_MainActivity")){
             supportFinishAfterTransition();
