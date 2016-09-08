@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -33,19 +32,10 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TableLayout;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.iid.MessengerCompat;
-import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.UUID;
@@ -363,26 +353,18 @@ public class SaveFragment extends Fragment implements LocationListener {
         });
 
         if (savedInstanceState != null) {
-            mImageFileName = savedInstanceState.getString(IMAGE_FILE_NAME);
             mImageUri = Uri.parse(savedInstanceState.getString(IMAGE_FILE_URI));
             mImagePath = savedInstanceState.getString(IMAGE_FILE_PATH);
         }
 
         if (mImagePath != null) {
 
-            //String tempFileName = "temp.jpg";
-            String imageDir = mContext.getFilesDir().getAbsolutePath();
-            String imagePath = imageDir + "/" + mImageFileName;
-            Log.d(TAG, "BeepAdapter image file " + imagePath);
-            //mBeepImage.setImageBitmap(bitmap);
             // Downsample bitmap
-            Bitmap bitmap = Utility.bitmapOptions(mContext, mImagePath);
+            Bitmap bitmap = Utility.subsampleBitmap(mContext, mImagePath, 360, 360);
             // Center crop bitmap
             mImageBitmap = Utility.centerCropBitmap(mContext, bitmap);
 
             mBeepImage.setImageBitmap(mImageBitmap);
-
-
         }
 
         return rootView;
@@ -412,7 +394,7 @@ public class SaveFragment extends Fragment implements LocationListener {
                     mImageUri = data.getData();
                     mImagePath = Utility.getRealPathFromURI(mContext, mImageUri);
                     // Downsample bitmap
-                    Bitmap bitmap = Utility.bitmapOptions(mContext, mImagePath);
+                    Bitmap bitmap = Utility.subsampleBitmap(mContext, mImagePath, 360, 360);
                     // Center crop bitmap
                     mImageBitmap = Utility.centerCropBitmap(mContext, bitmap);
 
@@ -470,7 +452,7 @@ public class SaveFragment extends Fragment implements LocationListener {
         Uri uri = mContext.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, contentValues);
         Log.d(TAG, "end of insert beep into ContentProvider uri = " + uri.toString());
         mServiceIntent = new Intent(getActivity(), BeepService.class);
-        //Utility.bitmapOptions(mContext, mImageUri);
+        //Utility.subsampleBitmap(mContext, mImageUri);
         //Convert to byte array
         //ByteArrayOutputStream stream = new ByteArrayOutputStream();
         //mImageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);

@@ -71,11 +71,8 @@ public class Utility {
             }
         }
     }
-    public static Bitmap bitmapOptions(Context context, String filepath) {
+    public static Bitmap subsampleBitmap(Context context, String filepath, int reqwidth, int reqheight) {
 
-        // say an imageview is 120 x 120 dp
-        int reqHeight = 360;
-        int reqWidth = 360;
 
         // Decode image size
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -90,15 +87,15 @@ public class Utility {
 
         // Determine minimum inSampleSize (downsampling of Bitmap that is greater than required size)
         int inSampleSize = 1;
-        if (height > reqHeight || width > reqWidth) {
+        if (height > reqheight || width > reqwidth) {
 
             final int halfHeight = height / 2;
             final int halfWidth = width / 2;
 
             // Calculate the largest inSampleSize value that is a power of 2 and keeps both
             // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) >= reqHeight
-                    && (halfWidth / inSampleSize) >= reqWidth) {
+            while ((halfHeight / inSampleSize) >= reqheight
+                    && (halfWidth / inSampleSize) >= reqwidth) {
                 inSampleSize *= 2;
             }
         }
