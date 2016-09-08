@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import xyz.peast.beep.MainActivity;
 import xyz.peast.beep.R;
 
@@ -57,10 +59,12 @@ public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerVi
         }
         else {
             String imageDir = mContext.getFilesDir().getAbsolutePath();
-            String imagePath = imageDir + "/" + beepImage;
-            Log.d(TAG, "BeepAdapter image file" + imagePath);
-            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-            holder.mBeepImageView.setImageBitmap(bitmap);
+            String imagePath = "file:" + imageDir + "/" + beepImage;
+            Log.d(TAG, "BeepAdapter image file " + imagePath);
+            //Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+            //holder.mBeepImageView.setImageBitmap(bitmap);
+            Picasso.with(mContext).load(imagePath).into(holder.mBeepImageView);
+
         }
 
         // TODO - set image
@@ -107,8 +111,9 @@ public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerVi
         void onClick(BeepViewHolder vh);
     }
     public void swapCursor(Cursor newCursor) {
-        mCursor = newCursor;
-        notifyDataSetChanged();
+        Log.d(TAG, "swapCursor called");
+            mCursor = newCursor;
+            notifyDataSetChanged();
         // mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
     public Cursor getCursor() {

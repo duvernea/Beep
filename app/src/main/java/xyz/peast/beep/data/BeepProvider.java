@@ -149,7 +149,14 @@ public class BeepProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         if (numRows != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+            // TODO - this logic probably needs to be updated
+            if (values.getAsInteger(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT) != null)
+            {
+                Log.d(TAG, "Play count updated");
+            }
+            else {
+                getContext().getContentResolver().notifyChange(uri, null);
+            }
         }
         return numRows;
     }

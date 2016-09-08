@@ -37,8 +37,11 @@ import android.widget.TableLayout;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.iid.MessengerCompat;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -367,7 +370,11 @@ public class SaveFragment extends Fragment implements LocationListener {
             String imagePath = imageDir + "/" + mImageFileName;
             Log.d(TAG, "BeepAdapter image file " + imagePath);
             Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-            mBeepImage.setImageBitmap(bitmap);
+            //mBeepImage.setImageBitmap(bitmap);
+
+            //Picasso.with(mContext).load(imagePath).into(imageView2);
+
+
         }
 
         return rootView;
@@ -394,7 +401,25 @@ public class SaveFragment extends Fragment implements LocationListener {
             case SELECT_PHOTO:
                 if (resultCode == Activity.RESULT_OK) {
                     mImageUri = data.getData();
+
+
                     mImageBitmap = Utility.centerCropBitmap(mContext, data.getData());
+
+                    Bitmap testBitmap = null;
+                    String selectedImagePath;
+
+
+                    selectedImagePath = mImageUri.getPath();
+                    //Log.d(TAG, "selectedImagePath: " + selectedImagePath);
+                    //Log.d(TAG, "data.getDataString()" + data.getDataString());
+
+                    String path = Utility.getRealPathFromURI(mContext, mImageUri);
+                    File f = new File(path);
+
+                    // Tried cropping and resizing with picasso.  Doesn't seem to work here
+//                    Picasso.with(getActivity())
+//                            .load(f)
+//                            .into(mBeepImage);
                     mBeepImage.setImageBitmap(mImageBitmap);
                 }
         }

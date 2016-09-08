@@ -58,7 +58,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     private BeepAdapter mBeepAdapter;
 
     private RecyclerView mBeepsRecyclerView;
-    private BeepRecyclerViewAdapter mBeepsRecyclerViewAdapter;
+    private BeepRecyclerViewAdapter mBeepsRecyclerViewAdapter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -220,6 +220,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     }
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.d(TAG, "onCreateLoader run");
         CursorLoader loader;
         Uri uri;
         if (id == BEEPS_LOADER) {
@@ -251,15 +252,22 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (loader.getId() == BEEPS_LOADER) {
+
             Log.d(TAG, "onLoadFinished getCount: " + data.getCount());
-            mBeepsRecyclerViewAdapter.swapCursor(data);
-            mBeepsRecyclerViewAdapter.notifyDataSetChanged();
+            //if (mBeepsRecyclerViewAdapter.getCursor() == null) {
+                mBeepsRecyclerViewAdapter.swapCursor(data);
+            //}
+            //else if (mBeepsRecyclerViewAdapter.getCursor().getCount() !=
+                    //data.getCount()) {
+                //mBeepsRecyclerViewAdapter.notifyDataSetChanged();
+            //}
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         //if (loader.getId() == BEEPS_LOADER) {
+        Log.d(TAG, "onLoaderReset run");
         mBeepsRecyclerViewAdapter.swapCursor(null);
         //}
     }
