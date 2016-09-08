@@ -1,21 +1,16 @@
 package xyz.peast.beep.services;
 
 import android.app.IntentService;
-import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.UUID;
 
 import xyz.peast.beep.SaveFragment;
@@ -36,8 +31,8 @@ public class BeepService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Log.d(TAG, "onHandleIntent");
         Bundle bundle = intent.getExtras();
-        String imageUriString = bundle.getString(SaveFragment.COMPRESS_IMAGE_FILE_URI);
-        String beepUriString = bundle.getString(SaveFragment.BEEP_URI);
+        String imageUriString = bundle.getString(SaveFragment.ORIGINAL_IMAGE_FILE_URI);
+        String beepUriString = bundle.getString(SaveFragment.INSERTED_BEEP_URI);
         Uri beepUri = Uri.parse(beepUriString);
         Uri imageUri = Uri.parse(imageUriString);
         Log.d(TAG, "beepUri: " + beepUri);
