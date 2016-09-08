@@ -50,26 +50,31 @@ public class BeepService extends IntentService {
 
         String compressedImageFilePath = imageDir + "/" + compressedImageFilename;
 
-//        Bitmap bitmap = Utility.centerCropBitmap(this, imageUri);
-//
-//        try {
-//            out = new FileOutputStream(compressedImageFilePath);
-//            if (bitmap != null) {
-//                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, out); // bmp is your Bitmap instance
-//                Log.d(TAG, "compressing bitmap, 50%" + compressedImageFilename);
-//            }
-//            // PNG is a lossless format, the compression factor (100) is ignored
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        } finally {
-//            try {
-//                if (out != null) {
-//                    out.close();
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
+
+            // Downsample bitmap
+            Bitmap bitmap = Utility.subsampleBitmap(getApplicationContext(),
+                    Utility.getRealPathFromURI(getApplicationContext(), imageUri), 360, 360);
+            // Center crop bitmap
+            bitmap = Utility.centerCropBitmap(getApplicationContext(), bitmap);
+
+        try {
+            out = new FileOutputStream(compressedImageFilePath);
+            if (bitmap != null) {
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, out); // bmp is your Bitmap instance
+                Log.d(TAG, "compressing bitmap, 50%" + compressedImageFilename);
+            }
+            // PNG is a lossless format, the compression factor (100) is ignored
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         ContentValues contentValues = new ContentValues();
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, compressedImageFilename);
         String whereClause = BeepDbContract.BeepEntry._ID+"=?";

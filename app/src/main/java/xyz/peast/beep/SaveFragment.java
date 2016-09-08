@@ -370,18 +370,6 @@ public class SaveFragment extends Fragment implements LocationListener {
         return rootView;
     }
 
-//    @Override
-//    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-//        super.onViewStateRestored(savedInstanceState);
-//        if (mImageFileName != null) {
-//            Log.d(TAG, mImageFileName);
-//        }
-//        if (savedInstanceState != null) {
-//            String image = savedInstanceState.getString(IMAGE_FILE_NAME);
-//            Log.d(TAG, "onviewrestored image: " + image);
-//        }
-//    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -457,12 +445,13 @@ public class SaveFragment extends Fragment implements LocationListener {
         //ByteArrayOutputStream stream = new ByteArrayOutputStream();
         //mImageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         //byte[] byteArray = stream.toByteArray();
+
         Bundle bundle = new Bundle();
         bundle.putString(COMPRESS_IMAGE_FILE_URI, mImageUri.toString());
         bundle.putString(BEEP_URI, uri.toString());
         mServiceIntent.putExtras(bundle);
 
-        //getActivity().startService(mServiceIntent);
+        getActivity().startService(mServiceIntent);
     }
 
     @Override
@@ -477,32 +466,8 @@ public class SaveFragment extends Fragment implements LocationListener {
         Log.d(TAG, "onSaveInstanceState");
     }
 
-//    private void saveBitmap(String filename) {
-//        FileOutputStream out = null;
-//
-//        try {
-//            out = new FileOutputStream(filename);
-//            // TODO compression should be done on a different thread
-//            //mImageBitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
-//            mImageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, out); // bmp is your Bitmap instance
-//
-//
-//            // PNG is a lossless format, the compression factor (100) is ignored
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        } finally {
-//            try {
-//                if (out != null) {
-//                    out.close();
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
     private void getLocation() {
         // Get GPS coordinates
-
         try {
             Location locationGPS = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             Location locationNetwork = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
@@ -533,21 +498,12 @@ public class SaveFragment extends Fragment implements LocationListener {
                 Log.d(TAG, "mostRecentLocation is NULL");
 
             }
-
-//            int timeWindow = 2 * 60 * 1000; // 2 minutes
-//            if(mostRecentLocation.getTime() > Calendar.getInstance().getTimeInMillis() - timeWindow) {
-//            }
-//            else {
-//                //mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this)
-//            }
         }
         catch (SecurityException e) {
             // Handle if GPS not enabled
             mMostRecentLocation = null;
         }
     }
-
-
     public void onLocationChanged(Location location) {
         if (location != null) {
             Log.v("Location Changed", location.getLatitude() + " and " + location.getLongitude());
