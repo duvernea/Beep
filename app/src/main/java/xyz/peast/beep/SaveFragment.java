@@ -63,6 +63,8 @@ public class SaveFragment extends Fragment implements LocationListener {
     private static final String TAG = SaveFragment.class.getSimpleName();
 
     private static final String IMAGE_FILE_NAME = "image_file_name";
+    private static final String IMAGE_FILE_URI = "image_file_uri";
+    private static final String IMAGE_FILE_PATH = "image_file_path";
 
     public static final String COMPRESS_IMAGE_FILE_URI = "COMPRESS_IMAGE_FILE_URI";
     public static final String BEEP_URI = "beep_uri";
@@ -82,6 +84,7 @@ public class SaveFragment extends Fragment implements LocationListener {
     private Button mReplayButton;
 
     private Uri mImageUri = null;
+    private String mImagePath = null;
 
     private LocationManager mLocationManager;
 
@@ -361,18 +364,23 @@ public class SaveFragment extends Fragment implements LocationListener {
 
         if (savedInstanceState != null) {
             mImageFileName = savedInstanceState.getString(IMAGE_FILE_NAME);
+            mImageUri = Uri.parse(savedInstanceState.getString(IMAGE_FILE_URI));
+            mImagePath = savedInstanceState.getString(IMAGE_FILE_PATH);
         }
 
-        if (mImageFileName != null) {
+        if (mImagePath != null) {
 
             //String tempFileName = "temp.jpg";
             String imageDir = mContext.getFilesDir().getAbsolutePath();
             String imagePath = imageDir + "/" + mImageFileName;
             Log.d(TAG, "BeepAdapter image file " + imagePath);
-            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
             //mBeepImage.setImageBitmap(bitmap);
+            // Downsample bitmap
+            Bitmap bitmap = Utility.bitmapOptions(mContext, mImagePath);
+            // Center crop bitmap
+            mImageBitmap = Utility.centerCropBitmap(mContext, bitmap);
 
-            //Picasso.with(mContext).load(imagePath).into(imageView2);
+            mBeepImage.setImageBitmap(mImageBitmap);
 
 
         }
@@ -400,26 +408,14 @@ public class SaveFragment extends Fragment implements LocationListener {
         switch (requestCode) {
             case SELECT_PHOTO:
                 if (resultCode == Activity.RESULT_OK) {
+
                     mImageUri = data.getData();
+                    mImagePath = Utility.getRealPathFromURI(mContext, mImageUri);
+                    // Downsample bitmap
+                    Bitmap bitmap = Utility.bitmapOptions(mContext, mImagePath);
+                    // Center crop bitmap
+                    mImageBitmap = Utility.centerCropBitmap(mContext, bitmap);
 
-
-                    mImageBitmap = Utility.centerCropBitmap(mContext, data.getData());
-
-                    Bitmap testBitmap = null;
-                    String selectedImagePath;
-
-
-                    selectedImagePath = mImageUri.getPath();
-                    //Log.d(TAG, "selectedImagePath: " + selectedImagePath);
-                    //Log.d(TAG, "data.getDataString()" + data.getDataString());
-
-                    String path = Utility.getRealPathFromURI(mContext, mImageUri);
-                    File f = new File(path);
-
-                    // Tried cropping and resizing with picasso.  Doesn't seem to work here
-//                    Picasso.with(getActivity())
-//                            .load(f)
-//                            .into(mBeepImage);
                     mBeepImage.setImageBitmap(mImageBitmap);
                 }
         }
@@ -474,7 +470,7 @@ public class SaveFragment extends Fragment implements LocationListener {
         Uri uri = mContext.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, contentValues);
         Log.d(TAG, "end of insert beep into ContentProvider uri = " + uri.toString());
         mServiceIntent = new Intent(getActivity(), BeepService.class);
-
+        //Utility.bitmapOptions(mContext, mImageUri);
         //Convert to byte array
         //ByteArrayOutputStream stream = new ByteArrayOutputStream();
         //mImageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
@@ -484,39 +480,44 @@ public class SaveFragment extends Fragment implements LocationListener {
         bundle.putString(BEEP_URI, uri.toString());
         mServiceIntent.putExtras(bundle);
 
-        getActivity().startService(mServiceIntent);
+        //getActivity().startService(mServiceIntent);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(IMAGE_FILE_NAME, mImageFileName);
+        outState.putString(IMAGE_FILE_PATH, mImagePath);
+        if (mImageUri != null) {
+            outState.putString(IMAGE_FILE_URI, mImageUri.toString());
+        }
+
         Log.d(TAG, "onSaveInstanceState");
     }
 
-    private void saveBitmap(String filename) {
-        FileOutputStream out = null;
-
-        try {
-            out = new FileOutputStream(filename);
-            // TODO compression should be done on a different thread
-            //mImageBitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
-            mImageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, out); // bmp is your Bitmap instance
-
-
-            // PNG is a lossless format, the compression factor (100) is ignored
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    private void saveBitmap(String filename) {
+//        FileOutputStream out = null;
+//
+//        try {
+//            out = new FileOutputStream(filename);
+//            // TODO compression should be done on a different thread
+//            //mImageBitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+//            mImageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, out); // bmp is your Bitmap instance
+//
+//
+//            // PNG is a lossless format, the compression factor (100) is ignored
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                if (out != null) {
+//                    out.close();
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
     private void getLocation() {
         // Get GPS coordinates
 

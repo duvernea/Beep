@@ -76,8 +76,8 @@ public class ShareFragment extends Fragment {
             String imageDir = mContext.getFilesDir().getAbsolutePath();
             String imagePath = imageDir + "/" + imagefile;
             Log.d(TAG, "BeepAdapter image file" + imagePath);
-            Bitmap bitmap = Utility.centerCropBitmap(mContext, Uri.parse(imageUri));
-            mBeepImageView.setImageBitmap(bitmap);
+            //Bitmap bitmap = Utility.centerCropBitmap(mContext, Uri.parse(imageUri));
+            //mBeepImageView.setImageBitmap(bitmap);
         }
 
         mDontShareButton.setOnClickListener(new View.OnClickListener() {
