@@ -7,8 +7,11 @@ import xyz.peast.beep.data.BeepDbContract;
  */
 public class Constants {
 
+     static final String SHARED_PREF_FILE = "xyz.peast.beep";
+    static final String SHARED_PREF_FIRST_RUN = "pref_first_run";
+
     // database projection for BEEPS
-    private static final String[] BEEP_COLUMNS = {
+    public static final String[] BEEP_COLUMNS = {
 
             BeepDbContract.BeepEntry.TABLE_NAME + "." + BeepDbContract.BeepEntry._ID,
             BeepDbContract.BeepEntry.COLUMN_NAME,
@@ -33,7 +36,7 @@ public class Constants {
     public static final int BEEPS_COL_BOARD_KEY = 9;
 
     // database projection for BOARDS
-    private static final String[] BOARD_COLUMNS = {
+    public static final String[] BOARD_COLUMNS = {
             BeepDbContract.BoardEntry.TABLE_NAME + "." + BeepDbContract.BoardEntry._ID,
             BeepDbContract.BoardEntry.COLUMN_NAME,
             BeepDbContract.BoardEntry.COLUMN_IMAGE,

@@ -42,61 +42,57 @@ import xyz.peast.beep.data.BeepDbContract;
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private Context mContext;
+    private Activity mActivity;
 
+    // KEYs for onSaveInstanceState
     private static final String FAB_MENU_STATE = "fab_menu_state";
+    // KEYs for Intent extras
     protected static final String BOARD_KEY_CLICKED = "board_selected";
     protected static final String BOARD_NAME_SELECTED = "board_name_selected";
 
+    // Loader ids
     public static final int TOP_BEEPS_LOADER = 0;
     public static final int BOARDS_LOADER = 1;
 
+    // Views
+    private BeepAdapter mBeepAdapter;
+    private GridView mTopBeepsGridView;
+    private BoardAdapter mBoardAdapter;
+    private RecyclerView mBoardsRecyclerView;
+    private BoardRecyclerViewAdapter mBoardsRecyclerViewAdapter;
+    private FrameLayout mOverlay;
+    private TextView mMainFabTextView;
+    private TextView mAdditionalFabTextView;
+    private FloatingActionButton mMainFab;
+    private FloatingActionButton mAdditionalFab;
+    // false = normal activity state. true = extra fab and overlay
+    private boolean mFabMenuState = false;
+
+    public static final String TEMP_FILE_PATH = "file_path";
+
+    private String mPath;
+
+    // Audio
+    private boolean mAudioState = false;
     boolean mIsPlaying = false;
     String mSamplerateString = null;
     String mBuffersizeString = null;
     boolean mSupportRecording;
 
-    private Context mContext;
-    private Activity mActivity;
-    private BeepAdapter mBeepAdapter;
-    private GridView mTopBeepsGridView;
-
-    private BoardAdapter mBoardAdapter;
-
-    private RecyclerView mBoardsRecyclerView;
-    private BoardRecyclerViewAdapter mBoardsRecyclerViewAdapter;
-
-    private FrameLayout mOverlay;
-
-    // false = normal activity. true = extra fab
-    private FloatingActionButton mMainFab;
-    private FloatingActionButton mAdditionalFab;
-    private boolean mFabMenuState = false;
-    private TextView mMainFabTextView;
-    private TextView mAdditionalFabTextView;
-
-
-
-    public static final String TEMP_FILE_PATH = "file_path";
-    private String mPath;
-
-    private boolean mAudioState = false;
-
-    public static final String FIRST_TIME_RUN = "first_run";
-    public boolean firstTimeRun = true;
-
+    // Shared Preferences
     SharedPreferences mSharedPrefs = null;
-
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mSharedPrefs = getSharedPreferences("xyz.peast.beep", MODE_PRIVATE);
-        Log.d(TAG, "msharedPrefs"+mSharedPrefs.getBoolean("firstrun", true));
-
         mContext = this;
         mActivity = this;
+
+        mSharedPrefs = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
+        Log.d(TAG, "msharedPrefs"+mSharedPrefs.getBoolean(Constants.SHARED_PREF_FIRST_RUN, true));
+
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 //        if (extras != null) {
@@ -106,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // Delete all old data. Insert mock data.
         if (savedInstanceState == null) {
             // if returning from BoardActivity
-            if (mSharedPrefs.getBoolean("firstrun", true)) {
+            if (mSharedPrefs.getBoolean(Constants.SHARED_PREF_FIRST_RUN, true)) {
                 InsertData.insertData(this);
                 InsertData.insertSoundFile(this);
             }
