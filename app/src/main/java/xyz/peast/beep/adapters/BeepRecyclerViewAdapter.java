@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import xyz.peast.beep.Constants;
 import xyz.peast.beep.MainActivity;
 import xyz.peast.beep.R;
 
@@ -51,8 +52,8 @@ public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerVi
     public void onBindViewHolder(BeepViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder called");
         mCursor.moveToPosition(position);
-        String beepName = mCursor.getString(MainActivity.BEEPS_COL_NAME);
-        String beepImage = mCursor.getString(MainActivity.BEEPS_COL_IMAGE);
+        String beepName = mCursor.getString(Constants.BEEPS_COL_NAME);
+        String beepImage = mCursor.getString(Constants.BEEPS_COL_IMAGE);
         holder.mBeepNameTextView.setText(beepName);
         if (beepImage == null || beepImage.equals("")) {
             // Do nothing, use the default imageview
@@ -100,7 +101,7 @@ public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerVi
             int adapterPosition = getAdapterPosition();
             Log.d(TAG, "getBeep getAdapterPosition = " + adapterPosition);
             mCursor.moveToPosition(adapterPosition);
-            int beepKey = mCursor.getInt(MainActivity.BEEPS_COL_BEEP_ID);
+            int beepKey = mCursor.getInt(Constants.BEEPS_COL_BEEP_ID);
             Log.d(TAG, "getBeepKey = " + beepKey);
 
             return beepKey;

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import xyz.peast.beep.Constants;
 import xyz.peast.beep.MainActivity;
 import xyz.peast.beep.R;
 
@@ -51,8 +52,8 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
     public void onBindViewHolder(BoardViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder called");
         mCursor.moveToPosition(position);
-        String boardName = mCursor.getString(MainActivity.BOARDS_COL_NAME);
-        String boardImage = mCursor.getString(MainActivity.BOARDS_COL_IMAGE);
+        String boardName = mCursor.getString(Constants.BOARDS_COL_NAME);
+        String boardImage = mCursor.getString(Constants.BOARDS_COL_IMAGE);
         holder.mBoardNameTextView.setText(boardName);
 
         // TODO - set image
@@ -89,7 +90,7 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
             int adapterPosition = getAdapterPosition();
             Log.d(TAG, "getBoardKey getAdapterPosition = " + adapterPosition);
             mCursor.moveToPosition(adapterPosition);
-            int boardKey = mCursor.getInt(MainActivity.BOARDS_BOARD_ID);
+            int boardKey = mCursor.getInt(Constants.BOARDS_BOARD_ID);
             Log.d(TAG, "getBoardKey = " + boardKey);
 
             return boardKey;

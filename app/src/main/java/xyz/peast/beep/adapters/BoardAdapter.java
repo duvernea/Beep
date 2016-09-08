@@ -10,6 +10,7 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import xyz.peast.beep.Constants;
 import xyz.peast.beep.MainActivity;
 import xyz.peast.beep.R;
 
@@ -39,8 +40,8 @@ public class BoardAdapter extends CursorAdapter {
         BoardAdapter.ViewHolder viewHolder = (BoardAdapter.ViewHolder) view.getTag();
 
         // get and set data for this view
-        String boardName = cursor.getString(MainActivity.BOARDS_COL_NAME);
-        String boardImage = cursor.getString(MainActivity.BOARDS_COL_IMAGE);
+        String boardName = cursor.getString(Constants.BOARDS_COL_NAME);
+        String boardImage = cursor.getString(Constants.BOARDS_COL_IMAGE);
 
         viewHolder.mBoardNameTextView.setText(boardName);
 

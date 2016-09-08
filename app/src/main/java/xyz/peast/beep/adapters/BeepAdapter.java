@@ -12,6 +12,7 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import xyz.peast.beep.Constants;
 import xyz.peast.beep.MainActivity;
 import xyz.peast.beep.R;
 
@@ -42,8 +43,8 @@ public class BeepAdapter extends CursorAdapter {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
         // get and set data for this view
-        String beepName = cursor.getString(MainActivity.BEEPS_COL_NAME);
-        String beepImage = cursor.getString(MainActivity.BEEPS_COL_IMAGE);
+        String beepName = cursor.getString(Constants.BEEPS_COL_NAME);
+        String beepImage = cursor.getString(Constants.BEEPS_COL_IMAGE);
         Log.d(TAG, "beepImage: " + beepImage);
 
         viewHolder.mBeepNameTextView.setText(beepName);

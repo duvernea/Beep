@@ -101,11 +101,11 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                     public void onClick(BeepRecyclerViewAdapter.BeepViewHolder vh) {
                         Cursor cursor = mBeepsRecyclerViewAdapter.getCursor();
                         cursor.moveToPosition(vh.getPosition());
-                        String beepName = cursor.getString(MainActivity.BEEPS_COL_NAME);
-                        String audiofileName = cursor.getString(MainActivity.BEEPS_COL_AUDIO);
+                        String beepName = cursor.getString(Constants.BEEPS_COL_NAME);
+                        String audiofileName = cursor.getString(Constants.BEEPS_COL_AUDIO);
                         int key = vh.getBeepKey();
                         Log.d(TAG, "beep key pressed: " + key);
-                        int playCount = cursor.getInt(MainActivity.BEEPS_COL_PLAY_COUNT);
+                        int playCount = cursor.getInt(Constants.BEEPS_COL_PLAY_COUNT);
                         Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
 
                         ContentValues values = new ContentValues();
@@ -151,8 +151,8 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                 int randBeep = (int)(Math.random() * ((numBeeps - 1) + 1));
                 cursor.moveToPosition(randBeep);
 
-                int key = cursor.getInt((MainActivity.BEEPS_COL_BEEP_ID));
-                int playCount = cursor.getInt(MainActivity.BEEPS_COL_PLAY_COUNT);
+                int key = cursor.getInt((Constants.BEEPS_COL_BEEP_ID));
+                int playCount = cursor.getInt(Constants.BEEPS_COL_PLAY_COUNT);
                 Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
 
                 ContentValues values = new ContentValues();
@@ -167,7 +167,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                         whereClause,
                         whereArgs);
 
-                String audiofileName = cursor.getString(MainActivity.BEEPS_COL_AUDIO);
+                String audiofileName = cursor.getString(Constants.BEEPS_COL_AUDIO);
                 String path = "/data/data/xyz.peast.beep/files/" + audiofileName;
 
                 onFileChange(path, 0, 0);
