@@ -31,8 +31,8 @@ public class BeepService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Log.d(TAG, "onHandleIntent");
         Bundle bundle = intent.getExtras();
-        String imageUriString = bundle.getString(SaveFragment.ORIGINAL_IMAGE_FILE_URI);
-        String beepUriString = bundle.getString(SaveFragment.INSERTED_BEEP_URI);
+        String imageUriString = bundle.getString(Utility.ORIGINAL_IMAGE_FILE_URI);
+        String beepUriString = bundle.getString(Utility.INSERTED_BEEP_URI);
         Uri beepUri = Uri.parse(beepUriString);
         Uri imageUri = Uri.parse(imageUriString);
         Log.d(TAG, "beepUri: " + beepUri);
