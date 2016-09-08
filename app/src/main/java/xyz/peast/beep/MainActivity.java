@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private FloatingActionButton mAdditionalFab;
     // false = normal activity state. true = extra fab and overlay
     private boolean mFabMenuState = false;
-    
+
     // Audio
     private boolean mAudioState = false;
     boolean mIsPlaying = false;
@@ -109,7 +109,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mAdditionalFab = (FloatingActionButton) findViewById(R.id.fab2);
         mMainFabTextView = (TextView) findViewById(R.id.fab_textview_record_beep);
         mAdditionalFabTextView = (TextView) findViewById(R.id.fab_textview_create_board);
-
 
         // Set listeners for overlay and Fabs
         mOverlay.setOnClickListener(new View.OnClickListener() {
@@ -162,7 +161,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 onFileChange(path, 0, 0);
                 mIsPlaying = !mIsPlaying;
                 Log.d(TAG, "mIsPlaying java: " + mIsPlaying);
-                mPath = path;
                 onPlayPause(path, mIsPlaying, 0);
             }
         });
@@ -201,13 +199,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mBoardsRecyclerView.setAdapter(mBoardsRecyclerViewAdapter);
         mBoardsRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
 
-        if (savedInstanceState == null) {
-            Log.d(TAG, "onCreate savedINstanceState = null");
-
-        }
         if (savedInstanceState != null) {
             Log.d(TAG, "onCreate savedINstanceState != null");
-
             mFabMenuState = savedInstanceState.getBoolean(FAB_MENU_STATE);
         }
         if (savedInstanceState == null) {
@@ -233,8 +226,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // Setup audio if not set
         if (!mAudioState) {
             queryNativeAudioParameters();
-            Log.d(TAG, "sampleRateString: " + mSamplerateString);
-            Log.d(TAG, "buffersizeString: " + mBuffersizeString);
+
             SuperpoweredAudio(Integer.parseInt(mSamplerateString), Integer.parseInt(mBuffersizeString));
             setupAudio();
         }
@@ -245,21 +237,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onPause();
         onPlayerPause();
     }
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(FAB_MENU_STATE, mFabMenuState);
         mFabMenuState = false;
-    }
-    public void SuperpoweredExample_PlayPause(View button) {  // Play/pause.
-
-        mIsPlaying = !mIsPlaying;
-        Log.d(TAG, "mIsPlaying java: " + mIsPlaying);
-        //onPlayPause(mIsPlaying);
-
-        //Button b = (Button) findViewById(R.id.playPause);
-        //if (b != null) b.setText(mIsPlaying ? "Pause" : "Play");
     }
     private void queryNativeAudioParameters() {
 
@@ -277,6 +259,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (mSamplerateString == null) mSamplerateString = "44100";
         if (mBuffersizeString == null) mBuffersizeString = "512";
 
+        Log.d(TAG, "sampleRateString: " + mSamplerateString);
+        Log.d(TAG, "buffersizeString: " + mBuffersizeString);
         int recBufSize = AudioRecord.getMinBufferSize(
                 Integer.parseInt(mSamplerateString),
                 AudioFormat.CHANNEL_IN_MONO,
@@ -309,7 +293,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         return super.onOptionsItemSelected(item);
     }
-
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
