@@ -32,6 +32,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
 
     public static final String LAST_ACTIVITY_UNIQUE_ID = "Uniqid";
     public static final String FROM_SHARE_FRAGMENT = "From_ShareFragment";
+    public static final String FROM_MAIN_ACTIVITY = "From_MainActivity";
 
     // Loader ids
     private static final int BEEPS_LOADER = 1;
@@ -40,6 +41,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     private Button mRandomButton;
     private RecyclerView mBeepsRecyclerView;
     private BeepRecyclerViewAdapter mBeepsRecyclerViewAdapter = null;
+    private TextView mBoardNameTextView;
 
     private int mBoardKey;
 
@@ -61,20 +63,21 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
 
         Intent intent = getIntent();
         mLastActivity = intent.getExtras().getString(LAST_ACTIVITY_UNIQUE_ID);
-
-
         String boardName = intent.getStringExtra(MainActivity.BOARD_NAME_SELECTED);
         mBoardKey = intent.getIntExtra(MainActivity.BOARD_KEY_CLICKED, -1);
         Log.d(TAG, "mBoardKey" + mBoardKey);
 
-        TextView textView = (TextView) findViewById(R.id.board_name_textview);
+        // Assign views
+        mBoardNameTextView = (TextView) findViewById(R.id.board_name_textview);
         mRandomButton = (Button) findViewById(R.id.random_beep_button);
+
 //        ObjectAnimator objAnim = (ObjectAnimator) AnimatorInflater.loadAnimator(mContext, R.animator.button_anim);
 //        objAnim.setTarget(mRandomButton);
 //        objAnim.start();
 
-        textView.setText(boardName);
+        mBoardNameTextView.setText(boardName);
 
+        // Initialize loader for beeps
         getLoaderManager().initLoader(BEEPS_LOADER, null, this);
 
         // TODO - set emptyView for recyclerview
@@ -190,10 +193,10 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     @Override
     public void onBackPressed() {
         Log.d(TAG, "mLastActivity: " + mLastActivity);
-        if (mLastActivity.equals("From_MainActivity")){
+        if (mLastActivity.equals(BoardActivity.FROM_MAIN_ACTIVITY)){
             supportFinishAfterTransition();
         }
-        else if (mLastActivity.equals("From_ShareFragment")) {
+        else if (mLastActivity.equals(BoardActivity.FROM_SHARE_FRAGMENT)) {
             Intent intent = new Intent(this,MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
@@ -215,14 +218,6 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                     whereArgs,  // where clause value
                     null);  // sort order
         }
-//
-//        String select = "((" + Contacts.DISPLAY_NAME + " NOTNULL) AND ("
-//                + Contacts.HAS_PHONE_NUMBER + "=1) AND ("
-//                + Contacts.DISPLAY_NAME + " != '' ))";
-//        return new CursorLoader(getActivity(), baseUri,
-//                CONTACTS_SUMMARY_PROJECTION, select, null,
-//                Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
-//    }
     else {
             loader = null;
         }

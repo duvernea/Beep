@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         Intent intent = new Intent(mContext, BoardActivity.class);
                         intent.putExtra(BOARD_KEY_CLICKED, vh.getBoardKey());
                         intent.putExtra(BOARD_NAME_SELECTED, vh.mBoardNameTextView.getText().toString());
-                        intent.putExtra("Uniqid","From_MainActivity");
+                        intent.putExtra(BoardActivity.LAST_ACTIVITY_UNIQUE_ID,BoardActivity.FROM_MAIN_ACTIVITY);
                         mFabMenuState = false;
                         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
                             Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
