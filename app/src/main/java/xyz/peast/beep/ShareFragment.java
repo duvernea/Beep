@@ -84,7 +84,8 @@ public class ShareFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, BoardActivity.class);
-                intent.putExtra("Uniqid", "From_ShareFragment");
+                intent.putExtra(BoardActivity.LAST_ACTIVITY_UNIQUE_ID,
+                        BoardActivity.FROM_SHARE_FRAGMENT);
 
                 intent.putExtra(MainActivity.BOARD_KEY_CLICKED, mBoardKey);
                 intent.putExtra(MainActivity.BOARD_NAME_SELECTED, mBoardName);
@@ -150,7 +151,8 @@ public class ShareFragment extends Fragment {
         boolean deleted = file.delete();
 
         Intent intent = new Intent(mContext, BoardActivity.class);
-        intent.putExtra("Uniqid","From_ShareFragment");
+        intent.putExtra(BoardActivity.LAST_ACTIVITY_UNIQUE_ID,
+                BoardActivity.FROM_SHARE_FRAGMENT);
 
 
         intent.putExtra(MainActivity.BOARD_KEY_CLICKED, mBoardKey);

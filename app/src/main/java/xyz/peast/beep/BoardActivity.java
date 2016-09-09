@@ -10,55 +10,44 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
-import android.os.StrictMode;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.TextView;
 
 
-import xyz.peast.beep.adapters.BeepAdapter;
 import xyz.peast.beep.adapters.BeepRecyclerViewAdapter;
-import xyz.peast.beep.adapters.BoardAdapter;
-import xyz.peast.beep.adapters.BoardRecyclerViewAdapter;
 import xyz.peast.beep.data.BeepDbContract;
 
 public class BoardActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = BoardActivity.class.getSimpleName();
-
-    private static final int BEEPS_LOADER = 1;
-
     Context mContext;
 
-    private GridView mBeepsGridView;
+    public static final String LAST_ACTIVITY_UNIQUE_ID = "Uniqid";
+    public static final String FROM_SHARE_FRAGMENT = "From_ShareFragment";
+
+    // Loader ids
+    private static final int BEEPS_LOADER = 1;
+
+    // Views
     private Button mRandomButton;
+    private RecyclerView mBeepsRecyclerView;
+    private BeepRecyclerViewAdapter mBeepsRecyclerViewAdapter = null;
 
     private int mBoardKey;
 
-    private String mPath;
+    // Audio
     private boolean mIsPlaying = false;
     private boolean mAudioState = false;
 
     private String mLastActivity;
-
-    private BeepAdapter mBeepAdapter;
-
-    private RecyclerView mBeepsRecyclerView;
-    private BeepRecyclerViewAdapter mBeepsRecyclerViewAdapter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +60,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
-        mLastActivity = intent.getExtras().getString("Uniqid");
+        mLastActivity = intent.getExtras().getString(LAST_ACTIVITY_UNIQUE_ID);
 
 
         String boardName = intent.getStringExtra(MainActivity.BOARD_NAME_SELECTED);
@@ -87,8 +76,6 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         textView.setText(boardName);
 
         getLoaderManager().initLoader(BEEPS_LOADER, null, this);
-
-        mBeepAdapter = new BeepAdapter(mContext, null, 0);
 
         // TODO - set emptyView for recyclerview
         // View rootView = getLayoutinflater.inflate(....)
@@ -125,7 +112,6 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                         //Log.d(TAG, "getPackageResourcePath: " + getPackageResourcePath());
                         mIsPlaying = !mIsPlaying;
                         Log.d(TAG, "mIsPlaying java: " + mIsPlaying);
-                        mPath = path;
                         onPlayPause(path, mIsPlaying, 0);
 
                     }
@@ -174,7 +160,6 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                 //Log.d(TAG, "getPackageResourcePath: " + getPackageResourcePath());
                 mIsPlaying = !mIsPlaying;
                 Log.d(TAG, "mIsPlaying java: " + mIsPlaying);
-                mPath = path;
                 onPlayPause(path, mIsPlaying, 0);
             }
         });
