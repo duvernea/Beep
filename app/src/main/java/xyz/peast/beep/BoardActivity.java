@@ -91,16 +91,15 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                     public void onClick(BeepRecyclerViewAdapter.BeepViewHolder vh) {
                         Cursor cursor = mBeepsRecyclerViewAdapter.getCursor();
                         cursor.moveToPosition(vh.getAdapterPosition());
-                        String beepName = cursor.getString(Constants.BEEPS_COL_NAME);
+
                         String audiofileName = cursor.getString(Constants.BEEPS_COL_AUDIO);
                         int key = vh.getBeepKey();
-                        Log.d(TAG, "beep key pressed: " + key);
                         int playCount = cursor.getInt(Constants.BEEPS_COL_PLAY_COUNT);
                         Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
 
+                        // increase playcount by 1
                         ContentValues values = new ContentValues();
                         values.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, playCount + 1);
-                        //                Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
                         String whereClause = BeepDbContract.BeepEntry._ID+"=?";
                         String [] whereArgs = {key+""};
                         mContext.getContentResolver().update(
@@ -108,7 +107,8 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                                 values,
                                 whereClause,
                                 whereArgs);
-
+                        String recordDir = mContext.getFilesDir().getAbsolutePath();
+                        Log.d(TAG, "recordDir: "+ recordDir);
                         String path = "/data/data/xyz.peast.beep/files/" + audiofileName;
 
                         onFileChange(path, 0, 0);
