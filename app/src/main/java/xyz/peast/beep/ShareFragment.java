@@ -136,7 +136,8 @@ public class ShareFragment extends Fragment {
 
                 share.setType("audio/*");
                 share.putExtra(Intent.EXTRA_STREAM, fileUri);
-                startActivity(Intent.createChooser(share, "Share Sound File"));
+                String shareChooserTitle = getResources().getString(R.string.share_chooser_title);
+                startActivity(Intent.createChooser(share, shareChooserTitle));
 
                 startActivityForResult (share, SHARE_BEEP);
             }
@@ -153,7 +154,6 @@ public class ShareFragment extends Fragment {
         Intent intent = new Intent(mContext, BoardActivity.class);
         intent.putExtra(BoardActivity.LAST_ACTIVITY_UNIQUE_ID,
                 BoardActivity.FROM_SHARE_FRAGMENT);
-
 
         intent.putExtra(MainActivity.BOARD_KEY_CLICKED, mBoardKey);
         intent.putExtra(MainActivity.BOARD_NAME_SELECTED, mBoardName);
