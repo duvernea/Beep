@@ -90,7 +90,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                     @Override
                     public void onClick(BeepRecyclerViewAdapter.BeepViewHolder vh) {
                         Cursor cursor = mBeepsRecyclerViewAdapter.getCursor();
-                        cursor.moveToPosition(vh.getPosition());
+                        cursor.moveToPosition(vh.getAdapterPosition());
                         String beepName = cursor.getString(Constants.BEEPS_COL_NAME);
                         String audiofileName = cursor.getString(Constants.BEEPS_COL_AUDIO);
                         int key = vh.getBeepKey();
@@ -116,7 +116,6 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                         mIsPlaying = !mIsPlaying;
                         Log.d(TAG, "mIsPlaying java: " + mIsPlaying);
                         onPlayPause(path, mIsPlaying, 0);
-
                     }
                 }, null, 0);
 
