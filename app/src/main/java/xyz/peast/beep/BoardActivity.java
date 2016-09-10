@@ -256,6 +256,6 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
 
 
     static {
-        System.loadLibrary("SuperpoweredAudio");
+        System.loadLibrary(Constants.NATIVE_LIBRARY_NAME);
     }
 }

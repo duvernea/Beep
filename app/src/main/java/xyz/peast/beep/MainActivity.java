@@ -508,6 +508,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private native void onFxValue(int value);
     private native void onFileChange(String apkPath, int fileOffset, int fileLength );
     static {
-        System.loadLibrary("SuperpoweredAudio");
+        System.loadLibrary(Constants.NATIVE_LIBRARY_NAME);
     }
 }

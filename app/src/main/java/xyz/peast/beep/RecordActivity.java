@@ -162,6 +162,6 @@ public class RecordActivity extends AppCompatActivity
     public native void createWav();
 
     static {
-        System.loadLibrary("SuperpoweredAudio");
+        System.loadLibrary(Constants.NATIVE_LIBRARY_NAME);
     }
 }
