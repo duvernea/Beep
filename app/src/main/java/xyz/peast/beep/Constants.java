@@ -7,6 +7,8 @@ import xyz.peast.beep.data.BeepDbContract;
  */
 public class Constants {
 
+    public static final String NATIVE_LIBRARY_NAME = "SuperpoweredAudio";
+
      static final String SHARED_PREF_FILE = "xyz.peast.beep";
     static final String SHARED_PREF_FIRST_RUN = "pref_first_run";
 

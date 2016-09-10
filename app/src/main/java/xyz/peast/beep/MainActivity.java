@@ -191,13 +191,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (!mAudioState) {
             // Android M requires this for dangerous permissions (microphone)
             boolean permissionAudio = hasRecordAudioPermission();
+            Log.d(TAG, "hasRecordAudioPermission: " + permissionAudio);
             if (permissionAudio) {
                 queryNativeAudioParameters();
                 SuperpoweredAudio(Integer.parseInt(mSamplerateString), Integer.parseInt(mBuffersizeString));
                 setupAudio();
                 mAudioState = true;
-            }
-            else {
+            } else {
                 requestRecordAudioPermission();
             }
         }
@@ -221,12 +221,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
     private void queryNativeAudioParameters() {
 
-        // Get the sample rate and buffer size, if possible from the device
-        // Set to 44.1k samples/s and 512 frame buffer
+        // Get/set the sample rate and buffer size, if possible from the device
+        // Set to 44.1k samples/s and 512 frame buffer, if cannot get from device
         // A frame = sample size * channels (stereo with 16bit samples = 32 bits (4 bytes)/frame)
         // Get the device's sample rate and buffer size to enable low-latency Android audio output, if available.
-        // get the min buffer size
-        // check if recording is possible
         if (Build.VERSION.SDK_INT >= 17) {
             AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
             mSamplerateString = audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE);
@@ -330,10 +328,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     // Callback from Native
     private void playbackEndCallback() {
-        //Toast.makeText(mContext, "Callback", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Played file ended");
         mIsPlaying = false;
-        //Log.d(TAG, "mIsPlaying: " + mIsPlaying);
     }
 
     private void resetMenuState(boolean fabstate) {
@@ -355,9 +351,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             mOverlay.setVisibility(View.VISIBLE);
             mAdditionalFab.setVisibility(View.VISIBLE);
             animateButtonObject(50, true);
-            return;
         }
-        if (fabMenuState) {
+        else  {
             Intent intent = new Intent(mContext, RecordActivity.class);
             mFabMenuState = false;
             startActivity(intent);
@@ -432,12 +427,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
     }
     private void playBeep(Cursor cursor) {
-        String beepName = cursor.getString(Constants.BEEPS_COL_NAME);
-        String audiofileName = cursor.getString(Constants.BEEPS_COL_AUDIO);
+        String audioFileName = cursor.getString(Constants.BEEPS_COL_AUDIO);
         int beepKey = cursor.getInt(Constants.BEEPS_COL_BEEP_ID);
 
         int playCount = cursor.getInt(Constants.BEEPS_COL_PLAY_COUNT);
-        Log.d(TAG, "current play count: " + playCount);
 
         ContentValues values = new ContentValues();
         values.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, playCount + 1);
@@ -452,11 +445,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 whereArgs);
 
         String recordDir = mContext.getFilesDir().getAbsolutePath();
-        String path = recordDir + "/" + audiofileName;
+        String path = recordDir + "/" + audioFileName;
+        Log.d(TAG, "path: " + path);
 
         onFileChange(path, 0, 0);
         mIsPlaying = !mIsPlaying;
-        Log.d(TAG, "mIsPlaying java: " + mIsPlaying);
         onPlayPause(path, mIsPlaying, 0);
     }
 
@@ -467,33 +460,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         return hasPermission;
     }
     private void requestRecordAudioPermission(){
-
-        String requiredPermission = Manifest.permission.RECORD_AUDIO;
-
-        // If the user previously denied this permission then show a message explaining why
-        // this permission is needed
-//        if (ActivityCompat.shouldShowRequestPermissionRationale(mActivity,
-//                requiredPermission)) {
-//
-//            //Toast.makeText(this, "This app needs to record audio through the microphone....", Toast.LENGTH_SHORT).show();
-//        }
-
-    if (Build.VERSION.SDK_INT >= 23) {
-        // 1) Use the support library version ContextCompat.checkSelfPermission(...) to avoid
-        // checking the build version since Context.checkSelfPermission(...) is only available
-        // in Marshmallow
-        // 2) Always check for permission (even if permission has already been granted)
-        // since the user can revoke permissions at any time through Settings
-
-
-            // The permission is NOT already granted.
-            // Check if the user has been asked about this permission already and denied
-            // it. If so, we want to give more explanation about why the permission is needed.
+        // The dangerous RECORD_AUDIO permission is NOT already granted.
+        // Check if the user has been asked about this permission already and denied
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (shouldShowRequestPermissionRationale(
                     Manifest.permission.RECORD_AUDIO)) {
-                Log.d(TAG, "permission has previously not been granted.  Explain why need");
-                // Show our own UI to explain to the user why we need to read the contacts
-                // before actually requesting the permission and showing the default UI
+                Log.d(TAG, "permission has previously been denied.  Explain why need");
+                // TODO Show UI to explain to the user why we need to record audio
             }
             // Fire off an async request to actually get the permission
             // This will show the standard permission request dialog UI
@@ -510,26 +483,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay!
-                    // This method is called when the user responds to the permissions dialog
                     if (!mAudioState) {
                         queryNativeAudioParameters();
-
                         SuperpoweredAudio(Integer.parseInt(mSamplerateString), Integer.parseInt(mBuffersizeString));
                         setupAudio();
                         mAudioState = true;
                     }
                 } else {
-
                     // Permission Denied
-                    // TODO: What to do?
+                    // TODO: What to do? Cannot use app
                 }
-                return;
             }
         }
     }
-
 
     // Native Audio - Load library and Functions
     private native void setupAudio();
