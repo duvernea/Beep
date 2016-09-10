@@ -15,15 +15,15 @@ import java.util.UUID;
  */
 public class RecordActivity extends AppCompatActivity
         implements RecordFragment.RecordCallback, SaveFragment.SaveCallback {
+
     private static final String TAG = RecordActivity.class.getSimpleName();
 
+    // Fragment TAGs
     private static final String RECORD_FRAGMENT_TAG = "record_fragment_tag";
     private static final String SAVE_FRAGMENT_TAG = "save_fragment_tag";
     private static final String SHARE_FRAGMENT_TAG = "share_fragment_tag";
 
-    // no file extension
-
-    // extra arguments
+    // Intent extra arguments
     public static final String RECORD_FILE_UNIQUE_NAME = "record_file_name";
     public static final String IMAGE_FILE_UNIQUE_NAME = "image_file_name";
     public static final String IMAGE_FILE_URI_UNCOMPRESSED = "uncompressed_image_uri";
@@ -31,8 +31,10 @@ public class RecordActivity extends AppCompatActivity
     public static final String BOARD_NAME = "board_name";
     public static final String BOARD_KEY = "board_key";
 
-
     private static String mRecordFileName;
+
+    // Audio
+    private boolean mAudioState = false;
 
     @Override
     public void onRecordNextButton() {
@@ -46,7 +48,6 @@ public class RecordActivity extends AppCompatActivity
         transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
                 R.anim.enter_from_left, R.anim.exit_to_right);
         transaction.replace(R.id.record_container, saveFragment, SAVE_FRAGMENT_TAG);
-
         transaction.addToBackStack(SAVE_FRAGMENT_TAG);
         transaction.commit();
     }
@@ -69,7 +70,6 @@ public class RecordActivity extends AppCompatActivity
         transaction.replace(R.id.record_container, shareFragment, SHARE_FRAGMENT_TAG);
         transaction.addToBackStack(SHARE_FRAGMENT_TAG);
         transaction.commit();
-
     }
 
     @Override
@@ -77,11 +77,8 @@ public class RecordActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
 
-        Log.d(TAG, "mRecordFileName: " + mRecordFileName);
-
         if (savedInstanceState == null) {
             mRecordFileName =UUID.randomUUID().toString();
-            Log.d(TAG, "savedInstanceState is null, filename: " + mRecordFileName);
             Bundle bundle = new Bundle();
             bundle.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
 
@@ -101,10 +98,10 @@ public class RecordActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-//        if (!mAudioState) {
-//            Log.d(TAG, "onResume !mAudioState)");
-//            setupAudio();
-//        }
+        if (!mAudioState) {
+            setupAudio();
+            mAudioState = true;
+        }
         startupAudio();
     }
 
@@ -112,7 +109,6 @@ public class RecordActivity extends AppCompatActivity
     protected void onPause() {
         super.onPause();
         shutdownAudio();
-        Log.d(TAG, "onPause");
     }
 
     @Override
@@ -121,44 +117,36 @@ public class RecordActivity extends AppCompatActivity
         outState.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
     }
 
+    // Calback from Native
     private void playbackEndCallback() {
-        Log.d(TAG, "Played file ended");
         //Log.d(TAG, "mIsPlaying: " + mIsPlaying);
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
             // No fragments on backstack - do nothing
         }
         else {
             String tag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName();
-            Log.d(TAG, "fragment tag: " +tag );
-            if (tag == SAVE_FRAGMENT_TAG) {
+            if (tag.equals(SAVE_FRAGMENT_TAG)) {
                 // TODO - do something when playback ends in save fragment
             }
-            else if (tag == RECORD_FRAGMENT_TAG) {
+            else if (tag.equals(RECORD_FRAGMENT_TAG)) {
                 RecordFragment recordFragment = (RecordFragment) getSupportFragmentManager().findFragmentByTag(RECORD_FRAGMENT_TAG);
                 recordFragment.onPlaybackEnd();
             }
         }
-
-
     }
     private void onBufferCallback(float rmsValue) {
-        //Log.d(TAG, "onBufferCallback from process");
         RecordFragment recordFragment = (RecordFragment) getSupportFragmentManager().findFragmentByTag(RECORD_FRAGMENT_TAG);
         recordFragment.onBufferCallback(rmsValue);
     }
-
-
+    
     public native void setupAudio();
-
     public native void SuperpoweredAudio(int samplerate, int buffersize);
     public native void onPlayPause(String filepath, boolean play, int size);
     public native void onFileChange(String apkPath, int fileOffset, int fileLength );
     public native void toggleRecord(boolean record);
-
     public native void setRecordPath(String path);
     public native void shutdownAudio();
     private native void startupAudio();
-
     public native void createWav();
 
     static {
