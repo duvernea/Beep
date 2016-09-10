@@ -106,14 +106,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
-        // Delete all old data. Insert mock data.
-        if (savedInstanceState == null) {
-            // if first time run, populate database
-            if (mSharedPrefs.getBoolean(Constants.SHARED_PREF_FIRST_RUN, true)) {
-                InsertData.insertData(this);
-                InsertData.insertSoundFile(this);
-            }
+        // if first time run, populate database with mock data
+        if (mSharedPrefs.getBoolean(Constants.SHARED_PREF_FIRST_RUN, true)) {
+            InsertData.insertData(this);
+            InsertData.insertSoundFile(this);
         }
+
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -143,17 +141,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         getLoaderManager().initLoader(TOP_BEEPS_LOADER, null, this);
         getLoaderManager().initLoader(BOARDS_LOADER, null, this);
 
+        // Top Beeps
         mBeepAdapter = new BeepAdapter(mContext, null, 0);
         mTopBeepsGridView = (GridView) findViewById(R.id.top_beeps_gridview);
-        mTopBeepsGridView.setAdapter(mBeepAdapter);
-        mTopBeepsGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                playBeep((Cursor) parent.getItemAtPosition(position));
-            }
-        });
-
+        if (mTopBeepsGridView != null) {
+            mTopBeepsGridView.setAdapter(mBeepAdapter);
+            mTopBeepsGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view,
+                                        int position, long id) {
+                    playBeep((Cursor) parent.getItemAtPosition(position));
+                }
+            });
+        }
+        // Boards
         mBoardAdapter = new BoardAdapter(mContext, null, 0);
 
         // TODO - set emptyView for recyclerview
@@ -162,26 +163,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // View emptyView =
 
         mBoardsRecyclerViewAdapter = new BoardRecyclerViewAdapter(mContext,
-                new BoardRecyclerViewAdapter.BoardAdapterOnClickHandler() {
-                    @Override
-                    public void onClick(BoardRecyclerViewAdapter.BoardViewHolder vh) {
-                        //Toast.makeText(mContext, "recyclerview clicked " + vh.getAdapterPosition(), Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(mContext, BoardActivity.class);
-                        intent.putExtra(BOARD_KEY_CLICKED, vh.getBoardKey());
-                        intent.putExtra(BOARD_NAME_SELECTED, vh.mBoardNameTextView.getText().toString());
-                        intent.putExtra(BoardActivity.LAST_ACTIVITY_UNIQUE_ID,BoardActivity.FROM_MAIN_ACTIVITY);
-                        mFabMenuState = false;
-                        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
-                            Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                                    mActivity, vh.mBoardImageView, getResources().getString(R.string.board_image_trans)).toBundle();
-                            startActivity(intent, bundle);
-                        }
-                        else {
-                            startActivity(intent);
-                        }
-//
-                    }
-                }, null, 0);
+            boardOnClickHandler, null, 0);
 
         mBoardsRecyclerView = (RecyclerView) findViewById(R.id.boards_recyclerview);
         mBoardsRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
@@ -192,7 +174,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             Log.d(TAG, "onCreate savedINstanceState != null");
             mFabMenuState = savedInstanceState.getBoolean(FAB_MENU_STATE);
         }
-        Log.d(TAG, "internal content uri: " + MediaStore.Images.Thumbnails.INTERNAL_CONTENT_URI);
     }
 
     @Override
@@ -200,8 +181,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Log.d(TAG, "onResume run");
         super.onResume();
         if (mSharedPrefs.getBoolean(Constants.SHARED_PREF_FIRST_RUN, true)) {
-            // Do first run stuff here then set 'firstrun' as false
-            // using the following line to edit/commit prefs
+            // If first time run, set to false
             mSharedPrefs.edit().putBoolean(Constants.SHARED_PREF_FIRST_RUN, false).apply();
         }
         resetMenuState(mFabMenuState);
@@ -383,6 +363,25 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             startActivity(intent);
         }
     }
+    BoardRecyclerViewAdapter.BoardAdapterOnClickHandler boardOnClickHandler = new BoardRecyclerViewAdapter.BoardAdapterOnClickHandler() {
+        @Override
+        public void onClick(BoardRecyclerViewAdapter.BoardViewHolder vh) {
+            Intent intent = new Intent(mContext, BoardActivity.class);
+            intent.putExtra(BOARD_KEY_CLICKED, vh.getBoardKey());
+            intent.putExtra(BOARD_NAME_SELECTED, vh.mBoardNameTextView.getText().toString());
+            intent.putExtra(BoardActivity.LAST_ACTIVITY_UNIQUE_ID,BoardActivity.FROM_MAIN_ACTIVITY);
+            mFabMenuState = false;
+            if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
+                Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        mActivity, vh.mBoardImageView, getResources().getString(R.string.board_image_trans)).toBundle();
+                startActivity(intent, bundle);
+            }
+            else {
+                startActivity(intent);
+            }
+        }
+    };
+
     public void animateButtonObject(int duration, final boolean directionUp) {
         // fab = 56dp, fab margin = 16dp
         float translationPx = getResources().getDimension(R.dimen.fab_size) + getResources().getDimension(R.dimen.fab_margin);
