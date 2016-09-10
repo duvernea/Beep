@@ -230,8 +230,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             mSamplerateString = audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE);
             mBuffersizeString = audioManager.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER);
         }
-        if (mSamplerateString == null) mSamplerateString = "44100";
-        if (mBuffersizeString == null) mBuffersizeString = "512";
+        if (mSamplerateString == null) mSamplerateString = Constants.SAMPLE_RATE_DEFAULT;
+        if (mBuffersizeString == null) mBuffersizeString = Constants.BUFFER_SIZE_DEFAULT;
 
         Log.d(TAG, "sampleRateString: " + mSamplerateString);
         Log.d(TAG, "buffersizeString: " + mBuffersizeString);
@@ -446,7 +446,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         String recordDir = mContext.getFilesDir().getAbsolutePath();
         String path = recordDir + "/" + audioFileName;
-        Log.d(TAG, "path: " + path);
 
         onFileChange(path, 0, 0);
         mIsPlaying = !mIsPlaying;

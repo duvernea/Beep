@@ -21,7 +21,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-
 import xyz.peast.beep.adapters.BeepRecyclerViewAdapter;
 import xyz.peast.beep.data.BeepDbContract;
 
@@ -30,7 +29,9 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     private static final String TAG = BoardActivity.class.getSimpleName();
     Context mContext;
 
+    // Key from Intent (last activity)
     public static final String LAST_ACTIVITY_UNIQUE_ID = "Uniqid";
+    // Values from Intent (last activity)
     public static final String FROM_SHARE_FRAGMENT = "From_ShareFragment";
     public static final String FROM_MAIN_ACTIVITY = "From_MainActivity";
 
@@ -123,12 +124,6 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         mBeepsRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         mBeepsRecyclerView.setAdapter(mBeepsRecyclerViewAdapter);
 
-        if (savedInstanceState == null) {
-            mAudioState = false;
-        }
-        else {
-            mAudioState = true;
-        }
         mRandomButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,8 +150,10 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                         whereClause,
                         whereArgs);
 
-                String audiofileName = cursor.getString(Constants.BEEPS_COL_AUDIO);
-                String path = "/data/data/xyz.peast.beep/files/" + audiofileName;
+                String audioFileName = cursor.getString(Constants.BEEPS_COL_AUDIO);
+
+                String recordDir = mContext.getFilesDir().getAbsolutePath();
+                String path = recordDir + "/" + audioFileName;
 
                 onFileChange(path, 0, 0);
                 //Log.d(TAG, "getPackageResourcePath: " + getPackageResourcePath());
@@ -171,27 +168,24 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         super.onPause();
         onPlayerPause();
         shutdownAudio();
+        mAudioState = false;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         if (!mAudioState) {
-            Log.d(TAG, "onResume !mAudioState)");
             setupAudio();
         }
         startupAudio();
     }
 
+    // Callback from Native
     private void playbackEndCallback() {
-        //Toast.makeText(mContext, "Callback", Toast.LENGTH_SHORT).show();
-        Log.d(TAG, "Played file ended");
         mIsPlaying = false;
-        //Log.d(TAG, "mIsPlaying: " + mIsPlaying);
     }
     @Override
     public void onBackPressed() {
-        Log.d(TAG, "mLastActivity: " + mLastActivity);
         if (mLastActivity.equals(BoardActivity.FROM_MAIN_ACTIVITY)){
             supportFinishAfterTransition();
         }
@@ -227,24 +221,13 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (loader.getId() == BEEPS_LOADER) {
-
-            Log.d(TAG, "onLoadFinished getCount: " + data.getCount());
-            //if (mBeepsRecyclerViewAdapter.getCursor() == null) {
-                mBeepsRecyclerViewAdapter.swapCursor(data);
-            //}
-            //else if (mBeepsRecyclerViewAdapter.getCursor().getCount() !=
-                    //data.getCount()) {
-                //mBeepsRecyclerViewAdapter.notifyDataSetChanged();
-            //}
+             mBeepsRecyclerViewAdapter.swapCursor(data);
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        //if (loader.getId() == BEEPS_LOADER) {
-        Log.d(TAG, "onLoaderReset run");
         mBeepsRecyclerViewAdapter.swapCursor(null);
-        //}
     }
     // Native Audio - Load library and Functions
     private native void setupAudio();
@@ -253,7 +236,6 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     private native void onPlayerPause();
     private native void shutdownAudio();
     private native void startupAudio();
-
 
     static {
         System.loadLibrary(Constants.NATIVE_LIBRARY_NAME);
