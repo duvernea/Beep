@@ -100,8 +100,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mContext = this;
         mActivity = this;
 
-
-
         mSharedPrefs = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
         Log.d(TAG, "msharedPrefs"+mSharedPrefs.getBoolean(Constants.SHARED_PREF_FIRST_RUN, true));
 
@@ -152,32 +150,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                Cursor cursor = (Cursor) parent.getItemAtPosition(position);
-                String beepName = cursor.getString(Constants.BEEPS_COL_NAME);
-                String audiofileName = cursor.getString(Constants.BEEPS_COL_AUDIO);
-                int beepKey = cursor.getInt(Constants.BEEPS_COL_BEEP_ID);
-
-                int playCount = cursor.getInt(Constants.BEEPS_COL_PLAY_COUNT);
-                Log.d(TAG, "current play count: " + playCount);
-
-                ContentValues values = new ContentValues();
-                values.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, playCount + 1);
-
-                Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
-                String whereClause = BeepDbContract.BeepEntry._ID+"=?";
-                String [] whereArgs = {beepKey+""};
-                mContext.getContentResolver().update(
-                        uri,
-                        values,
-                        whereClause,
-                        whereArgs);
-
-                String path = "/data/data/xyz.peast.beep/files/" + audiofileName;
-
-                onFileChange(path, 0, 0);
-                mIsPlaying = !mIsPlaying;
-                Log.d(TAG, "mIsPlaying java: " + mIsPlaying);
-                onPlayPause(path, mIsPlaying, 0);
+                playBeep((Cursor) parent.getItemAtPosition(position));
             }
         });
 
@@ -219,12 +192,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             Log.d(TAG, "onCreate savedINstanceState != null");
             mFabMenuState = savedInstanceState.getBoolean(FAB_MENU_STATE);
         }
-        if (savedInstanceState == null) {
-            mAudioState = false;
-        }
-        else {
-            mAudioState = true;
-        }
         Log.d(TAG, "internal content uri: " + MediaStore.Images.Thumbnails.INTERNAL_CONTENT_URI);
     }
 
@@ -240,6 +207,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         resetMenuState(mFabMenuState);
 
         // Setup audio if not set
+        Log.d(TAG, "mAudioState = " + mAudioState);
         if (!mAudioState) {
             // Android M requires this for dangerous permissions (microphone)
             boolean permissionAudio = hasRecordAudioPermission();
@@ -261,6 +229,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onPause();
         if (mAudioState) {
             onPlayerPause();
+            shutdownAudio();
+            mAudioState = false;
         }
     }
     @Override
@@ -378,6 +348,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
 
+    // Callback from Native
     private void playbackEndCallback() {
         //Toast.makeText(mContext, "Callback", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Played file ended");
@@ -461,6 +432,36 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             public void onAnimationRepeat(Animator animation) {}
         });
     }
+    private void playBeep(Cursor cursor) {
+        String beepName = cursor.getString(Constants.BEEPS_COL_NAME);
+        String audiofileName = cursor.getString(Constants.BEEPS_COL_AUDIO);
+        int beepKey = cursor.getInt(Constants.BEEPS_COL_BEEP_ID);
+
+        int playCount = cursor.getInt(Constants.BEEPS_COL_PLAY_COUNT);
+        Log.d(TAG, "current play count: " + playCount);
+
+        ContentValues values = new ContentValues();
+        values.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, playCount + 1);
+
+        Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
+        String whereClause = BeepDbContract.BeepEntry._ID+"=?";
+        String [] whereArgs = {beepKey+""};
+        mContext.getContentResolver().update(
+                uri,
+                values,
+                whereClause,
+                whereArgs);
+
+        String recordDir = mContext.getFilesDir().getAbsolutePath();
+        String path = recordDir + "/" + audiofileName;
+
+        onFileChange(path, 0, 0);
+        mIsPlaying = !mIsPlaying;
+        Log.d(TAG, "mIsPlaying java: " + mIsPlaying);
+        onPlayPause(path, mIsPlaying, 0);
+    }
+
+
     private boolean hasRecordAudioPermission() {
         boolean hasPermission = (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED);
         Log.d(TAG, "RECORD_AUDIO permission: " + hasPermission);
@@ -533,6 +534,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     // Native Audio - Load library and Functions
     private native void setupAudio();
+    private native void shutdownAudio();
     private native void SuperpoweredAudio(int samplerate, int buffersize);
     private native void onPlayPause(String filepath, boolean play, int size);
     private native void onPlayerPause();
