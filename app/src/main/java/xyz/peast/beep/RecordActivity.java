@@ -138,7 +138,7 @@ public class RecordActivity extends AppCompatActivity
         RecordFragment recordFragment = (RecordFragment) getSupportFragmentManager().findFragmentByTag(RECORD_FRAGMENT_TAG);
         recordFragment.onBufferCallback(rmsValue);
     }
-    
+
     public native void setupAudio();
     public native void SuperpoweredAudio(int samplerate, int buffersize);
     public native void onPlayPause(String filepath, boolean play, int size);

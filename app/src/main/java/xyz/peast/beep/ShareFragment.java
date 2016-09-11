@@ -27,11 +27,12 @@ public class ShareFragment extends Fragment {
 
     private static final String TAG = ShareFragment.class.getSimpleName();
 
+    // Request code, share intent
     private static final int SHARE_BEEP = 1;
 
     private Context mContext;
-    private String mRecordFileName;
 
+    // Views
     private TextView mBeepNameTextView;
     private ImageView mBeepImageView;
     private Button mShareButton;
@@ -40,9 +41,8 @@ public class ShareFragment extends Fragment {
     private String mBoardName;
     private int mBoardKey;
     private String mBeepName;
-
     private String mNewTempFilePath;
-
+    private String mRecordFileName;
 
     public ShareFragment() {
         // Required empty public constructor
@@ -73,11 +73,13 @@ public class ShareFragment extends Fragment {
 
         mContext = getActivity();
         if (imageUri != null) {
-            String imageDir = mContext.getFilesDir().getAbsolutePath();
-            String imagePath = imageDir + "/" + imagefile;
-            Log.d(TAG, "BeepAdapter image file" + imagePath);
-            //Bitmap bitmap = Utility.centerCropBitmap(mContext, Uri.parse(imageUri));
-            //mBeepImageView.setImageBitmap(bitmap);
+            String imagePath = Utility.getRealPathFromURI(mContext, Uri.parse(imageUri));
+            // Downsample bitmap
+            Bitmap bitmap = Utility.subsampleBitmap(mContext, imagePath, 360, 360);
+            // Center crop bitmap
+            bitmap  = Utility.centerCropBitmap(mContext, bitmap);
+
+            mBeepImageView.setImageBitmap(bitmap);
         }
 
         mDontShareButton.setOnClickListener(new View.OnClickListener() {
