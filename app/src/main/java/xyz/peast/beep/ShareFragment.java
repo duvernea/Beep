@@ -74,8 +74,10 @@ public class ShareFragment extends Fragment {
         mContext = getActivity();
         if (imageUri != null) {
             String imagePath = Utility.getRealPathFromURI(mContext, Uri.parse(imageUri));
+            int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
+            Log.d(TAG, "image size dimen: " + imageSize);
             // Downsample bitmap
-            Bitmap bitmap = Utility.subsampleBitmap(mContext, imagePath, 360, 360);
+            Bitmap bitmap = Utility.subsampleBitmap(mContext, imagePath, imageSize, imageSize);
             // Center crop bitmap
             bitmap  = Utility.centerCropBitmap(mContext, bitmap);
 

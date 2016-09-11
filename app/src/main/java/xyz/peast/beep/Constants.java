@@ -9,7 +9,7 @@ public class Constants {
 
     public static final String SAMPLE_RATE_DEFAULT = "44100";
     public static final String BUFFER_SIZE_DEFAULT = "512";
-
+    
     public static final String NATIVE_LIBRARY_NAME = "SuperpoweredAudio";
 
      static final String SHARED_PREF_FILE = "xyz.peast.beep";

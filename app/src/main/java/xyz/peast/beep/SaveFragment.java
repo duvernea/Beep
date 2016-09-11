@@ -224,8 +224,9 @@ public class SaveFragment extends Fragment implements LocationListener {
 
                     mImageUri = data.getData();
                     mImagePath = Utility.getRealPathFromURI(mContext, mImageUri);
+                    int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
                     // Downsample bitmap
-                    Bitmap bitmap = Utility.subsampleBitmap(mContext, mImagePath, 360, 360);
+                    Bitmap bitmap = Utility.subsampleBitmap(mContext, mImagePath, imageSize, imageSize);
                     // Center crop bitmap
                     mImageBitmap = Utility.centerCropBitmap(mContext, bitmap);
 
