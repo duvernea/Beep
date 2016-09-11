@@ -16,6 +16,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
+import com.naman14.androidlame.AndroidLame;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -67,6 +70,8 @@ public class ShareFragment extends Fragment {
 
         mBeepName = bundle.getString(RecordActivity.BEEP_NAME);
         mBeepNameTextView.setText(mBeepName);
+
+        AndroidLame androidLame = new AndroidLame();
 
         Log.d(TAG, "Record File Name: " + mRecordFileName);
         Log.d(TAG, "Image File Name: " + imagefile);
