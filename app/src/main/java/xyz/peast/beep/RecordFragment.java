@@ -31,46 +31,42 @@ public class RecordFragment extends Fragment {
 
     private static final String TAG = RecordActivity.class.getSimpleName();
 
+    // onSaveInstance KEY
     private static final String BUTTON_MENU_STATE = "button_menu_state";
-
-    private AdView mAdView;
-    private Button mRecordButton;
-    private Button mPlayButton;
-
-    private Button mNextButton;
-    private Button mRedoButton;
-
-    private ProgressBar mProgressBar;
-
-    private Button mCreateWavButton;
-
-    private boolean mIsRecording = false;
-
-    private boolean mIsPlaying =false;
 
     private Context mContext;
     private Activity mActivity;
 
-    private GLSurfaceView mGlSurfaceView;
-    private boolean mRendererSet = false;
+    // Views
+    private AdView mAdView;
+    private Button mRecordButton;
+    private Button mPlayButton;
+    private Button mNextButton;
+    private Button mRedoButton;
+    private Button mCreateWavButton;
 
-    private String mRecordFilePath;
-
-    // false = initial - start record state
-    // true = after recording
+    // Menu State
+    // false = initial state, true = first recording complete
     private boolean mMenuState = false;
 
+    // Audio
+    private boolean mIsRecording = false;
+    private boolean mIsPlaying =false;
     private static final int MAX_DIPLAYED_POWER=70;
     private static final int MIN_DIPLAYED_POWER=30;
     private double lastRMSValue=0;
+    private ProgressBar mProgressBar;
+
+    private GLSurfaceView mGlSurfaceView;
+    private boolean mRendererSet = false;
+    private String mRecordFilePath;
 
     public interface RecordCallback{
-        public void onRecordNextButton();
+        void onRecordNextButton();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_record, container, false);
 
@@ -107,23 +103,16 @@ public class RecordFragment extends Fragment {
 
             Bundle bundle = this.getArguments();
             String uniqueID = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME);
-            Log.d(TAG, "Record File Name: " + uniqueID);
 
-
-            //String uniqueID = UUID.randomUUID().toString();
             String recordDir = mContext.getFilesDir().getAbsolutePath();
             mRecordFilePath = recordDir + "/" + uniqueID;
             Log.d(TAG, "Record Path: " + mRecordFilePath);
             ((RecordActivity) mActivity).setRecordPath(mRecordFilePath);
 
-
-            //SuperAudio.setRecordPath(mRecordFilePath);
-
             mCreateWavButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     ((RecordActivity) mActivity).createWav();
-
                 }
             });
 
@@ -204,7 +193,6 @@ public class RecordFragment extends Fragment {
                         Log.d(TAG, "mIsPlaying play: " + mIsPlaying);
                         ((RecordActivity) mActivity).onFileChange(mRecordFilePath + ".wav", 0, 0);
                         ((RecordActivity) mActivity).onPlayPause(mRecordFilePath + ".wav", mIsPlaying, 0);
-
                     }
                 }
             });
@@ -215,9 +203,7 @@ public class RecordFragment extends Fragment {
         if (savedInstanceState != null) {
             mMenuState = savedInstanceState.getBoolean(BUTTON_MENU_STATE);
         }
-
         return rootView;
-
     }
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -294,7 +280,6 @@ public class RecordFragment extends Fragment {
     public void onPlaybackEnd() {
         Log.d(TAG, "Played file ended");
         mIsPlaying = false;
-        //Log.d(TAG, "mIsPlaying: " + mIsPlaying);
     }
     public void onBufferCallback(float rmsValue) {
         //Log.d(TAG, "rmsValue digital: "+ rmsValue);
