@@ -104,17 +104,17 @@ public class ShareFragment extends Fragment {
         Log.d(TAG, "Image File Name: " + imagefile);
 
 
-        if (imageUri != null) {
-            String imagePath = Utility.getRealPathFromURI(mContext, Uri.parse(imageUri));
-            int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
-            Log.d(TAG, "image size dimen: " + imageSize);
-            // Downsample bitmap
-            Bitmap bitmap = Utility.subsampleBitmap(mContext, imagePath, imageSize, imageSize);
-            // Center crop bitmap
-            bitmap  = Utility.centerCropBitmap(mContext, bitmap);
-
-            mBeepImageView.setImageBitmap(bitmap);
-        }
+//        if (imageUri != null) {
+//            String imagePath = Utility.getRealPathFromURI(mContext, Uri.parse(imageUri));
+//            int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
+//            Log.d(TAG, "image size dimen: " + imageSize);
+//            // Downsample bitmap
+//            Bitmap bitmap = Utility.subsampleBitmap(mContext, imagePath, imageSize, imageSize);
+//            // Center crop bitmap
+//            bitmap  = Utility.centerCropBitmap(mContext, bitmap);
+//
+//            mBeepImageView.setImageBitmap(bitmap);
+//        }
 
         mDontShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,12 +185,27 @@ public class ShareFragment extends Fragment {
             public void handleMessage(Message msg) {
                 Log.d(TAG, "handler handleMessage");
                 Bundle reply = msg.getData();
+                Bitmap bitmap = reply.getParcelable("bitmap");
                 // do whatever with the bundle here
+                mBeepImageView.setImageBitmap(bitmap);
             }
         };
+//        if (imageUri != null) {
+//            String imagePath = Utility.getRealPathFromURI(mContext, Uri.parse(imageUri));
+//            int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
+//            Log.d(TAG, "image size dimen: " + imageSize);
+//            // Downsample bitmap
+//            Bitmap bitmap = Utility.subsampleBitmap(mContext, imagePath, imageSize, imageSize);
+//            // Center crop bitmap
+//            bitmap  = Utility.centerCropBitmap(mContext, bitmap);
+//
+//            mBeepImageView.setImageBitmap(bitmap);
+//        }
+
+
         Intent intent = new Intent(mContext, BitmapImageService.class);
         intent.putExtra("image_messenger", new Messenger(handler));
-        intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_URI, imageUri.toString());
+        intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_URI, imageUri);
 
         mContext.startService(intent);
 

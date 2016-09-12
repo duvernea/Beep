@@ -36,24 +36,33 @@ public class BitmapImageService extends IntentService {
         String imageUriString = bundle.getString(Utility.ORIGINAL_IMAGE_FILE_URI);
         Uri imageUri = Uri.parse(imageUriString);
 
+            String imagePath = Utility.getRealPathFromURI(getApplicationContext(), imageUri);
+        Log.d(TAG, "imagePath: " + imagePath);
+            int imageSize = 460;
+            Log.d(TAG, "image size dimen: " + imageSize);
+            // Downsample bitmap
+            Bitmap bitmap = Utility.subsampleBitmap(getApplicationContext(), imagePath, imageSize, imageSize);
+            // Center crop bitmap
+            bitmap  = Utility.centerCropBitmap(getApplicationContext(), bitmap);
+
         // New compressed file name and path
-        String imageDir = getApplicationContext().getFilesDir().getAbsolutePath();
-        String compressedImageFilename = UUID.randomUUID().toString() + ".jpg";
-
-        FileOutputStream out = null;
-
-        String compressedImageFilePath = imageDir + "/" + compressedImageFilename;
-
-
-        // Downsample bitmap
-        Bitmap bitmap = Utility.subsampleBitmap(getApplicationContext(),
-                Utility.getRealPathFromURI(getApplicationContext(), imageUri), 360, 360);
-        // Center crop bitmap
-        bitmap = Utility.centerCropBitmap(getApplicationContext(), bitmap);
+//        String imageDir = getApplicationContext().getFilesDir().getAbsolutePath();
+//        String compressedImageFilename = UUID.randomUUID().toString() + ".jpg";
+//
+//        FileOutputStream out = null;
+//
+//        String compressedImageFilePath = imageDir + "/" + compressedImageFilename;
+//
+//
+//        // Downsample bitmap
+//        Bitmap bitmap = Utility.subsampleBitmap(getApplicationContext(),
+//                Utility.getRealPathFromURI(getApplicationContext(), imageUri), 360, 360);
+//        // Center crop bitmap
+//        bitmap = Utility.centerCropBitmap(getApplicationContext(), bitmap);
 
         Message message = new Message();
         Bundle bitmapBundle = new Bundle();
-        bundle.putParcelable("bitmap", bitmap);
+        bitmapBundle.putParcelable("bitmap", bitmap);
         message.setData(bitmapBundle);
 
         try {
