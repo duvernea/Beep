@@ -14,6 +14,7 @@ public class Constants {
     // Bundle extras for BitmapImageService 'messenger'
     public static final String IMAGE_MESSENGER = "image_messenger";
     public static final String IMAGE_BITMAP_FROM_SERVICE = "image_bitmap";
+    public static final String IMAGE_MIN_SIZE = "image_size";
 
     public static final String SAMPLE_RATE_DEFAULT = "44100";
     public static final String BUFFER_SIZE_DEFAULT = "512";

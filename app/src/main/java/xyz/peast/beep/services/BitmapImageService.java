@@ -33,16 +33,17 @@ public class BitmapImageService extends IntentService {
         Log.d(TAG, "onHandleIntent BitmapImageService");
         Bundle bundleIn = intent.getExtras();
         Messenger messenger = (Messenger) bundleIn.get(Constants.IMAGE_MESSENGER);
+        int minImageSize = bundleIn.getInt(Constants.IMAGE_MIN_SIZE);
 
         String imageUriString = bundleIn.getString(Utility.ORIGINAL_IMAGE_FILE_URI);
         Uri imageUri = Uri.parse(imageUriString);
 
-            String imagePath = Utility.getRealPathFromURI(getApplicationContext(), imageUri);
+        String imagePath = Utility.getRealPathFromURI(getApplicationContext(), imageUri);
         Log.d(TAG, "imagePath: " + imagePath);
-            int imageSize = 460;
-            Log.d(TAG, "image size dimen: " + imageSize);
+            //int imageSize = 460;
+            Log.d(TAG, "image size dimen: " + minImageSize);
             // Downsample bitmap
-            Bitmap bitmap = Utility.subsampleBitmap(getApplicationContext(), imagePath, imageSize, imageSize);
+            Bitmap bitmap = Utility.subsampleBitmap(getApplicationContext(), imagePath, minImageSize, minImageSize);
             // Center crop bitmap
             bitmap  = Utility.centerCropBitmap(getApplicationContext(), bitmap);
 

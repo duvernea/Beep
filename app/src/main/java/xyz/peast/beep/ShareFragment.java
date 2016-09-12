@@ -202,10 +202,12 @@ public class ShareFragment extends Fragment {
 //            mBeepImageView.setImageBitmap(bitmap);
 //        }
 
+        int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
 
         Intent intent = new Intent(mContext, BitmapImageService.class);
         intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(handler));
         intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_URI, imageUri);
+        intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
 
         mContext.startService(intent);
 

@@ -16,6 +16,9 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Messenger;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.InputFilter;
@@ -43,6 +46,7 @@ import xyz.peast.beep.adapters.Board;
 import xyz.peast.beep.adapters.BoardSpinnerAdapter;
 import xyz.peast.beep.data.BeepDbContract;
 import xyz.peast.beep.services.BeepService;
+import xyz.peast.beep.services.BitmapImageService;
 
 /**
  * Created by duvernea on 7/30/16.
@@ -85,6 +89,9 @@ public class SaveFragment extends Fragment implements LocationListener {
     // Location variables
     private LocationManager mLocationManager;
     private Location mMostRecentLocation;
+
+    // Image loading
+    Handler mImageHandler;
 
     // Audio variables
     private boolean mIsPlaying;
@@ -211,6 +218,17 @@ public class SaveFragment extends Fragment implements LocationListener {
             mImageBitmap = Utility.centerCropBitmap(mContext, bitmap);
             mBeepImage.setImageBitmap(mImageBitmap);
         }
+        mImageHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                Log.d(TAG, "handler handleMessage");
+                Bundle reply = msg.getData();
+                Bitmap bitmap = reply.getParcelable(Constants.IMAGE_BITMAP_FROM_SERVICE);
+                // do whatever with the bundle here
+                mBeepImage.setImageBitmap(bitmap);
+            }
+        };
+
         return rootView;
     }
     // Callback after image selected in photo picker
@@ -225,12 +243,14 @@ public class SaveFragment extends Fragment implements LocationListener {
                     mImageUri = data.getData();
                     mImagePath = Utility.getRealPathFromURI(mContext, mImageUri);
                     int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
-                    // Downsample bitmap
-                    Bitmap bitmap = Utility.subsampleBitmap(mContext, mImagePath, imageSize, imageSize);
-                    // Center crop bitmap
-                    mImageBitmap = Utility.centerCropBitmap(mContext, bitmap);
 
-                    mBeepImage.setImageBitmap(mImageBitmap);
+                    Intent intent = new Intent(mContext, BitmapImageService.class);
+                    intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(mImageHandler));
+                    intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_URI, mImageUri.toString());
+
+                    intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
+
+                    mContext.startService(intent);
                 }
         }
     }
