@@ -60,7 +60,9 @@ public class RecordActivity extends AppCompatActivity
         Bundle bundle = new Bundle();
         bundle.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
         bundle.putString(BEEP_NAME, beepname);
-        bundle.putString(IMAGE_FILE_URI_UNCOMPRESSED, imageUri.toString());
+        if (imageUri != null) {
+            bundle.putString(IMAGE_FILE_URI_UNCOMPRESSED, imageUri.toString());
+        }
         bundle.putString(BOARD_NAME, boardName);
         bundle.putInt(BOARD_KEY, boardKey);
         shareFragment.setArguments(bundle);

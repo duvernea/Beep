@@ -134,11 +134,13 @@ public class Utility {
         Log.d(TAG, "Utility: Insert beep into ContentProvider: " + uri.toString());
 
         // Use service to save, compress, crop, etc the image
-        Intent serviceIntent = new Intent(context, BeepService.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(ORIGINAL_IMAGE_FILE_URI, originalImageUri.toString());
-        bundle.putString(INSERTED_BEEP_URI, uri.toString());
-        serviceIntent.putExtras(bundle);
-        context.startService(serviceIntent);
+        if (originalImageUri != null) {
+            Intent serviceIntent = new Intent(context, BeepService.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(ORIGINAL_IMAGE_FILE_URI, originalImageUri.toString());
+            bundle.putString(INSERTED_BEEP_URI, uri.toString());
+            serviceIntent.putExtras(bundle);
+            context.startService(serviceIntent);
+        }
     }
 }
