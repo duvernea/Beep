@@ -113,24 +113,26 @@ public class ShareFragment extends Fragment {
             public void onClick(View v) {
 
                 String audioPath = mContext.getFilesDir().getAbsolutePath();
-                audioPath += "/" + mRecordFileName;
-                Log.d(TAG, "audioPath: " + audioPath);
-                File requestFile = new File(audioPath);
-                mNewTempFilePath = mContext.getFilesDir().getAbsolutePath();
-                mNewTempFilePath += "/" + mBeepName + ".wav";
-                File renamedFile = new File(mNewTempFilePath);
-                try {
-                    FileInputStream inStream = new FileInputStream(requestFile);
-                    FileOutputStream outStream = new FileOutputStream(renamedFile);
-                    FileChannel inChannel = inStream.getChannel();
-                    FileChannel outChannel = outStream.getChannel();
-                    inChannel.transferTo(0, inChannel.size(), outChannel);
-                    inStream.close();
-                    outStream.close();
-                }
-                catch (IOException ioe) {
-                    Log.d(TAG, "IO Exception caught");
-                }
+                String beepMp3Path = audioPath + "/" + mBeepName + ".mp3";
+                //audioPath += "/" + mRecordFileName;
+                Log.d(TAG, "audioPath: " + beepMp3Path);
+                File beepMp3File = new File(beepMp3Path);
+                //File requestFile = new File(beepMp3Path);
+                //mNewTempFilePath = mContext.getFilesDir().getAbsolutePath();
+                //mNewTempFilePath += "/" + mBeepName + ".wav";
+                //File renamedFile = new File(mNewTempFilePath);
+//                try {
+//                    FileInputStream inStream = new FileInputStream(requestFile);
+//                    FileOutputStream outStream = new FileOutputStream(renamedFile);
+//                    FileChannel inChannel = inStream.getChannel();
+//                    FileChannel outChannel = outStream.getChannel();
+//                    inChannel.transferTo(0, inChannel.size(), outChannel);
+//                    inStream.close();
+//                    outStream.close();
+//                }
+//                catch (IOException ioe) {
+//                    Log.d(TAG, "IO Exception caught");
+//                }
 
                 Uri fileUri;
                 //= Uri.parse(audioPath);
@@ -138,7 +140,7 @@ public class ShareFragment extends Fragment {
                     fileUri = FileProvider.getUriForFile(
                             mContext,
                             "xyz.peast.beep.fileprovider",
-                            renamedFile);
+                            beepMp3File);
                 } catch (IllegalArgumentException e) {
                     fileUri = null;
                     Log.e("File Selector",
