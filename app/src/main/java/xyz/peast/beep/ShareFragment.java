@@ -6,8 +6,12 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Messenger;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
@@ -29,8 +33,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.nio.channels.FileChannel;
 
+import xyz.peast.beep.services.BeepService;
+import xyz.peast.beep.services.BitmapImageService;
 import xyz.peast.beep.services.EncodeAudioService;
 
 
@@ -173,6 +180,19 @@ public class ShareFragment extends Fragment {
                 startActivityForResult (share, SHARE_BEEP);
             }
         });
+        Handler handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                Log.d(TAG, "handler handleMessage");
+                Bundle reply = msg.getData();
+                // do whatever with the bundle here
+            }
+        };
+        Intent intent = new Intent(mContext, BitmapImageService.class);
+        intent.putExtra("image_messenger", new Messenger(handler));
+        intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_URI, imageUri.toString());
+
+        mContext.startService(intent);
 
         return rootView;
     }
@@ -196,7 +216,5 @@ public class ShareFragment extends Fragment {
                 startActivity(intent);
             }
         }
-
     }
-
 }

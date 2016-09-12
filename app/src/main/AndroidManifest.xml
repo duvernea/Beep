@@ -38,6 +38,9 @@
         <service
             android:name=".services.EncodeAudioService"
             android:exported="false"/>
+        <service
+            android:name=".services.BitmapImageService"
+            android:exported="false"/>
 
         <activity
             android:name=".MainActivity"
