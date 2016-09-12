@@ -1,5 +1,6 @@
 package xyz.peast.beep;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -178,17 +179,24 @@ public class ShareFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        File file = new File(mNewTempFilePath);
-        boolean deleted = file.delete();
 
-        Intent intent = new Intent(mContext, BoardActivity.class);
-        intent.putExtra(BoardActivity.LAST_ACTIVITY_UNIQUE_ID,
-                BoardActivity.FROM_SHARE_FRAGMENT);
+        if (requestCode == SHARE_BEEP) {
+            // Make sure the request was successful
+            if (resultCode == Activity.RESULT_OK) {
+                File file = new File(mNewTempFilePath);
+                boolean deleted = file.delete();
 
-        intent.putExtra(MainActivity.BOARD_KEY_CLICKED, mBoardKey);
-        intent.putExtra(MainActivity.BOARD_NAME_SELECTED, mBoardName);
+                Intent intent = new Intent(mContext, BoardActivity.class);
+                intent.putExtra(BoardActivity.LAST_ACTIVITY_UNIQUE_ID,
+                        BoardActivity.FROM_SHARE_FRAGMENT);
 
-        startActivity(intent);
+                intent.putExtra(MainActivity.BOARD_KEY_CLICKED, mBoardKey);
+                intent.putExtra(MainActivity.BOARD_NAME_SELECTED, mBoardName);
+
+                startActivity(intent);
+            }
+        }
+
     }
 
 }
