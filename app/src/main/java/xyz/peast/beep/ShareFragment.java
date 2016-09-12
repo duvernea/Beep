@@ -30,6 +30,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
+import xyz.peast.beep.services.EncodeAudioService;
+
 
 public class ShareFragment extends Fragment {
 
@@ -76,6 +78,17 @@ public class ShareFragment extends Fragment {
 
         mBeepName = bundle.getString(RecordActivity.BEEP_NAME);
         mBeepNameTextView.setText(mBeepName);
+
+        // Encode the wav to mp3 for sharing
+        Bundle bundleEncodeAudio = new Bundle();
+        bundleEncodeAudio.putString(Constants.RECORD_FILE_NAME, mRecordFileName);
+        bundleEncodeAudio.putString(Constants.BEEP_NAME, mBeepName);
+        Intent encodeAudioIntent = new Intent(mContext, EncodeAudioService.class);
+        encodeAudioIntent.putExtras(bundleEncodeAudio);
+
+        mContext.startService(encodeAudioIntent);
+        String filename = bundle.getString(Constants.RECORD_FILE_NAME);
+        String beepName = bundle.getString(Constants.BEEP_NAME);
 
         boolean encodeMp3Success = AudioUtility.encodeMp3(mContext, mRecordFileName, mBeepName);
 

@@ -7,6 +7,10 @@ import xyz.peast.beep.data.BeepDbContract;
  */
 public class Constants {
 
+    // Bundle extras
+    public static final String RECORD_FILE_NAME = "record_file_name";
+    public static final String BEEP_NAME = "beep_name";
+
     public static final String SAMPLE_RATE_DEFAULT = "44100";
     public static final String BUFFER_SIZE_DEFAULT = "512";
 
