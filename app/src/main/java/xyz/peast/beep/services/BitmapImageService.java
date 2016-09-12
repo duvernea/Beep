@@ -13,6 +13,7 @@ import android.util.Log;
 import java.io.FileOutputStream;
 import java.util.UUID;
 
+import xyz.peast.beep.Constants;
 import xyz.peast.beep.Utility;
 
 /**
@@ -30,10 +31,10 @@ public class BitmapImageService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         Log.d(TAG, "onHandleIntent BitmapImageService");
-        Bundle bundle = intent.getExtras();
-        Messenger messenger = (Messenger) bundle.get("image_messenger");
+        Bundle bundleIn = intent.getExtras();
+        Messenger messenger = (Messenger) bundleIn.get(Constants.IMAGE_MESSENGER);
 
-        String imageUriString = bundle.getString(Utility.ORIGINAL_IMAGE_FILE_URI);
+        String imageUriString = bundleIn.getString(Utility.ORIGINAL_IMAGE_FILE_URI);
         Uri imageUri = Uri.parse(imageUriString);
 
             String imagePath = Utility.getRealPathFromURI(getApplicationContext(), imageUri);
@@ -62,7 +63,7 @@ public class BitmapImageService extends IntentService {
 
         Message message = new Message();
         Bundle bitmapBundle = new Bundle();
-        bitmapBundle.putParcelable("bitmap", bitmap);
+        bitmapBundle.putParcelable(Constants.IMAGE_BITMAP_FROM_SERVICE, bitmap);
         message.setData(bitmapBundle);
 
         try {

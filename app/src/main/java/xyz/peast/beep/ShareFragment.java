@@ -185,7 +185,7 @@ public class ShareFragment extends Fragment {
             public void handleMessage(Message msg) {
                 Log.d(TAG, "handler handleMessage");
                 Bundle reply = msg.getData();
-                Bitmap bitmap = reply.getParcelable("bitmap");
+                Bitmap bitmap = reply.getParcelable(Constants.IMAGE_BITMAP_FROM_SERVICE);
                 // do whatever with the bundle here
                 mBeepImageView.setImageBitmap(bitmap);
             }
@@ -204,7 +204,7 @@ public class ShareFragment extends Fragment {
 
 
         Intent intent = new Intent(mContext, BitmapImageService.class);
-        intent.putExtra("image_messenger", new Messenger(handler));
+        intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(handler));
         intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_URI, imageUri);
 
         mContext.startService(intent);
