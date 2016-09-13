@@ -1,5 +1,6 @@
 package xyz.peast.beep;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -7,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.UUID;
 
@@ -17,6 +19,8 @@ public class RecordActivity extends AppCompatActivity
         implements RecordFragment.RecordCallback, SaveFragment.SaveCallback {
 
     private static final String TAG = RecordActivity.class.getSimpleName();
+
+    private Context mContext;
 
     // Fragment TAGs
     private static final String RECORD_FRAGMENT_TAG = "record_fragment_tag";
@@ -72,12 +76,15 @@ public class RecordActivity extends AppCompatActivity
         transaction.replace(R.id.record_container, shareFragment, SHARE_FRAGMENT_TAG);
         transaction.addToBackStack(SHARE_FRAGMENT_TAG);
         transaction.commit();
+        Toast.makeText(mContext, "Beep Saved", Toast.LENGTH_SHORT ).show();
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
+
+        mContext = this;
 
         if (savedInstanceState == null) {
             mRecordFileName =UUID.randomUUID().toString();
@@ -140,12 +147,14 @@ public class RecordActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         Log.d(TAG, "backstack count: " + getSupportFragmentManager().getBackStackEntryCount());
-        super.onBackPressed();
 
+        int backstackCount = getSupportFragmentManager().getBackStackEntryCount();
         // Record and Save Fragments
-        if (getSupportFragmentManager().getBackStackEntryCount() <= 1) {
-            // No fragments on backstack - do nothing
+        if (backstackCount <= 1) {
             super.onBackPressed();
+        }
+        if (backstackCount == 2) {
+            finish();
         }
 //        String tag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName();
 //        if (tag.equals(SHARE_FRAGMENT_TAG)) {
