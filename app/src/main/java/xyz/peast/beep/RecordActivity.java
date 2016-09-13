@@ -137,23 +137,24 @@ public class RecordActivity extends AppCompatActivity
         }
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        Log.d(TAG, "backstack count: " + getSupportFragmentManager().getBackStackEntryCount());
-//        super.onBackPressed();
-//
-////        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-////            // No fragments on backstack - do nothing
-////            super.onBackPressed();
-////        }
-////        String tag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName();
-////        if (tag.equals(SHARE_FRAGMENT_TAG)) {
-////            finish();
-////        }
-////        else {
-////            super.onBackPressed();
-////        }
-//    }
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "backstack count: " + getSupportFragmentManager().getBackStackEntryCount());
+        super.onBackPressed();
+
+        // Record and Save Fragments
+        if (getSupportFragmentManager().getBackStackEntryCount() <= 1) {
+            // No fragments on backstack - do nothing
+            super.onBackPressed();
+        }
+//        String tag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName();
+//        if (tag.equals(SHARE_FRAGMENT_TAG)) {
+//            finish();
+//        }
+//        else {
+//            super.onBackPressed();
+//        }
+    }
 
     private void onBufferCallback(float rmsValue) {
         RecordFragment recordFragment = (RecordFragment) getSupportFragmentManager().findFragmentByTag(RECORD_FRAGMENT_TAG);

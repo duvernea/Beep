@@ -180,16 +180,7 @@ public class ShareFragment extends Fragment {
                 startActivityForResult (share, SHARE_BEEP);
             }
         });
-        Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                Log.d(TAG, "handler handleMessage");
-                Bundle reply = msg.getData();
-                Bitmap bitmap = reply.getParcelable(Constants.IMAGE_BITMAP_FROM_SERVICE);
-                // do whatever with the bundle here
-                mBeepImageView.setImageBitmap(bitmap);
-            }
-        };
+
 //        if (imageUri != null) {
 //            String imagePath = Utility.getRealPathFromURI(mContext, Uri.parse(imageUri));
 //            int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
@@ -202,14 +193,28 @@ public class ShareFragment extends Fragment {
 //            mBeepImageView.setImageBitmap(bitmap);
 //        }
 
-        int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
 
-        Intent intent = new Intent(mContext, BitmapImageService.class);
-        intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(handler));
-        intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_URI, imageUri);
-        intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
+        if (imageUri != null) {
+            int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
 
-        mContext.startService(intent);
+            Handler handler = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    Log.d(TAG, "handler handleMessage");
+                    Bundle reply = msg.getData();
+                    Bitmap bitmap = reply.getParcelable(Constants.IMAGE_BITMAP_FROM_SERVICE);
+                    // do whatever with the bundle here
+                    mBeepImageView.setImageBitmap(bitmap);
+                }
+            };
+
+            Intent intent = new Intent(mContext, BitmapImageService.class);
+            intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(handler));
+            intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_URI, imageUri.toString());
+            intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
+
+            mContext.startService(intent);
+        }
 
         return rootView;
     }
