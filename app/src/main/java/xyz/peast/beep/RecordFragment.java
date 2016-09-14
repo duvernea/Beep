@@ -282,25 +282,25 @@ public class RecordFragment extends Fragment {
         mIsPlaying = false;
     }
     public void onBufferCallback(float rmsValue) {
-        //Log.d(TAG, "rmsValue digital: "+ rmsValue);
-
-        double powerCurrentBufferdB = 20f*Math.log10(rmsValue);
-        Log.d(TAG, "current buffer powerdB: "+ powerCurrentBufferdB);
-
-        double averagedPowerDb = (lastRMSValue + powerCurrentBufferdB)/2;
-        Log.d(TAG, "averaged buffers powerdB: "+ averagedPowerDb);
-        lastRMSValue = powerCurrentBufferdB;
-        // set displayed dynamic range between lowCutoff and highCutoff
-        averagedPowerDb = averagedPowerDb - MIN_DIPLAYED_POWER;
-        // limit dynamic range
-        if (averagedPowerDb> MAX_DIPLAYED_POWER-MIN_DIPLAYED_POWER ) {
-            averagedPowerDb = MAX_DIPLAYED_POWER;
-        }
-        if (averagedPowerDb < MIN_DIPLAYED_POWER) {
-            averagedPowerDb = 0;
-        }
-
-        mProgressBar.setProgress((int) averagedPowerDb);
+//        //Log.d(TAG, "rmsValue digital: "+ rmsValue);
+//
+//        double powerCurrentBufferdB = 20f*Math.log10(rmsValue);
+//        Log.d(TAG, "current buffer powerdB: "+ powerCurrentBufferdB);
+//
+//        double averagedPowerDb = (lastRMSValue + powerCurrentBufferdB)/2;
+//        Log.d(TAG, "averaged buffers powerdB: "+ averagedPowerDb);
+//        lastRMSValue = powerCurrentBufferdB;
+//        // set displayed dynamic range between lowCutoff and highCutoff
+//        averagedPowerDb = averagedPowerDb - MIN_DIPLAYED_POWER;
+//        // limit dynamic range
+//        if (averagedPowerDb> MAX_DIPLAYED_POWER-MIN_DIPLAYED_POWER ) {
+//            averagedPowerDb = MAX_DIPLAYED_POWER;
+//        }
+//        if (averagedPowerDb < MIN_DIPLAYED_POWER) {
+//            averagedPowerDb = 0;
+//        }
+//
+//        mProgressBar.setProgress((int) averagedPowerDb);
         //Log.d(TAG, "powerdB: " + (int) power2);
         //Log.d(TAG, "onBufferCallback, Fragment RMS Value:" + rmsValue);
         //Log.d(TAG, "(int) RMS Value" + (int) rmsValue);
