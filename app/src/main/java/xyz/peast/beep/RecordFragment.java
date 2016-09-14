@@ -189,7 +189,6 @@ public class RecordFragment extends Fragment {
                     Log.d(TAG, "mIsRecording start: " + mIsPlaying);
                     if (!mIsRecording) {
                         mIsPlaying = true;
-                        //onPlayPause(mIsPlaying);
                         Log.d(TAG, "mIsPlaying play: " + mIsPlaying);
                         ((RecordActivity) mActivity).onFileChange(mRecordFilePath + ".wav", 0, 0);
                         ((RecordActivity) mActivity).onPlayPause(mRecordFilePath + ".wav", mIsPlaying, 0);
@@ -264,6 +263,9 @@ public class RecordFragment extends Fragment {
         }
     }
     private void handleRedoButtonPress() {
+        Log.d(TAG, "handleRedoButton mIsRecord: " + mIsRecording);
+        Log.d(TAG, "handleRedoButton mIsplay: " + mIsPlaying);
+
         if (!mIsPlaying) {
             mMenuState = false;
             mIsRecording = true;

@@ -32,7 +32,10 @@ static void playerEventCallbackA(void *clientData, SuperpoweredAdvancedAudioPlay
     	//SuperpoweredAdvancedAudioPlayer *playerA = *((SuperpoweredAdvancedAudioPlayer **)clientData);
     };
     if (event == SuperpoweredAdvancedAudioPlayerEvent_EOF) {
+
         SuperpoweredAdvancedAudioPlayer *playerA = *((SuperpoweredAdvancedAudioPlayer **)clientData);
+        __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio EOF", "Native");
+
         playerA->pause(0, 0);
         JNIEnv *env;
         jvm->AttachCurrentThread(&env, NULL);

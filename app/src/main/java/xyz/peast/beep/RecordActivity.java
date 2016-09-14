@@ -128,9 +128,12 @@ public class RecordActivity extends AppCompatActivity
 
     // Calback from Native
     private void playbackEndCallback() {
-        //Log.d(TAG, "mIsPlaying: " + mIsPlaying);
+
+        Log.d(TAG, "playbackEndCallback");
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-            // No fragments on backstack - do nothing
+            // No fragments on backstack - Only 1 fragment = Record Fragment
+            RecordFragment recordFragment = (RecordFragment) getSupportFragmentManager().findFragmentByTag(RECORD_FRAGMENT_TAG);
+            recordFragment.onPlaybackEnd();
         }
         else {
             String tag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName();
@@ -138,8 +141,7 @@ public class RecordActivity extends AppCompatActivity
                 // TODO - do something when playback ends in save fragment
             }
             else if (tag.equals(RECORD_FRAGMENT_TAG)) {
-                RecordFragment recordFragment = (RecordFragment) getSupportFragmentManager().findFragmentByTag(RECORD_FRAGMENT_TAG);
-                recordFragment.onPlaybackEnd();
+
             }
         }
     }
