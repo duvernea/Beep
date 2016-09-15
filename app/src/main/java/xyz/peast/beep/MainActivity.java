@@ -459,6 +459,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         return hasPermission;
     }
     private void requestRecordAudioPermission(){
+
         // The dangerous RECORD_AUDIO permission is NOT already granted.
         // Check if the user has been asked about this permission already and denied
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
