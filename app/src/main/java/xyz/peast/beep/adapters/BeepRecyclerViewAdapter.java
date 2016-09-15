@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import xyz.peast.beep.Constants;
@@ -64,7 +65,8 @@ public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerVi
             Log.d(TAG, "BeepAdapter image file " + imagePath);
             //Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
             //holder.mBeepImageView.setImageBitmap(bitmap);
-            Picasso.with(mContext).load(imagePath).into(holder.mBeepImageView);
+            //Picasso.with(mContext).load(imagePath).into(holder.mBeepImageView);
+            Glide.with(mContext).load(imagePath).into(holder.mBeepImageView);
 
         }
 
