@@ -5,10 +5,12 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
@@ -45,8 +47,20 @@ public class BeepService extends IntentService {
 
         String compressedImageFilePath = imageDir + "/" + compressedImageFilename;
 
+        String originalFilePath = Utility.getRealPathFromURI(getApplicationContext(), imageUri);
+        Log.d(TAG, "originalFilePath: " + originalFilePath);
 
-            // Downsample bitmap
+        Bitmap bitmapOriginal = BitmapFactory.decodeFile(originalFilePath);
+        Log.d(TAG, "bitmap width original: " + bitmapOriginal.getWidth());
+        Log.d(TAG, "bitmap height original: " + bitmapOriginal.getHeight());
+        Log.d(TAG, "bitmap size: " + bitmapOriginal.getByteCount());
+        File originalImageFile = new File(originalFilePath);
+        Log.d(TAG, "file exists? " + originalImageFile.exists());
+        long length = originalImageFile.length();
+        Log.d(TAG, "bitmap length in bytes: " + length);
+
+
+        // Downsample bitmap
             Bitmap bitmap = Utility.subsampleBitmap(getApplicationContext(),
                     Utility.getRealPathFromURI(getApplicationContext(), imageUri), 360, 360);
             // Center crop bitmap
