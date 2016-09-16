@@ -114,6 +114,7 @@ public class Utility {
 
         // Set inJustDecodeBounds to false to actually decode the file and return it
         options.inJustDecodeBounds = false;
+        options.inSampleSize = inSampleSize;
         return BitmapFactory.decodeFile(filepath, options);
     }
     public static void insertNewBeep(Context context, String beepName, String audioFileName, Location location,

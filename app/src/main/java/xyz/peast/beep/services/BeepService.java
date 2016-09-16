@@ -61,16 +61,23 @@ public class BeepService extends IntentService {
 
 
         // Downsample bitmap
-            Bitmap bitmap = Utility.subsampleBitmap(getApplicationContext(),
+            Bitmap downsampledBitmap = Utility.subsampleBitmap(getApplicationContext(),
                     Utility.getRealPathFromURI(getApplicationContext(), imageUri), 360, 360);
+        Log.d(TAG, "bitmap width subsample: " + downsampledBitmap.getWidth());
+        Log.d(TAG, "bitmap height subsample: " + downsampledBitmap.getHeight());
+        Log.d(TAG, "bitmap size subsample: " + downsampledBitmap.getByteCount());
+
             // Center crop bitmap
-            bitmap = Utility.centerCropBitmap(getApplicationContext(), bitmap);
+        Bitmap centerCropBitmap = Utility.centerCropBitmap(getApplicationContext(), downsampledBitmap);
+        Log.d(TAG, "bitmap width centercrop: " + centerCropBitmap.getWidth());
+        Log.d(TAG, "bitmap height centercrop: " + centerCropBitmap.getHeight());
+        Log.d(TAG, "bitmap size centercrop: " + centerCropBitmap.getByteCount());
 
         try {
             out = new FileOutputStream(compressedImageFilePath);
-            if (bitmap != null) {
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, out); // bmp is your Bitmap instance
-                Log.d(TAG, "compressing bitmap, 50%" + compressedImageFilename);
+            if (centerCropBitmap != null) {
+                centerCropBitmap.compress(Bitmap.CompressFormat.JPEG, 80, out); // bmp is your Bitmap instance
+                Log.d(TAG, "compressing bitmap, 80%" + compressedImageFilename);
             }
             // PNG is a lossless format, the compression factor (100) is ignored
         } catch (Exception e) {
@@ -84,6 +91,10 @@ public class BeepService extends IntentService {
                 e.printStackTrace();
             }
         }
+        File compressedImageFile = new File(compressedImageFilePath);
+        Log.d(TAG, "file exists? " + compressedImageFile.exists());
+        long lengthCompressedFile = compressedImageFile.length();
+        Log.d(TAG, "compressed bitmap length in bytes: " + lengthCompressedFile);
         ContentValues contentValues = new ContentValues();
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, compressedImageFilename);
         String whereClause = BeepDbContract.BeepEntry._ID+"=?";
