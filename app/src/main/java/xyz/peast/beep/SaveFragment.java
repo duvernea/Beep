@@ -23,7 +23,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
 import android.support.annotation.Nullable;
-import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
