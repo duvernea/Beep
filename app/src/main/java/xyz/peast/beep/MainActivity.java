@@ -88,12 +88,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     SharedPreferences mSharedPrefs = null;
 
     @Override
-    protected void onStart() {
-        Log.d(TAG, "onStart running..");
-        super.onStart();
-    }
-
-    @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -478,6 +472,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
+        Log.d(TAG, "onRequestPermissionsResult");
         switch (requestCode) {
             case PERMISSIONS_REQUEST_RECORD_AUDIO: {
                 // If request is cancelled, the result arrays are empty.
@@ -492,6 +487,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 } else {
                     // Permission Denied
                     // TODO: What to do? Cannot use app
+                    Toast.makeText(mContext, getResources().getString(R.string.need_audio_permission), Toast.LENGTH_SHORT).show();
                 }
             }
         }
