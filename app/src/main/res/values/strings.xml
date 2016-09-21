@@ -14,6 +14,8 @@
     <string name="next">Next</string>
     <string name="redo_recording">Redo</string>
     <string name="next_recording">Next</string>
+
+    <string name="need_external_permission">Need permission to read device image files</string>
     // Save Fragment
     <string name="save">Save</string>
     <string name="title_selection_textview">Title Name</string>

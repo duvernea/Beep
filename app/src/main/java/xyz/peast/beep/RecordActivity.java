@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
@@ -42,8 +43,7 @@ public class RecordActivity extends AppCompatActivity
 
     private static String mRecordFileName;
 
-    // Permission Request Code
-    public static final int PERMISSIONS_REQUEST_READ_EXTERNAL= 10;
+
 
     // Audio
     private boolean mAudioState = false;
@@ -94,17 +94,8 @@ public class RecordActivity extends AppCompatActivity
 
         mContext = this;
 
-        boolean permissionReadExternal = hasReadExternalPermission();
-        Log.d(TAG, "hasRecordAudioPermission: " + permissionReadExternal);
-        if (permissionReadExternal) {
-            // TODO - new fragment
-
-        } else {
-            requestReadExternalPermission();
-        }
-
         if (savedInstanceState == null) {
-            mRecordFileName =UUID.randomUUID().toString();
+            mRecordFileName = UUID.randomUUID().toString();
             Bundle bundle = new Bundle();
             bundle.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
 
@@ -115,7 +106,6 @@ public class RecordActivity extends AppCompatActivity
             transaction.add(R.id.record_container, recordFragment, RECORD_FRAGMENT_TAG);
 
             //transaction.addToBackStack(RECORD_FRAGMENT_TAG);
-
             transaction.commit();
             supportPostponeEnterTransition();
         }
@@ -204,44 +194,6 @@ public class RecordActivity extends AppCompatActivity
     }
 
 
-    private boolean hasReadExternalPermission() {
-        boolean hasPermission = (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
-        Log.d(TAG, "READ External permission: " + hasPermission);
-        return hasPermission;
-    }
-    private void requestReadExternalPermission(){
 
-        // The dangerous READ External permission is NOT already granted.
-        // Check if the user has been asked about this permission already and denied
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (shouldShowRequestPermissionRationale(
-                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                Log.d(TAG, "permission has previously been denied.  Explain why need");
-                // TODO Show UI to explain to the user why we need to read external
-            }
-            // Fire off an async request to actually get the permission
-            // This will show the standard permission request dialog UI
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    PERMISSIONS_REQUEST_READ_EXTERNAL);
-        }
-    }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_READ_EXTERNAL: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (!mAudioState) {
-                        // TODO Load the first fragment
-                    }
-                } else {
-                    // Permission Denied
-                    // TODO: What to do? Cannot use app
-                }
-            }
-        }
-    }
 }

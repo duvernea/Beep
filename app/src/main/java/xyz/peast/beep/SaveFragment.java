@@ -1,5 +1,6 @@
 package xyz.peast.beep;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,6 +9,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -15,12 +17,17 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
 import android.support.annotation.Nullable;
+import android.support.v13.app.FragmentCompat;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.util.DisplayMetrics;
@@ -35,12 +42,14 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.UUID;
 
 import xyz.peast.beep.adapters.Board;
 import xyz.peast.beep.adapters.BoardSpinnerAdapter;
@@ -56,6 +65,9 @@ public class SaveFragment extends Fragment implements LocationListener {
     private static final String TAG = SaveFragment.class.getSimpleName();
     private Context mContext;
     private Activity mActivity;
+
+    // Permission Request Code
+    public static final int PERMISSIONS_REQUEST_READ_EXTERNAL= 10;
 
     // KEYs for onSaveInstanceState
     private static final String IMAGE_FILE_NAME = "image_file_name";
@@ -162,9 +174,18 @@ public class SaveFragment extends Fragment implements LocationListener {
         mBeepImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-                photoPickerIntent.setType("image/*");
-                startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+
+                boolean permissionReadExternal = hasReadExternalPermission();
+                Log.d(TAG, "hasRecordAudioPermission: " + permissionReadExternal);
+
+                if (permissionReadExternal) {
+                    Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                    photoPickerIntent.setType("image/*");
+                    startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+
+                } else {
+                    requestReadExternalPermission();
+                }
             }
         });
 
@@ -471,6 +492,52 @@ public class SaveFragment extends Fragment implements LocationListener {
             }
             catch (SecurityException e) {
                 // Handle if GPS not enabled
+            }
+        }
+    }
+    private boolean hasReadExternalPermission() {
+        boolean hasPermission = (ContextCompat.checkSelfPermission(mContext, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+        Log.d(TAG, "READ External permission: " + hasPermission);
+        return hasPermission;
+    }
+    private void requestReadExternalPermission(){
+
+        // The dangerous READ External permission is NOT already granted.
+        // Check if the user has been asked about this permission already and denied
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (shouldShowRequestPermissionRationale(
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                Log.d(TAG, "permission has previously been denied.  Explain why need");
+                // TODO Show UI to explain to the user why we need to read external
+            }
+            // Fire off an async request to actually get the permission
+            // This will show the standard permission request dialog UI
+
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PERMISSIONS_REQUEST_READ_EXTERNAL);
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        Log.d(TAG, "onRequestPermissionResult");
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_READ_EXTERNAL: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // TODO add call to image picker
+                    Log.d(TAG, "permission granted, create intent");
+                    Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                    photoPickerIntent.setType("image/*");
+                    startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+
+                } else {
+                    // Permission Denied
+                    Toast.makeText(mContext,
+                            getResources().getString(R.string.need_external_permission), Toast.LENGTH_SHORT)
+                            .show();
+                }
             }
         }
     }
