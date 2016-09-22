@@ -91,6 +91,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Start tracking app with Google Analytics
+        ((MyApplication) getApplication()).startTracking();
+
         mContext = this;
         mActivity = this;
 
