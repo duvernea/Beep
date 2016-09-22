@@ -10,3 +10,4 @@ gradle.properties
 /captures
 app/libs/*
 strings-private.xml
+/app/src/main/res/xml/track_app.xml
