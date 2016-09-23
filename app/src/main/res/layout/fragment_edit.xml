@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/chipmunk_button"
+        android:layout_width="160dp"
+        android:layout_height="64dp"
+        android:text="chipmunk"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:visibility="visible"
+        android:textColor="@color/white_ee"
+        android:layout_margin="20dp"/>
+
+    <Button
+        android:id="@+id/slomo_button"
+        android:layout_width="160dp"
+        android:layout_height="64dp"
+        android:text="slomo"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:visibility="visible"
+        android:textColor="@color/white_ee"
+        android:layout_margin="20dp"/>
+
+    <Button
+        android:id="@+id/echo_button"
+        android:layout_width="160dp"
+        android:layout_height="64dp"
+        android:text="echo"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:visibility="visible"
+        android:textColor="@color/white_ee"
+        android:layout_margin="20dp"/>
+
+    <Button
+        android:id="@+id/next_button"
+        android:layout_width="160dp"
+        android:layout_height="64dp"
+        android:text="next"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:visibility="visible"
+        android:textColor="@color/white_ee"
+        android:layout_margin="20dp"/>
+
+</LinearLayout>

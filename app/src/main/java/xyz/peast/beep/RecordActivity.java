@@ -31,6 +31,7 @@ public class RecordActivity extends AppCompatActivity
 
     // Fragment TAGs
     private static final String RECORD_FRAGMENT_TAG = "record_fragment_tag";
+    private static final String EDIT_FRAGMENT_TAG = "edit_fragment_tag";
     private static final String SAVE_FRAGMENT_TAG = "save_fragment_tag";
     private static final String SHARE_FRAGMENT_TAG = "share_fragment_tag";
 
@@ -52,16 +53,17 @@ public class RecordActivity extends AppCompatActivity
     @Override
     public void onRecordNextButton() {
         Log.d(TAG, "Next button pushed.");
-        SaveFragment saveFragment = new SaveFragment();
+        //SaveFragment saveFragment = new SaveFragment();
+        EditFragment editFragment = new EditFragment();
 
         Bundle bundle = new Bundle();
         bundle.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
-        saveFragment.setArguments(bundle);
+        editFragment.setArguments(bundle);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
                 R.anim.enter_from_left, R.anim.exit_to_right);
-        transaction.replace(R.id.record_container, saveFragment, SAVE_FRAGMENT_TAG);
-        transaction.addToBackStack(SAVE_FRAGMENT_TAG);
+        transaction.replace(R.id.record_container, editFragment, SAVE_FRAGMENT_TAG);
+        transaction.addToBackStack(EDIT_FRAGMENT_TAG);
         transaction.commit();
     }
 
