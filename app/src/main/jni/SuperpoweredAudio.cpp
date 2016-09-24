@@ -126,6 +126,9 @@ void SuperpoweredAudio::onFileChange(const char *path, int fileOffset, int fileL
 void SuperpoweredAudio::onPlayerPause() {
     playerA->pause();
 }
+void SuperpoweredAudio::setPitchShift(int pitchShift) {
+    playerA->setPitchShift (pitchShift);
+}
 
 void SuperpoweredAudio::onPlayPause(const char *path, bool play, int size) {
     //__android_log_write(ANDROID_LOG_ERROR, "SuperpoweredPATH", path);
@@ -479,6 +482,11 @@ void Java_xyz_peast_beep_RecordActivity_onFileChange(JNIEnv * __unused javaEnvir
     javaEnvironment->ReleaseStringUTFChars(apkPath, path);
     __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", path);
 
+}
+// setPitchShift
+extern "C" JNIEXPORT
+void Java_xyz_peast_beep_RecordActivity_setPitchShift(JNIEnv * __unused javaEnvironment, jobject __unused obj, jint pitchShift) {
+    myAudio->setPitchShift(pitchShift);
 }
 //createWAV
 extern "C" JNIEXPORT

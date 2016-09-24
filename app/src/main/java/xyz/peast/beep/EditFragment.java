@@ -31,6 +31,8 @@ public class EditFragment extends Fragment {
     String mRecordFilePath;
     Boolean mIsPlaying = false;
 
+    int mPlaybackRate=1;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,11 +60,19 @@ public class EditFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "mIsPlaying start: " + mIsPlaying);
-                Log.d(TAG, "mIsRecording start: " + mIsPlaying);
                     mIsPlaying = true;
-                    Log.i(TAG, "mIsPlaying play: " + mIsPlaying);
                     ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
                     ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+            }
+        });
+        mChipmunkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
+                mPlaybackRate -=1;
+                // TODO determine max and min shift
+                ((RecordActivity) mActivity).setPitchShift(mPlaybackRate);
+
             }
         });
         return rootView;
