@@ -11,14 +11,11 @@
     tools:context="xyz.peast.beep.MainActivity"
     android:fitsSystemWindows="true">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-
         android:paddingBottom="8dp">
-        // Top Beeps Linear Layout
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,9 +39,6 @@
             </GridView>
         </LinearLayout>
 
-
-
-    // Boards Linear Layout
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -61,7 +55,6 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:paddingBottom="8dp"/>
-            // Insert ListView or RecyclerView for Boards
             <android.support.v7.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

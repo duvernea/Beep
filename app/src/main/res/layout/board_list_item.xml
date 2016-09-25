@@ -12,6 +12,7 @@
         android:layout_gravity="center_vertical"
         android:src="@drawable/beep_item_temp"
         android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         android:transitionName="@string/board_image_trans"
         android:contentDescription="@string/board_image_content_description"/>
     <TextView
@@ -20,5 +21,6 @@
         android:id="@+id/board_name_textview"
         android:layout_gravity="center_vertical"
         android:textSize="@dimen/board_list_item_name_text_size"
-        android:layout_marginLeft="16dp"/>
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"/>
 </LinearLayout>

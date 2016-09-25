@@ -8,7 +8,6 @@
     android:layout_height="match_parent"
     tools:context=".RecordActivity">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,6 +19,7 @@
             android:layout_height="@dimen/image_size_save_activity"
             android:src="@drawable/beep_item_temp"
             android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
             android:id="@+id/beep_imageview"
             android:scaleType="centerCrop"
             android:contentDescription="@string/beep_image_content_description"/>
@@ -34,9 +34,6 @@
                 android:text="@string/title_selection_textview"
                 android:textSize="@dimen/save_fragment_label_size"
                 android:textStyle="bold"/>
-
-            />
-
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
@@ -64,27 +61,22 @@
             android:id="@+id/no_button"
             android:text="@string/no"
             android:textColor="@color/white_ee"
-
             android:textSize="@dimen/button_text_size"
             android:background="@color/recordButtonStopRecording"
             android:visibility="visible"
             android:layout_weight="1"
-            android:textAllCaps="false"
-            />
+            android:textAllCaps="false" />
         <Button
             android:layout_width="0dp"
             android:layout_height="64dp"
             android:id="@+id/share_button"
             android:text="@string/share"
             android:textColor="@color/white_ee"
-
             android:textSize="@dimen/button_text_size"
             android:background="@color/recordButtonStartRecording"
             android:visibility="visible"
             android:layout_weight="1"
-            android:textAllCaps="false"
-            />
-
+            android:textAllCaps="false" />
     </LinearLayout>
 
     <com.google.android.gms.ads.AdView

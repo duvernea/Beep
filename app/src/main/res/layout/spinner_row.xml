@@ -5,6 +5,7 @@
     android:orientation="horizontal">
     <ImageView
         android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         android:id="@+id/create_new_board_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,5 +20,6 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         android:textSize="@dimen/spinner_item_textsize"/>
 </LinearLayout>

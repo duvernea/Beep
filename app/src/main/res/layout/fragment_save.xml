@@ -32,12 +32,12 @@
             <FrameLayout
                 android:layout_width="@dimen/image_size_save_activity"
                 android:layout_height="@dimen/image_size_save_activity"
-                android:layout_marginRight="16dp">
+                android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp">
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/beep_item_temp"
-
                     android:id="@+id/beep_image"
                     android:scaleType="centerCrop"
                     android:contentDescription="@string/beep_image_edit_content_description"/>
@@ -47,7 +47,8 @@
                     android:src="@drawable/ic_add_circle_outline_black_36dp"
                     android:layout_gravity="bottom|right"
                     android:layout_marginBottom="8dp"
-                    android:layout_marginRight="8dp"/>
+                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp"/>
             </FrameLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -59,14 +60,13 @@
                     android:text="@string/title_selection_textview"
                     android:textSize="@dimen/save_fragment_label_size"
                     android:textStyle="bold"/>
-
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
-                    android:text="Beep01"
                     android:maxLength="@integer/max_beep_size"
                     android:layout_marginRight="40dp"
+                    android:layout_marginEnd="40dp"
                     android:id="@+id/beep_name_edittext"
                     android:singleLine="true"
                     android:selectAllOnFocus="true"
@@ -77,7 +77,6 @@
                     android:text="@string/board_selection_textview"
                     android:textSize="@dimen/save_fragment_label_size"
                     android:textStyle="bold"/>
-
                 <Spinner
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -85,7 +84,6 @@
                     android:background="@drawable/spinner_bg"
                     android:drawableRight="@drawable/ic_forward_white_48dp">
                 </Spinner>
-
             </LinearLayout>
         </LinearLayout>
     <Button
@@ -107,7 +105,7 @@
             android:layout_width="0dp"
             android:layout_height="64dp"
             android:id="@+id/delete_button"
-            android:text="Delete"
+            android:text="@string/delete_button_text"
             android:background="@color/recordButtonStopRecording"
             android:textSize="@dimen/button_text_size"
             android:textColor="@color/white_ee"

@@ -27,6 +27,7 @@
     <string name="save">Save</string>
     <string name="title_selection_textview">Title Name</string>
     <string name="board_selection_textview">Board Name</string>
+    <string name="delete_button_text">Delete</string>
 
     // Share Fragment
     <string name="share">Share</string>

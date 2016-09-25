@@ -35,9 +35,7 @@
         android:layout_below="@+id/progressbar_level"
         android:id="@+id/button_frame_layout"
         android:orientation="horizontal"
-        android:gravity="center_horizontal"
-        >
-        // Initial Start Recording Button
+        android:gravity="center_horizontal">
         <Button
             android:id="@+id/record_button"
             android:layout_width="160dp"
@@ -62,7 +60,9 @@
             android:visibility="gone"
             android:layout_weight="1"
             android:drawableLeft="@drawable/ic_mic_white_48dp"
+            android:drawableStart="@drawable/ic_mic_white_48dp"
             android:paddingLeft="@dimen/button_icon_padding_to_edge"
+            android:paddingStart="@dimen/button_icon_padding_to_edge"
             android:textAllCaps="false"
             />
         <Button
@@ -71,20 +71,19 @@
             android:id="@+id/next_button"
             android:text="@string/next_recording"
             android:drawableRight="@drawable/ic_forward_white_48dp"
+            android:drawableEnd="@drawable/ic_forward_white_48dp"
             android:paddingRight="@dimen/button_icon_padding_to_edge"
+            android:paddingEnd="@dimen/button_icon_padding_to_edge"
             android:textColor="@color/white_ee"
-
             android:textSize="@dimen/button_text_size"
             android:background="@color/recordButtonStartRecording"
             android:visibility="gone"
             android:layout_weight="1"
-            android:textAllCaps="false"
-            />
+            android:textAllCaps="false" />
     </LinearLayout>
     <Button
         android:id="@+id/play_button"
         android:textSize="@dimen/button_text_size"
-
         android:layout_width="150dp"
         android:layout_height="58dp"
         android:text="PLAY"
@@ -94,7 +93,6 @@
     <Button
         android:id="@+id/createwavtest_button"
         android:textSize="@dimen/button_text_size"
-
         android:layout_width="150dp"
         android:layout_height="58dp"
         android:text="createWavTest"

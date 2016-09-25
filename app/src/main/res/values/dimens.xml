@@ -12,7 +12,7 @@
     <dimen name="beep_item_name_padding_top_bottom">2dp</dimen>
 
     // board items in list
-    <dimen name="board_list_item_name_text_size">20dp</dimen>
+    <dimen name="board_list_item_name_text_size">20sp</dimen>
 
     // floating action button and text display
     <dimen name="fab_size">56dp</dimen>
