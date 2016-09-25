@@ -8,12 +8,19 @@
 
     <string name="content_authority" translatable="false">xyz.peast.beep</string>
 
+    // Board Activity
+    <string name="board_image_content_description">Image that represents this board</string>
+    <string name="random_button_text">Random</string>
+
     // Record Activity
     <string name="start_recording">Start Recording</string>
     <string name="stop_recording">Stop Recording</string>
     <string name="next">Next</string>
     <string name="redo_recording">Redo</string>
     <string name="next_recording">Next</string>
+    <string name="beep_image_content_description">Image that represents this beep</string>
+    <string name="beep_image_edit_content_description">This is image that represents this beep. Click here to change</string>
+    <string name="ad_content_description">This is an advertisement</string>
 
     <string name="need_external_permission">Need permission to read device image files</string>
     // Save Fragment
@@ -31,6 +38,8 @@
     <string name="fab_record_beep_text">Record a Beep</string>
     <string name="fab_create_board_text">Create a Board</string>
     <string name="board_image_trans">board_image_transition</string>
+    <string name="header_image_content_description">App header image</string>
+
 
     <string name="need_audio_permission">This app requires audio recording and playback</string>
 

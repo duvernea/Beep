@@ -36,6 +36,7 @@
                 android:scaleType="centerCrop"
                 android:fitsSystemWindows="true"
                 android:src="@drawable/main_banner"
+                android:contentDescription="@string/header_image_content_description"
                 app:layout_collapseMode="parallax"
                 android:adjustViewBounds="true"
 
@@ -119,6 +120,9 @@
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_beep_board_24dp"
         android:visibility="invisible"
+        android:contentDescription="@string/fab_create_board_text"
+
+
         />
     <!--android:layout_marginRight="@dimen/fab_margin"-->
     <!--android:layout_marginBottom="96dp"-->
@@ -131,6 +135,7 @@
         android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_add_white_24dp"
+        android:contentDescription="@string/fab_record_beep_text"
         />
 
 

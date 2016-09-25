@@ -39,7 +39,8 @@
                     android:src="@drawable/beep_item_temp"
 
                     android:id="@+id/beep_image"
-                    android:scaleType="centerCrop"/>
+                    android:scaleType="centerCrop"
+                    android:contentDescription="@string/beep_image_edit_content_description"/>
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
