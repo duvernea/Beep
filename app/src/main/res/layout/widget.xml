@@ -5,5 +5,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TEST"/>
+        android:id="@+id/temp_textview"
+        android:text="Beep Widget TEST"
+        android:textSize="24dp"/>
 </LinearLayout>
