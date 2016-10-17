@@ -38,4 +38,7 @@
     <!-- Widget -->
     <dimen name="widget_default_width">110dp</dimen>
     <dimen name="widget_default_height">40dp</dimen>
+
+    <dimen name="widget_min_resize_height">40dp</dimen>
+    <dimen name="widget_min_resize_width">40dp</dimen>
 </resources>
