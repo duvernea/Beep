@@ -35,6 +35,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     public static final String FROM_SHARE_FRAGMENT = "From_ShareFragment";
     public static final String FROM_MAIN_ACTIVITY = "From_MainActivity";
     public static final String FROM_WIDGET = "From_Widget";
+    public static final String FROM_CREATE_BOARD_ACTIVITY = "From_CreateBoardActivity";
 
     // Loader ids
     private static final int BEEPS_LOADER = 1;
@@ -191,7 +192,8 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
             supportFinishAfterTransition();
         }
         else if (mLastActivity.equals(BoardActivity.FROM_SHARE_FRAGMENT)
-            || mLastActivity.equals(BoardActivity.FROM_WIDGET)) {
+                || mLastActivity.equals(BoardActivity.FROM_WIDGET)
+                || mLastActivity.equals(BoardActivity.FROM_CREATE_BOARD_ACTIVITY)) {
             Intent intent = new Intent(this,MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);

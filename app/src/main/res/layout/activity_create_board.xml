@@ -111,7 +111,7 @@
                         android:maxLength="@integer/max_beep_size"
                         android:layout_marginRight="40dp"
                         android:layout_marginEnd="40dp"
-                        android:id="@+id/beep_name_edittext"
+                        android:id="@+id/board_name_edittext"
                         android:singleLine="true"
                         android:selectAllOnFocus="true"
                         android:focusableInTouchMode="false" />

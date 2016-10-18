@@ -2,6 +2,8 @@ package xyz.peast.beep;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,11 +18,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import java.util.Calendar;
+
+import xyz.peast.beep.adapters.Board;
+import xyz.peast.beep.data.BeepDbContract;
 import xyz.peast.beep.services.BitmapImageService;
 
 /**
@@ -47,6 +54,7 @@ public class CreateBoardActivity extends AppCompatActivity {
     private ImageView mBoardImage;
     private Button mCreateButton;
     private Button mCancelButton;
+    private EditText mBoardNameEditText;
     private AdView mAdView;
 
     @Override
@@ -60,6 +68,7 @@ public class CreateBoardActivity extends AppCompatActivity {
         mBoardImage = (ImageView) findViewById(R.id.board_image);
         mCreateButton = (Button) findViewById(R.id.create_button);
         mCancelButton = (Button) findViewById(R.id.cancel_button);
+        mBoardNameEditText = (EditText) findViewById(R.id.board_name_edittext);
 
         mAdView = (AdView) findViewById(R.id.adview);
         final AdRequest adRequest = new AdRequest.Builder()
@@ -96,6 +105,21 @@ public class CreateBoardActivity extends AppCompatActivity {
                 mBoardImage.setImageBitmap(bitmap);
             }
         };
+
+        // Save Button onClick - run the Callback in RecordActivity
+        mCreateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                insertBoardContent();
+
+
+
+//                onCreateNextButton(mBoardNameEditText.getText().toString(),
+//                        mImageUri,
+//                        boardname
+//                );
+            }
+        });
 
     }
     private void requestReadExternalPermission(){
@@ -138,4 +162,25 @@ public class CreateBoardActivity extends AppCompatActivity {
                 }
         }
     }
+    // Insert beep into database
+    void insertBoardContent() {
+        String boardName = mBoardNameEditText.getText().toString();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(BeepDbContract.BoardEntry.COLUMN_NAME, boardName);
+        // TODO - need default image resources to use
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        contentValues.put(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED, currentTime);
+
+        contentValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, mImageUri.toString());
+        Uri uri = mContext.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, contentValues);
+        int insertedRow = (int) ContentUris.parseId(uri);
+        Log.d(TAG, "inserted Row into Board db: " + insertedRow);
+
+        Intent intent = new Intent(mContext, BoardActivity.class);
+        intent.putExtra(MainActivity.BOARD_KEY_CLICKED, ContentUris.parseId(uri));
+        intent.putExtra(MainActivity.BOARD_NAME_SELECTED, boardName);
+        intent.putExtra(BoardActivity.LAST_ACTIVITY_UNIQUE_ID,BoardActivity.FROM_CREATE_BOARD_ACTIVITY);
+        startActivity(intent);
+    }
+
 }
