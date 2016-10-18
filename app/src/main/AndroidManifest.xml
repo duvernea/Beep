@@ -47,9 +47,7 @@
         <service
             android:name=".services.BitmapImageService"
             android:exported="false"/>
-        <service
-            android:name=".widget.WidgetIntentService"
-            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+
 
         <activity
             android:name=".MainActivity"
@@ -89,6 +87,12 @@
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info"/>
         </receiver>
+        <service
+            android:name=".widget.WidgetIntentService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+        <service
+            android:name=".widget.DetailWidgetRemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
 
 
     </application>

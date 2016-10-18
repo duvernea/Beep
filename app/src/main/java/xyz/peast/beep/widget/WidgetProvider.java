@@ -6,9 +6,11 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import xyz.peast.beep.BoardActivity;
 import xyz.peast.beep.MainActivity;
 import xyz.peast.beep.R;
 
@@ -41,8 +43,19 @@ public class WidgetProvider extends AppWidgetProvider {
             // set up the collection and service for remote views
             setRemoteAdapter(context, views);
 
+            Intent clickIntentTemplate = new Intent(context, BoardActivity.class);
+            PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
+                    .addNextIntentWithParentStack(clickIntentTemplate)
+                    .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setPendingIntentTemplate(R.id.widget_listview, clickPendingIntentTemplate);
+
+
+
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
+
+            // TODO possibly move this elsewhere?  only should execute when data updated
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_listview);
         }
 
     }
