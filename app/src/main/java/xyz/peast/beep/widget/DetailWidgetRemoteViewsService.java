@@ -8,7 +8,9 @@ import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import xyz.peast.beep.BoardActivity;
 import xyz.peast.beep.Constants;
+import xyz.peast.beep.MainActivity;
 import xyz.peast.beep.R;
 import xyz.peast.beep.data.BeepDbContract;
 
@@ -77,6 +79,12 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
 
                 // TODO - load the imageview
 
+                  final Intent fillInIntent = new Intent();
+                  fillInIntent.putExtra(MainActivity.BOARD_KEY_CLICKED, (int)getItemId(position));
+                  fillInIntent.putExtra(MainActivity.BOARD_NAME_SELECTED, boardName);
+                  fillInIntent.putExtra(BoardActivity.LAST_ACTIVITY_UNIQUE_ID,BoardActivity.FROM_WIDGET);
+                views.setOnClickFillInIntent(R.id.board_list_item, fillInIntent);
+
                 return views;
 
             }
@@ -94,7 +102,9 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
             @Override
             public long getItemId(int position) {
                 if (data.moveToPosition(position)) {
-                    return data.getLong(Constants.BOARDS_BOARD_ID);
+                    long boardId = data.getLong(Constants.BOARDS_BOARD_ID);
+                    Log.d(TAG, "boardId: " + boardId);
+                    return boardId;
                 }
                 return position;
             }

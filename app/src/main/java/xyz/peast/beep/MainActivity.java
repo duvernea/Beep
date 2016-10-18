@@ -53,8 +53,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     // KEYs for onSaveInstanceState
     private static final String FAB_MENU_STATE = "fab_menu_state";
     // KEYs for Intent extras
-    protected static final String BOARD_KEY_CLICKED = "board_selected";
-    protected static final String BOARD_NAME_SELECTED = "board_name_selected";
+    public static final String BOARD_KEY_CLICKED = "board_selected";
+    public static final String BOARD_NAME_SELECTED = "board_name_selected";
 
     // Loader ids
     public static final int TOP_BEEPS_LOADER = 0;
