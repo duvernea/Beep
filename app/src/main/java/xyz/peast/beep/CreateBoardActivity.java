@@ -4,8 +4,13 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Messenger;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -15,6 +20,8 @@ import android.widget.ImageView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+
+import xyz.peast.beep.services.BitmapImageService;
 
 /**
  * Created by duvernea on 10/18/16.
@@ -30,6 +37,12 @@ public class CreateBoardActivity extends AppCompatActivity {
 
     private Activity mActivity;
     private Context mContext;
+
+    // Selected Image in Picker - Uri and Path
+    private Uri mImageUri = null;
+    private String mImagePath = null;
+    // Image loading
+    Handler mImageHandler;
 
     private ImageView mBoardImage;
     private Button mCreateButton;
@@ -73,6 +86,17 @@ public class CreateBoardActivity extends AppCompatActivity {
             }
         });
 
+        mImageHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                Log.d(TAG, "handler handleMessage");
+                Bundle reply = msg.getData();
+                Bitmap bitmap = reply.getParcelable(Constants.IMAGE_BITMAP_FROM_SERVICE);
+                // do whatever with the bundle here
+                mBoardImage.setImageBitmap(bitmap);
+            }
+        };
+
     }
     private void requestReadExternalPermission(){
 
@@ -89,6 +113,29 @@ public class CreateBoardActivity extends AppCompatActivity {
 
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     PERMISSIONS_REQUEST_READ_EXTERNAL);
+        }
+    }
+    // Callback after image selected in photo picker
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult run");
+        switch (requestCode) {
+            case SELECT_PHOTO:
+                if (resultCode == Activity.RESULT_OK) {
+
+                    mImageUri = data.getData();
+                    mImagePath = Utility.getRealPathFromURI(mContext, mImageUri);
+                    int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
+
+                    Intent intent = new Intent(mContext, BitmapImageService.class);
+                    intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(mImageHandler));
+                    intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_URI, mImageUri.toString());
+
+                    intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
+
+                    mContext.startService(intent);
+                }
         }
     }
 }
