@@ -1,8 +1,10 @@
 package xyz.peast.beep;
 
+import android.Manifest;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -11,6 +13,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import java.io.FileNotFoundException;
@@ -144,4 +147,10 @@ public class Utility {
             context.startService(serviceIntent);
         }
     }
+    public static boolean hasReadExternalPermission(Context context) {
+        boolean hasPermission = (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+        Log.d(TAG, "READ External permission: " + hasPermission);
+        return hasPermission;
+    }
+
 }

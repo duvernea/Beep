@@ -174,7 +174,7 @@ public class SaveFragment extends Fragment implements LocationListener {
             @Override
             public void onClick(View v) {
 
-                boolean permissionReadExternal = hasReadExternalPermission();
+                boolean permissionReadExternal = Utility.hasReadExternalPermission(mContext);
                 Log.d(TAG, "hasRecordAudioPermission: " + permissionReadExternal);
 
                 if (permissionReadExternal) {
@@ -494,11 +494,7 @@ public class SaveFragment extends Fragment implements LocationListener {
             }
         }
     }
-    private boolean hasReadExternalPermission() {
-        boolean hasPermission = (ContextCompat.checkSelfPermission(mContext, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
-        Log.d(TAG, "READ External permission: " + hasPermission);
-        return hasPermission;
-    }
+
     private void requestReadExternalPermission(){
 
         // The dangerous READ External permission is NOT already granted.
