@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_height="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            >
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/color_logo"
+                android:contentDescription="@string/app_name"
+                android:layout_gravity="center_horizontal"
+                android:adjustViewBounds="true"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                />
+
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/content_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/activity_record"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".RecordActivity">
+            <!--<android.opengl.GLSurfaceView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="200dp"-->
+            <!--android:id="@+id/glsurface_view"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:layout_margin="8dp"-->
+            <!--android:maxWidth="500dp"/>-->
+            <!--<SurfaceView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="200dp"-->
+            <!--android:id="@+id/waveform_surface"-->
+            <!--android:layout_margin="8dp"-->
+            <!--android:layout_below="@id/glsurface_view"-->
+            <!--android:visibility="invisible"-->
+            <!--/>-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/image_title_board_linearlayout"
+                android:layout_margin="8dp">
+                <FrameLayout
+                    android:layout_width="@dimen/image_size_save_activity"
+                    android:layout_height="@dimen/image_size_save_activity"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginEnd="16dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/beep_item_temp"
+                        android:id="@+id/board_image"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="@string/beep_image_edit_content_description"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_add_circle_outline_black_36dp"
+                        android:layout_gravity="bottom|right"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"/>
+                </FrameLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/board_selection_textview"
+                        android:textSize="@dimen/save_fragment_label_size"
+                        android:textStyle="bold"/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:maxLength="@integer/max_beep_size"
+                        android:layout_marginRight="40dp"
+                        android:layout_marginEnd="40dp"
+                        android:id="@+id/beep_name_edittext"
+                        android:singleLine="true"
+                        android:selectAllOnFocus="true"
+                        android:focusableInTouchMode="false" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/image_title_board_linearlayout"
+                android:id="@+id/button_frame_layout"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal">
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="64dp"
+                    android:id="@+id/delete_button"
+                    android:text="@string/delete_button_text"
+                    android:background="@color/recordButtonStopRecording"
+                    android:textSize="@dimen/button_text_size"
+                    android:textColor="@color/white_ee"
+                    android:visibility="visible"
+                    android:layout_weight="1"
+                    android:textAllCaps="false"
+                    />
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="64dp"
+                    android:id="@+id/save_button"
+                    android:text="@string/save"
+                    android:textColor="@color/white_ee"
+
+                    android:textSize="@dimen/button_text_size"
+                    android:background="@color/recordButtonStartRecording"
+                    android:visibility="visible"
+                    android:layout_weight="1"
+                    android:textAllCaps="false"
+                    />
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+
+    </android.support.v4.widget.NestedScrollView>
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+
+
+        ads:adSize="SMART_BANNER"
+        ads:adUnitId="@string/banner_ad_unit_id">
+    </com.google.android.gms.ads.AdView>
+</android.support.design.widget.CoordinatorLayout>
+
+

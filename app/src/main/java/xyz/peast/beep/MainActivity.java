@@ -19,7 +19,6 @@ import android.media.AudioRecord;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -35,7 +34,6 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -132,6 +130,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             @Override
             public void onClick(View view) {
                 setMenuState(mFabMenuState);
+            }
+        });
+        mAdditionalFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "CreateBoardActivity fab pressed");
+                Intent intent = new Intent(mContext, CreateBoardActivity.class);
+                startActivity(intent);
             }
         });
 
