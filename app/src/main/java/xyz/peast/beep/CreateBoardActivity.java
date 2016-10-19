@@ -2,10 +2,14 @@ package xyz.peast.beep;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -15,10 +19,16 @@ import android.os.Message;
 import android.os.Messenger;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.google.android.gms.ads.AdRequest;
@@ -69,6 +79,15 @@ public class CreateBoardActivity extends AppCompatActivity {
         mCreateButton = (Button) findViewById(R.id.create_button);
         mCancelButton = (Button) findViewById(R.id.cancel_button);
         mBoardNameEditText = (EditText) findViewById(R.id.board_name_edittext);
+
+        // EditText for setting Beep Name - onClick opens Dialog for entering text
+        mBoardNameEditText.setClickable(true);
+        mBoardNameEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createBoardNameDialog();
+            }
+        });
 
         mAdView = (AdView) findViewById(R.id.adview);
         final AdRequest adRequest = new AdRequest.Builder()
@@ -181,6 +200,57 @@ public class CreateBoardActivity extends AppCompatActivity {
         intent.putExtra(MainActivity.BOARD_NAME_SELECTED, boardName);
         intent.putExtra(BoardActivity.LAST_ACTIVITY_UNIQUE_ID,BoardActivity.FROM_CREATE_BOARD_ACTIVITY);
         startActivity(intent);
+    }
+
+    private void createBoardNameDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        String dialogTitle = getResources().getString(R.string.dialog_new_board_name);
+        builder.setTitle(dialogTitle);
+        final EditText input = new EditText(mContext);
+        input.setMaxLines(1);
+        input.setSingleLine();
+        input.setText(mBoardNameEditText.getText());
+        input.setSelectAllOnFocus(true);
+
+        FrameLayout container = new FrameLayout(mContext);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        Resources resources = mContext.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float marginDpLeft = 16;
+        float marginDpRight = 64;
+        float pxLeft = marginDpLeft * ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+        float pxRight = marginDpRight * ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+
+        params.leftMargin = (int) pxLeft;
+        params.rightMargin = (int) pxRight;
+        input.setLayoutParams(params);
+        container.addView(input);
+
+        int maxLength = getResources().getInteger(R.integer.max_board_size);
+        input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(container);
+
+        String positiveButtonText = getResources().getString(R.string.dialog_positive_button);
+        String negativeButtonText = getResources().getString(R.string.dialog_negative_button);
+        builder.setPositiveButton(positiveButtonText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String newBeepName = input.getText().toString();
+                mBoardNameEditText.setText(newBeepName);
+            }
+        });
+        builder.setNegativeButton(negativeButtonText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        Dialog dialog = builder.create();
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+        dialog.show();
     }
 
 }

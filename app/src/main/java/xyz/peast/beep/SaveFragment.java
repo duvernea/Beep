@@ -335,7 +335,8 @@ public class SaveFragment extends Fragment implements LocationListener {
     }
     private void createBeepNameDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setTitle("Beep name");
+        String dialogTitle = getResources().getString(R.string.dialog_new_beep_name);
+        builder.setTitle(dialogTitle);
         final EditText input = new EditText(mContext);
         input.setMaxLines(1);
         input.setSingleLine();
@@ -384,7 +385,9 @@ public class SaveFragment extends Fragment implements LocationListener {
 
         Log.d(TAG, "create new board selected on spinner");
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setTitle("Create new Board");
+
+        String dialogTitle = getResources().getString(R.string.dialog_new_beep_name);
+        builder.setTitle(dialogTitle);
         final EditText input = new EditText(mContext);
         input.setMaxLines(1);
         input.setSingleLine();
@@ -409,7 +412,10 @@ public class SaveFragment extends Fragment implements LocationListener {
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(container);
 
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        String positiveButtonText = getResources().getString(R.string.dialog_positive_button);
+        String negativeButtonText = getResources().getString(R.string.dialog_negative_button);
+
+        builder.setPositiveButton(positiveButtonText, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String newBoardName = input.getText().toString();
@@ -430,7 +436,7 @@ public class SaveFragment extends Fragment implements LocationListener {
                 mNumberOfBoards += 1;
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(negativeButtonText, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();

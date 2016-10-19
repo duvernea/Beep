@@ -12,6 +12,10 @@
     <string name="board_image_content_description">Image that represents this board</string>
     <string name="random_button_text">Random</string>
 
+    // Create Board Activity
+    <string name="dialog_new_board_name">Board name</string>
+
+
     // Record Activity
     <string name="start_recording">Start Recording</string>
     <string name="stop_recording">Stop Recording</string>
@@ -28,6 +32,7 @@
     <string name="title_selection_textview">Title Name</string>
     <string name="board_selection_textview">Board Name</string>
     <string name="delete_button_text">Delete</string>
+    <string name="dialog_new_beep_name">Beep name</string>
 
     // Share Fragment
     <string name="share">Share</string>
@@ -49,6 +54,10 @@
 
     // Widget
     <string name="title_widget">Beep Widget Title</string>
+
+    // Dialog boxes
+    <string name="dialog_positive_button">OK</string>
+    <string name="dialog_negative_button">Cancel</string>
 
 
 </resources>
