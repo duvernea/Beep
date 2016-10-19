@@ -195,6 +195,7 @@ public class RecordActivity extends AppCompatActivity
     private native void startupAudio();
     public native void createWav();
     public native void setPitchShift(int pitchShift);
+    public native void setReverse(boolean reverse);
 
     static {
         System.loadLibrary(Constants.NATIVE_LIBRARY_NAME);

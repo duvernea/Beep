@@ -28,6 +28,7 @@ public:
 	void onPlayPause(const char *path, bool play, int size);
 	void onPlayerPause();
 	void setPitchShift(int pitchShift);
+	void setReverse(bool reverse);
 	void onFxSelect(int value);
 	void onFxOff();
 	void onFxValue(int value);

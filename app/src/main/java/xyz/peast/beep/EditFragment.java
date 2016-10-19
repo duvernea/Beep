@@ -32,6 +32,7 @@ public class EditFragment extends Fragment {
     Boolean mIsPlaying = false;
 
     int mPlaybackRate=1;
+    boolean mReverse=false;
 
 
     @Override
@@ -70,8 +71,12 @@ public class EditFragment extends Fragment {
             public void onClick(View v) {
                 ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
                 mPlaybackRate -=1;
+                mReverse = !mReverse;
                 // TODO determine max and min shift
                 ((RecordActivity) mActivity).setPitchShift(mPlaybackRate);
+                ((RecordActivity) mActivity).setReverse(mReverse);
+
+
 
             }
         });

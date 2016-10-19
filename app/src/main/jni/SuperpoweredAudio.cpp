@@ -129,6 +129,9 @@ void SuperpoweredAudio::onPlayerPause() {
 void SuperpoweredAudio::setPitchShift(int pitchShift) {
     playerA->setPitchShift (pitchShift);
 }
+void SuperpoweredAudio::setReverse(bool reverse) {
+    playerA->setReverse(reverse, 0);
+}
 
 void SuperpoweredAudio::onPlayPause(const char *path, bool play, int size) {
     //__android_log_write(ANDROID_LOG_ERROR, "SuperpoweredPATH", path);
@@ -487,6 +490,11 @@ void Java_xyz_peast_beep_RecordActivity_onFileChange(JNIEnv * __unused javaEnvir
 extern "C" JNIEXPORT
 void Java_xyz_peast_beep_RecordActivity_setPitchShift(JNIEnv * __unused javaEnvironment, jobject __unused obj, jint pitchShift) {
     myAudio->setPitchShift(pitchShift);
+}
+// setReverse
+extern "C" JNIEXPORT
+void Java_xyz_peast_beep_RecordActivity_setReverse(JNIEnv * __unused javaEnvironment, jobject __unused obj, jboolean reverse) {
+    myAudio->setReverse(reverse);
 }
 //createWAV
 extern "C" JNIEXPORT
