@@ -139,6 +139,12 @@ public class CreateBoardActivity extends AppCompatActivity {
 //                );
             }
         });
+        mCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
     }
     private void requestReadExternalPermission(){

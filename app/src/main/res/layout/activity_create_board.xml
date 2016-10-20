@@ -130,7 +130,7 @@
                     android:layout_width="0dp"
                     android:layout_height="64dp"
                     android:id="@+id/cancel_button"
-                    android:text="@string/delete_button_text"
+                    android:text="@string/cancel_button_text"
                     android:background="@color/recordButtonStopRecording"
                     android:textSize="@dimen/button_text_size"
                     android:textColor="@color/white_ee"

@@ -14,6 +14,7 @@
 
     // Create Board Activity
     <string name="dialog_new_board_name">Board name</string>
+    <string name="cancel_button_text">Cancel</string>
 
 
     // Record Activity
