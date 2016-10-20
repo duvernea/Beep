@@ -196,7 +196,10 @@ public class CreateBoardActivity extends AppCompatActivity {
         long currentTime = Calendar.getInstance().getTimeInMillis();
         contentValues.put(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED, currentTime);
 
-        contentValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, mImageUri.toString());
+        // If no image selected, set to null (default image)
+        if (mImageUri != null) {
+            contentValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, mImageUri.toString());
+        }
         Uri uri = mContext.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, contentValues);
         int insertedRow = (int) ContentUris.parseId(uri);
         Log.d(TAG, "inserted Row into Board db: " + insertedRow);
