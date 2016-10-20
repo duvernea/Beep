@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -45,6 +46,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     private RecyclerView mBeepsRecyclerView;
     private BeepRecyclerViewAdapter mBeepsRecyclerViewAdapter = null;
     private TextView mBoardNameTextView;
+    private FloatingActionButton mFab;
 
     private int mBoardKey;
 
@@ -73,6 +75,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         // Assign views
         mBoardNameTextView = (TextView) findViewById(R.id.board_name_textview);
         mRandomButton = (Button) findViewById(R.id.random_beep_button);
+        mFab = (FloatingActionButton) findViewById(R.id.fab);
 
 //        ObjectAnimator objAnim = (ObjectAnimator) AnimatorInflater.loadAnimator(mContext, R.animator.button_anim);
 //        objAnim.setTarget(mRandomButton);
@@ -162,6 +165,12 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                 mIsPlaying = !mIsPlaying;
                 Log.d(TAG, "mIsPlaying java: " + mIsPlaying);
                 onPlayPause(path, mIsPlaying, 0);
+            }
+        });
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "record fab pressed");
             }
         });
     }
