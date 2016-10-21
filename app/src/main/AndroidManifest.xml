@@ -39,7 +39,7 @@
             android:name=".data.BeepProvider"
             android:authorities="@string/content_authority" />
         <service
-        android:name=".services.BeepService"
+        android:name=".services.CompressImageUpdateDbService"
         android:exported="false"/>
         <service
             android:name=".services.EncodeAudioService"

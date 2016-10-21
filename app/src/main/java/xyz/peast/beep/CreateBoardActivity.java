@@ -197,15 +197,17 @@ public class CreateBoardActivity extends AppCompatActivity {
         contentValues.put(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED, currentTime);
 
         // If no image selected, set to null (default image)
-        if (mImageUri != null) {
-            contentValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, mImageUri.toString());
-        }
-        Uri uri = mContext.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, contentValues);
-        int insertedRow = (int) ContentUris.parseId(uri);
-        Log.d(TAG, "inserted Row into Board db: " + insertedRow);
+//        if (mImageUri != null) {
+//            contentValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, mImageUri.toString());
+//
+//        }
+        //Uri uri = mContext.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, contentValues);
+        //int insertedRow = (int) ContentUris.parseId(uri);
+        //Log.d(TAG, "inserted Row into Board db: " + insertedRow);
+        int insertedRow = Utility.insertNewBoard(mContext, boardName, mImageUri);
 
         Intent intent = new Intent(mContext, BoardActivity.class);
-        intent.putExtra(MainActivity.BOARD_KEY_CLICKED, ContentUris.parseId(uri));
+        intent.putExtra(MainActivity.BOARD_KEY_CLICKED, insertedRow);
         intent.putExtra(MainActivity.BOARD_NAME_SELECTED, boardName);
         intent.putExtra(BoardActivity.LAST_ACTIVITY_UNIQUE_ID,BoardActivity.FROM_CREATE_BOARD_ACTIVITY);
         startActivity(intent);

@@ -20,7 +20,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import xyz.peast.beep.adapters.BeepRecyclerViewAdapter;
 import xyz.peast.beep.data.BeepDbContract;
@@ -47,6 +50,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     private BeepRecyclerViewAdapter mBeepsRecyclerViewAdapter = null;
     private TextView mBoardNameTextView;
     private FloatingActionButton mFab;
+    private ImageView mBoardImage;
 
     private int mBoardKey;
 
@@ -66,11 +70,37 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mBoardImage = (ImageView) findViewById(R.id.board_imageview);
+
         Intent intent = getIntent();
         mLastActivity = intent.getExtras().getString(LAST_ACTIVITY_UNIQUE_ID);
         String boardName = intent.getStringExtra(MainActivity.BOARD_NAME_SELECTED);
         mBoardKey = intent.getIntExtra(MainActivity.BOARD_KEY_CLICKED, -1);
         Log.d(TAG, "mBoardKey" + mBoardKey);
+
+        String whereClause = BeepDbContract.BoardEntry._ID+"=?";
+        String [] whereArgs = {mBoardKey+""};
+
+        Cursor cursor = getContentResolver().query(BeepDbContract.BoardEntry.CONTENT_URI,
+                Constants.BOARD_COLUMNS,
+                whereClause,
+                whereArgs,
+                null);
+        Log.d(TAG, "Cursor count: " + cursor.getCount());
+        cursor.moveToFirst();
+
+        String imageFileName = cursor.getString(Constants.BOARDS_COL_IMAGE);
+        Log.d(TAG, "imageUri: " + imageFileName);
+
+        if (imageFileName == null) {
+            // Do nothing, use the default imageview
+        }
+        else {
+            String imageDir = mContext.getFilesDir().getAbsolutePath();
+            String imagePath = "file:" + imageDir + "/" + imageFileName;
+            Log.d(TAG, "Board image file " + imagePath);
+            Glide.with(mContext).load(imagePath).into(mBoardImage);
+        }
 
         // Assign views
         mBoardNameTextView = (TextView) findViewById(R.id.board_name_textview);

@@ -1,6 +1,7 @@
 package xyz.peast.beep;
 
 import android.Manifest;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -16,14 +17,10 @@ import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Calendar;
 
-import xyz.peast.beep.adapters.Board;
 import xyz.peast.beep.data.BeepDbContract;
-import xyz.peast.beep.services.BeepService;
+import xyz.peast.beep.services.CompressImageUpdateDbService;
 
 /**
  * Created by duverneay on 7/24/16.
@@ -33,7 +30,7 @@ public class Utility {
 
     // KEYs for Service Intent extras
     public static final String ORIGINAL_IMAGE_FILE_URI = "ORIGINAL_IMAGE_FILE_URI";
-    public static final String INSERTED_BEEP_URI = "beep_uri";
+    public static final String INSERTED_RECORD_URI = "beep_uri";
 
     public static float dpToPx(float dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
@@ -139,13 +136,40 @@ public class Utility {
 
         // Use service to save, compress, crop, etc the image
         if (originalImageUri != null) {
-            Intent serviceIntent = new Intent(context, BeepService.class);
+            Intent serviceIntent = new Intent(context, CompressImageUpdateDbService.class);
             Bundle bundle = new Bundle();
             bundle.putString(ORIGINAL_IMAGE_FILE_URI, originalImageUri.toString());
-            bundle.putString(INSERTED_BEEP_URI, uri.toString());
+            bundle.putString(INSERTED_RECORD_URI, uri.toString());
+            serviceIntent.putExtra(Constants.DB_TABLE_ENUM, Constants.DbTable.BEEP);
+
             serviceIntent.putExtras(bundle);
             context.startService(serviceIntent);
         }
+    }
+    public static int insertNewBoard(Context context, String boardName, Uri originalImageUri) {
+
+        int rowInsertKey;
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(BeepDbContract.BoardEntry.COLUMN_NAME, boardName);
+        contentValues.put(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED, Calendar.getInstance().getTimeInMillis());
+        Uri uri = context.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, contentValues);
+        Log.d(TAG, "Utility: Insert board into ContentProvider: " + uri.toString());
+        rowInsertKey = (int) ContentUris.parseId(uri);
+        // Use service to save, compress, crop, etc the image
+        if (originalImageUri != null) {
+            Intent serviceIntent = new Intent(context, CompressImageUpdateDbService.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(ORIGINAL_IMAGE_FILE_URI, originalImageUri.toString());
+            bundle.putString(INSERTED_RECORD_URI, uri.toString());
+            serviceIntent.putExtra(Constants.DB_TABLE_ENUM, Constants.DbTable.BOARD);
+
+            serviceIntent.putExtras(bundle);
+            context.startService(serviceIntent);
+        }
+        return rowInsertKey;
+
+
     }
     public static boolean hasReadExternalPermission(Context context) {
         boolean hasPermission = (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);

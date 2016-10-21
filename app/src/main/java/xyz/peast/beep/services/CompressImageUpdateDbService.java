@@ -15,29 +15,33 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
-import xyz.peast.beep.SaveFragment;
+import xyz.peast.beep.Constants;
 import xyz.peast.beep.Utility;
 import xyz.peast.beep.data.BeepDbContract;
 
 /**
  * Created by duverneay on 9/6/16.
  */
-public class BeepService extends IntentService {
-    private static String TAG = BeepService.class.getSimpleName();
+public class CompressImageUpdateDbService extends IntentService {
+    private static String TAG = CompressImageUpdateDbService.class.getSimpleName();
 
-    public BeepService() {
-        super("BeepService");
+
+    public CompressImageUpdateDbService() {
+        super("CompressImageUpdateDbService");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
         Log.d(TAG, "onHandleIntent");
         Bundle bundle = intent.getExtras();
+        Constants.DbTable dbTableType = (Constants.DbTable) intent.getSerializableExtra(Constants.DB_TABLE_ENUM);
+        Log.d(TAG, dbTableType.toString());
         String imageUriString = bundle.getString(Utility.ORIGINAL_IMAGE_FILE_URI);
-        String beepUriString = bundle.getString(Utility.INSERTED_BEEP_URI);
-        Uri beepUri = Uri.parse(beepUriString);
+        String rowString = bundle.getString(Utility.INSERTED_RECORD_URI);
+        Log.d(TAG, "Insert Row Uri: " + rowString);
+        Uri rowUri = Uri.parse(rowString);
         Uri imageUri = Uri.parse(imageUriString);
-        Log.d(TAG, "beepUri: " + beepUri);
+        Log.d(TAG, "beep or board record Uri: " + rowUri);
 
         // New compressed file name and path
         String imageDir = getApplicationContext().getFilesDir().getAbsolutePath();
@@ -95,15 +99,36 @@ public class BeepService extends IntentService {
         Log.d(TAG, "file exists? " + compressedImageFile.exists());
         long lengthCompressedFile = compressedImageFile.length();
         Log.d(TAG, "compressed bitmap length in bytes: " + lengthCompressedFile);
+
+
+        // Update database to reflect the new file name
         ContentValues contentValues = new ContentValues();
-        contentValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, compressedImageFilename);
-        String whereClause = BeepDbContract.BeepEntry._ID+"=?";
-        int key = (int) ContentUris.parseId(beepUri);
-        String [] whereArgs = {key+""};
+        // If Image belongs to a "beep"
+        if (dbTableType.equals(Constants.DbTable.BEEP)) {
+            contentValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, compressedImageFilename);
+            String whereClause = BeepDbContract.BeepEntry._ID + "=?";
+            int key = (int) ContentUris.parseId(rowUri);
+            String[] whereArgs = {key + ""};
 
-        int numRows = this.getContentResolver().
-                update(BeepDbContract.BeepEntry.CONTENT_URI, contentValues, whereClause, whereArgs);
+            int numRows = this.getContentResolver().
+                    update(BeepDbContract.BeepEntry.CONTENT_URI, contentValues, whereClause, whereArgs);
 
-        Log.d(TAG, "num rows updated "  + numRows);
+            Log.d(TAG, "num rows updated " + numRows);
+        }
+        // If Image belongs to a "board"
+
+        if (dbTableType.equals(Constants.DbTable.BOARD)) {
+            contentValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, compressedImageFilename);
+            Log.d(TAG, "compressed image file: " + compressedImageFilename);
+            String whereClause = BeepDbContract.BoardEntry._ID + "=?";
+            int key = (int) ContentUris.parseId(rowUri);
+            String[] whereArgs = {key + ""};
+
+            int numRows = this.getContentResolver().
+                    update(BeepDbContract.BoardEntry.CONTENT_URI, contentValues, whereClause, whereArgs);
+
+            Log.d(TAG, "num rows updated " + numRows);
+
+        }
     }
 }

@@ -4,11 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
@@ -23,20 +20,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
-import com.naman14.androidlame.AndroidLame;
-import com.naman14.androidlame.LameBuilder;
-import com.naman14.androidlame.WaveReader;
-
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.nio.channels.FileChannel;
 
-import xyz.peast.beep.services.BeepService;
 import xyz.peast.beep.services.BitmapImageService;
 import xyz.peast.beep.services.EncodeAudioService;
 

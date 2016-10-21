@@ -7,6 +7,12 @@ import xyz.peast.beep.data.BeepDbContract;
  */
 public class Constants {
 
+    public enum DbTable {
+        BEEP, BOARD
+    }
+    // key for the two table types - used a Extras on Intent
+    public static String DB_TABLE_ENUM = "db_table_enum";
+
     // Bundle extras
     public static final String RECORD_FILE_NAME = "record_file_name";
     public static final String BEEP_NAME = "beep_name";
