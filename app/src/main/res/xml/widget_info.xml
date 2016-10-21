@@ -6,4 +6,5 @@
     android:minResizeHeight="@dimen/widget_min_resize_height"
     android:minResizeWidth="@dimen/widget_min_resize_width"
     android:resizeMode="horizontal|vertical"
-    android:updatePeriodMillis="0"/>
+    android:updatePeriodMillis="0"
+    android:previewImage="@drawable/beep_widget_title_ori_portrait"/>

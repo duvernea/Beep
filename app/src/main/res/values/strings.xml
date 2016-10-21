@@ -54,7 +54,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     // Widget
-    <string name="title_widget">Beep Widget Title</string>
+    <string name="title_widget">Beep</string>
 
     // Dialog boxes
     <string name="dialog_positive_button">OK</string>
