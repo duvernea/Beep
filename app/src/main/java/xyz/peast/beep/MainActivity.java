@@ -126,20 +126,24 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 mFabMenuState = false;
             }
         });
-        mMainFab.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener mMainFabListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 setMenuState(mFabMenuState);
             }
-        });
-        mAdditionalFab.setOnClickListener(new View.OnClickListener() {
+        };
+        mMainFab.setOnClickListener(mMainFabListener);
+        mMainFabTextView.setOnClickListener(mMainFabListener);
+        View.OnClickListener mAdditionalFabListener = new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 Log.d(TAG, "CreateBoardActivity fab pressed");
                 Intent intent = new Intent(mContext, CreateBoardActivity.class);
                 startActivity(intent);
             }
-        });
+        };
+        mAdditionalFab.setOnClickListener(mAdditionalFabListener);
+        mAdditionalFabTextView.setOnClickListener(mAdditionalFabListener);
 
         // Initialize loaders for top beeps and boards
         getLoaderManager().initLoader(TOP_BEEPS_LOADER, null, this);
