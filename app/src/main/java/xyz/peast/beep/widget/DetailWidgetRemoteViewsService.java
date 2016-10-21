@@ -70,7 +70,7 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                     return null;
                 }
                 RemoteViews views = new RemoteViews(getPackageName(),
-                        R.layout.board_list_item);
+                        R.layout.board_list_item_widget);
                 data.moveToPosition(position);
                 String boardName = data.getString(Constants.BOARDS_COL_NAME);
                 Log.d(TAG, "boardName widget: " + boardName);

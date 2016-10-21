@@ -40,7 +40,7 @@
             android:layout_height="match_parent"
             android:divider="@null"
             android:dividerHeight="0dp"
-            tools:listitem="@layout/board_list_item"/>
+            tools:listitem="@layout/board_list_item_widget"/>
     </FrameLayout>
 
 </LinearLayout>
