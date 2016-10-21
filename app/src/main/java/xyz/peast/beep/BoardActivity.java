@@ -170,8 +170,8 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "record fab pressed");
-            }
+                Intent intent = new Intent(mContext, RecordActivity.class);
+                startActivity(intent);            }
         });
     }
     @Override
