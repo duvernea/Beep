@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import xyz.peast.beep.Constants;
 import xyz.peast.beep.MainActivity;
 import xyz.peast.beep.R;
@@ -56,7 +58,15 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
         String boardImage = mCursor.getString(Constants.BOARDS_COL_IMAGE);
         holder.mBoardNameTextView.setText(boardName);
 
-        // TODO - set image
+        if (boardImage == null || boardImage.equals("")) {
+            // Do nothing, use the default imageview
+        }
+        else {
+            String imageDir = mContext.getFilesDir().getAbsolutePath();
+            String imagePath = "file:" + imageDir + "/" + boardImage;
+            Log.d(TAG, "Board image file " + imagePath);
+            Glide.with(mContext).load(imagePath).into(holder.mBoardImageView);
+        }
 
     }
 

@@ -284,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             uri = BeepDbContract.BeepEntry.CONTENT_URI;
             loader = new CursorLoader(mContext,
                     uri,
-                    null,
+                    Constants.BEEP_COLUMNS,
                     null,
                     null,
                     BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT + " DESC LIMIT 3"
@@ -294,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             uri = BeepDbContract.BoardEntry.CONTENT_URI;
             loader = new CursorLoader(mContext,
                     uri,
-                    null,
+                    Constants.BOARD_COLUMNS,
                     null,
                     null,
                     null

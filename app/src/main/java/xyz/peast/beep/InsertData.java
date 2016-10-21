@@ -33,7 +33,6 @@ public class InsertData {
 
         ContentValues boardValues = new ContentValues();
         boardValues.put(BeepDbContract.BoardEntry.COLUMN_NAME, "Sweetie <3");
-        boardValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, "5f9247bf-792b-44eb-9715-cc96da9ce1c4");
         boardValues.put(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED, 1467857522);
 
         Uri sweetieBoardUri = context.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, boardValues);
@@ -42,7 +41,6 @@ public class InsertData {
         Log.d(TAG, "Sweetie Uri: " + sweetieBoardUri);
         boardValues = new ContentValues();
         boardValues.put(BeepDbContract.BoardEntry.COLUMN_NAME, "Mom and Dad");
-        boardValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, "1111111-792b-44eb-9715-cc96da9ce1c4");
         boardValues.put(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED, 1467857522);
 
         Uri momDadboardUri = context.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, boardValues);
@@ -51,7 +49,6 @@ public class InsertData {
         Log.d(TAG, "Mom and Dad Uri: " + momDadboardUri);
         boardValues = new ContentValues();
         boardValues.put(BeepDbContract.BoardEntry.COLUMN_NAME, "Work Crew");
-        boardValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, "2222222-792b-44eb-9715-cc96da9ce1c4");
         boardValues.put(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED, 1467857522);
 
         int[] rowIds = new int[6];
