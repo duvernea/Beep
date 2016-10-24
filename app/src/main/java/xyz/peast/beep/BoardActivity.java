@@ -1,17 +1,17 @@
 package xyz.peast.beep;
 
-import android.animation.AnimatorInflater;
-import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.app.LoaderManager;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -27,6 +27,7 @@ import com.bumptech.glide.Glide;
 
 import xyz.peast.beep.adapters.BeepRecyclerViewAdapter;
 import xyz.peast.beep.data.BeepDbContract;
+import xyz.peast.beep.services.CompressImageUpdateDbService;
 
 public class BoardActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -54,6 +55,9 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
 
     private int mBoardKey;
 
+    // Broadcast receiver for Board image save complete
+    BroadcastReceiver mImageSavedBroadcastReceiver;
+
     // Audio
     private boolean mIsPlaying = false;
     private boolean mAudioState = false;
@@ -65,12 +69,34 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
 
+
+
         mContext = this;
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+
         mBoardImage = (ImageView) findViewById(R.id.board_imageview);
+        mImageSavedBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d(TAG, "mImageSavedBroadcastReceiver receiving..");
+                String imageFileName = intent.getStringExtra(CompressImageUpdateDbService.IMAGE_SAVED_MESSAGE);
+                Log.d(TAG, "imageFileName received: " + imageFileName);
+
+                if (imageFileName == null) {
+                    // Do nothing, use the default imageview
+                }
+                else {
+                    String imageDir = mContext.getFilesDir().getAbsolutePath();
+                    String imagePath = "file:" + imageDir + "/" + imageFileName;
+                    Log.d(TAG, "Board image file " + imagePath);
+                    Glide.with(mContext).load(imagePath).into(mBoardImage);
+                }
+            }
+        };
 
         Intent intent = getIntent();
         mLastActivity = intent.getExtras().getString(LAST_ACTIVITY_UNIQUE_ID);
@@ -204,6 +230,20 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                 startActivity(intent);            }
         });
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(this).registerReceiver((mImageSavedBroadcastReceiver),
+        new IntentFilter(CompressImageUpdateDbService.IMAGE_SAVED_MESSAGE));
+    }
+
+    @Override
+    protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mImageSavedBroadcastReceiver);
+        super.onStop();
+    }
+
     @Override
     protected void onPause() {
         super.onPause();

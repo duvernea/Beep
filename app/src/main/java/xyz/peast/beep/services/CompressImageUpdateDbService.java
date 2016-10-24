@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.io.File;
@@ -25,6 +26,9 @@ import xyz.peast.beep.data.BeepDbContract;
 public class CompressImageUpdateDbService extends IntentService {
     private static String TAG = CompressImageUpdateDbService.class.getSimpleName();
 
+    static final public String IMAGE_SAVED_MESSAGE = "xyz.peast.beep.services.IMAGED_SAVED_MSG";
+
+
 
     public CompressImageUpdateDbService() {
         super("CompressImageUpdateDbService");
@@ -32,6 +36,8 @@ public class CompressImageUpdateDbService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+
+        LocalBroadcastManager broadcaster = LocalBroadcastManager.getInstance(this);
         Log.d(TAG, "onHandleIntent");
         Bundle bundle = intent.getExtras();
         Constants.DbTable dbTableType = (Constants.DbTable) intent.getSerializableExtra(Constants.DB_TABLE_ENUM);
@@ -126,9 +132,13 @@ public class CompressImageUpdateDbService extends IntentService {
 
             int numRows = this.getContentResolver().
                     update(BeepDbContract.BoardEntry.CONTENT_URI, contentValues, whereClause, whereArgs);
-
+            if (numRows > 0) {
+                //update UI
+                Intent imageSavedIntent = new Intent(IMAGE_SAVED_MESSAGE);
+                imageSavedIntent.putExtra(IMAGE_SAVED_MESSAGE, compressedImageFilename);
+                broadcaster.sendBroadcast(imageSavedIntent);
+            }
             Log.d(TAG, "num rows updated " + numRows);
-
         }
     }
 }
