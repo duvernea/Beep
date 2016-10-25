@@ -37,6 +37,14 @@
                 android:numColumns="3"
                 android:padding="0dp">
             </GridView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/empty_grid_view"
+                android:textColor="@color/white_ee"
+                android:text="@string/no_beeps_recorded_msg"
+                android:visibility="gone"
+                android:layout_marginLeft="8dp"/>
         </LinearLayout>
 
         <LinearLayout

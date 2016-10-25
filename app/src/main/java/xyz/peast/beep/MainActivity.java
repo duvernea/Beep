@@ -103,10 +103,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Bundle extras = intent.getExtras();
 
         // if first time run, populate database with mock data
-        if (mSharedPrefs.getBoolean(Constants.SHARED_PREF_FIRST_RUN, true)) {
-            InsertData.insertData(this);
-            InsertData.insertSoundFile(this);
-        }
+//        if (mSharedPrefs.getBoolean(Constants.SHARED_PREF_FIRST_RUN, true)) {
+//            InsertData.insertData(this);
+//            InsertData.insertSoundFile(this);
+//        }
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -153,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mBeepAdapter = new BeepAdapter(mContext, null, 0);
         mTopBeepsGridView = (GridView) findViewById(R.id.top_beeps_gridview);
         if (mTopBeepsGridView != null) {
+            mTopBeepsGridView.setEmptyView(findViewById(R.id.empty_grid_view));
             mTopBeepsGridView.setAdapter(mBeepAdapter);
             mTopBeepsGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override

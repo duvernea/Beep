@@ -47,6 +47,7 @@
     <string name="fab_create_board_text">Create a Board</string>
     <string name="board_image_trans">board_image_transition</string>
     <string name="header_image_content_description">App header image</string>
+    <string name="no_beeps_recorded_msg">No beeps recorded yet...</string>
 
 
     <string name="need_audio_permission">This app requires audio recording and playback</string>
