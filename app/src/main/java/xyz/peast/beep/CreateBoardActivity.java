@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -39,6 +41,7 @@ import java.util.Calendar;
 import xyz.peast.beep.adapters.Board;
 import xyz.peast.beep.data.BeepDbContract;
 import xyz.peast.beep.services.BitmapImageService;
+import xyz.peast.beep.widget.WidgetProvider;
 
 /**
  * Created by duvernea on 10/18/16.
@@ -205,6 +208,9 @@ public class CreateBoardActivity extends AppCompatActivity {
         //int insertedRow = (int) ContentUris.parseId(uri);
         //Log.d(TAG, "inserted Row into Board db: " + insertedRow);
         int insertedRow = Utility.insertNewBoard(mContext, boardName, mImageUri);
+
+        Utility.updateWidgets(mActivity);
+
 
         Intent intent = new Intent(mContext, BoardActivity.class);
         intent.putExtra(MainActivity.BOARD_KEY_CLICKED, insertedRow);

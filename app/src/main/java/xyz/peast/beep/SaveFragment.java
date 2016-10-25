@@ -429,6 +429,8 @@ public class SaveFragment extends Fragment implements LocationListener {
                 mSpinnerItems.add(mSpinnerItems.size() - 1, newBoardz);
                 mBoardSpinnerAdapter.notifyDataSetChanged();
                 mNumberOfBoards += 1;
+                Utility.updateWidgets(mActivity);
+
             }
         });
         builder.setNegativeButton(negativeButtonText, new DialogInterface.OnClickListener() {

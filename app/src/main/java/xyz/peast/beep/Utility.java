@@ -1,6 +1,9 @@
 package xyz.peast.beep;
 
 import android.Manifest;
+import android.app.Activity;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -21,6 +24,7 @@ import java.util.Calendar;
 
 import xyz.peast.beep.data.BeepDbContract;
 import xyz.peast.beep.services.CompressImageUpdateDbService;
+import xyz.peast.beep.widget.WidgetProvider;
 
 /**
  * Created by duverneay on 7/24/16.
@@ -43,29 +47,29 @@ public class Utility {
     public static Bitmap centerCropBitmap(Context context, Bitmap selectedImage) {
         Bitmap centerCropBmp;
 
-            //final InputStream imageStream = context.getContentResolver().openInputStream(imageUri);
-            //final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+        //final InputStream imageStream = context.getContentResolver().openInputStream(imageUri);
+        //final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
 
-            // Center crop
-            if (selectedImage.getWidth() >= selectedImage.getHeight()) {
+        // Center crop
+        if (selectedImage.getWidth() >= selectedImage.getHeight()) {
 
-                centerCropBmp = Bitmap.createBitmap(
-                        selectedImage,
-                        selectedImage.getWidth() / 2 - selectedImage.getHeight() / 2,
-                        0,
-                        selectedImage.getHeight(),
-                        selectedImage.getHeight()
-                );
+            centerCropBmp = Bitmap.createBitmap(
+                    selectedImage,
+                    selectedImage.getWidth() / 2 - selectedImage.getHeight() / 2,
+                    0,
+                    selectedImage.getHeight(),
+                    selectedImage.getHeight()
+            );
 
-            } else {
-                centerCropBmp = Bitmap.createBitmap(
-                        selectedImage,
-                        0,
-                        selectedImage.getHeight() / 2 - selectedImage.getWidth() / 2,
-                        selectedImage.getWidth(),
-                        selectedImage.getWidth()
-                );
-            }
+        } else {
+            centerCropBmp = Bitmap.createBitmap(
+                    selectedImage,
+                    0,
+                    selectedImage.getHeight() / 2 - selectedImage.getWidth() / 2,
+                    selectedImage.getWidth(),
+                    selectedImage.getWidth()
+            );
+        }
 
         return centerCropBmp;
     }
@@ -84,6 +88,7 @@ public class Utility {
             }
         }
     }
+
     public static Bitmap subsampleBitmap(Context context, String filepath, int reqwidth, int reqheight) {
         // Decode image size
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -117,6 +122,7 @@ public class Utility {
         options.inSampleSize = inSampleSize;
         return BitmapFactory.decodeFile(filepath, options);
     }
+
     public static void insertNewBeep(Context context, String beepName, String audioFileName, Location location,
                                      int boardKey, Uri originalImageUri) {
         ContentValues contentValues = new ContentValues();
@@ -146,6 +152,7 @@ public class Utility {
             context.startService(serviceIntent);
         }
     }
+
     public static int insertNewBoard(Context context, String boardName, Uri originalImageUri) {
 
         int rowInsertKey;
@@ -171,10 +178,23 @@ public class Utility {
 
 
     }
+
     public static boolean hasReadExternalPermission(Context context) {
         boolean hasPermission = (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
         Log.d(TAG, "READ External permission: " + hasPermission);
         return hasPermission;
     }
+
+    // update widgets
+    public static void updateWidgets(Activity activity) {
+
+        Intent updateWidgetIntent = new Intent(activity, WidgetProvider.class);
+        updateWidgetIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        int[] ids = AppWidgetManager.getInstance(activity.getApplication()).
+                getAppWidgetIds(new ComponentName(activity.getApplication(), WidgetProvider.class));
+        updateWidgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
+
+        activity.sendBroadcast(updateWidgetIntent);
+}
 
 }

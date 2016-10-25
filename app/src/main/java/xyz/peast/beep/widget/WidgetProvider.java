@@ -42,6 +42,8 @@ public class WidgetProvider extends AppWidgetProvider {
 
             // set up the collection and service for remote views
             setRemoteAdapter(context, views);
+            views.setEmptyView(R.id.widget_listview, R.id.empty_board_listview);
+
 
             Intent clickIntentTemplate = new Intent(context, BoardActivity.class);
             PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
