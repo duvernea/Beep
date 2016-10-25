@@ -2,11 +2,17 @@ package xyz.peast.beep.widget;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.os.Binder;
 import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
+
+import java.util.concurrent.ExecutionException;
 
 import xyz.peast.beep.BoardActivity;
 import xyz.peast.beep.Constants;
@@ -41,7 +47,7 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                 }
                 final long identityToken = Binder.clearCallingIdentity();
                 data = getContentResolver().query(BeepDbContract.BoardEntry.CONTENT_URI,
-                        null, null, null, null);
+                        Constants.BOARD_COLUMNS, null, null, null);
             }
 
 
@@ -73,11 +79,27 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                         R.layout.board_list_item_widget);
                 data.moveToPosition(position);
                 String boardName = data.getString(Constants.BOARDS_COL_NAME);
+                String imageFileName = data.getString(Constants.BOARDS_COL_IMAGE);
                 Log.d(TAG, "boardName widget: " + boardName);
 
                 views.setTextViewText(R.id.board_name_textview, boardName);
 
-                // TODO - load the imageview
+                Bitmap boardImageBitmap = null;
+                String imageDir = getFilesDir().getAbsolutePath();
+                String imagePath = "file:" + imageDir + "/" + imageFileName;
+                Log.d(TAG, "Board image file " + imagePath);
+                try {
+                    boardImageBitmap = Glide.with(DetailWidgetRemoteViewsService.this).
+                            load(imagePath).asBitmap().
+                            into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
+                }
+                catch (InterruptedException | ExecutionException e) {
+                    Log.d(TAG, "Error retrieving image from " + imagePath, e);
+                }
+
+                if (boardImageBitmap != null && imageFileName != null) {
+                    views.setImageViewBitmap(R.id.board_imageview, boardImageBitmap);
+                }
 
                   final Intent fillInIntent = new Intent();
                   fillInIntent.putExtra(MainActivity.BOARD_KEY_CLICKED, (int)getItemId(position));
