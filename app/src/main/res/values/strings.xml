@@ -11,6 +11,7 @@
     // Board Activity
     <string name="board_image_content_description">Image that represents this board</string>
     <string name="random_button_text">Random</string>
+    <string name="no_beeps_yet_msg">No beeps yet. Record one!</string>
 
     // Create Board Activity
     <string name="dialog_new_board_name">Board name</string>

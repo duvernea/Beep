@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -191,6 +192,12 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
 
                 Cursor cursor = mBeepsRecyclerViewAdapter.getCursor();
                 int numBeeps = cursor.getCount();
+                Log.d(TAG, "Number of beeps: " + numBeeps);
+                if (numBeeps == 0) {
+                    Toast.makeText(mContext, getResources().getString(R.string.no_beeps_yet_msg),
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 int randBeep = (int)(Math.random() * ((numBeeps - 1) + 1));
                 cursor.moveToPosition(randBeep);
