@@ -41,6 +41,7 @@ import xyz.peast.beep.adapters.BeepAdapter;
 import xyz.peast.beep.adapters.BoardAdapter;
 import xyz.peast.beep.adapters.BoardRecyclerViewAdapter;
 import xyz.peast.beep.data.BeepDbContract;
+import xyz.peast.beep.views.RecyclerViewEmptySupport;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private BeepAdapter mBeepAdapter;
     private GridView mTopBeepsGridView;
     private BoardAdapter mBoardAdapter;
-    private RecyclerView mBoardsRecyclerView;
+    private RecyclerViewEmptySupport mBoardsRecyclerView;
     private BoardRecyclerViewAdapter mBoardsRecyclerViewAdapter;
     private FrameLayout mOverlay;
     private TextView mMainFabTextView;
@@ -174,7 +175,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mBoardsRecyclerViewAdapter = new BoardRecyclerViewAdapter(mContext,
             boardOnClickHandler, null, 0);
 
-        mBoardsRecyclerView = (RecyclerView) findViewById(R.id.boards_recyclerview);
+        mBoardsRecyclerView = (RecyclerViewEmptySupport) findViewById(R.id.boards_recyclerview);
+        mBoardsRecyclerView.setEmptyView(findViewById(R.id.empty_board_recyclerview));
         mBoardsRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mBoardsRecyclerView.setAdapter(mBoardsRecyclerViewAdapter);
         mBoardsRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
