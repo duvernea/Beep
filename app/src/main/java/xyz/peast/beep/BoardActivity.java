@@ -70,30 +70,22 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
 
-
-
         mContext = this;
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-
         mBoardImage = (ImageView) findViewById(R.id.board_imageview);
         mImageSavedBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.d(TAG, "mImageSavedBroadcastReceiver receiving..");
                 String imageFileName = intent.getStringExtra(CompressImageUpdateDbService.IMAGE_SAVED_MESSAGE);
-                Log.d(TAG, "imageFileName received: " + imageFileName);
-
                 if (imageFileName == null) {
                     // Do nothing, use the default imageview
                 }
                 else {
                     String imageDir = mContext.getFilesDir().getAbsolutePath();
                     String imagePath = "file:" + imageDir + "/" + imageFileName;
-                    Log.d(TAG, "Board image file " + imagePath);
                     Glide.with(mContext).load(imagePath).into(mBoardImage);
                 }
             }
@@ -103,7 +95,6 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         mLastActivity = intent.getExtras().getString(LAST_ACTIVITY_UNIQUE_ID);
         String boardName = intent.getStringExtra(MainActivity.BOARD_NAME_SELECTED);
         mBoardKey = intent.getIntExtra(MainActivity.BOARD_KEY_CLICKED, -1);
-        Log.d(TAG, "mBoardKey" + mBoardKey);
 
         String whereClause = BeepDbContract.BoardEntry._ID+"=?";
         String [] whereArgs = {mBoardKey+""};
@@ -113,11 +104,9 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                 whereClause,
                 whereArgs,
                 null);
-        Log.d(TAG, "Cursor count: " + cursor.getCount());
         cursor.moveToFirst();
 
         String imageFileName = cursor.getString(Constants.BOARDS_COL_IMAGE);
-        Log.d(TAG, "imageUri: " + imageFileName);
 
         if (imageFileName == null) {
             // Do nothing, use the default imageview
@@ -125,7 +114,6 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         else {
             String imageDir = mContext.getFilesDir().getAbsolutePath();
             String imagePath = "file:" + imageDir + "/" + imageFileName;
-            Log.d(TAG, "Board image file " + imagePath);
             Glide.with(mContext).load(imagePath).into(mBoardImage);
         }
 
@@ -143,11 +131,6 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         // Initialize loader for beeps
         getLoaderManager().initLoader(BEEPS_LOADER, null, this);
 
-        // TODO - set emptyView for recyclerview
-        // View rootView = getLayoutinflater.inflate(....)
-        // findViewById...
-        // View emptyView =
-
         mBeepsRecyclerViewAdapter = new BeepRecyclerViewAdapter(mContext,
                 new BeepRecyclerViewAdapter.BeepAdapterOnClickHandler() {
                     @Override
@@ -155,7 +138,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                         Cursor cursor = mBeepsRecyclerViewAdapter.getCursor();
                         cursor.moveToPosition(vh.getAdapterPosition());
 
-                        String audiofileName = cursor.getString(Constants.BEEPS_COL_AUDIO);
+                        String audioFileName = cursor.getString(Constants.BEEPS_COL_AUDIO);
                         int key = vh.getBeepKey();
                         int playCount = cursor.getInt(Constants.BEEPS_COL_PLAY_COUNT);
                         Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
@@ -171,13 +154,10 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                                 whereClause,
                                 whereArgs);
                         String recordDir = mContext.getFilesDir().getAbsolutePath();
-                        Log.d(TAG, "recordDir: "+ recordDir);
-                        String path = "/data/data/xyz.peast.beep/files/" + audiofileName;
+                        String path = recordDir + "/" + audioFileName;
 
                         onFileChange(path, 0, 0);
-                        //Log.d(TAG, "getPackageResourcePath: " + getPackageResourcePath());
                         mIsPlaying = !mIsPlaying;
-                        Log.d(TAG, "mIsPlaying java: " + mIsPlaying);
                         onPlayPause(path, mIsPlaying, 0);
                     }
                 }, null, 0);
@@ -192,7 +172,6 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
 
                 Cursor cursor = mBeepsRecyclerViewAdapter.getCursor();
                 int numBeeps = cursor.getCount();
-                Log.d(TAG, "Number of beeps: " + numBeeps);
                 if (numBeeps == 0) {
                     Toast.makeText(mContext, getResources().getString(R.string.no_beeps_yet_msg),
                             Toast.LENGTH_SHORT).show();
@@ -208,10 +187,8 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
 
                 ContentValues values = new ContentValues();
                 values.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, playCount + 1);
-                //                Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
                 String whereClause = BeepDbContract.BeepEntry._ID+"=?";
                 String [] whereArgs = {key+""};
-                Log.d(TAG, "playCount: " + playCount);
                 mContext.getContentResolver().update(
                         uri,
                         values,
@@ -219,14 +196,11 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                         whereArgs);
 
                 String audioFileName = cursor.getString(Constants.BEEPS_COL_AUDIO);
-
                 String recordDir = mContext.getFilesDir().getAbsolutePath();
                 String path = recordDir + "/" + audioFileName;
 
                 onFileChange(path, 0, 0);
-                //Log.d(TAG, "getPackageResourcePath: " + getPackageResourcePath());
                 mIsPlaying = !mIsPlaying;
-                Log.d(TAG, "mIsPlaying java: " + mIsPlaying);
                 onPlayPause(path, mIsPlaying, 0);
             }
         });
@@ -287,7 +261,6 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     }
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.d(TAG, "onCreateLoader run");
         CursorLoader loader;
         Uri uri;
         if (id == BEEPS_LOADER) {
