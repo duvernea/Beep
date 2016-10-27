@@ -25,7 +25,6 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -38,7 +37,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import xyz.peast.beep.adapters.BeepAdapter;
-import xyz.peast.beep.adapters.BoardAdapter;
 import xyz.peast.beep.adapters.BoardRecyclerViewAdapter;
 import xyz.peast.beep.data.BeepDbContract;
 import xyz.peast.beep.views.RecyclerViewEmptySupport;
@@ -65,7 +63,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     // Views
     private BeepAdapter mBeepAdapter;
     private GridView mTopBeepsGridView;
-    private BoardAdapter mBoardAdapter;
     private RecyclerViewEmptySupport mBoardsRecyclerView;
     private BoardRecyclerViewAdapter mBoardsRecyclerViewAdapter;
     private FrameLayout mOverlay;
@@ -165,7 +162,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             });
         }
         // Boards
-        mBoardAdapter = new BoardAdapter(mContext, null, 0);
 
         // TODO - set emptyView for recyclerview
         // View rootView = getLayoutinflater.inflate(....)
@@ -318,9 +314,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             mBeepAdapter.notifyDataSetChanged();
         }
         if (loader.getId() == BOARDS_LOADER) {
-            mBoardAdapter.swapCursor(data);
             Log.d(TAG, "# of boards in cursor: " + data.getCount());
-            mBoardAdapter.notifyDataSetChanged();
 
             mBoardsRecyclerViewAdapter.swapCursor(data);
             mBoardsRecyclerViewAdapter.notifyDataSetChanged();
@@ -332,7 +326,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             mBeepAdapter.swapCursor(null);
         }
         if (loader.getId() == BOARDS_LOADER) {
-            mBoardAdapter.swapCursor(null);
             mBoardsRecyclerViewAdapter.swapCursor(null);
         }
     }
