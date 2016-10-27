@@ -29,28 +29,21 @@ public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerVi
     private Context mContext;
 
     final private BeepAdapterOnClickHandler mClickHandler;
-    // final private View mEmptyView;
 
     public BeepRecyclerViewAdapter(Context context, BeepAdapterOnClickHandler dh, Cursor cursor, int flags) {
         mCursor = cursor;
         mContext = context;
-        // mEmptyView = emptyview;
         mClickHandler = dh;
     }
-
     @Override
     public BeepViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.beep_list_item, parent, false);
         BeepViewHolder viewHolder = new BeepViewHolder(view);
-        Log.d(TAG, "onCreateViewHolder called");
-
         return viewHolder;
     }
-
     @Override
     public void onBindViewHolder(BeepViewHolder holder, int position) {
-        Log.d(TAG, "onBindViewHolder called");
         mCursor.moveToPosition(position);
         String beepName = mCursor.getString(Constants.BEEPS_COL_NAME);
         String beepImage = mCursor.getString(Constants.BEEPS_COL_IMAGE);
@@ -61,17 +54,9 @@ public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerVi
         else {
             String imageDir = mContext.getFilesDir().getAbsolutePath();
             String imagePath = "file:" + imageDir + "/" + beepImage;
-            Log.d(TAG, "BeepAdapter image file " + imagePath);
-            //Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-            //holder.mBeepImageView.setImageBitmap(bitmap);
-            //Picasso.with(mContext).load(imagePath).into(holder.mBeepImageView);
             Glide.with(mContext).load(imagePath).into(holder.mBeepImageView);
-
         }
-
-        // TODO - set image
     }
-
     @Override
     public int getItemCount() {
         if (null == mCursor) {
@@ -90,33 +75,25 @@ public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerVi
             mBeepImageView = (ImageView) view.findViewById(R.id.beep_imageview);
             view.setOnClickListener(this);
         }
-
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            Log.d(TAG, "onClick getAdapterPosition = " + adapterPosition);
             mCursor.moveToPosition(adapterPosition);
             mClickHandler.onClick(this);
         }
         public int getBeepKey() {
             int adapterPosition = getAdapterPosition();
-            Log.d(TAG, "getBeep getAdapterPosition = " + adapterPosition);
             mCursor.moveToPosition(adapterPosition);
             int beepKey = mCursor.getInt(Constants.BEEPS_COL_BEEP_ID);
-            Log.d(TAG, "getBeepKey = " + beepKey);
-
             return beepKey;
         }
     }
-
     public static interface BeepAdapterOnClickHandler {
         void onClick(BeepViewHolder vh);
     }
     public void swapCursor(Cursor newCursor) {
-        Log.d(TAG, "swapCursor called");
             mCursor = newCursor;
             notifyDataSetChanged();
-        // mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
     public Cursor getCursor() {
         return mCursor;
