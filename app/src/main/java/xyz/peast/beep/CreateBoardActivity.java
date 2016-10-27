@@ -134,8 +134,6 @@ public class CreateBoardActivity extends AppCompatActivity {
             public void onClick(View v) {
                 insertBoardContent();
 
-
-
 //                onCreateNextButton(mBoardNameEditText.getText().toString(),
 //                        mImageUri,
 //                        boardname
@@ -209,7 +207,6 @@ public class CreateBoardActivity extends AppCompatActivity {
         //Log.d(TAG, "inserted Row into Board db: " + insertedRow);
         int insertedRow = Utility.insertNewBoard(mContext, boardName, mImageUri);
 
-        Utility.updateWidgets(mActivity);
 
 
         Intent intent = new Intent(mContext, BoardActivity.class);

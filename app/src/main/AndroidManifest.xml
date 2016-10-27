@@ -92,9 +92,6 @@
                 android:resource="@xml/widget_info"/>
         </receiver>
         <service
-            android:name=".widget.WidgetIntentService"
-            android:permission="android.permission.BIND_REMOTEVIEWS"/>
-        <service
             android:name=".widget.DetailWidgetRemoteViewsService"
             android:permission="android.permission.BIND_REMOTEVIEWS"/>
 

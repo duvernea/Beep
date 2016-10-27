@@ -1,5 +1,6 @@
 package xyz.peast.beep;
 
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
@@ -34,6 +35,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
 
     private static final String TAG = BoardActivity.class.getSimpleName();
     Context mContext;
+    Activity mActivity;
 
     // Key from Intent (last activity)
     public static final String LAST_ACTIVITY_UNIQUE_ID = "Uniqid";
@@ -71,6 +73,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         setContentView(R.layout.activity_board);
 
         mContext = this;
+        mActivity = this;
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -79,6 +82,8 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         mImageSavedBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                Utility.updateWidgets(mActivity);
+
                 String imageFileName = intent.getStringExtra(CompressImageUpdateDbService.IMAGE_SAVED_MESSAGE);
                 if (imageFileName == null) {
                     // Do nothing, use the default imageview
