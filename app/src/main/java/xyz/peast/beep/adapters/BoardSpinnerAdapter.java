@@ -23,7 +23,6 @@ import xyz.peast.beep.R;
 public class BoardSpinnerAdapter extends ArrayAdapter<Board> implements SpinnerAdapter {
 
     private Context context;
-    //private Board[] values;
     private ArrayList<Board> values;
     int resource;
     int textViewResourceId;
@@ -45,10 +44,8 @@ public class BoardSpinnerAdapter extends ArrayAdapter<Board> implements SpinnerA
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         super.getView(position, convertView, parent);
-        TextView label = new TextView(context);
 
         View v = convertView;
-
         if (v == null) {
             LayoutInflater vi = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -65,13 +62,10 @@ public class BoardSpinnerAdapter extends ArrayAdapter<Board> implements SpinnerA
         this.textViewResourceId = textViewResourceId;
         this.resource = resource;
     }
-
-
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
 
         View v = convertView;
-
         if (v == null) {
             LayoutInflater vi = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -86,14 +80,6 @@ public class BoardSpinnerAdapter extends ArrayAdapter<Board> implements SpinnerA
             ImageView imageview = (ImageView) v.findViewById(R.id.create_new_board_icon);
             imageview.setVisibility(View.VISIBLE);
         }
-//        switch (position) {
-//            case numValues:
-//                //set tv's color here...
-//                tv.setTextColor(Color.BLUE);
-//                break;
-//            default:
-//                //set default color or whatever...
-//        }
         return v;
     }
 }
