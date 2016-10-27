@@ -28,8 +28,6 @@ public class CompressImageUpdateDbService extends IntentService {
 
     static final public String IMAGE_SAVED_MESSAGE = "xyz.peast.beep.services.IMAGED_SAVED_MSG";
 
-
-
     public CompressImageUpdateDbService() {
         super("CompressImageUpdateDbService");
     }
@@ -38,58 +36,35 @@ public class CompressImageUpdateDbService extends IntentService {
     protected void onHandleIntent(Intent intent) {
 
         LocalBroadcastManager broadcaster = LocalBroadcastManager.getInstance(this);
-        Log.d(TAG, "onHandleIntent");
         Bundle bundle = intent.getExtras();
         Constants.DbTable dbTableType = (Constants.DbTable) intent.getSerializableExtra(Constants.DB_TABLE_ENUM);
-        Log.d(TAG, dbTableType.toString());
         String imageUriString = bundle.getString(Utility.ORIGINAL_IMAGE_FILE_URI);
         String rowString = bundle.getString(Utility.INSERTED_RECORD_URI);
-        Log.d(TAG, "Insert Row Uri: " + rowString);
         Uri rowUri = Uri.parse(rowString);
         Uri imageUri = Uri.parse(imageUriString);
-        Log.d(TAG, "beep or board record Uri: " + rowUri);
 
         // New compressed file name and path
         String imageDir = getApplicationContext().getFilesDir().getAbsolutePath();
-        String compressedImageFilename = UUID.randomUUID().toString() + ".jpg";
-
-        FileOutputStream out = null;
-
-        String compressedImageFilePath = imageDir + "/" + compressedImageFilename;
-
+        String compressedImageFileName = UUID.randomUUID().toString() + ".jpg";
+        String compressedImageFilePath = imageDir + "/" + compressedImageFileName;
         String originalFilePath = Utility.getRealPathFromURI(getApplicationContext(), imageUri);
-        Log.d(TAG, "originalFilePath: " + originalFilePath);
 
-        Bitmap bitmapOriginal = BitmapFactory.decodeFile(originalFilePath);
-        Log.d(TAG, "bitmap width original: " + bitmapOriginal.getWidth());
-        Log.d(TAG, "bitmap height original: " + bitmapOriginal.getHeight());
-        Log.d(TAG, "bitmap size: " + bitmapOriginal.getByteCount());
         File originalImageFile = new File(originalFilePath);
-        Log.d(TAG, "file exists? " + originalImageFile.exists());
         long length = originalImageFile.length();
-        Log.d(TAG, "bitmap length in bytes: " + length);
-
 
         // Downsample bitmap
             Bitmap downsampledBitmap = Utility.subsampleBitmap(getApplicationContext(),
                     Utility.getRealPathFromURI(getApplicationContext(), imageUri), 360, 360);
-        Log.d(TAG, "bitmap width subsample: " + downsampledBitmap.getWidth());
-        Log.d(TAG, "bitmap height subsample: " + downsampledBitmap.getHeight());
-        Log.d(TAG, "bitmap size subsample: " + downsampledBitmap.getByteCount());
-
-            // Center crop bitmap
+        // Center crop bitmap
         Bitmap centerCropBitmap = Utility.centerCropBitmap(getApplicationContext(), downsampledBitmap);
-        Log.d(TAG, "bitmap width centercrop: " + centerCropBitmap.getWidth());
-        Log.d(TAG, "bitmap height centercrop: " + centerCropBitmap.getHeight());
-        Log.d(TAG, "bitmap size centercrop: " + centerCropBitmap.getByteCount());
 
+        FileOutputStream out = null;
         try {
             out = new FileOutputStream(compressedImageFilePath);
             if (centerCropBitmap != null) {
                 centerCropBitmap.compress(Bitmap.CompressFormat.JPEG, 80, out); // bmp is your Bitmap instance
-                Log.d(TAG, "compressing bitmap, 80%" + compressedImageFilename);
+                Log.d(TAG, "compressing bitmap, 80%" + compressedImageFileName);
             }
-            // PNG is a lossless format, the compression factor (100) is ignored
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -102,30 +77,24 @@ public class CompressImageUpdateDbService extends IntentService {
             }
         }
         File compressedImageFile = new File(compressedImageFilePath);
-        Log.d(TAG, "file exists? " + compressedImageFile.exists());
         long lengthCompressedFile = compressedImageFile.length();
-        Log.d(TAG, "compressed bitmap length in bytes: " + lengthCompressedFile);
-
 
         // Update database to reflect the new file name
         ContentValues contentValues = new ContentValues();
+
         // If Image belongs to a "beep"
         if (dbTableType.equals(Constants.DbTable.BEEP)) {
-            contentValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, compressedImageFilename);
+            contentValues.put(BeepDbContract.BeepEntry.COLUMN_IMAGE, compressedImageFileName);
             String whereClause = BeepDbContract.BeepEntry._ID + "=?";
             int key = (int) ContentUris.parseId(rowUri);
             String[] whereArgs = {key + ""};
 
             int numRows = this.getContentResolver().
                     update(BeepDbContract.BeepEntry.CONTENT_URI, contentValues, whereClause, whereArgs);
-
-            Log.d(TAG, "num rows updated " + numRows);
         }
         // If Image belongs to a "board"
-
         if (dbTableType.equals(Constants.DbTable.BOARD)) {
-            contentValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, compressedImageFilename);
-            Log.d(TAG, "compressed image file: " + compressedImageFilename);
+            contentValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, compressedImageFileName);
             String whereClause = BeepDbContract.BoardEntry._ID + "=?";
             int key = (int) ContentUris.parseId(rowUri);
             String[] whereArgs = {key + ""};
@@ -135,10 +104,9 @@ public class CompressImageUpdateDbService extends IntentService {
             if (numRows > 0) {
                 //update UI
                 Intent imageSavedIntent = new Intent(IMAGE_SAVED_MESSAGE);
-                imageSavedIntent.putExtra(IMAGE_SAVED_MESSAGE, compressedImageFilename);
+                imageSavedIntent.putExtra(IMAGE_SAVED_MESSAGE, compressedImageFileName);
                 broadcaster.sendBroadcast(imageSavedIntent);
             }
-            Log.d(TAG, "num rows updated " + numRows);
         }
     }
 }
