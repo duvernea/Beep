@@ -29,30 +29,23 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
     private Context mContext;
 
     final private BoardAdapterOnClickHandler mClickHandler;
-    // final private View mEmptyView;
 
     public BoardRecyclerViewAdapter(Context context, BoardAdapterOnClickHandler dh, Cursor cursor, int flags) {
         mCursor = cursor;
         mContext = context;
-        // mEmptyView = emptyview;
         mClickHandler = dh;
     }
-
-
 
     @Override
     public BoardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.board_list_item, parent, false);
         BoardViewHolder viewHolder = new BoardViewHolder(view);
-        Log.d(TAG, "onCreateViewHolder called");
-
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(BoardViewHolder holder, int position) {
-        Log.d(TAG, "onBindViewHolder called");
         mCursor.moveToPosition(position);
         String boardName = mCursor.getString(Constants.BOARDS_COL_NAME);
         String boardImage = mCursor.getString(Constants.BOARDS_COL_IMAGE);
@@ -64,12 +57,9 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
         else {
             String imageDir = mContext.getFilesDir().getAbsolutePath();
             String imagePath = "file:" + imageDir + "/" + boardImage;
-            Log.d(TAG, "Board image file " + imagePath);
             Glide.with(mContext).load(imagePath).into(holder.mBoardImageView);
         }
-
     }
-
     @Override
     public int getItemCount() {
         if (null == mCursor) {
@@ -88,33 +78,25 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
             mBoardImageView = (ImageView) view.findViewById(R.id.board_imageview);
             view.setOnClickListener(this);
         }
-
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            Log.d(TAG, "onClick getAdapterPosition = " + adapterPosition);
             mCursor.moveToPosition(adapterPosition);
             mClickHandler.onClick(this);
         }
         public int getBoardKey() {
             int adapterPosition = getAdapterPosition();
-            Log.d(TAG, "getBoardKey getAdapterPosition = " + adapterPosition);
             mCursor.moveToPosition(adapterPosition);
             int boardKey = mCursor.getInt(Constants.BOARDS_BOARD_ID);
-            Log.d(TAG, "getBoardKey = " + boardKey);
-
             return boardKey;
         }
     }
-
-
     public static interface BoardAdapterOnClickHandler {
         void onClick(BoardViewHolder vh);
     }
     public void swapCursor(Cursor newCursor) {
         mCursor = newCursor;
         notifyDataSetChanged();
-        // mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
     public Cursor getCursor() {
         return mCursor;
