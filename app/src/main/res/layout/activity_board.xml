@@ -63,8 +63,8 @@
                     android:src="@drawable/beep_item_temp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="@dimen/board_image_activity_margin_top_bottom"
+                    android:layout_marginBottom="@dimen/board_image_activity_margin_top_bottom"
                     android:transitionName="@string/board_image_trans"
                     />
                 <TextView

@@ -13,6 +13,11 @@
 
     // board items in list
     <dimen name="board_list_item_name_text_size">20sp</dimen>
+    <dimen name="board_list_item_imageview_margin_top_bottom">8dp</dimen>
+    <dimen name="board_list_item_imageview_margin_left">8dp</dimen>
+
+    // Board Activity
+    <dimen name="board_image_activity_margin_top_bottom">16dp</dimen>
 
     // floating action button and text display
     <dimen name="fab_size">56dp</dimen>

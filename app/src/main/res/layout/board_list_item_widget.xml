@@ -12,8 +12,10 @@
         android:id="@+id/board_imageview"
         android:layout_gravity="center_vertical"
         android:src="@drawable/beep_item_temp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginLeft="@dimen/board_list_item_imageview_margin_left"
+        android:layout_marginStart="@dimen/board_list_item_imageview_margin_left"
+        android:layout_marginTop="@dimen/board_list_item_imageview_margin_top_bottom"
+        android:layout_marginBottom="@dimen/board_list_item_imageview_margin_top_bottom"
         android:transitionName="@string/board_image_trans"
         android:contentDescription="@string/board_image_content_description"/>
     <TextView
