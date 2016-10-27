@@ -49,7 +49,7 @@ import java.util.Calendar;
 import xyz.peast.beep.adapters.Board;
 import xyz.peast.beep.adapters.BoardSpinnerAdapter;
 import xyz.peast.beep.data.BeepDbContract;
-import xyz.peast.beep.services.BitmapImageService;
+import xyz.peast.beep.services.LoadDownsampledBitmapImageService;
 
 /**
  * Created by duvernea on 7/30/16.
@@ -259,7 +259,7 @@ public class SaveFragment extends Fragment implements LocationListener {
                     mImagePath = Utility.getRealPathFromURI(mContext, mImageUri);
                     int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
 
-                    Intent intent = new Intent(mContext, BitmapImageService.class);
+                    Intent intent = new Intent(mContext, LoadDownsampledBitmapImageService.class);
                     intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(mImageHandler));
                     intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_URI, mImageUri.toString());
 

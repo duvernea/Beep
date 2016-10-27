@@ -17,7 +17,7 @@ public class Constants {
     public static final String RECORD_FILE_NAME = "record_file_name";
     public static final String BEEP_NAME = "beep_name";
 
-    // Bundle extras for BitmapImageService 'messenger'
+    // Bundle extras for LoadDownsampledBitmapImageService 'messenger'
     public static final String IMAGE_MESSENGER = "image_messenger";
     public static final String IMAGE_BITMAP_FROM_SERVICE = "image_bitmap";
     public static final String IMAGE_MIN_SIZE = "image_size";

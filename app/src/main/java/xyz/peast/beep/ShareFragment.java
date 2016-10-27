@@ -22,7 +22,7 @@ import android.widget.TextView;
 
 import java.io.File;
 
-import xyz.peast.beep.services.BitmapImageService;
+import xyz.peast.beep.services.LoadDownsampledBitmapImageService;
 import xyz.peast.beep.services.EncodeAudioService;
 
 
@@ -193,7 +193,7 @@ public class ShareFragment extends Fragment {
                 }
             };
 
-            Intent intent = new Intent(mContext, BitmapImageService.class);
+            Intent intent = new Intent(mContext, LoadDownsampledBitmapImageService.class);
             intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(handler));
             intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_URI, imageUri.toString());
             intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);

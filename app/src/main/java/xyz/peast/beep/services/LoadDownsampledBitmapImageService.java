@@ -19,18 +19,16 @@ import xyz.peast.beep.Utility;
 /**
  * Created by duverneay on 9/11/16.
  */
-public class BitmapImageService extends IntentService {
-
+public class LoadDownsampledBitmapImageService extends IntentService {
 
     private static String TAG = EncodeAudioService.class.getSimpleName();
 
-    public BitmapImageService() {
-        super("BitmapImageService");
+    public LoadDownsampledBitmapImageService() {
+        super("LoadDownsampledBitmapImageService");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d(TAG, "onHandleIntent BitmapImageService");
         Bundle bundleIn = intent.getExtras();
         Messenger messenger = (Messenger) bundleIn.get(Constants.IMAGE_MESSENGER);
         int minImageSize = bundleIn.getInt(Constants.IMAGE_MIN_SIZE);
@@ -39,28 +37,10 @@ public class BitmapImageService extends IntentService {
         Uri imageUri = Uri.parse(imageUriString);
 
         String imagePath = Utility.getRealPathFromURI(getApplicationContext(), imageUri);
-        Log.d(TAG, "imagePath: " + imagePath);
-            //int imageSize = 460;
-            Log.d(TAG, "image size dimen: " + minImageSize);
             // Downsample bitmap
             Bitmap bitmap = Utility.subsampleBitmap(getApplicationContext(), imagePath, minImageSize, minImageSize);
             // Center crop bitmap
             bitmap  = Utility.centerCropBitmap(getApplicationContext(), bitmap);
-
-        // New compressed file name and path
-//        String imageDir = getApplicationContext().getFilesDir().getAbsolutePath();
-//        String compressedImageFilename = UUID.randomUUID().toString() + ".jpg";
-//
-//        FileOutputStream out = null;
-//
-//        String compressedImageFilePath = imageDir + "/" + compressedImageFilename;
-//
-//
-//        // Downsample bitmap
-//        Bitmap bitmap = Utility.subsampleBitmap(getApplicationContext(),
-//                Utility.getRealPathFromURI(getApplicationContext(), imageUri), 360, 360);
-//        // Center crop bitmap
-//        bitmap = Utility.centerCropBitmap(getApplicationContext(), bitmap);
 
         Message message = new Message();
         Bundle bitmapBundle = new Bundle();
@@ -70,8 +50,8 @@ public class BitmapImageService extends IntentService {
         try {
             messenger.send(message);
         }
-        catch (RemoteException re) {
-            // TODO handle
+        catch (NullPointerException | RemoteException e) {
+            e.printStackTrace();
         }
     }
 }

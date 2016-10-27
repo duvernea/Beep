@@ -4,9 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -38,10 +35,8 @@ import com.google.android.gms.ads.AdView;
 
 import java.util.Calendar;
 
-import xyz.peast.beep.adapters.Board;
 import xyz.peast.beep.data.BeepDbContract;
-import xyz.peast.beep.services.BitmapImageService;
-import xyz.peast.beep.widget.WidgetProvider;
+import xyz.peast.beep.services.LoadDownsampledBitmapImageService;
 
 /**
  * Created by duvernea on 10/18/16.
@@ -178,7 +173,7 @@ public class CreateBoardActivity extends AppCompatActivity {
                     mImagePath = Utility.getRealPathFromURI(mContext, mImageUri);
                     int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
 
-                    Intent intent = new Intent(mContext, BitmapImageService.class);
+                    Intent intent = new Intent(mContext, LoadDownsampledBitmapImageService.class);
                     intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(mImageHandler));
                     intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_URI, mImageUri.toString());
 
