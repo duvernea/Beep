@@ -302,8 +302,12 @@ public class SaveFragment extends Fragment implements LocationListener {
                     cursor.getColumnIndex(BeepDbContract.BoardEntry.COLUMN_NAME));
             String key = cursor.getString(
                     cursor.getColumnIndex(BeepDbContract.BoardEntry._ID));
-            Board temp = new Board(Integer.parseInt(key), row, "temp", 242);
-            mSpinnerItems.add(temp);
+            String image = cursor.getString(
+                    cursor.getColumnIndex(BeepDbContract.BoardEntry.COLUMN_IMAGE));
+            long date = cursor.getLong(
+                    cursor.getColumnIndex(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED));
+            Board board = new Board(Integer.parseInt(key), row, image, date);
+            mSpinnerItems.add(board);
             cursor.moveToNext();
         }
         // Add item for creating new cursor
