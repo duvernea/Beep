@@ -43,17 +43,12 @@ public class RecordActivity extends AppCompatActivity
     public static final String BOARD_NAME = "board_name";
     public static final String BOARD_KEY = "board_key";
 
-    private static String mRecordFileName;
-
-
-
     // Audio
     private boolean mAudioState = false;
+    private static String mRecordFileName;
 
     @Override
     public void onRecordNextButton() {
-        Log.d(TAG, "Next button pushed.");
-        //SaveFragment saveFragment = new SaveFragment();
         EditFragment editFragment = new EditFragment();
 
         Bundle bundle = new Bundle();
@@ -70,7 +65,6 @@ public class RecordActivity extends AppCompatActivity
     @Override
     public void onSaveNextButton(String beepname, String audiofile, Uri imageUri,
                                  String boardName, int boardKey) {
-        Log.d(TAG, "Save button pushed.");
         ShareFragment shareFragment = new ShareFragment();
         Bundle bundle = new Bundle();
         bundle.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
@@ -111,7 +105,6 @@ public class RecordActivity extends AppCompatActivity
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.add(R.id.record_container, recordFragment, RECORD_FRAGMENT_TAG);
 
-            //transaction.addToBackStack(RECORD_FRAGMENT_TAG);
             transaction.commit();
             supportPostponeEnterTransition();
         }
@@ -139,10 +132,9 @@ public class RecordActivity extends AppCompatActivity
         outState.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
     }
 
-    // Calback from Native
+    // Callback from Native
     private void playbackEndCallback() {
 
-        Log.d(TAG, "playbackEndCallback");
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
             // No fragments on backstack - Only 1 fragment = Record Fragment
             RecordFragment recordFragment = (RecordFragment) getSupportFragmentManager().findFragmentByTag(RECORD_FRAGMENT_TAG);
@@ -154,15 +146,12 @@ public class RecordActivity extends AppCompatActivity
                 // TODO - do something when playback ends in save fragment
             }
             else if (tag.equals(RECORD_FRAGMENT_TAG)) {
-
             }
         }
     }
 
     @Override
     public void onBackPressed() {
-        Log.d(TAG, "backstack count: " + getSupportFragmentManager().getBackStackEntryCount());
-
         int backstackCount = getSupportFragmentManager().getBackStackEntryCount();
         // Record and Save Fragments
         if (backstackCount <= 1) {
@@ -171,20 +160,11 @@ public class RecordActivity extends AppCompatActivity
         if (backstackCount == 2) {
             finish();
         }
-//        String tag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName();
-//        if (tag.equals(SHARE_FRAGMENT_TAG)) {
-//            finish();
-//        }
-//        else {
-//            super.onBackPressed();
-//        }
     }
-
     private void onBufferCallback(float rmsValue) {
         RecordFragment recordFragment = (RecordFragment) getSupportFragmentManager().findFragmentByTag(RECORD_FRAGMENT_TAG);
         recordFragment.onBufferCallback(rmsValue);
     }
-
     public native void setupAudio();
     public native void SuperpoweredAudio(int samplerate, int buffersize);
     public native void onPlayPause(String filepath, boolean play, int size);
@@ -200,8 +180,4 @@ public class RecordActivity extends AppCompatActivity
     static {
         System.loadLibrary(Constants.NATIVE_LIBRARY_NAME);
     }
-
-
-
-
 }

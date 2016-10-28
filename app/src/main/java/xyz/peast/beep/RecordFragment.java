@@ -106,7 +106,6 @@ public class RecordFragment extends Fragment {
 
             String recordDir = mContext.getFilesDir().getAbsolutePath();
             mRecordFilePath = recordDir + "/" + uniqueID;
-            Log.d(TAG, "Record Path: " + mRecordFilePath);
             ((RecordActivity) mActivity).setRecordPath(mRecordFilePath);
 
             mCreateWavButton.setOnClickListener(new View.OnClickListener() {
@@ -160,7 +159,6 @@ public class RecordFragment extends Fragment {
 
             // This only calls ondrawFrame 1 time
             mGlSurfaceView.requestRender();
-            //surfaceView.getHolder().addCallback(this);
             mRecordButton = (Button) rootView.findViewById(R.id.record_button);
             mRecordButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -185,8 +183,6 @@ public class RecordFragment extends Fragment {
 
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "mIsPlaying start: " + mIsPlaying);
-                    Log.d(TAG, "mIsRecording start: " + mIsPlaying);
                     if (!mIsRecording) {
                         mIsPlaying = true;
                         Log.d(TAG, "mIsPlaying play: " + mIsPlaying);
@@ -212,7 +208,6 @@ public class RecordFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume");
         mIsRecording = false;
         mIsPlaying =false;
         ((RecordActivity) mActivity).setupAudio();
@@ -242,17 +237,12 @@ public class RecordFragment extends Fragment {
         }
     }
     private void handleRecordButtonPress() {
-        Log.d(TAG, "mIsPlaying: " + mIsPlaying);
         if (!mIsPlaying) {
-            Log.d(TAG, "mIsRecording: " + mIsRecording);
             mIsRecording = !mIsRecording;
             if (!mIsRecording) {
-                //mIsRecording = !mIsRecording;
                 ((RecordActivity) mActivity).toggleRecord(mIsRecording);
                 mMenuState = true;
                 setMenuState(mMenuState);
-                //mRecordButton.setText("Start Recording");
-                //mRecordButton.setBackgroundColor(ContextCompat.getColor(mContext, R.color.recordButtonStartRecording));
             }
             if (mIsRecording) {
                 //mIsRecording = !mIsRecording;
@@ -263,8 +253,6 @@ public class RecordFragment extends Fragment {
         }
     }
     private void handleRedoButtonPress() {
-        Log.d(TAG, "handleRedoButton mIsRecord: " + mIsRecording);
-        Log.d(TAG, "handleRedoButton mIsplay: " + mIsPlaying);
 
         if (!mIsPlaying) {
             mMenuState = false;
@@ -280,31 +268,9 @@ public class RecordFragment extends Fragment {
     }
 
     public void onPlaybackEnd() {
-        Log.d(TAG, "Played file ended");
         mIsPlaying = false;
     }
     public void onBufferCallback(float rmsValue) {
-//        //Log.d(TAG, "rmsValue digital: "+ rmsValue);
-//
-//        double powerCurrentBufferdB = 20f*Math.log10(rmsValue);
-//        Log.d(TAG, "current buffer powerdB: "+ powerCurrentBufferdB);
-//
-//        double averagedPowerDb = (lastRMSValue + powerCurrentBufferdB)/2;
-//        Log.d(TAG, "averaged buffers powerdB: "+ averagedPowerDb);
-//        lastRMSValue = powerCurrentBufferdB;
-//        // set displayed dynamic range between lowCutoff and highCutoff
-//        averagedPowerDb = averagedPowerDb - MIN_DIPLAYED_POWER;
-//        // limit dynamic range
-//        if (averagedPowerDb> MAX_DIPLAYED_POWER-MIN_DIPLAYED_POWER ) {
-//            averagedPowerDb = MAX_DIPLAYED_POWER;
-//        }
-//        if (averagedPowerDb < MIN_DIPLAYED_POWER) {
-//            averagedPowerDb = 0;
-//        }
-//
-//        mProgressBar.setProgress((int) averagedPowerDb);
-        //Log.d(TAG, "powerdB: " + (int) power2);
-        //Log.d(TAG, "onBufferCallback, Fragment RMS Value:" + rmsValue);
-        //Log.d(TAG, "(int) RMS Value" + (int) rmsValue);
+        // TODO?
     }
 }
