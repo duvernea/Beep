@@ -41,7 +41,6 @@ public class EditFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_edit, container, false);
 
-
         mContext = getActivity();
         mActivity = getActivity();
 
@@ -75,9 +74,6 @@ public class EditFragment extends Fragment {
                 // TODO determine max and min shift
                 ((RecordActivity) mActivity).setPitchShift(mPlaybackRate);
                 ((RecordActivity) mActivity).setReverse(mReverse);
-
-
-
             }
         });
         return rootView;
