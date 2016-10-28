@@ -85,22 +85,6 @@ public class ShareFragment extends Fragment {
 
         boolean encodeMp3Success = AudioUtility.encodeMp3(mContext, mRecordFileName, mBeepName);
 
-        Log.d(TAG, "Record File Name: " + mRecordFileName);
-        Log.d(TAG, "Image File Name: " + imagefile);
-
-
-//        if (imageUri != null) {
-//            String imagePath = Utility.getRealPathFromURI(mContext, Uri.parse(imageUri));
-//            int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
-//            Log.d(TAG, "image size dimen: " + imageSize);
-//            // Downsample bitmap
-//            Bitmap bitmap = Utility.subsampleBitmap(mContext, imagePath, imageSize, imageSize);
-//            // Center crop bitmap
-//            bitmap  = Utility.centerCropBitmap(mContext, bitmap);
-//
-//            mBeepImageView.setImageBitmap(bitmap);
-//        }
-
         mDontShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,24 +105,7 @@ public class ShareFragment extends Fragment {
                 String audioPath = mContext.getFilesDir().getAbsolutePath();
                 String beepMp3Path = audioPath + "/" + mBeepName + ".mp3";
                 //audioPath += "/" + mRecordFileName;
-                Log.d(TAG, "audioPath: " + beepMp3Path);
                 File beepMp3File = new File(beepMp3Path);
-                //File requestFile = new File(beepMp3Path);
-                //mNewTempFilePath = mContext.getFilesDir().getAbsolutePath();
-                //mNewTempFilePath += "/" + mBeepName + ".wav";
-                //File renamedFile = new File(mNewTempFilePath);
-//                try {
-//                    FileInputStream inStream = new FileInputStream(requestFile);
-//                    FileOutputStream outStream = new FileOutputStream(renamedFile);
-//                    FileChannel inChannel = inStream.getChannel();
-//                    FileChannel outChannel = outStream.getChannel();
-//                    inChannel.transferTo(0, inChannel.size(), outChannel);
-//                    inStream.close();
-//                    outStream.close();
-//                }
-//                catch (IOException ioe) {
-//                    Log.d(TAG, "IO Exception caught");
-//                }
 
                 Uri fileUri;
                 //= Uri.parse(audioPath);
@@ -166,29 +133,14 @@ public class ShareFragment extends Fragment {
             }
         });
 
-//        if (imageUri != null) {
-//            String imagePath = Utility.getRealPathFromURI(mContext, Uri.parse(imageUri));
-//            int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
-//            Log.d(TAG, "image size dimen: " + imageSize);
-//            // Downsample bitmap
-//            Bitmap bitmap = Utility.subsampleBitmap(mContext, imagePath, imageSize, imageSize);
-//            // Center crop bitmap
-//            bitmap  = Utility.centerCropBitmap(mContext, bitmap);
-//
-//            mBeepImageView.setImageBitmap(bitmap);
-//        }
-
-
         if (imageUri != null) {
             int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
 
             Handler handler = new Handler() {
                 @Override
                 public void handleMessage(Message msg) {
-                    Log.d(TAG, "handler handleMessage");
                     Bundle reply = msg.getData();
                     Bitmap bitmap = reply.getParcelable(Constants.IMAGE_BITMAP_FROM_SERVICE);
-                    // do whatever with the bundle here
                     mBeepImageView.setImageBitmap(bitmap);
                 }
             };
@@ -197,10 +149,8 @@ public class ShareFragment extends Fragment {
             intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(handler));
             intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_URI, imageUri.toString());
             intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
-
             mContext.startService(intent);
         }
-
         return rootView;
     }
 
@@ -219,7 +169,6 @@ public class ShareFragment extends Fragment {
 
                 intent.putExtra(MainActivity.BOARD_KEY_CLICKED, mBoardKey);
                 intent.putExtra(MainActivity.BOARD_NAME_SELECTED, mBoardName);
-
                 startActivity(intent);
             }
         }
