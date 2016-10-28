@@ -118,21 +118,15 @@ public class CreateBoardActivity extends AppCompatActivity {
                 Log.d(TAG, "handler handleMessage");
                 Bundle reply = msg.getData();
                 Bitmap bitmap = reply.getParcelable(Constants.IMAGE_BITMAP_FROM_SERVICE);
-                // do whatever with the bundle here
                 mBoardImage.setImageBitmap(bitmap);
             }
         };
 
-        // Save Button onClick - run the Callback in RecordActivity
+        // Create Button onClick - run the Callback in RecordActivity
         mCreateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 insertBoardContent();
-
-//                onCreateNextButton(mBoardNameEditText.getText().toString(),
-//                        mImageUri,
-//                        boardname
-//                );
             }
         });
         mCancelButton.setOnClickListener(new View.OnClickListener() {
@@ -141,7 +135,6 @@ public class CreateBoardActivity extends AppCompatActivity {
                 finish();
             }
         });
-
     }
     private void requestReadExternalPermission(){
 
@@ -155,7 +148,6 @@ public class CreateBoardActivity extends AppCompatActivity {
             }
             // Fire off an async request to actually get the permission
             // This will show the standard permission request dialog UI
-
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     PERMISSIONS_REQUEST_READ_EXTERNAL);
         }
@@ -164,7 +156,6 @@ public class CreateBoardActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "onActivityResult run");
         switch (requestCode) {
             case SELECT_PHOTO:
                 if (resultCode == Activity.RESULT_OK) {
@@ -172,11 +163,9 @@ public class CreateBoardActivity extends AppCompatActivity {
                     mImageUri = data.getData();
                     mImagePath = Utility.getRealPathFromURI(mContext, mImageUri);
                     int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
-
                     Intent intent = new Intent(mContext, LoadDownsampledBitmapImageService.class);
                     intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(mImageHandler));
                     intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_URI, mImageUri.toString());
-
                     intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
 
                     mContext.startService(intent);
@@ -188,21 +177,10 @@ public class CreateBoardActivity extends AppCompatActivity {
         String boardName = mBoardNameEditText.getText().toString();
         ContentValues contentValues = new ContentValues();
         contentValues.put(BeepDbContract.BoardEntry.COLUMN_NAME, boardName);
-        // TODO - need default image resources to use
         long currentTime = Calendar.getInstance().getTimeInMillis();
         contentValues.put(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED, currentTime);
 
-        // If no image selected, set to null (default image)
-//        if (mImageUri != null) {
-//            contentValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, mImageUri.toString());
-//
-//        }
-        //Uri uri = mContext.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, contentValues);
-        //int insertedRow = (int) ContentUris.parseId(uri);
-        //Log.d(TAG, "inserted Row into Board db: " + insertedRow);
         int insertedRow = Utility.insertNewBoard(mContext, boardName, mImageUri);
-
-
 
         Intent intent = new Intent(mContext, BoardActivity.class);
         intent.putExtra(MainActivity.BOARD_KEY_CLICKED, insertedRow);

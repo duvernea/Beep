@@ -22,12 +22,14 @@ public class Constants {
     public static final String IMAGE_BITMAP_FROM_SERVICE = "image_bitmap";
     public static final String IMAGE_MIN_SIZE = "image_size";
 
+    // Audio Parameters Default - Sample Rate and Buffer Size
     public static final String SAMPLE_RATE_DEFAULT = "44100";
     public static final String BUFFER_SIZE_DEFAULT = "512";
 
     public static final String NATIVE_LIBRARY_NAME = "SuperpoweredAudio";
 
-     static final String SHARED_PREF_FILE = "xyz.peast.beep";
+    // Shared Preferences constants
+    static final String SHARED_PREF_FILE = "xyz.peast.beep";
     static final String SHARED_PREF_FIRST_RUN = "pref_first_run";
 
     // database projection for BEEPS
