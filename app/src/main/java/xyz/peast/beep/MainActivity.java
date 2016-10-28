@@ -135,7 +135,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         View.OnClickListener mAdditionalFabListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "CreateBoardActivity fab pressed");
                 Intent intent = new Intent(mContext, CreateBoardActivity.class);
                 startActivity(intent);
             }
@@ -161,12 +160,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 }
             });
         }
-        // Boards
-
-        // TODO - set emptyView for recyclerview
-        // View rootView = getLayoutinflater.inflate(....)
-        // findViewById...
-        // View emptyView =
 
         mBoardsRecyclerViewAdapter = new BoardRecyclerViewAdapter(mContext,
             boardOnClickHandler, null, 0);
@@ -178,14 +171,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mBoardsRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
 
         if (savedInstanceState != null) {
-            Log.d(TAG, "onCreate savedINstanceState != null");
             mFabMenuState = savedInstanceState.getBoolean(FAB_MENU_STATE);
         }
     }
 
     @Override
     protected void onResume() {
-        Log.d(TAG, "onResume run");
         super.onResume();
         if (mSharedPrefs.getBoolean(Constants.SHARED_PREF_FIRST_RUN, true)) {
             // If first time run, set to false
@@ -194,11 +185,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         resetMenuState(mFabMenuState);
 
         // Setup audio if not set
-        Log.d(TAG, "mAudioState = " + mAudioState);
         if (!mAudioState) {
             // Android M requires this for dangerous permissions (microphone)
             boolean permissionAudio = hasRecordAudioPermission();
-            Log.d(TAG, "hasRecordAudioPermission: " + permissionAudio);
             if (permissionAudio) {
                 queryNativeAudioParameters();
                 SuperpoweredAudio(Integer.parseInt(mSamplerateString), Integer.parseInt(mBuffersizeString));
@@ -212,7 +201,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     protected void onPause() {
-        Log.d(TAG, "onPause run...");
         super.onPause();
         if (mAudioState) {
             onPlayerPause();
@@ -259,7 +247,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -271,7 +258,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -314,8 +300,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             mBeepAdapter.notifyDataSetChanged();
         }
         if (loader.getId() == BOARDS_LOADER) {
-            Log.d(TAG, "# of boards in cursor: " + data.getCount());
-
             mBoardsRecyclerViewAdapter.swapCursor(data);
             mBoardsRecyclerViewAdapter.notifyDataSetChanged();
         }
@@ -329,10 +313,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             mBoardsRecyclerViewAdapter.swapCursor(null);
         }
     }
-
     // Callback from Native
     private void playbackEndCallback() {
-        Log.d(TAG, "Played file ended");
         mIsPlaying = false;
     }
 
@@ -348,7 +330,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             animateButtonObject(0, true);
         }
     }
-
     private void setMenuState(boolean fabMenuState) {
         if (!fabMenuState) {
             mFabMenuState = true;
@@ -382,12 +363,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     };
 
     public void animateButtonObject(int duration, final boolean directionUp) {
-        // fab = 56dp, fab margin = 16dp
         float translationPx = getResources().getDimension(R.dimen.fab_size) + getResources().getDimension(R.dimen.fab_margin);
-        //int translationDp = 56 + 16 * 2;
-        //.d(TAG, "translationDp: " + translationDp);
-        // translationPx = Utility.dpToPx(translationDp);
-        //Log.d(TAG, "translationPx: " + translationPx);
 
         float translationPixels;
         if (directionUp) {
@@ -416,7 +392,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 if (directionUp) {
                     mMainFab.setImageResource(R.drawable.ic_keyboard_voice_white_24dp);
                 }
-                else if (!directionUp) {
+                else {
                     mAdditionalFab.setVisibility(View.INVISIBLE);
                     mOverlay.setVisibility(View.INVISIBLE);
                     mMainFab.setImageResource(R.drawable.ic_add_white_24dp);
@@ -456,7 +432,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         onPlayPause(path, mIsPlaying, 0);
     }
 
-
     private boolean hasRecordAudioPermission() {
         boolean hasPermission = (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED);
         Log.d(TAG, "RECORD_AUDIO permission: " + hasPermission);
@@ -482,7 +457,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
-        Log.d(TAG, "onRequestPermissionsResult");
         switch (requestCode) {
             case PERMISSIONS_REQUEST_RECORD_AUDIO: {
                 // If request is cancelled, the result arrays are empty.
@@ -502,7 +476,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         }
     }
-
     // Native Audio - Load library and Functions
     private native void setupAudio();
     private native void shutdownAudio();
