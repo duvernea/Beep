@@ -10,9 +10,9 @@ import android.view.View;
  * Created by duvernea on 10/25/16.
  */
 public class RecyclerViewEmptySupport extends RecyclerView {
-    private static final String TAG = RecyclerViewEmptySupport.class.getSimpleName();
+        private static final String TAG = RecyclerViewEmptySupport.class.getSimpleName();
 
-    private View emptyView;
+        private View emptyView;
 
     private AdapterDataObserver emptyObserver = new AdapterDataObserver() {
 
