@@ -113,7 +113,6 @@ public class SaveFragment extends Fragment implements LocationListener {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        Log.d(TAG, "onCreateView");
         mContext = getActivity();
         mActivity = getActivity();
 
@@ -187,10 +186,8 @@ public class SaveFragment extends Fragment implements LocationListener {
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO name, board, time, audio file, image uri, etc
                 insertContent();
                 int spinnerSelectedItemPosition  = mBoardSpinner.getSelectedItemPosition();
-                Log.d(TAG, "spinner selected item position " + spinnerSelectedItemPosition);
                 Board selected = mSpinnerItems.get(spinnerSelectedItemPosition);
                 int selectedKey = selected.getKey();
                 String boardname = selected.getName();
@@ -209,14 +206,12 @@ public class SaveFragment extends Fragment implements LocationListener {
         // Audio File Name path
         String recordDir = mContext.getFilesDir().getAbsolutePath();
         final String filePath = recordDir + "/" + mRecordFileName;
-        Log.d(TAG, "filePath: " + filePath);
 
         // Replay audio button
         mReplayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mIsPlaying = true;
-                Log.d(TAG, "mIsPlaying play: " + mIsPlaying);
                 ((RecordActivity) mActivity).onFileChange(filePath, 0, 0);
                 ((RecordActivity) mActivity).onPlayPause(filePath, mIsPlaying, 0);
             }
@@ -236,10 +231,8 @@ public class SaveFragment extends Fragment implements LocationListener {
         mImageHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                Log.d(TAG, "handler handleMessage");
                 Bundle reply = msg.getData();
                 Bitmap bitmap = reply.getParcelable(Constants.IMAGE_BITMAP_FROM_SERVICE);
-                // do whatever with the bundle here
                 mBeepImage.setImageBitmap(bitmap);
             }
         };
@@ -250,7 +243,6 @@ public class SaveFragment extends Fragment implements LocationListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "onActivityResult run");
         switch (requestCode) {
             case SELECT_PHOTO:
                 if (resultCode == Activity.RESULT_OK) {
@@ -262,9 +254,7 @@ public class SaveFragment extends Fragment implements LocationListener {
                     Intent intent = new Intent(mContext, LoadDownsampledBitmapImageService.class);
                     intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(mImageHandler));
                     intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_URI, mImageUri.toString());
-
                     intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
-
                     mContext.startService(intent);
                 }
         }
@@ -288,7 +278,6 @@ public class SaveFragment extends Fragment implements LocationListener {
         if (mImageUri != null) {
             outState.putString(IMAGE_FILE_URI, mImageUri.toString());
         }
-        Log.d(TAG, "onSaveInstanceState");
     }
     private void getAndPopulateBoardData() {
         // Get the data to populate the Board Spinner
@@ -302,8 +291,6 @@ public class SaveFragment extends Fragment implements LocationListener {
                 null,
                 null,
                 null);
-
-        Log.d(TAG, "Cursor count, #boards returned" + cursor.getCount());
 
         mNumberOfBoards = cursor.getCount();
         cursor.moveToFirst();
@@ -378,7 +365,6 @@ public class SaveFragment extends Fragment implements LocationListener {
     }
     private void createBoardNameDialog() {
 
-        Log.d(TAG, "create new board selected on spinner");
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 
         String dialogTitle = getResources().getString(R.string.dialog_new_beep_name);
@@ -418,19 +404,15 @@ public class SaveFragment extends Fragment implements LocationListener {
                 contentValues.put(BeepDbContract.BoardEntry.COLUMN_NAME, newBoardName);
                 long currentTime = Calendar.getInstance().getTimeInMillis();
                 contentValues.put(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED, currentTime);
-                // TODO - need default image resources to use
                 String tempImageUri = "";
                 contentValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, tempImageUri);
                 Uri uri = mContext.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, contentValues);
                 int insertedRow = (int) ContentUris.parseId(uri);
-                Log.d(TAG, "inserted Row into Board db: " + insertedRow);
-                //mSpinnerItems.add(mSpinnerItems.size()-1, newBoard);
                 Board newBoardz = new Board(insertedRow, newBoardName, tempImageUri, currentTime);
                 mSpinnerItems.add(mSpinnerItems.size() - 1, newBoardz);
                 mBoardSpinnerAdapter.notifyDataSetChanged();
                 mNumberOfBoards += 1;
                 Utility.updateWidgets(mActivity);
-
             }
         });
         builder.setNegativeButton(negativeButtonText, new DialogInterface.OnClickListener() {
@@ -441,7 +423,6 @@ public class SaveFragment extends Fragment implements LocationListener {
         });
         Dialog dialog = builder.create();
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-
         dialog.show();
     }
 
@@ -476,7 +457,6 @@ public class SaveFragment extends Fragment implements LocationListener {
             }
             else {
                 Log.d(TAG, "mostRecentLocation is NULL");
-
             }
         }
         catch (SecurityException e) {
@@ -524,7 +504,6 @@ public class SaveFragment extends Fragment implements LocationListener {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // TODO add call to image picker
                     Log.d(TAG, "permission granted, create intent");
                     Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                     photoPickerIntent.setType("image/*");
