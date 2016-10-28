@@ -20,12 +20,11 @@ public class AudioUtility {
 
     private static final String TAG = AudioUtility.class.getSimpleName();
 
+    // Encode an mp3 to a wav. Save the file as the more friendly "Beep Name" .mp3
     public static boolean encodeMp3(Context context, String filename, String beepName) {
-        Log.d(TAG, "filename: " + filename);
         BufferedOutputStream outputStream;
         final int OUTPUT_STREAM_BUFFER = 8192;
 
-        // Android Lame Encoder testing
         String audioDir = context.getFilesDir().getAbsolutePath();
         String audioPath = audioDir + "/" + filename;
         File input = new File(audioPath);
@@ -53,7 +52,6 @@ public class AudioUtility {
             e.printStackTrace();
             return false;
         }
-
         int bytesRead = 0;
 
         short[] buffer_l = new short[CHUNK_SIZE];
@@ -67,65 +65,47 @@ public class AudioUtility {
                 if (channels == 2) {
 
                     bytesRead = waveReader.read(buffer_l, buffer_r, CHUNK_SIZE);
-                    Log.d(TAG, "bytes read=" + bytesRead);
-
                     if (bytesRead > 0) {
 
                         int bytesEncoded = 0;
                         bytesEncoded = androidLame.encode(buffer_l, buffer_r, bytesRead, mp3Buf);
-                        Log.d(TAG, "bytes encoded=" + bytesEncoded);
-
                         if (bytesEncoded > 0) {
                             try {
-                                Log.d(TAG, "writing mp3 buffer to outputstream with " + bytesEncoded + " bytes");
                                 outputStream.write(mp3Buf, 0, bytesEncoded);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
                         }
-
                     } else break;
                 } else {
 
                     bytesRead = waveReader.read(buffer_l, CHUNK_SIZE);
-                    Log.d(TAG,"bytes read=" + bytesRead);
 
                     if (bytesRead > 0) {
                         int bytesEncoded = 0;
 
                         bytesEncoded = androidLame.encode(buffer_l, buffer_l, bytesRead, mp3Buf);
-                        Log.d(TAG,"bytes encoded=" + bytesEncoded);
 
                         if (bytesEncoded > 0) {
                             try {
-                                Log.d(TAG, "writing mp3 buffer to outputstream with " + bytesEncoded + " bytes");
                                 outputStream.write(mp3Buf, 0, bytesEncoded);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
                         }
-
                     } else break;
                 }
-
-
+                
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
-        Log.d(TAG, "flushing final mp3buffer");
         int outputMp3buf = androidLame.flush(mp3Buf);
-        Log.d(TAG, "flushed " + outputMp3buf + " bytes");
 
         if (outputMp3buf > 0) {
             try {
-                Log.d(TAG,"writing final mp3buffer to outputstream");
                 outputStream.write(mp3Buf, 0, outputMp3buf);
-                Log.d(TAG,"closing output stream");
                 outputStream.close();
-                Log.d(TAG, "Output mp3 saved");
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
