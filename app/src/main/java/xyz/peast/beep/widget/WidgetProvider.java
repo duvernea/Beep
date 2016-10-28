@@ -25,10 +25,7 @@ public class WidgetProvider extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
 
-        Log.d(TAG, "onUpdate, WidgetProvider");
-
         final int N = appWidgetIds.length;
-
 
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int appWidgetId : appWidgetIds) {
@@ -44,25 +41,20 @@ public class WidgetProvider extends AppWidgetProvider {
             setRemoteAdapter(context, views);
             views.setEmptyView(R.id.widget_listview, R.id.empty_board_listview);
 
-
             Intent clickIntentTemplate = new Intent(context, BoardActivity.class);
             PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
                     .addNextIntentWithParentStack(clickIntentTemplate)
                     .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
             views.setPendingIntentTemplate(R.id.widget_listview, clickPendingIntentTemplate);
 
-
-
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
 
-            // TODO possibly move this elsewhere?  only should execute when data updated
+            // TODO - possibly move this elsewhere?  only should execute when data updated
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_listview);
         }
-
     }
     private void setRemoteAdapter(Context context, @NonNull final RemoteViews views) {
         views.setRemoteAdapter(R.id.widget_listview, new Intent(context, DetailWidgetRemoteViewsService.class));
-        Log.d(TAG, "setRemoteAdapter");
     }
 }
