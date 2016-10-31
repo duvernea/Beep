@@ -281,13 +281,13 @@ public class SaveFragment extends Fragment implements LocationListener {
     }
     private void getAndPopulateBoardData() {
         // Get the data to populate the Board Spinner
-        String[] mProjection =
-                {
-                        BeepDbContract.BoardEntry._ID,
-                        BeepDbContract.BoardEntry.COLUMN_NAME
-                };
+//        String[] mProjection =
+//                {
+//                        BeepDbContract.BoardEntry._ID,
+//                        BeepDbContract.BoardEntry.COLUMN_NAME
+//                };
         Cursor cursor = mContext.getContentResolver().query(BeepDbContract.BoardEntry.CONTENT_URI,
-                mProjection,
+                Constants.BOARD_COLUMNS,
                 null,
                 null,
                 null);

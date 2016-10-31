@@ -49,15 +49,16 @@ public class RecordActivity extends AppCompatActivity
 
     @Override
     public void onRecordNextButton() {
-        EditFragment editFragment = new EditFragment();
+        //EditFragment editFragment = new EditFragment();
+        SaveFragment saveFragment = new SaveFragment();
 
         Bundle bundle = new Bundle();
         bundle.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
-        editFragment.setArguments(bundle);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        saveFragment.setArguments(bundle);
         transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
                 R.anim.enter_from_left, R.anim.exit_to_right);
-        transaction.replace(R.id.record_container, editFragment, SAVE_FRAGMENT_TAG);
+        transaction.replace(R.id.record_container, saveFragment, SAVE_FRAGMENT_TAG);
         transaction.addToBackStack(EDIT_FRAGMENT_TAG);
         transaction.commit();
     }
