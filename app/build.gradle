@@ -3,8 +3,26 @@ apply plugin: 'com.android.model.application'
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 def superpowered_sdk_path = properties.getProperty('superpowered.dir')
+def signConf // signing configuration for release build
+Properties signConfProperties = new Properties()
+signConfProperties.load(project.rootProject.file('gradle.properties').newDataInputStream())
 
 model {
+    android.signingConfigs {
+        create("test") {
+            storeFile = signConfProperties.getProperty("RELEASE_STORE_FILE")
+            storePassword = signConfProperties.getProperty("RELEASE_STORE_PASSWORD")
+            keyAlias = signConfProperties.getProperty("RELEASE_KEY_ALIAS")
+            keyPassword = signConfProperties.getProperty("RELEASE_KEY_PASSWORD")
+            storeType = "jks"
+            signConf = it
+        }
+    }
+    android.buildTypes {
+        release {
+            signingConfig = signConf
+        }
+    }
     repositories {
         libs(PrebuiltLibraries) {
             superpowered { // this is where you declare the "superpowered" static library
@@ -43,6 +61,7 @@ model {
                 proguardFiles.add(file('proguard-rules.pro'))
             }
         }
+
     }
     android.ndk { // your application's native layer parameters
         moduleName = "SuperpoweredAudio"
