@@ -245,6 +245,9 @@ public class CreateBoardActivity extends AppCompatActivity {
         builder.setPositiveButton(positiveButtonText, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                if (input.getText().length() == 0) {
+                    Toast.makeText(mContext, "test", Toast.LENGTH_SHORT).show();
+                }
                 String newBeepName = input.getText().toString();
                 mBoardNameEditText.setText(newBeepName);
             }
@@ -255,10 +258,34 @@ public class CreateBoardActivity extends AppCompatActivity {
                 dialog.cancel();
             }
         });
-        Dialog dialog = builder.create();
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
-        dialog.show();
+        final AlertDialog boardNameDialog = builder.create();
+
+        boardNameDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button b = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                b.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (input.getText().length() == 0) {
+                            Toast.makeText(mContext,
+                                    getResources().getString(R.string.dialog_no_text_entered_error),
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        String newBeepName = input.getText().toString();
+                        mBoardNameEditText.setText(newBeepName);
+                        boardNameDialog.dismiss();
+                    }
+                });
+            }
+        });
+
+        boardNameDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+        boardNameDialog.show();
+
     }
 
 }
