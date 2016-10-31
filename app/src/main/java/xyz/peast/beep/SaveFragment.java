@@ -311,7 +311,8 @@ public class SaveFragment extends Fragment implements LocationListener {
             cursor.moveToNext();
         }
         // Add item for creating new cursor
-        Board createNew = new Board(-1, "Create New", "N/A", 0);
+        // leave the date and image set to null for this - it doesn't actually
+        Board createNew = new Board(-1, "Create New", null, -1);
         mSpinnerItems.add(createNew);
 
         mBoardSpinnerAdapter = new BoardSpinnerAdapter(mContext,

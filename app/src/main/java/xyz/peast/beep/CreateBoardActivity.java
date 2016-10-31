@@ -8,6 +8,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -29,6 +30,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -150,6 +152,25 @@ public class CreateBoardActivity extends AppCompatActivity {
             // This will show the standard permission request dialog UI
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     PERMISSIONS_REQUEST_READ_EXTERNAL);
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_READ_EXTERNAL: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                    photoPickerIntent.setType("image/*");
+                    startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+                } else {
+                    // Permission Denied
+                    // TODO: What to do? Cannot use images
+                    Toast.makeText(mContext, getResources().getString(R.string.need_read_permission), Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
     // Callback after image selected in photo picker
