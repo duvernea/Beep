@@ -85,7 +85,8 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                 Utility.updateWidgets(mActivity);
 
                 String imageFileName = intent.getStringExtra(CompressImageUpdateDbService.IMAGE_SAVED_MESSAGE);
-                if (imageFileName == null) {
+                Log.d(TAG, "imageFIleName:" +imageFileName);
+                if (imageFileName == null || imageFileName.equals("")) {
                     // Do nothing, use the default imageview
                 }
                 else {

@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="xyz.peast.beep.MainActivity"
-    >
+    tools:context="xyz.peast.beep.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_height="?attr/actionBarSize"
@@ -38,18 +37,12 @@
 
     <include layout="@layout/content_main"/>
 
-    // note want overlay later on, when state is in Action Button display mode
-    // when in this mode, the onclicklisteners behind the overlay would be disabled
-    // and a click on the framelayout will remove overlay and back into standard mode
-
-
-    <FrameLayout
+        <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#88000000"
         android:visibility="invisible"
-        android:id="@+id/frame_overlay"
-        android:fitsSystemWindows="true">
+        android:id="@+id/frame_overlay">
         <TextView
             android:id="@+id/fab_textview_record_beep"
             android:layout_width="wrap_content"
