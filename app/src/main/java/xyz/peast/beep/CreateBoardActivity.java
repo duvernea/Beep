@@ -67,6 +67,10 @@ public class CreateBoardActivity extends AppCompatActivity {
     private EditText mBoardNameEditText;
     private AdView mAdView;
 
+    //onSaveInstanceState
+    private static final String SELECTED_IMAGE_URI="selected_image_uri";
+    private static final String SELECTED_IMAGE_PATH="selected_image_path";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,6 +141,15 @@ public class CreateBoardActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        if (savedInstanceState != null) {
+            String mImageUriString = savedInstanceState.getString(SELECTED_IMAGE_URI);
+            if (mImageUriString != null) {
+                mImageUri = Uri.parse(mImageUriString);
+                mImagePath = savedInstanceState.getString(SELECTED_IMAGE_PATH);
+                displayDownsampledImage();
+            }
+        }
     }
     private void requestReadExternalPermission(){
 
@@ -180,16 +193,9 @@ public class CreateBoardActivity extends AppCompatActivity {
         switch (requestCode) {
             case SELECT_PHOTO:
                 if (resultCode == Activity.RESULT_OK) {
-
                     mImageUri = data.getData();
                     mImagePath = Utility.getRealPathFromURI(mContext, mImageUri);
-                    int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
-                    Intent intent = new Intent(mContext, LoadDownsampledBitmapImageService.class);
-                    intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(mImageHandler));
-                    intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_URI, mImageUri.toString());
-                    intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
-
-                    mContext.startService(intent);
+                    displayDownsampledImage();
                 }
         }
     }
@@ -286,6 +292,25 @@ public class CreateBoardActivity extends AppCompatActivity {
 
         boardNameDialog.show();
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mImageUri != null) {
+            outState.putString(SELECTED_IMAGE_PATH, mImagePath);
+            outState.putString(SELECTED_IMAGE_URI, mImageUri.toString());
+        }
+    }
+
+    private void displayDownsampledImage() {
+        int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
+        Intent intent = new Intent(mContext, LoadDownsampledBitmapImageService.class);
+        intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(mImageHandler));
+        intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_URI, mImageUri.toString());
+        intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
+
+        mContext.startService(intent);
     }
 
 }
