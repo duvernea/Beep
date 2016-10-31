@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_height="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            >
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/color_logo"
+                android:contentDescription="@string/app_name"
+                android:layout_gravity="center_horizontal"
+                android:adjustViewBounds="true"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                />
+
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/content_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_marginLeft="@dimen/tablet_margin_land"
+        android:layout_marginRight="@dimen/tablet_margin_land"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="?android:attr/listPreferredItemHeight"
+                android:id="@+id/board_header"
+                android:background="@color/colorPrimary">
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:id="@+id/board_imageview"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="@string/board_image_content_description"
+                    android:src="@drawable/beep_item_temp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="@dimen/board_image_activity_margin_top_bottom"
+                    android:layout_marginBottom="@dimen/board_image_activity_margin_top_bottom"
+                    android:transitionName="@string/board_image_trans"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/board_name_textview"
+                    android:textColor="@android:color/white"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="24sp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
+                    android:gravity="center_vertical" />
+            </LinearLayout>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:id="@+id/random_beep_button"
+                android:layout_margin="16dp"
+                android:text="@string/random_button_text"
+                android:textColor="@color/white_ee"
+                android:textSize="36sp"
+                android:background="@drawable/btn_ripple_effect"
+                android:drawableLeft="@drawable/random_button"
+                android:drawableStart="@drawable/random_button"
+                android:paddingLeft="@dimen/button_icon_padding_to_edge"
+                android:paddingRight="20dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                />
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/beeps_recyclerview"/>
+
+            <!--<GridView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:numColumns="3"-->
+            <!--android:horizontalSpacing="2dp"-->
+            <!--android:padding="2dp"-->
+            <!--android:background="@android:color/darker_gray"-->
+            <!--/>-->
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_mic_white_48dp"
+        android:contentDescription="@string/fab_record_beep_text"
+        />
+</android.support.design.widget.CoordinatorLayout>
