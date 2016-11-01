@@ -5,12 +5,13 @@
     android:background="@drawable/view_border_frame"
     android:padding="1dp">
 
-    <ImageView
+    <xyz.peast.beep.views.SquareImageView
         android:src="@drawable/beep_item_temp"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/beep_imageview"
         android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
         android:contentDescription="@string/beep_image_content_description"/>
     <View
         android:layout_width="match_parent"
