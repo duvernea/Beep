@@ -12,6 +12,8 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import xyz.peast.beep.Constants;
 import xyz.peast.beep.MainActivity;
 import xyz.peast.beep.R;
@@ -50,8 +52,7 @@ public class BeepAdapter extends CursorAdapter {
         else {
             String imageDir = context.getFilesDir().getAbsolutePath();
             String imagePath = imageDir + "/" + beepImage;
-            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-            viewHolder.mBeepImageView.setImageBitmap(bitmap);
+            Glide.with(context).load(imagePath).into(viewHolder.mBeepImageView);
         }
     }
     public static class ViewHolder {
