@@ -52,7 +52,7 @@ public class BeepAdapter extends CursorAdapter {
         else {
             String imageDir = context.getFilesDir().getAbsolutePath();
             String imagePath = imageDir + "/" + beepImage;
-            Glide.with(context).load(imagePath).into(viewHolder.mBeepImageView);
+            Glide.with(context).load(imagePath).centerCrop().into(viewHolder.mBeepImageView);
         }
     }
     public static class ViewHolder {
