@@ -100,11 +100,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
-        // if first time run, populate database with mock data
-//        if (mSharedPrefs.getBoolean(Constants.SHARED_PREF_FIRST_RUN, true)) {
-//            InsertData.insertData(this);
-//            InsertData.insertSoundFile(this);
-//        }
+        // if first time run, add My Boards
+        if (mSharedPrefs.getBoolean(Constants.SHARED_PREF_FIRST_RUN, true)) {
+            InsertData.insertMyBeepsBoard(this);
+        }
 
         // Set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

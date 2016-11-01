@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Calendar;
 import java.util.UUID;
 
 import xyz.peast.beep.data.BeepDbContract;
@@ -27,7 +28,7 @@ public class InsertData {
 
     public static final String TAG = InsertData.class.getSimpleName();
 
-    static void insertData(Context context) {
+    static void insertMockData(Context context) {
         context.getContentResolver().delete(BeepDbContract.BoardEntry.CONTENT_URI,null, null);
         context.getContentResolver().delete(BeepDbContract.BeepEntry.CONTENT_URI,null, null);
 
@@ -213,5 +214,16 @@ public class InsertData {
             e.printStackTrace();
         }
         return uniqueID;
+    }
+    public static void insertMyBeepsBoard(Context context) {
+
+        ContentValues boardValues = new ContentValues();
+        boardValues.put(BeepDbContract.BoardEntry.COLUMN_NAME, "My Beeps");
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+
+        boardValues.put(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED, currentTime);
+
+        Uri myBeepsBoard = context.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, boardValues);
+        int myBoardsKey = (int) ContentUris.parseId(myBeepsBoard);
     }
 }
