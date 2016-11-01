@@ -422,6 +422,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 values,
                 whereClause,
                 whereArgs);
+        getLoaderManager().restartLoader(TOP_BEEPS_LOADER, null, MainActivity.this );
 
         String recordDir = mContext.getFilesDir().getAbsolutePath();
         String path = recordDir + "/" + audioFileName;
