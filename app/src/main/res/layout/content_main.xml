@@ -46,7 +46,9 @@
                 android:textColor="@color/white_ee"
                 android:text="@string/no_beeps_recorded_msg"
                 android:visibility="gone"
-                android:layout_marginLeft="8dp"/>
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"/>
         </LinearLayout>
         <TextView
             style="@style/TextAppearance.AppCompat.Title"
