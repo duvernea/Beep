@@ -4,7 +4,8 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="?android:attr/listPreferredItemHeight">
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:background="@drawable/boards_list_background">
 
     <ImageView
         android:layout_width="60dp"
@@ -25,5 +26,6 @@
         android:layout_gravity="center_vertical"
         android:textSize="@dimen/board_list_item_name_text_size"
         android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"/>
+        android:layout_marginStart="16dp"
+        android:textColor="#666666"/>
 </LinearLayout>
