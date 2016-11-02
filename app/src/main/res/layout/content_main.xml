@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/content_main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_main"
     tools:context="xyz.peast.beep.MainActivity"
@@ -15,21 +15,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="8dp">
+        android:paddingBottom="8dp"
+        android:background="#FFFFFF">
+        <TextView
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_top_beeps"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/top_beeps_background"
-            android:paddingBottom="8dp"
-            android:paddingTop="4dp">
-            <TextView
-                style="@style/TextAppearance.AppCompat.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_top_beeps"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp" />
+            android:background="@drawable/top_beeps_background">
+
             <GridView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -46,23 +48,21 @@
                 android:visibility="gone"
                 android:layout_marginLeft="8dp"/>
         </LinearLayout>
-
+        <TextView
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_boards"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:divider="@drawable/line_divider"
-            android:showDividers="middle|end">
-            <TextView
-                style="@style/TextAppearance.AppCompat.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_boards"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:paddingBottom="8dp"/>
+            android:paddingBottom="8dp">
+
             <xyz.peast.beep.views.RecyclerViewEmptySupport
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
