@@ -4,8 +4,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="?android:attr/listPreferredItemHeight"
-    android:background="@drawable/widget_boards_list_background">
+    android:minHeight="?android:attr/listPreferredItemHeight">
 
     <ImageView
         android:layout_width="60dp"

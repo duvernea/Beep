@@ -31,16 +31,22 @@
     </FrameLayout>
     <FrameLayout
         android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@drawable/line_divider_white"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="@color/colorPrimary"
         android:id="@+id/board_widget_list_framelayout">
+
         <ListView
             android:id="@+id/widget_listview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@null"
-            android:dividerHeight="0dp"
+            android:divider="@drawable/line_divider_white"
+            android:dividerHeight="1px"
             tools:listitem="@layout/board_list_item_widget"/>
         <TextView
             android:layout_width="wrap_content"
