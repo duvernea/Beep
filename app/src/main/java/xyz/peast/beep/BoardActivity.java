@@ -221,6 +221,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, RecordActivity.class);
+                intent.putExtra(RecordActivity.BOARD_ORIGIN_KEY, mBoardKey);
                 startActivity(intent);            }
         });
     }

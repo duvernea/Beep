@@ -43,6 +43,10 @@ public class RecordActivity extends AppCompatActivity
     public static final String BOARD_NAME = "board_name";
     public static final String BOARD_KEY = "board_key";
 
+    // Input intent extras
+    public static final String BOARD_ORIGIN_KEY = "board_origin_key";
+    private int mBoardOriginKey;
+
     // Audio
     private boolean mAudioState = false;
     private static String mRecordFileName;
@@ -94,6 +98,20 @@ public class RecordActivity extends AppCompatActivity
 
         mContext = this;
 
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            if (extras.containsKey(BOARD_ORIGIN_KEY)) {
+                mBoardOriginKey = extras.getInt(BOARD_ORIGIN_KEY);
+            }
+        }
+        else {
+            mBoardOriginKey = -1;
+        }
+        if (savedInstanceState != null) {
+            mBoardOriginKey = savedInstanceState.getInt(BOARD_ORIGIN_KEY);
+        }
+        Log.d(TAG, "board origin key: " + mBoardOriginKey);
+
         if (savedInstanceState == null) {
             mRecordFileName = UUID.randomUUID().toString();
             Bundle bundle = new Bundle();
@@ -127,9 +145,10 @@ public class RecordActivity extends AppCompatActivity
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         outState.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
+        outState.putInt(BOARD_ORIGIN_KEY, mBoardOriginKey);
     }
 
     // Callback from Native
