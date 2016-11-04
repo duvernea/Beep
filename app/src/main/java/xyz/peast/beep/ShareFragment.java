@@ -47,6 +47,8 @@ public class ShareFragment extends Fragment {
     private String mNewTempFilePath;
     private String mRecordFileName;
 
+    private String mBeepMp3Path;
+
     public ShareFragment() {
         // Required empty public constructor
     }
@@ -103,9 +105,9 @@ public class ShareFragment extends Fragment {
             public void onClick(View v) {
 
                 String audioPath = mContext.getFilesDir().getAbsolutePath();
-                String beepMp3Path = audioPath + "/" + mBeepName + ".mp3";
+                mBeepMp3Path = audioPath + "/" + mBeepName + ".mp3";
                 //audioPath += "/" + mRecordFileName;
-                File beepMp3File = new File(beepMp3Path);
+                File beepMp3= new File(mBeepMp3Path);
 
                 Uri fileUri;
                 //= Uri.parse(audioPath);
@@ -113,7 +115,7 @@ public class ShareFragment extends Fragment {
                     fileUri = FileProvider.getUriForFile(
                             mContext,
                             "xyz.peast.beep.fileprovider",
-                            beepMp3File);
+                            beepMp3);
                 } catch (IllegalArgumentException e) {
                     fileUri = null;
                     Log.e("File Selector",
@@ -156,11 +158,13 @@ public class ShareFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "onActivityResult");
 
         if (requestCode == SHARE_BEEP) {
+
             // Make sure the request was successful
-            if (resultCode == Activity.RESULT_OK) {
-                File file = new File(mNewTempFilePath);
+            if (resultCode == Activity.RESULT_OK || resultCode == Activity.RESULT_CANCELED) {
+                File file = new File(mBeepMp3Path);
                 boolean deleted = file.delete();
 
                 Intent intent = new Intent(mContext, BoardActivity.class);
