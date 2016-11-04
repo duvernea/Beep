@@ -89,11 +89,18 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:text="Re-play"
+        android:text="Replay"
         android:id="@+id/replay_button"
         android:layout_below="@+id/image_title_board_linearlayout"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"/>
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="16dp"
+        android:drawableLeft="@drawable/ic_play_arrow_black_48dp"
+        android:drawableStart="@drawable/ic_play_arrow_black_48dp"
+        android:paddingLeft="@dimen/button_icon_padding_to_edge"
+        android:paddingStart="@dimen/button_icon_padding_to_edge"
+        android:textSize="@dimen/button_text_size"
+        android:textAllCaps="false"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
