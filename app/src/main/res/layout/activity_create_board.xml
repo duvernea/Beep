@@ -114,8 +114,9 @@
                         android:id="@+id/board_name_edittext"
                         android:singleLine="true"
                         android:selectAllOnFocus="true"
-                        android:focusableInTouchMode="false" />
-
+                        android:focusableInTouchMode="false"
+                        android:hint="@string/edittext_hint_text"
+                        android:textColorHint="@color/colorPrimaryDark"/>
                 </LinearLayout>
             </LinearLayout>
 

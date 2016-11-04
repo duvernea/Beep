@@ -132,6 +132,13 @@ public class CreateBoardActivity extends AppCompatActivity {
         mCreateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String boardName = mBoardNameEditText.getText().toString().trim();
+
+                if(boardName.isEmpty()) {
+                    String toastMsg = getResources().getString(R.string.no_board_name_entered_msg);
+                    Toast.makeText(mContext, toastMsg, Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 insertBoardContent();
             }
         });
