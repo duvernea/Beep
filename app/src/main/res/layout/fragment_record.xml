@@ -7,32 +7,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".RecordActivity">
-    <android.opengl.GLSurfaceView
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:id="@+id/glsurface_view"
+        android:layout_centerInParent="true"
         android:layout_alignParentTop="true"
-        android:layout_margin="8dp"
-        android:maxWidth="500dp"/>
-    <ProgressBar
-        android:id="@+id/progressbar_level"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/glsurface_view"
-        />
-    <!--<SurfaceView-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="200dp"-->
-    <!--android:id="@+id/waveform_surface"-->
-    <!--android:layout_margin="8dp"-->
-    <!--android:layout_below="@id/glsurface_view"-->
-    <!--android:visibility="invisible"-->
-    <!--/>-->
+        android:id="@+id/play_button_frame"
+        >
+        <Button
+            android:id="@+id/play_button"
+            android:textSize="@dimen/button_text_size"
+            android:layout_width="160dp"
+            android:layout_height="64dp"
+            android:text="@string/play_button_text"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            android:drawableLeft="@drawable/ic_play_arrow_black_48dp"
+            android:drawableStart="@drawable/ic_play_arrow_black_48dp"
+            android:paddingLeft="@dimen/button_icon_padding_to_edge"
+            android:paddingStart="@dimen/button_icon_padding_to_edge"
+            android:textAllCaps="false"/>
+
+
+    </FrameLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/progressbar_level"
+        android:layout_below="@+id/play_button_frame"
         android:id="@+id/button_frame_layout"
         android:orientation="horizontal"
         android:gravity="center_horizontal">
@@ -81,24 +84,6 @@
             android:layout_weight="1"
             android:textAllCaps="false" />
     </LinearLayout>
-    <Button
-        android:id="@+id/play_button"
-        android:textSize="@dimen/button_text_size"
-        android:layout_width="150dp"
-        android:layout_height="58dp"
-        android:text="PLAY"
-        android:layout_below="@id/button_frame_layout"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="30dp" />
-    <Button
-        android:id="@+id/createwavtest_button"
-        android:textSize="@dimen/button_text_size"
-        android:layout_width="150dp"
-        android:layout_height="58dp"
-        android:text="createWavTest"
-        android:layout_below="@id/play_button"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="20dp" />
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adview"

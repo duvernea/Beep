@@ -43,7 +43,6 @@ public class RecordFragment extends Fragment {
     private Button mPlayButton;
     private Button mNextButton;
     private Button mRedoButton;
-    private Button mCreateWavButton;
 
     // Menu State
     // false = initial state, true = first recording complete
@@ -52,13 +51,7 @@ public class RecordFragment extends Fragment {
     // Audio
     private boolean mIsRecording = false;
     private boolean mIsPlaying =false;
-    private static final int MAX_DIPLAYED_POWER=70;
-    private static final int MIN_DIPLAYED_POWER=30;
-    private double lastRMSValue=0;
-    private ProgressBar mProgressBar;
 
-    private GLSurfaceView mGlSurfaceView;
-    private boolean mRendererSet = false;
     private String mRecordFilePath;
 
     public interface RecordCallback{
@@ -79,12 +72,8 @@ public class RecordFragment extends Fragment {
 
             mRedoButton = (Button) rootView.findViewById(R.id.redo_record_button);
             mNextButton = (Button) rootView.findViewById(R.id.next_button);
-            mCreateWavButton = (Button) rootView.findViewById(R.id.createwavtest_button);
-            mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressbar_level);
             //mProgressBar.setMax(32768*32768/2);  // 32768 = 16 bit signed int max
-            double powerdB = 10f*Math.log10(32768*32768/2);
-            mProgressBar.setMax(MAX_DIPLAYED_POWER);
-            mProgressBar.setScaleY(3f);
+
 
             mAdView = (AdView) rootView.findViewById(R.id.adview);
             AdRequest adRequest = new AdRequest.Builder()
@@ -108,57 +97,7 @@ public class RecordFragment extends Fragment {
             mRecordFilePath = recordDir + "/" + uniqueID;
             ((RecordActivity) mActivity).setRecordPath(mRecordFilePath);
 
-            mCreateWavButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ((RecordActivity) mActivity).createWav();
-                }
-            });
 
-            //SurfaceView surfaceView = (SurfaceView) findViewById(R.id.waveform_surface);
-            mGlSurfaceView = (GLSurfaceView) rootView.findViewById(R.id.glsurface_view);
-            mGlSurfaceView.setEGLContextClientVersion(2);
-            //mGlSurfaceView = new GLSurfaceView(this);
-            mGlSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-
-            final RendererWrapper rendererWrapper = new RendererWrapper(mContext);
-            mGlSurfaceView.setRenderer(rendererWrapper);
-            mGlSurfaceView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (event != null) {
-                        // normalized back to openGL -1 to +1 scale
-                        final float normalizedX = (event.getX() / (float) v.getWidth()) * 2 - 1;
-                        final float normalizedY = (event.getY() / (float) v.getHeight()) * 2 - 1;
-
-                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                            mGlSurfaceView.queueEvent(new Runnable() {
-                                @Override
-                                public void run() {
-                                    rendererWrapper.handleTouchPress(normalizedX, normalizedY);
-                                }
-                            });
-                        } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                            mGlSurfaceView.queueEvent(new Runnable() {
-                                @Override
-                                public void run() {
-                                    rendererWrapper.handleTouchDrag(normalizedX, normalizedY);
-                                }
-                            });
-                        }
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            });
-            mRendererSet = true;
-            // Rendering mode is CONTINUOUS by default
-            //mGlSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
-            mGlSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-
-            // This only calls ondrawFrame 1 time
-            mGlSurfaceView.requestRender();
             mRecordButton = (Button) rootView.findViewById(R.id.record_button);
             mRecordButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -212,7 +151,6 @@ public class RecordFragment extends Fragment {
         mIsPlaying =false;
         ((RecordActivity) mActivity).setupAudio();
         resetMenuState(mMenuState);
-        mGlSurfaceView.onResume();
     }
 
     private void setMenuState(boolean state) {

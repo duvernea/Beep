@@ -30,6 +30,8 @@
     <string name="beep_image_content_description">Image that represents this beep</string>
     <string name="beep_image_edit_content_description">This is image that represents this beep. Click here to change</string>
     <string name="ad_content_description">This is an advertisement</string>
+    <string name="play_button_text">Play</string>
+    <string name="replay_button_text">Replay</string>
 
     <string name="need_external_permission">Need permission to read device image files</string>
     // Save Fragment

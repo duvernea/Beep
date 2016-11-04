@@ -89,20 +89,20 @@
             </LinearLayout>
         </LinearLayout>
     <Button
-        android:layout_width="match_parent"
+        android:layout_width="160dp"
         android:layout_height="64dp"
-        android:text="Replay"
+        android:text="@string/replay_button_text"
         android:id="@+id/replay_button"
         android:layout_below="@+id/image_title_board_linearlayout"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
         android:layout_marginBottom="16dp"
+        android:layout_gravity="center_horizontal"
         android:drawableLeft="@drawable/ic_play_arrow_black_48dp"
         android:drawableStart="@drawable/ic_play_arrow_black_48dp"
         android:paddingLeft="@dimen/button_icon_padding_to_edge"
         android:paddingStart="@dimen/button_icon_padding_to_edge"
         android:textSize="@dimen/button_text_size"
-        android:textAllCaps="false"/>
+        android:textAllCaps="false"
+        android:layout_centerHorizontal="true" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
