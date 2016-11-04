@@ -58,6 +58,7 @@ public class RecordActivity extends AppCompatActivity
         Bundle bundle = new Bundle();
         bundle.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
         editFragment.setArguments(bundle);
+        bundle.putInt(BOARD_ORIGIN_KEY, mBoardOriginKey);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
                 R.anim.enter_from_left, R.anim.exit_to_right);
