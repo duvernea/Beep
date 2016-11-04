@@ -425,11 +425,9 @@ public class SaveFragment extends Fragment implements LocationListener {
                 contentValues.put(BeepDbContract.BoardEntry.COLUMN_NAME, newBoardName);
                 long currentTime = Calendar.getInstance().getTimeInMillis();
                 contentValues.put(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED, currentTime);
-                String tempImageUri = "";
-                contentValues.put(BeepDbContract.BoardEntry.COLUMN_IMAGE, tempImageUri);
                 Uri uri = mContext.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, contentValues);
                 int insertedRow = (int) ContentUris.parseId(uri);
-                Board newBoardz = new Board(insertedRow, newBoardName, tempImageUri, currentTime);
+                Board newBoardz = new Board(insertedRow, newBoardName, null, currentTime);
                 mSpinnerItems.add(mSpinnerItems.size() - 1, newBoardz);
                 mBoardSpinnerAdapter.notifyDataSetChanged();
                 mNumberOfBoards += 1;
