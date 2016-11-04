@@ -32,6 +32,7 @@
     <string name="ad_content_description">This is an advertisement</string>
     <string name="play_button_text">Play</string>
     <string name="replay_button_text">Replay</string>
+    <string name="record_your_beep_msg">Record your beep</string>
 
     <string name="need_external_permission">Need permission to read device image files</string>
     // Save Fragment

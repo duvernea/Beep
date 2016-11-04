@@ -13,8 +13,14 @@
         android:layout_height="200dp"
         android:layout_centerInParent="true"
         android:layout_alignParentTop="true"
-        android:id="@+id/play_button_frame"
-        >
+        android:id="@+id/play_button_frame">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/record_beep_msg"
+            android:text="@string/record_your_beep_msg"
+            android:layout_gravity="center"
+            android:textSize="36dp" />
         <Button
             android:id="@+id/play_button"
             android:textSize="@dimen/button_text_size"
@@ -27,7 +33,8 @@
             android:drawableStart="@drawable/ic_play_arrow_black_48dp"
             android:paddingLeft="@dimen/button_icon_padding_to_edge"
             android:paddingStart="@dimen/button_icon_padding_to_edge"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false"
+            android:visibility="gone"/>
 
 
     </FrameLayout>

@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -43,6 +44,7 @@ public class RecordFragment extends Fragment {
     private Button mPlayButton;
     private Button mNextButton;
     private Button mRedoButton;
+    private TextView mRecordBeepMsg;
 
     // Menu State
     // false = initial state, true = first recording complete
@@ -72,8 +74,7 @@ public class RecordFragment extends Fragment {
 
             mRedoButton = (Button) rootView.findViewById(R.id.redo_record_button);
             mNextButton = (Button) rootView.findViewById(R.id.next_button);
-            //mProgressBar.setMax(32768*32768/2);  // 32768 = 16 bit signed int max
-
+            mRecordBeepMsg = (TextView) rootView.findViewById(R.id.record_beep_msg);
 
             mAdView = (AdView) rootView.findViewById(R.id.adview);
             AdRequest adRequest = new AdRequest.Builder()
@@ -158,11 +159,15 @@ public class RecordFragment extends Fragment {
             mRecordButton.setVisibility(View.GONE);
             mRedoButton.setVisibility(View.VISIBLE);
             mNextButton.setVisibility(View.VISIBLE);
+            mRecordBeepMsg.setVisibility(View.GONE);
+            mPlayButton.setVisibility(View.VISIBLE);
         }
         else {
             mRecordButton.setVisibility(View.VISIBLE);
             mRedoButton.setVisibility(View.GONE);
             mNextButton.setVisibility(View.GONE);
+            mRecordBeepMsg.setVisibility(View.VISIBLE);
+            mPlayButton.setVisibility(View.GONE);
         }
     }
     private void resetMenuState(boolean state) {
@@ -170,6 +175,8 @@ public class RecordFragment extends Fragment {
             mRecordButton.setVisibility(View.GONE);
             mRedoButton.setVisibility(View.VISIBLE);
             mNextButton.setVisibility(View.VISIBLE);
+            mRecordBeepMsg.setVisibility(View.GONE);
+            mPlayButton.setVisibility(View.VISIBLE);
         }
         else {
         }
