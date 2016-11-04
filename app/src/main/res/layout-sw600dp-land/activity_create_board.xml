@@ -135,7 +135,7 @@
                     android:text="@string/cancel_button_text"
                     android:background="@color/recordButtonStopRecording"
                     android:textSize="@dimen/button_text_size"
-                    android:textColor="@color/white_ee"
+                    android:textColor="@android:color/white"
                     android:visibility="visible"
                     android:layout_weight="1"
                     android:textAllCaps="false"
@@ -145,7 +145,7 @@
                     android:layout_height="64dp"
                     android:id="@+id/create_button"
                     android:text="@string/save"
-                    android:textColor="@color/white_ee"
+                    android:textColor="@android:color/white"
 
                     android:textSize="@dimen/button_text_size"
                     android:background="@color/recordButtonStartRecording"

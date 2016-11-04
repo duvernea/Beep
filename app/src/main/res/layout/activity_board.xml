@@ -84,7 +84,7 @@
                 android:id="@+id/random_beep_button"
                 android:layout_margin="16dp"
                 android:text="@string/random_button_text"
-                android:textColor="@color/white_ee"
+                android:textColor="@android:color/white"
                 android:textSize="36sp"
                 android:background="@drawable/btn_ripple_effect"
                 android:drawableLeft="@drawable/random_button"
