@@ -18,7 +18,8 @@
     <string name="cancel_button_text">Cancel</string>
     <string name="need_read_permission">Need this permission to change photo</string>
     <string name="dialog_no_text_entered_error">Must enter a board name</string>
-
+    <string name="no_board_name_entered_msg">You need to enter a board name</string>
+"
 
     // Record Activity
     <string name="start_recording">Start Recording</string>
