@@ -105,6 +105,8 @@ public class SaveFragment extends Fragment implements LocationListener {
     private String mRecordFileName;
     private int mNumberOfBoards;
 
+    private int mBoardOriginKey;
+
     // SaveCallback interface - implemented in RecordActivity
     public interface SaveCallback{
         public void onSaveNextButton(String beepName, String audioFile, Uri imageUri,
@@ -121,6 +123,7 @@ public class SaveFragment extends Fragment implements LocationListener {
         // Record File Unique Name is generated in RecordActivity and passed into the Fragment
         Bundle bundle = this.getArguments();
         mRecordFileName = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME) + ".wav";
+        mBoardOriginKey = bundle.getInt(RecordActivity.BOARD_ORIGIN_KEY);
 
         // Get Location manager, so that GPS coordinates can be saved
         mLocationManager = (LocationManager)
@@ -218,8 +221,10 @@ public class SaveFragment extends Fragment implements LocationListener {
         });
         // Set the Image Uri, Path, and restore bitmap if previous state saved
         if (savedInstanceState != null) {
-            mImageUri = Uri.parse(savedInstanceState.getString(IMAGE_FILE_URI));
-            mImagePath = savedInstanceState.getString(IMAGE_FILE_PATH);
+            if (savedInstanceState.containsKey(IMAGE_FILE_URI)) {
+                mImageUri = Uri.parse(savedInstanceState.getString(IMAGE_FILE_URI));
+                mImagePath = savedInstanceState.getString(IMAGE_FILE_PATH);
+            }
         }
         if (mImagePath != null) {
             // Downsample bitmap
@@ -273,8 +278,10 @@ public class SaveFragment extends Fragment implements LocationListener {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(IMAGE_FILE_NAME, mImageFileName);
-        outState.putString(IMAGE_FILE_PATH, mImagePath);
+        if (mImageFileName != null) {
+            outState.putString(IMAGE_FILE_NAME, mImageFileName);
+            outState.putString(IMAGE_FILE_PATH, mImagePath);
+        }
         if (mImageUri != null) {
             outState.putString(IMAGE_FILE_URI, mImageUri.toString());
         }
@@ -293,20 +300,26 @@ public class SaveFragment extends Fragment implements LocationListener {
                 null);
 
         mNumberOfBoards = cursor.getCount();
+        Log.d(TAG, "Number of boards for spinner: " + mNumberOfBoards);
         cursor.moveToFirst();
         // Populate the Board Spinner
         mSpinnerItems = new ArrayList<Board>();
+        int position = -1;
 
         for(int i = 0; i < cursor.getCount(); i++){
-            String row = cursor.getString(
-                    cursor.getColumnIndex(BeepDbContract.BoardEntry.COLUMN_NAME));
-            String key = cursor.getString(
-                    cursor.getColumnIndex(BeepDbContract.BoardEntry._ID));
-            String image = cursor.getString(
-                    cursor.getColumnIndex(BeepDbContract.BoardEntry.COLUMN_IMAGE));
-            long date = cursor.getLong(
-                    cursor.getColumnIndex(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED));
-            Board board = new Board(Integer.parseInt(key), row, image, date);
+            String name = cursor.getString(Constants.BOARDS_COL_NAME);
+            String key = cursor.getString(Constants.BOARDS_BOARD_ID);
+            if (Integer.parseInt(key) == mBoardOriginKey) {
+                position = i;
+            }
+            String image = cursor.getString(Constants.BOARDS_COL_IMAGE);
+            long date = cursor.getLong(Constants.BOARD_COL_DATE);
+            Log.d(TAG, "BOARD");
+            Log.d(TAG, "name: " + name);
+            Log.d(TAG, "key: " + key);
+            Log.d(TAG, "image: " + image);
+            Log.d(TAG, "date: " + date);
+            Board board = new Board(Integer.parseInt(key), name, image, date);
             mSpinnerItems.add(board);
             cursor.moveToNext();
         }
@@ -319,6 +332,9 @@ public class SaveFragment extends Fragment implements LocationListener {
                 R.layout.spinner_row, R.id.spinner_item_textview, mSpinnerItems);
 
         mBoardSpinner.setAdapter(mBoardSpinnerAdapter);
+        if (position != -1) {
+            mBoardSpinner.setSelection(position);
+        }
     }
     private void createBeepNameDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
