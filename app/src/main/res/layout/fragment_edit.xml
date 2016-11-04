@@ -12,7 +12,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:visibility="visible"
-        android:textColor="@color/white_ee"
+        android:textColor="@android:color/white"
         android:layout_margin="20dp"/>
 
     <Button
@@ -24,7 +24,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:visibility="visible"
-        android:textColor="@color/white_ee"
+        android:textColor="@android:color/white"
         android:layout_margin="20dp"/>
 
     <Button
@@ -36,7 +36,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:visibility="visible"
-        android:textColor="@color/white_ee"
+        android:textColor="@android:color/white"
         android:layout_margin="20dp"/>
 
     <Button
@@ -48,7 +48,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:visibility="visible"
-        android:textColor="@color/white_ee"
+        android:textColor="@android:color/white"
         android:layout_margin="20dp"/>
 
     <Button
@@ -60,7 +60,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:visibility="visible"
-        android:textColor="@color/white_ee"
+        android:textColor="@android:color/white"
         android:layout_margin="20dp"/>
 
 </LinearLayout>
