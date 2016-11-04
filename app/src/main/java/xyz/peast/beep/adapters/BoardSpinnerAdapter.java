@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import xyz.peast.beep.R;
  * Created by duverneay on 8/4/16.
  */
 public class BoardSpinnerAdapter extends ArrayAdapter<Board> implements SpinnerAdapter {
+    private static final String TAG = BoardSpinnerAdapter.class.getSimpleName();
 
     private Context context;
     private ArrayList<Board> values;
@@ -73,12 +75,22 @@ public class BoardSpinnerAdapter extends ArrayAdapter<Board> implements SpinnerA
         }
         TextView tv=(TextView) v.findViewById(textViewResourceId);
         tv.setText(this.getItem(position).getName());
+        Log.d(TAG, "item at this position: " + getItem(position).getName());
         int numValues = values.size();
-        if (position == numValues - 1) {
+        Log.d(TAG, "numValues: " + numValues);
+        Log.d(TAG, "position: " + position);
+        if (getItem(position).getName().equals("Create New")) {
+            Log.d(TAG, "position == numValues -1");
             tv.setTextColor(Color.BLACK);
             tv.setTypeface(null, Typeface.BOLD);
             ImageView imageview = (ImageView) v.findViewById(R.id.create_new_board_icon);
             imageview.setVisibility(View.VISIBLE);
+        }
+        else {
+            tv.setTypeface(null, Typeface.NORMAL);
+            tv.setTextColor(tv.getTextColors().getDefaultColor());
+            ImageView imageview = (ImageView) v.findViewById(R.id.create_new_board_icon);
+            imageview.setVisibility(View.INVISIBLE);
         }
         return v;
     }
