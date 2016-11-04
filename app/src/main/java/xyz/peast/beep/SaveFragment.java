@@ -78,6 +78,7 @@ public class SaveFragment extends Fragment implements LocationListener {
     private Spinner mBoardSpinner;
     private ImageView mBeepImage;
     private Button mSaveButton;
+    private Button mDeleteButton;
     private EditText mBeepNameEditText;
     private Button mReplayButton;
     private AdView mAdView;
@@ -135,6 +136,7 @@ public class SaveFragment extends Fragment implements LocationListener {
         mSaveButton = (Button) rootView.findViewById(R.id.save_button);
         mBeepNameEditText = (EditText) rootView.findViewById(R.id.beep_name_edittext);
         mReplayButton = (Button) rootView.findViewById(R.id.replay_button);
+        mDeleteButton = (Button) rootView.findViewById(R.id.delete_button);
 
         // Initilize Ads
         mAdView = (AdView) rootView.findViewById(R.id.adview);
@@ -201,6 +203,14 @@ public class SaveFragment extends Fragment implements LocationListener {
                         boardname,
                         selectedKey
                 );
+            }
+        });
+        mDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mActivity.finish();
+                Intent intent = new Intent(mActivity, RecordActivity.class);
+                startActivity(intent);
             }
         });
         // Populate spinner with board data from database
