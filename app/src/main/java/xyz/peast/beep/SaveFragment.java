@@ -191,13 +191,21 @@ public class SaveFragment extends Fragment implements LocationListener {
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                String beepName = mBeepNameEditText.getText().toString().trim();
+
+                if(beepName.isEmpty()) {
+                    String toastMsg = getResources().getString(R.string.no_beep_name_entered_msg);
+                    Toast.makeText(mContext, toastMsg, Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 insertContent();
                 int spinnerSelectedItemPosition  = mBoardSpinner.getSelectedItemPosition();
                 Board selected = mSpinnerItems.get(spinnerSelectedItemPosition);
                 int selectedKey = selected.getKey();
                 String boardname = selected.getName();
 
-                ((SaveCallback) getActivity()).onSaveNextButton(mBeepNameEditText.getText().toString(),
+                ((SaveCallback) getActivity()).onSaveNextButton(beepName,
                         mRecordFileName,
                         mImageUri,
                         boardname,
