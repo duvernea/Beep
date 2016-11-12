@@ -125,6 +125,7 @@ public class SaveFragment extends Fragment implements LocationListener {
         Bundle bundle = this.getArguments();
         mRecordFileName = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME) + ".wav";
         mBoardOriginKey = bundle.getInt(RecordActivity.BOARD_ORIGIN_KEY);
+        Log.d(TAG, "mBoardOriginKey: " + mBoardOriginKey);
 
         // Get Location manager, so that GPS coordinates can be saved
         mLocationManager = (LocationManager)
@@ -305,13 +306,13 @@ public class SaveFragment extends Fragment implements LocationListener {
     }
     private void getAndPopulateBoardData() {
         // Get the data to populate the Board Spinner
-        String[] mProjection =
-                {
-                        BeepDbContract.BoardEntry._ID,
-                        BeepDbContract.BoardEntry.COLUMN_NAME
-                };
+//        String[] mProjection =
+//                {
+//                        BeepDbContract.BoardEntry._ID,
+//                        BeepDbContract.BoardEntry.COLUMN_NAME
+//                };
         Cursor cursor = mContext.getContentResolver().query(BeepDbContract.BoardEntry.CONTENT_URI,
-                mProjection,
+                Constants.BOARD_COLUMNS,
                 null,
                 null,
                 null);
