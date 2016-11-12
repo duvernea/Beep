@@ -69,6 +69,10 @@ public class RecordActivity extends AppCompatActivity
     }
     @Override
     public void onEditNextButton() {
+        String recordDir = mContext.getFilesDir().getAbsolutePath();
+        String recordFilePath = recordDir + "/" + mRecordFileName;
+        Log.d(TAG, "recordFilePath: " + recordFilePath);
+        createWav(recordFilePath + ".wav");
         SaveFragment saveFragment = new SaveFragment();
 
         Bundle bundle = new Bundle();
@@ -209,7 +213,7 @@ public class RecordActivity extends AppCompatActivity
     public native void setRecordPath(String path);
     public native void shutdownAudio();
     private native void startupAudio();
-    public native void createWav();
+    public native void createWav(String filepath);
     public native void setPitchShift(int pitchShift);
     public native void setReverse(boolean reverse);
 

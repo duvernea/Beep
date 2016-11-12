@@ -108,12 +108,6 @@ public class RecordFragment extends Fragment {
             mRecordFilePath = recordDir + "/" + uniqueID;
             ((RecordActivity) mActivity).setRecordPath(mRecordFilePath);
 
-            mCreateWavButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ((RecordActivity) mActivity).createWav();
-                }
-            });
 
             //SurfaceView surfaceView = (SurfaceView) findViewById(R.id.waveform_surface);
             mGlSurfaceView = (GLSurfaceView) rootView.findViewById(R.id.glsurface_view);
@@ -186,6 +180,7 @@ public class RecordFragment extends Fragment {
                     if (!mIsRecording) {
                         mIsPlaying = true;
                         Log.d(TAG, "mIsPlaying play: " + mIsPlaying);
+                        Log.d(TAG, "mRecordFilePath: " + mRecordFilePath + ".wav");
                         ((RecordActivity) mActivity).onFileChange(mRecordFilePath + ".wav", 0, 0);
                         ((RecordActivity) mActivity).onPlayPause(mRecordFilePath + ".wav", mIsPlaying, 0);
                     }

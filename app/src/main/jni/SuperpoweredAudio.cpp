@@ -2,6 +2,8 @@
 #include "jniapi.h.h"
 #include <SuperpoweredSimple.h>
 #include <SuperpoweredDecoder.h>
+#include <SuperpoweredTimeStretching.h>
+#include <SuperpoweredAudioBuffers.h>
 #include <jni.h>
 #include <stdio.h>
 #include <android/log.h>
@@ -204,40 +206,81 @@ void SuperpoweredAudio::onFxValue(int ivalue) {
             roll->enable(false);
     };
 }
-void SuperpoweredAudio::createWav() {
+void SuperpoweredAudio::createWav(const char *path) {
     const char * temppath = "/data/data/xyz.peast.beep/files/createwavtest.wav";
 
     const char *recordedFile = recordFileName.c_str();
     const char *testFile = "data/data/xyz.peast.beep/files/04505f9a-2ab1-496b-acd3-6f26d9466892.wav";
 
-
+    // Open the input file
 
     SuperpoweredDecoder *decoder = new SuperpoweredDecoder();
-    const char *openError = decoder->open(testFile, false, 0, 0);
+    // TODO - use actual file name
+    const char *openError = decoder->open(path, false, 0, 0);
     if (openError) {
         __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", openError);
         delete decoder;
         return;
     }
+    // Create the output WAV file.
     FILE *fd = createWAV(temppath, decoder->samplerate, 2);
 
-
-    // int buffer for values from decoder
+    /* Need to use variable size buffer chains for time stretching */
+    // 1.0f = playback rate, 8 = pitchshift
+    SuperpoweredTimeStretching *timeStretch = new SuperpoweredTimeStretching(decoder->samplerate);
+    timeStretch->setRateAndPitchShift(1.0f, 8);
+    // This buffer list will receive the time-stretched samples.
+    SuperpoweredAudiopointerList *outputBuffers = new SuperpoweredAudiopointerList(8, 16);
+    // Create a buffer for the 16-bit integer samples.
     short int *intBuffer = (short int *)malloc(decoder->samplesPerFrame * 2 * sizeof(short int) + 16384);
 
     // processing
     while (true) {
-        unsigned int samplesDecoded = decoder->samplesPerFrame;
+        // Decode one frame. samplesDecoded will be overwritten with the actual decoded number of samples
 
+        unsigned int samplesDecoded = decoder->samplesPerFrame;
         if (decoder->decode(intBuffer, &samplesDecoded) == SUPERPOWEREDDECODER_ERROR) break;
         if (samplesDecoded < 1) break;
 
-        fwrite(intBuffer, 1, samplesDecoded * 4, fd);
-    }
-    int numsamples = 44100*3;
+        // Create an input buffer for the time stretcher
+        SuperpoweredAudiobufferlistElement inputBuffer;
+        inputBuffer.samplePosition = decoder->samplePosition;
+        inputBuffer.startSample = 0;
+        inputBuffer.samplesUsed = 0;
+        inputBuffer.endSample = samplesDecoded;
+        inputBuffer.buffers[0] = SuperpoweredAudiobufferPool::getBuffer(samplesDecoded * 8 + 64);
+        inputBuffer.buffers[1] = inputBuffer.buffers[2] = inputBuffer.buffers[3] = NULL;
 
+        // Convert the decoded PCM samples from 16-bit integer to 32-bit floating point.
+        SuperpoweredShortIntToFloat(intBuffer, (float *) inputBuffer.buffers[0], samplesDecoded);
+
+        // Time stretching
+        timeStretch->process(&inputBuffer, outputBuffers);
+
+        // Do we have some output?
+        if (outputBuffers->makeSlice(0, outputBuffers->sampleLength)) {
+            while (true) {
+                // Iterate on every output slice.
+                // Get pointer to the output samples.
+                int numSamples = 0;
+                float *timeStretchedAudio = (float *) outputBuffers->nextSliceItem(&numSamples);
+                if (!timeStretchedAudio) break;
+
+                // Convert the time stretched PCM samples from 32-bit floating point to 16-bit integer.
+                SuperpoweredFloatToShortInt(timeStretchedAudio, intBuffer, numSamples);
+                // Write the audio to disk
+                fwrite(intBuffer, 1, numSamples * 4, fd);
+
+            };
+            // Clear the output buffer list.
+            outputBuffers->clear();
+        };
+    };
+    // Cleanup
     closeWAV(fd);
     delete decoder;
+    delete timeStretch;
+    delete outputBuffers;
     free(intBuffer);
 }
 
@@ -498,8 +541,12 @@ void Java_xyz_peast_beep_RecordActivity_setReverse(JNIEnv * __unused javaEnviron
 }
 //createWAV
 extern "C" JNIEXPORT
-void Java_xyz_peast_beep_RecordActivity_createWav(JNIEnv * javaEnvironment, jobject) {
-    myAudio->createWav();
+void Java_xyz_peast_beep_RecordActivity_createWav(JNIEnv * javaEnvironment, jobject, jstring filePath) {
+    const char *path = javaEnvironment->GetStringUTFChars(filePath, JNI_FALSE);
+    myAudio->createWav(path);
+    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio createWAV path", path);
+
+    javaEnvironment->ReleaseStringUTFChars(filePath, path);
 }
 
 
