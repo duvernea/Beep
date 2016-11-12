@@ -191,13 +191,21 @@ public class SaveFragment extends Fragment implements LocationListener {
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                String beepName = mBeepNameEditText.getText().toString().trim();
+
+                if(beepName.isEmpty()) {
+                    String toastMsg = getResources().getString(R.string.no_beep_name_entered_msg);
+                    Toast.makeText(mContext, toastMsg, Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 insertContent();
                 int spinnerSelectedItemPosition  = mBoardSpinner.getSelectedItemPosition();
                 Board selected = mSpinnerItems.get(spinnerSelectedItemPosition);
                 int selectedKey = selected.getKey();
                 String boardname = selected.getName();
 
-                ((SaveCallback) getActivity()).onSaveNextButton(mBeepNameEditText.getText().toString(),
+                ((SaveCallback) getActivity()).onSaveNextButton(beepName,
                         mRecordFileName,
                         mImageUri,
                         boardname,
@@ -229,20 +237,6 @@ public class SaveFragment extends Fragment implements LocationListener {
                 ((RecordActivity) mActivity).onPlayPause(filePath, mIsPlaying, 0);
             }
         });
-        // Set the Image Uri, Path, and restore bitmap if previous state saved
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey(IMAGE_FILE_URI)) {
-                mImageUri = Uri.parse(savedInstanceState.getString(IMAGE_FILE_URI));
-                mImagePath = savedInstanceState.getString(IMAGE_FILE_PATH);
-            }
-        }
-        if (mImagePath != null) {
-            // Downsample bitmap
-            Bitmap bitmap = Utility.subsampleBitmap(mContext, mImagePath, 360, 360);
-            // Center crop bitmap
-            mImageBitmap = Utility.centerCropBitmap(mContext, bitmap);
-            mBeepImage.setImageBitmap(mImageBitmap);
-        }
         mImageHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -251,6 +245,23 @@ public class SaveFragment extends Fragment implements LocationListener {
                 mBeepImage.setImageBitmap(bitmap);
             }
         };
+        // Set the Image Uri, Path, and restore bitmap if previous state saved
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(IMAGE_FILE_URI)) {
+                mImageUri = Uri.parse(savedInstanceState.getString(IMAGE_FILE_URI));
+            }
+            if (savedInstanceState.containsKey(IMAGE_FILE_PATH)) {
+                mImagePath = savedInstanceState.getString(IMAGE_FILE_PATH);
+            }
+            if (savedInstanceState.containsKey(IMAGE_FILE_NAME)) {
+                mImageFileName = savedInstanceState.getString(IMAGE_FILE_NAME);
+            }
+        }
+        if (mImagePath != null) {
+            // Downsample and display bitmap
+            loadImageView();
+        }
+
 
         return rootView;
     }
@@ -264,13 +275,7 @@ public class SaveFragment extends Fragment implements LocationListener {
 
                     mImageUri = data.getData();
                     mImagePath = Utility.getRealPathFromURI(mContext, mImageUri);
-                    int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
-
-                    Intent intent = new Intent(mContext, LoadDownsampledBitmapImageService.class);
-                    intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(mImageHandler));
-                    intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_URI, mImageUri.toString());
-                    intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
-                    mContext.startService(intent);
+                    loadImageView();
                 }
         }
     }
@@ -290,10 +295,12 @@ public class SaveFragment extends Fragment implements LocationListener {
         super.onSaveInstanceState(outState);
         if (mImageFileName != null) {
             outState.putString(IMAGE_FILE_NAME, mImageFileName);
-            outState.putString(IMAGE_FILE_PATH, mImagePath);
         }
         if (mImageUri != null) {
             outState.putString(IMAGE_FILE_URI, mImageUri.toString());
+        }
+        if (mImagePath != null) {
+            outState.putString(IMAGE_FILE_PATH, mImagePath);
         }
     }
     private void getAndPopulateBoardData() {
@@ -546,6 +553,15 @@ public class SaveFragment extends Fragment implements LocationListener {
                 }
             }
         }
+    }
+    private void loadImageView() {
+        int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
+
+        Intent intent = new Intent(mContext, LoadDownsampledBitmapImageService.class);
+        intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(mImageHandler));
+        intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_URI, mImageUri.toString());
+        intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
+        mContext.startService(intent);
     }
 
     // Required functions

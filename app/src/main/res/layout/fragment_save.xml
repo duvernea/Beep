@@ -70,7 +70,9 @@
                     android:id="@+id/beep_name_edittext"
                     android:singleLine="true"
                     android:selectAllOnFocus="true"
-                    android:focusableInTouchMode="false" />
+                    android:focusableInTouchMode="false"
+                    android:hint="@string/edittext_hint_text"
+                    android:textColorHint="@color/colorPrimaryDark"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -89,11 +91,18 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:text="Re-play"
+        android:text="Replay"
         android:id="@+id/replay_button"
         android:layout_below="@+id/image_title_board_linearlayout"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"/>
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="16dp"
+        android:drawableLeft="@drawable/ic_play_arrow_black_48dp"
+        android:drawableStart="@drawable/ic_play_arrow_black_48dp"
+        android:paddingLeft="@dimen/button_icon_padding_to_edge"
+        android:paddingStart="@dimen/button_icon_padding_to_edge"
+        android:textSize="@dimen/button_text_size"
+        android:textAllCaps="false"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -108,7 +117,7 @@
             android:text="@string/delete_button_text"
             android:background="@color/recordButtonStopRecording"
             android:textSize="@dimen/button_text_size"
-            android:textColor="@color/white_ee"
+            android:textColor="@android:color/white"
             android:visibility="visible"
             android:layout_weight="1"
             android:textAllCaps="false"
@@ -118,7 +127,7 @@
             android:layout_height="64dp"
             android:id="@+id/save_button"
             android:text="@string/save"
-            android:textColor="@color/white_ee"
+            android:textColor="@android:color/white"
 
             android:textSize="@dimen/button_text_size"
             android:background="@color/recordButtonStartRecording"
