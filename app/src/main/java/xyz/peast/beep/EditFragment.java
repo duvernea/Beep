@@ -31,8 +31,9 @@ public class EditFragment extends Fragment {
     String mRecordFilePath;
     Boolean mIsPlaying = false;
 
-    int mPlaybackRate=1;
+    int mPitchShift =1;
     boolean mReverse=false;
+
 
 
     @Override
@@ -51,6 +52,9 @@ public class EditFragment extends Fragment {
         mRecordFilePath = recordDir + "/" + mRecordFileName;
         Log.i(TAG, "recordfilepath: " + mRecordFilePath);
 
+        ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
+
+
         mNoEffectButton = (Button) rootView.findViewById(R.id.noeffect_button);
         mChipmunkButton = (Button) rootView.findViewById(R.id.chipmunk_button);
         mSlomoButton = (Button) rootView.findViewById(R.id.slomo_button);
@@ -60,20 +64,31 @@ public class EditFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "mIsPlaying start: " + mIsPlaying);
-                    mIsPlaying = true;
-                    ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
-                    ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+                mIsPlaying = true;
+                ((RecordActivity) mActivity).setPitchShift(0);
+                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
             }
         });
         mChipmunkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
-                mPlaybackRate -=1;
                 mReverse = !mReverse;
                 // TODO determine max and min shift
-                ((RecordActivity) mActivity).setPitchShift(mPlaybackRate);
-                ((RecordActivity) mActivity).setReverse(mReverse);
+                ((RecordActivity) mActivity).setPitchShift(8);
+                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+
+            }
+        });
+        mSlomoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
+                mReverse = !mReverse;
+                // TODO determine max and min shift
+                ((RecordActivity) mActivity).setPitchShift(-8);
+                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+
             }
         });
         return rootView;

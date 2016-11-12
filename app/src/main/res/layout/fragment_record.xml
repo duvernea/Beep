@@ -106,7 +106,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        ads:adSize="SMART_BANNER"
+        ads:adSize="FULL_BANNER"
         ads:adUnitId="@string/banner_ad_unit_id"
         android:contentDescription="@string/ad_content_description">
     </com.google.android.gms.ads.AdView>
