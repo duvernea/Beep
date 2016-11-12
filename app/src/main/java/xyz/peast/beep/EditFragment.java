@@ -26,6 +26,7 @@ public class EditFragment extends Fragment {
     Button mChipmunkButton;
     Button mSlomoButton;
     Button mEchoButton;
+    Button mNextButton;
 
     String mRecordFileName;
     String mRecordFilePath;
@@ -60,6 +61,9 @@ public class EditFragment extends Fragment {
         mSlomoButton = (Button) rootView.findViewById(R.id.slomo_button);
         mEchoButton = (Button) rootView.findViewById(R.id.echo_button);
 
+        mNextButton = (Button) rootView.findViewById(R.id.next_button);
+
+
         mNoEffectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,6 +95,17 @@ public class EditFragment extends Fragment {
 
             }
         });
+        mNextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleNextButtonPress();
+            }
+        });
         return rootView;
+    }
+
+
+    private void handleNextButtonPress() {
+        ((RecordFragment.RecordCallback) getActivity()).onRecordNextButton();
     }
 }
