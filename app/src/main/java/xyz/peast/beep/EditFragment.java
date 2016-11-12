@@ -35,6 +35,10 @@ public class EditFragment extends Fragment {
     int mPitchShift =1;
     boolean mReverse=false;
 
+    public interface NextCallback{
+        void onEditNextButton();
+    }
+
 
 
     @Override
@@ -106,6 +110,6 @@ public class EditFragment extends Fragment {
 
 
     private void handleNextButtonPress() {
-        ((RecordFragment.RecordCallback) getActivity()).onRecordNextButton();
+        ((EditFragment.NextCallback) getActivity()).onEditNextButton();
     }
 }

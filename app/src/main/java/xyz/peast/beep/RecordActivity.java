@@ -23,7 +23,8 @@ import java.util.UUID;
  * Created by duvernea on 7/30/16.
  */
 public class RecordActivity extends AppCompatActivity
-        implements RecordFragment.RecordCallback, SaveFragment.SaveCallback {
+        implements RecordFragment.RecordCallback, SaveFragment.SaveCallback,
+                    EditFragment.NextCallback {
 
     private static final String TAG = RecordActivity.class.getSimpleName();
 
@@ -62,8 +63,23 @@ public class RecordActivity extends AppCompatActivity
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
                 R.anim.enter_from_left, R.anim.exit_to_right);
-        transaction.replace(R.id.record_container, editFragment, SAVE_FRAGMENT_TAG);
+        transaction.replace(R.id.record_container, editFragment, EDIT_FRAGMENT_TAG);
         transaction.addToBackStack(EDIT_FRAGMENT_TAG);
+        transaction.commit();
+    }
+    @Override
+    public void onEditNextButton() {
+        SaveFragment saveFragment = new SaveFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
+        bundle.putInt(BOARD_ORIGIN_KEY, mBoardOriginKey);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        saveFragment.setArguments(bundle);
+        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
+                R.anim.enter_from_left, R.anim.exit_to_right);
+        transaction.replace(R.id.record_container, saveFragment, SAVE_FRAGMENT_TAG);
+        transaction.addToBackStack(SAVE_FRAGMENT_TAG);
         transaction.commit();
     }
 
