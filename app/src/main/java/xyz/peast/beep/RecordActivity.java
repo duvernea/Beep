@@ -189,12 +189,12 @@ public class RecordActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         int backstackCount = getSupportFragmentManager().getBackStackEntryCount();
-        // Record and Save Fragments
-        if (backstackCount <= 1) {
-            super.onBackPressed();
-        }
-        if (backstackCount == 2) {
-            finish();
+            // Record and Save Fragments
+            if (backstackCount <= 2) {
+                super.onBackPressed();
+            }
+            if (backstackCount == 3) {
+                finish();
         }
     }
     private void onBufferCallback(float rmsValue) {
