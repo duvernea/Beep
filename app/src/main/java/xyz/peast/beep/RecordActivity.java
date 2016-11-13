@@ -69,10 +69,7 @@ public class RecordActivity extends AppCompatActivity
     }
     @Override
     public void onEditNextButton() {
-        String recordDir = mContext.getFilesDir().getAbsolutePath();
-        String recordFilePath = recordDir + "/" + mRecordFileName;
-        Log.d(TAG, "recordFilePath: " + recordFilePath);
-        createWav(recordFilePath + ".wav");
+
         SaveFragment saveFragment = new SaveFragment();
 
         Bundle bundle = new Bundle();
@@ -90,6 +87,12 @@ public class RecordActivity extends AppCompatActivity
     @Override
     public void onSaveNextButton(String beepname, String audiofile, Uri imageUri,
                                  String boardName, int boardKey) {
+        String recordDir = mContext.getFilesDir().getAbsolutePath();
+        String recordFilePath = recordDir + "/" + mRecordFileName;
+        Log.d(TAG, "recordFilePath: " + recordFilePath);
+        // TODO - send in all the parameters and settings to make the wav file
+        createWav(recordFilePath);
+
         ShareFragment shareFragment = new ShareFragment();
         Bundle bundle = new Bundle();
         bundle.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);

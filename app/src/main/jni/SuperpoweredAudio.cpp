@@ -207,23 +207,47 @@ void SuperpoweredAudio::onFxValue(int ivalue) {
     };
 }
 void SuperpoweredAudio::createWav(const char *path) {
-    const char * temppath = "/data/data/xyz.peast.beep/files/createwavtest.wav";
+
+    // Note: passed in path does not have '.wav' appended
+    int fileExtension = 4;
+    int editFileSuffix = strlen("_edit");
+
+    char *pathWithExtension;
+    pathWithExtension = (char *) calloc(strlen(path) + fileExtension, sizeof(char));
+    strcpy(pathWithExtension, path);
+    strcat(pathWithExtension, ".wav");
+
+    char *editPathWithExtension;
+    editPathWithExtension = (char *) calloc(strlen(path) + editFileSuffix + fileExtension, sizeof(char));
+    strcpy(editPathWithExtension, path);
+    strcat(editPathWithExtension, "_edit");
+    strcat(editPathWithExtension, ".wav");
+    __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudioTEST", editPathWithExtension);
+
+    //const char * editedFilePath = path + "test";
+    //const char * temppath = "/data/data/xyz.peast.beep/files/createwavtest.wav";
 
     const char *recordedFile = recordFileName.c_str();
     const char *testFile = "data/data/xyz.peast.beep/files/04505f9a-2ab1-496b-acd3-6f26d9466892.wav";
 
     // Open the input file
+        __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio pathoriginal", pathWithExtension);
+    __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio pathedited", editPathWithExtension);
 
     SuperpoweredDecoder *decoder = new SuperpoweredDecoder();
     // TODO - use actual file name
-    const char *openError = decoder->open(path, false, 0, 0);
+    const char *openError = decoder->open(pathWithExtension, false, 0, 0);
     if (openError) {
         __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", openError);
         delete decoder;
         return;
     }
+    __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio pathoriginal", pathWithExtension);
+    __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio pathedited", editPathWithExtension);
+
+
     // Create the output WAV file.
-    FILE *fd = createWAV(temppath, decoder->samplerate, 2);
+    FILE *fd = createWAV(editPathWithExtension, decoder->samplerate, 2);
 
     /* Need to use variable size buffer chains for time stretching */
     // 1.0f = playback rate, 8 = pitchshift
@@ -288,10 +312,6 @@ bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples)
     //const char* numSamples =  (std::to_string(numberOfSamples)).c_str();
     //pthread_mutex_lock(&mutex);
     bool silence = false;
-
-
-
-
 
     if (isRecording) {
 
