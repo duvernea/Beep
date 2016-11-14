@@ -91,7 +91,9 @@ public class RecordActivity extends AppCompatActivity
         String recordFilePath = recordDir + "/" + mRecordFileName;
         Log.d(TAG, "recordFilePath: " + recordFilePath);
         // TODO - send in all the parameters and settings to make the wav file
-        createWav(recordFilePath);
+        //createWav(recordFilePath, Constants.CHIPMUNK);
+
+        createWav(recordFilePath, Constants.SLOMO);
 
         ShareFragment shareFragment = new ShareFragment();
         Bundle bundle = new Bundle();
@@ -216,7 +218,7 @@ public class RecordActivity extends AppCompatActivity
     public native void setRecordPath(String path);
     public native void shutdownAudio();
     private native void startupAudio();
-    public native void createWav(String filepath);
+    public native void createWav(String filepath, int parameters);
     public native void setPitchShift(int pitchShift);
     public native void setReverse(boolean reverse);
 

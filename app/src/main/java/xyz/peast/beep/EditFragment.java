@@ -32,6 +32,8 @@ public class EditFragment extends Fragment {
     String mRecordFilePath;
     Boolean mIsPlaying = false;
 
+    private BeepFx mBeepFx;
+
     int mPitchShift =1;
     boolean mReverse=false;
 
@@ -67,6 +69,8 @@ public class EditFragment extends Fragment {
 
         mNextButton = (Button) rootView.findViewById(R.id.next_button);
 
+        mBeepFx = new BeepFx(0);
+
 
         mNoEffectButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,6 +88,7 @@ public class EditFragment extends Fragment {
                 mReverse = !mReverse;
                 // TODO determine max and min shift
                 ((RecordActivity) mActivity).setPitchShift(8);
+                mBeepFx.setPitchShift(8);
                 ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
 
             }
@@ -95,6 +100,7 @@ public class EditFragment extends Fragment {
                 mReverse = !mReverse;
                 // TODO determine max and min shift
                 ((RecordActivity) mActivity).setPitchShift(-8);
+                mBeepFx.setPitchShift(-8);
                 ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
 
             }

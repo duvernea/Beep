@@ -37,7 +37,7 @@ public:
 	void setRecordFileName(std::string filename);
 	void shutdownAudio();
 	void startupAudio();
-	void createWav(const char *path);
+	void createWav(const char *path, int parameters);
 
 private:
     pthread_mutex_t mutex;

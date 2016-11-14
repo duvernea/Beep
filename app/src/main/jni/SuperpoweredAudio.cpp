@@ -206,7 +206,7 @@ void SuperpoweredAudio::onFxValue(int ivalue) {
             roll->enable(false);
     };
 }
-void SuperpoweredAudio::createWav(const char *path) {
+void SuperpoweredAudio::createWav(const char *path, int parameters) {
 
     // Note: passed in path does not have '.wav' appended
     int fileExtension = 4;
@@ -252,7 +252,15 @@ void SuperpoweredAudio::createWav(const char *path) {
     /* Need to use variable size buffer chains for time stretching */
     // 1.0f = playback rate, 8 = pitchshift
     SuperpoweredTimeStretching *timeStretch = new SuperpoweredTimeStretching(decoder->samplerate);
-    timeStretch->setRateAndPitchShift(1.0f, 8);
+    // chipmunk == 1
+    if (parameters == 1) {
+        timeStretch->setRateAndPitchShift(1.0f, 8);
+    }
+    // slomo == 2
+    else if (parameters == 2) {
+        timeStretch->setRateAndPitchShift(1.0f, -8);
+
+    }
     // This buffer list will receive the time-stretched samples.
     SuperpoweredAudiopointerList *outputBuffers = new SuperpoweredAudiopointerList(8, 16);
     // Create a buffer for the 16-bit integer samples.
@@ -561,9 +569,9 @@ void Java_xyz_peast_beep_RecordActivity_setReverse(JNIEnv * __unused javaEnviron
 }
 //createWAV
 extern "C" JNIEXPORT
-void Java_xyz_peast_beep_RecordActivity_createWav(JNIEnv * javaEnvironment, jobject, jstring filePath) {
+void Java_xyz_peast_beep_RecordActivity_createWav(JNIEnv * javaEnvironment, jobject, jstring filePath, jint parameters) {
     const char *path = javaEnvironment->GetStringUTFChars(filePath, JNI_FALSE);
-    myAudio->createWav(path);
+    myAudio->createWav(path, parameters);
     __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio createWAV path", path);
 
     javaEnvironment->ReleaseStringUTFChars(filePath, path);

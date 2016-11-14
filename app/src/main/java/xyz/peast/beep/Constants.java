@@ -7,6 +7,10 @@ import xyz.peast.beep.data.BeepDbContract;
  */
 public class Constants {
 
+    // Parameters to send to createWAV function
+    public static final int CHIPMUNK = 1;
+    public static final int SLOMO = 2;
+
     public enum DbTable {
         BEEP, BOARD
     }
