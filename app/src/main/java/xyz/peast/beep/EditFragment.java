@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.ToggleButton;
 
 /**
  * Created by duverneay on 9/22/16.
@@ -23,8 +25,8 @@ public class EditFragment extends Fragment {
     Activity mActivity;
 
     Button mNoEffectButton;
-    Button mChipmunkButton;
-    Button mSlomoButton;
+    ToggleButton mChipmunkButton;
+    ToggleButton mSlomoButton;
     Button mEchoButton;
     Button mNextButton;
 
@@ -40,6 +42,10 @@ public class EditFragment extends Fragment {
     public interface NextCallback{
         void onEditNextButton();
     }
+
+    private static final int CHIPMUNK_PITCH_SHIFT = 8;
+    private static final int SLOMO_PITCH_SHIFT = -8;
+    private static final int NO_PITCH_SHIFT = 0;
 
 
 
@@ -63,8 +69,8 @@ public class EditFragment extends Fragment {
 
 
         mNoEffectButton = (Button) rootView.findViewById(R.id.noeffect_button);
-        mChipmunkButton = (Button) rootView.findViewById(R.id.chipmunk_button);
-        mSlomoButton = (Button) rootView.findViewById(R.id.slomo_button);
+        mChipmunkButton = (ToggleButton) rootView.findViewById(R.id.chipmunk_button);
+        mSlomoButton = (ToggleButton) rootView.findViewById(R.id.slomo_button);
         mEchoButton = (Button) rootView.findViewById(R.id.echo_button);
 
         mNextButton = (Button) rootView.findViewById(R.id.next_button);
@@ -84,25 +90,53 @@ public class EditFragment extends Fragment {
         mChipmunkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG, "onClick listener");
+            }
+        });
+        mChipmunkButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d(TAG, "onCheckedChanged listener");
+                Log.d(TAG, "check state: " + mChipmunkButton.isChecked());
                 ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
-                mReverse = !mReverse;
+                if (isChecked) {
+                    mSlomoButton.setChecked(false);
+                    ((RecordActivity) mActivity).setPitchShift(CHIPMUNK_PITCH_SHIFT);
+                    mBeepFx.setPitchShift(CHIPMUNK_PITCH_SHIFT);
+                }
+                else {
+                    ((RecordActivity) mActivity).setPitchShift(NO_PITCH_SHIFT);
+                    mBeepFx.setPitchShift(NO_PITCH_SHIFT);
+                }
+                //mReverse = !mReverse;
                 // TODO determine max and min shift
-                ((RecordActivity) mActivity).setPitchShift(8);
-                mBeepFx.setPitchShift(8);
                 ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
-
             }
         });
         mSlomoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG, "onClick listener");
+            }
+        });
+        mSlomoButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d(TAG, "onCheckedChanged listener");
+                Log.d(TAG, "check state: " + mChipmunkButton.isChecked());
                 ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
-                mReverse = !mReverse;
+                if (isChecked) {
+                    mChipmunkButton.setChecked(false);
+                    ((RecordActivity) mActivity).setPitchShift(SLOMO_PITCH_SHIFT);
+                    mBeepFx.setPitchShift(SLOMO_PITCH_SHIFT);
+                }
+                else {
+                    ((RecordActivity) mActivity).setPitchShift(NO_PITCH_SHIFT);
+                    mBeepFx.setPitchShift(NO_PITCH_SHIFT);
+                }
+                //mReverse = !mReverse;
                 // TODO determine max and min shift
-                ((RecordActivity) mActivity).setPitchShift(-8);
-                mBeepFx.setPitchShift(-8);
                 ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
-
             }
         });
         mNextButton.setOnClickListener(new View.OnClickListener() {

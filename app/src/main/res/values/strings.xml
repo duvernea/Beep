@@ -68,5 +68,9 @@
     <string name="dialog_positive_button">OK</string>
     <string name="dialog_negative_button">Cancel</string>
 
+    // Edit Fragment
+    <string name="chipmunk_pitch_shift_label">chipmunk</string>
+    <string name="slomo_pitch_shift_label">slomo</string>
+
 
 </resources>
