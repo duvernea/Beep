@@ -10,6 +10,7 @@
 #include <SuperpoweredRoll.h>
 #include <SuperpoweredFlanger.h>
 #include <SuperpoweredRecorder.h>
+#include <SuperpoweredEcho.h>
 #include <AndroidIO/SuperpoweredAndroidAudioIO.h>
 #include <jni.h>
 #include <iosfwd>
@@ -38,12 +39,14 @@ public:
 	void shutdownAudio();
 	void startupAudio();
 	void createWav(const char *path, int parameters);
+	void setEcho(bool echoSetting);
 
 private:
     pthread_mutex_t mutex;
     SuperpoweredAndroidAudioIO *audioSystem;
     SuperpoweredAdvancedAudioPlayer *playerA;
     SuperpoweredRoll *roll;
+	SuperpoweredEcho *echo;
     SuperpoweredFilter *filter;
     SuperpoweredFlanger *flanger;
 	SuperpoweredRecorder *recorder;

@@ -27,7 +27,7 @@ public class EditFragment extends Fragment {
     Button mNoEffectButton;
     ToggleButton mChipmunkButton;
     ToggleButton mSlomoButton;
-    Button mEchoButton;
+    ToggleButton mEchoButton;
     Button mNextButton;
 
     String mRecordFileName;
@@ -71,7 +71,7 @@ public class EditFragment extends Fragment {
         mNoEffectButton = (Button) rootView.findViewById(R.id.noeffect_button);
         mChipmunkButton = (ToggleButton) rootView.findViewById(R.id.chipmunk_button);
         mSlomoButton = (ToggleButton) rootView.findViewById(R.id.slomo_button);
-        mEchoButton = (Button) rootView.findViewById(R.id.echo_button);
+        mEchoButton = (ToggleButton) rootView.findViewById(R.id.echo_button);
 
         mNextButton = (Button) rootView.findViewById(R.id.next_button);
 
@@ -84,6 +84,8 @@ public class EditFragment extends Fragment {
                 Log.d(TAG, "mIsPlaying start: " + mIsPlaying);
                 mIsPlaying = true;
                 ((RecordActivity) mActivity).setPitchShift(0);
+                ((RecordActivity) mActivity).setEcho(false);
+
                 ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
             }
         });
@@ -133,6 +135,32 @@ public class EditFragment extends Fragment {
                 else {
                     ((RecordActivity) mActivity).setPitchShift(NO_PITCH_SHIFT);
                     mBeepFx.setPitchShift(NO_PITCH_SHIFT);
+                }
+                //mReverse = !mReverse;
+                // TODO determine max and min shift
+                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+            }
+        });
+        mEchoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick listener");
+
+            }
+        });
+        mEchoButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d(TAG, "onCheckedChanged listener");
+                Log.d(TAG, "check state: " + mEchoButton.isChecked());
+                ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
+                if (isChecked) {
+                    ((RecordActivity) mActivity).setEcho(true);
+                    mBeepFx.setEcho(true);
+                }
+                else {
+                    ((RecordActivity) mActivity).setEcho(false);
+                    mBeepFx.setEcho(false);
                 }
                 //mReverse = !mReverse;
                 // TODO determine max and min shift

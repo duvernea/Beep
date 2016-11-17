@@ -43,11 +43,13 @@
         android:textColor="@android:color/white"
         android:layout_margin="20dp"/>
 
-    <Button
+    <ToggleButton
         android:id="@+id/echo_button"
         android:layout_width="160dp"
         android:layout_height="64dp"
         android:text="echo"
+        android:textOn="echo"
+        android:textOff="echo"
         android:gravity="center"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"

@@ -88,6 +88,13 @@ SuperpoweredAudio::SuperpoweredAudio(unsigned int samplerate, unsigned int buffe
 
     filter = new SuperpoweredFilter(SuperpoweredFilter_Resonant_Lowpass, samplerate);
 
+    // TODO update
+    echo = new SuperpoweredEcho(samplerate);
+    echo->setMix(.8f);
+    echo->bpm = 240.0f;
+    echo->decay=0.5f;
+    echo->enable(false);
+
     filter->enable(false);
     flanger = new SuperpoweredFlanger(samplerate);
 
@@ -173,6 +180,10 @@ void SuperpoweredAudio::onFxOff() {
     roll->enable(false);
     flanger->enable(false);
 }
+void SuperpoweredAudio::setEcho(bool echoSetting) {
+    echo->enable(echoSetting);
+}
+
 void SuperpoweredAudio::shutdownAudio() {
     audioSystem->stop();
 }
@@ -381,6 +392,11 @@ bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples)
         silence = !playerA->process(stereoBuffer, false, numberOfSamples, volA, 0.0f,
                                     -1);
 
+        // TODO - testing echo
+        if (!silence) {
+            echo->process(stereoBuffer, stereoBuffer, numberOfSamples);
+        }
+
 //        if (roll->process(silence ? NULL : stereoBuffer, stereoBuffer, numberOfSamples) &&
 //            silence)
 //            silence = false;
@@ -566,6 +582,11 @@ void Java_xyz_peast_beep_RecordActivity_setPitchShift(JNIEnv * __unused javaEnvi
 extern "C" JNIEXPORT
 void Java_xyz_peast_beep_RecordActivity_setReverse(JNIEnv * __unused javaEnvironment, jobject __unused obj, jboolean reverse) {
     myAudio->setReverse(reverse);
+}
+// set echo
+extern "C" JNIEXPORT
+void Java_xyz_peast_beep_RecordActivity_setEcho(JNIEnv * __unused javaEnvironment, jobject __unused obj, jboolean echo) {
+    myAudio->setEcho(echo);
 }
 //createWAV
 extern "C" JNIEXPORT
