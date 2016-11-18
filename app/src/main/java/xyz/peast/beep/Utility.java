@@ -123,8 +123,8 @@ public class Utility {
         return BitmapFactory.decodeFile(filepath, options);
     }
 
-    public static void insertNewBeep(Context context, String beepName, String audioFileName, Location location,
-                                     int boardKey, Uri originalImageUri) {
+    public static void insertNewBeep(Context context, String beepName, String audioFileName,
+                                     boolean beepFx, Location location, int boardKey, Uri originalImageUri) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_NAME, beepName);
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, audioFileName);
@@ -136,6 +136,7 @@ public class Utility {
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, 0);
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_DATE_CREATED, Calendar.getInstance().getTimeInMillis());
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_BOARD_KEY, boardKey);
+        contentValues.put(BeepDbContract.BeepEntry.COLUMN_FX, beepFx);
 
         Uri uri = context.getContentResolver().insert(BeepDbContract.BeepEntry.CONTENT_URI, contentValues);
         Log.d(TAG, "Utility: Insert beep into ContentProvider: " + uri.toString());

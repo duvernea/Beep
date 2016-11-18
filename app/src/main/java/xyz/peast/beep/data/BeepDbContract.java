@@ -45,6 +45,7 @@ public class BeepDbContract {
         //Date created in ms since epoch
         public static final String COLUMN_DATE_CREATED = "date_created";
         // Board is foreign key to the id of the board this beep belongs to.
+        public static final String COLUMN_FX = "fx";
         public static final String COLUMN_BOARD_KEY = "board";
 
         public static Uri buildUri(long id) {

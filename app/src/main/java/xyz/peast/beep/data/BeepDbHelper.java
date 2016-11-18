@@ -31,6 +31,7 @@ public class BeepDbHelper extends SQLiteOpenHelper {
                 BeepDbContract.BeepEntry.COLUMN_PRIVACY + " BOOLEAN NOT NULL, " +
                 BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT + " INTEGER NOT NULL, " +
                 BeepDbContract.BeepEntry.COLUMN_DATE_CREATED + " INTEGER NOT NULL, " +
+                BeepDbContract.BeepEntry.COLUMN_FX  + " BOOLEAN NOT NULL," +
                 BeepDbContract.BeepEntry.COLUMN_BOARD_KEY + " INTEGER NOT NULL, " +
                 // Set up foreign key
                 " FOREIGN KEY (" + BeepDbContract.BeepEntry.COLUMN_BOARD_KEY + ") REFERENCES " +

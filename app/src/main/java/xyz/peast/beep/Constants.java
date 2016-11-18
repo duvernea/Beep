@@ -48,6 +48,7 @@ public class Constants {
             BeepDbContract.BeepEntry.COLUMN_PRIVACY,
             BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT,
             BeepDbContract.BeepEntry.COLUMN_DATE_CREATED,
+            BeepDbContract.BeepEntry.COLUMN_FX,
             BeepDbContract.BeepEntry.COLUMN_BOARD_KEY
     };
     public static final int BEEPS_COL_BEEP_ID = 0;

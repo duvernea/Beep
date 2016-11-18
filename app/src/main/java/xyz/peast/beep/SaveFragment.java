@@ -286,8 +286,9 @@ public class SaveFragment extends Fragment implements LocationListener {
         int spinnerSelectedItemPosition  = mBoardSpinner.getSelectedItemPosition();
         Board selected = mSpinnerItems.get(spinnerSelectedItemPosition);
         int selectedKey = selected.getKey();
+        boolean beepFxTemp = false;
 
-        Utility.insertNewBeep(mContext, beepName, mRecordFileName,
+        Utility.insertNewBeep(mContext, beepName, mRecordFileName, false,
                 mMostRecentLocation, selectedKey, mImageUri);
     }
     // Save Image items
