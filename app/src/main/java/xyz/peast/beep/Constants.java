@@ -14,6 +14,10 @@ public class Constants {
     public enum DbTable {
         BEEP, BOARD
     }
+
+    public static final String EDITED_FILE_SUFFIX = "_edit";
+    public static final String WAV_FILE_SUFFIX = ".wav";
+
     // key for the two table types - used a Extras on Intent
     public static String DB_TABLE_ENUM = "db_table_enum";
 
@@ -60,7 +64,8 @@ public class Constants {
     public static final int BEEPS_COL_PRIVACY = 6;
     public static final int BEEPS_COL_PLAY_COUNT = 7;
     public static final int BEEPS_COL_DATE_CREATED = 8;
-    public static final int BEEPS_COL_BOARD_KEY = 9;
+    public static final int BEEPS_COL_FX = 9;
+    public static final int BEEPS_COL_BOARD_KEY = 10;
 
     // database projection for BOARDS
     public static final String[] BOARD_COLUMNS = {

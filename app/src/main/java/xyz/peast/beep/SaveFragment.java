@@ -123,7 +123,7 @@ public class SaveFragment extends Fragment implements LocationListener {
 
         // Record File Unique Name is generated in RecordActivity and passed into the Fragment
         Bundle bundle = this.getArguments();
-        mRecordFileName = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME) + ".wav";
+        mRecordFileName = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME);
         mBoardOriginKey = bundle.getInt(RecordActivity.BOARD_ORIGIN_KEY);
         Log.d(TAG, "mBoardOriginKey: " + mBoardOriginKey);
 
@@ -205,6 +205,8 @@ public class SaveFragment extends Fragment implements LocationListener {
                 Board selected = mSpinnerItems.get(spinnerSelectedItemPosition);
                 int selectedKey = selected.getKey();
                 String boardname = selected.getName();
+                ((RecordActivity) mActivity).setPitchShift(0);
+
 
                 ((SaveCallback) getActivity()).onSaveNextButton(beepName,
                         mRecordFileName,
@@ -227,7 +229,7 @@ public class SaveFragment extends Fragment implements LocationListener {
 
         // Audio File Name path
         String recordDir = mContext.getFilesDir().getAbsolutePath();
-        final String filePath = recordDir + "/" + mRecordFileName;
+        final String filePath = recordDir + "/" + mRecordFileName + ".wav";
 
         // Replay audio button
         mReplayButton.setOnClickListener(new View.OnClickListener() {
@@ -286,10 +288,15 @@ public class SaveFragment extends Fragment implements LocationListener {
         int spinnerSelectedItemPosition  = mBoardSpinner.getSelectedItemPosition();
         Board selected = mSpinnerItems.get(spinnerSelectedItemPosition);
         int selectedKey = selected.getKey();
-        boolean beepFxTemp = false;
-
-        Utility.insertNewBeep(mContext, beepName, mRecordFileName, false,
+        boolean beepEdited = true;
+        if (beepEdited) {
+            String recordDir = mContext.getFilesDir().getAbsolutePath();
+            final String filePath = recordDir + "/" + mRecordFileName;
+            ((RecordActivity) mActivity).createWav(filePath, Constants.SLOMO);
+        }
+        Utility.insertNewBeep(mContext, beepName, mRecordFileName, beepEdited,
                 mMostRecentLocation, selectedKey, mImageUri);
+
     }
     // Save Image items
     @Override

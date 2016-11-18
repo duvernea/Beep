@@ -163,7 +163,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                         getLoaderManager().restartLoader(BEEPS_LOADER, null, BoardActivity.this );
 
                         String recordDir = mContext.getFilesDir().getAbsolutePath();
-                        String path = recordDir + "/" + audioFileName;
+                        String path = recordDir + "/" + audioFileName + Constants.WAV_FILE_SUFFIX;
 
                         onFileChange(path, 0, 0);
                         mIsPlaying = !mIsPlaying;
@@ -210,7 +210,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
 
                 String audioFileName = cursor.getString(Constants.BEEPS_COL_AUDIO);
                 String recordDir = mContext.getFilesDir().getAbsolutePath();
-                String path = recordDir + "/" + audioFileName;
+                String path = recordDir + "/" + audioFileName + Constants.WAV_FILE_SUFFIX;
 
                 onFileChange(path, 0, 0);
                 mIsPlaying = !mIsPlaying;

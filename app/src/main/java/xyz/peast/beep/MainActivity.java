@@ -408,6 +408,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private void playBeep(Cursor cursor) {
         String audioFileName = cursor.getString(Constants.BEEPS_COL_AUDIO);
         int beepKey = cursor.getInt(Constants.BEEPS_COL_BEEP_ID);
+        boolean beepEdited = cursor.getInt(Constants.BEEPS_COL_FX) > 0;
+        Log.d(TAG, "Beep edited? " + beepEdited);
 
         int playCount = cursor.getInt(Constants.BEEPS_COL_PLAY_COUNT);
 
@@ -426,6 +428,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         String recordDir = mContext.getFilesDir().getAbsolutePath();
         String path = recordDir + "/" + audioFileName;
+        if (beepEdited) {
+            path += "_edit";
+        }
+        path += Constants.WAV_FILE_SUFFIX;
 
         onFileChange(path, 0, 0);
         mIsPlaying = !mIsPlaying;

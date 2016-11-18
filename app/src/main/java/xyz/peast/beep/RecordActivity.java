@@ -93,7 +93,6 @@ public class RecordActivity extends AppCompatActivity
         // TODO - send in all the parameters and settings to make the wav file
         //createWav(recordFilePath, Constants.CHIPMUNK);
 
-        createWav(recordFilePath, Constants.SLOMO);
 
         ShareFragment shareFragment = new ShareFragment();
         Bundle bundle = new Bundle();
