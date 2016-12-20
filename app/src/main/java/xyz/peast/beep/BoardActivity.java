@@ -1,5 +1,6 @@
 package xyz.peast.beep;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.BroadcastReceiver;
@@ -12,6 +13,7 @@ import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
@@ -62,6 +64,12 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     private ImageView mBoardImage;
 
     private int mBoardKey;
+
+    // Permission Request Code
+    public static final int PERMISSIONS_REQUEST_READ_EXTERNAL= 10;
+
+    // Request Code for Photo Picker Intent
+    private static final int SELECT_PHOTO = 1;
 
     // Broadcast receiver for Board image save complete
     BroadcastReceiver mImageSavedBroadcastReceiver;
@@ -245,6 +253,24 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                 intent.putExtra(RecordActivity.BOARD_ORIGIN_KEY, mBoardKey);
                 startActivity(intent);            }
         });
+
+        mBoardImage.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Log.d(TAG, "long clicked on the beep board image");
+                boolean permissionReadExternal = Utility.hasReadExternalPermission(mContext);
+
+                if (permissionReadExternal) {
+                    Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                    photoPickerIntent.setType("image/*");
+                    startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+
+                } else {
+                    requestReadExternalPermission();
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -396,6 +422,23 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         }
 
         return super.onContextItemSelected(item);
+    }
+    private void requestReadExternalPermission(){
+
+        // The dangerous READ External permission is NOT already granted.
+        // Check if the user has been asked about this permission already and denied
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (shouldShowRequestPermissionRationale(
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                Log.d(TAG, "permission has previously been denied.  Explain why need");
+                // TODO Show UI to explain to the user why we need to read external
+            }
+            // Fire off an async request to actually get the permission
+            // This will show the standard permission request dialog UI
+
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PERMISSIONS_REQUEST_READ_EXTERNAL);
+        }
     }
 
     @Override
