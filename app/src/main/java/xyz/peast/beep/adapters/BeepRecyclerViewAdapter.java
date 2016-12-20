@@ -1,12 +1,16 @@
 package xyz.peast.beep.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -67,7 +71,8 @@ public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerVi
         return mCursor.getCount();
     }
 
-    public class BeepViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+    public class BeepViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
+            View.OnLongClickListener, View.OnCreateContextMenuListener {
         public final TextView mBeepNameTextView;
         public final ImageView mBeepImageView;
 
@@ -77,6 +82,7 @@ public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerVi
             mBeepImageView = (ImageView) view.findViewById(R.id.beep_imageview);
             view.setOnClickListener(this);
             view.setOnLongClickListener(this);
+            view.setOnCreateContextMenuListener(this);
         }
         @Override
         public void onClick(View v) {
@@ -89,8 +95,9 @@ public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerVi
         public boolean onLongClick(View v) {
             int adapterPosition = getAdapterPosition();
             mCursor.moveToPosition(adapterPosition);
-            mLongClickHandler.onLongClick(this);
-            return true;
+            boolean result = mLongClickHandler.onLongClick(this);
+            v.showContextMenu();
+            return result;
         }
 
         public int getBeepKey() {
@@ -99,12 +106,23 @@ public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerVi
             int beepKey = mCursor.getInt(Constants.BEEPS_COL_BEEP_ID);
             return beepKey;
         }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            Log.d(TAG, "onCreateContextMenu");
+                //menu.add(0, v.getId(), 0, "Something");
+            //super.onCreateContextMenu(menu, v, menuInfo);
+
+            MenuInflater menuInflater = ((Activity) mContext).getMenuInflater();
+            menuInflater.inflate(R.menu.beep_context_menu, menu);
+
+        }
     }
     public static interface BeepAdapterOnClickHandler {
         void onClick(BeepViewHolder vh);
     }
     public static interface BeepAdapterOnLongClickHandler {
-        void onLongClick(BeepViewHolder vh);
+        boolean onLongClick(BeepViewHolder vh);
     }
     public void swapCursor(Cursor newCursor) {
             mCursor = newCursor;
@@ -113,4 +131,8 @@ public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerVi
     public Cursor getCursor() {
         return mCursor;
     }
+
+
+
+
 }

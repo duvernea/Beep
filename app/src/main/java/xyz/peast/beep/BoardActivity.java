@@ -179,14 +179,17 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                     }
                 }, new BeepRecyclerViewAdapter.BeepAdapterOnLongClickHandler() {
             @Override
-            public void onLongClick(BeepRecyclerViewAdapter.BeepViewHolder vh) {
+            public boolean onLongClick(BeepRecyclerViewAdapter.BeepViewHolder vh) {
                 Log.d(TAG, "onLongClick");
+                return true;
             }
         }, null, 0);
 
         mBeepsRecyclerView = (RecyclerView) findViewById(R.id.beeps_recyclerview);
         mBeepsRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         mBeepsRecyclerView.setAdapter(mBeepsRecyclerViewAdapter);
+        registerForContextMenu(mBeepsRecyclerView);
+
 
         mRandomButton.setOnClickListener(new View.OnClickListener() {
             @Override
