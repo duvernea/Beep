@@ -30,6 +30,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import java.io.File;
+
 import xyz.peast.beep.adapters.BeepRecyclerViewAdapter;
 import xyz.peast.beep.data.BeepDbContract;
 import xyz.peast.beep.services.CompressImageUpdateDbService;
@@ -326,6 +328,11 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         Cursor cursor = mBeepsRecyclerViewAdapter.getCursor();
         final int beepKey = cursor.getInt(Constants.BEEPS_COL_BEEP_ID);
         final String beepName = cursor.getString(Constants.BEEPS_COL_NAME);
+        final boolean edited = cursor.getInt(Constants.BEEPS_COL_FX) > 0;
+        final String audioName = cursor.getString(Constants.BEEPS_COL_AUDIO);
+        Log.d(TAG, "audioName: " + audioName);
+        final String imageName = cursor.getString(Constants.BEEPS_COL_IMAGE);
+        Log.d(TAG, "imageName: " + imageName);
         Log.d(TAG, "key: " + beepKey + " name: " + beepName);
 
         Log.d(TAG, "onContextItemSelected");
@@ -349,6 +356,27 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                                         whereArgs);
 
                                 Log.d(TAG, "# Rows deleted: " + numRows);
+                                // Delete the audio and image files associated with this beep
+                                String recordDir = mContext.getFilesDir().getAbsolutePath();
+                                String audioPath = recordDir + "/" + audioName + Constants.WAV_FILE_SUFFIX;
+                                File audioFileName = new File(audioPath);
+                                boolean deleted = audioFileName.delete();
+                                Log.d(TAG, "audio file deleted? - " + deleted);
+
+                                if (edited) {
+                                    String audioPathEdited = recordDir + "/" + audioName +
+                                            Constants.EDITED_FILE_SUFFIX + Constants.WAV_FILE_SUFFIX;
+                                    Log.d(TAG, "Audio file edited: " + audioPathEdited);
+                                    File audioNameEdited = new File(audioPathEdited);
+                                    boolean deletedEdited = audioNameEdited.delete();
+                                    Log.d(TAG, "audio file deleted edited? - " + deletedEdited);
+
+                                }
+                                if (imageName != null) {
+                                    File imageFile = new File(recordDir + "/" + imageName);
+                                    boolean deletedImage = imageFile.delete();
+                                    Log.d(TAG, "image file deleted? " + deletedImage);
+                                }
                                 getLoaderManager().restartLoader(BEEPS_LOADER, null, BoardActivity.this );
                             }
                         })
