@@ -13,27 +13,17 @@
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         android:contentDescription="@string/beep_image_content_description"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="34dp"
-        android:layout_gravity="bottom"
-        android:background="@drawable/gradient_imageview" />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:layout_gravity="bottom"
-        android:background="#50000000" />
+
 
     <TextView
         android:id="@+id/beep_name_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textStyle="normal|bold"
         android:gravity="center"
         android:textColor="#ffffff"
         android:textSize="@dimen/beep_item_name_text_size"
-        android:paddingBottom="@dimen/beep_item_name_padding_top_bottom"
-        android:paddingTop="@dimen/beep_item_name_padding_top_bottom"
-        android:layout_gravity="bottom|center"/>
+        android:layout_gravity="bottom|center"
+        android:background="@drawable/rounded_corners_textview"
+        android:layout_marginBottom="2dp"/>
 </FrameLayout>
