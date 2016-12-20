@@ -297,6 +297,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (loader.getId() == TOP_BEEPS_LOADER) {
             mBeepAdapter.swapCursor(data);
             mBeepAdapter.notifyDataSetChanged();
+
         }
         if (loader.getId() == BOARDS_LOADER) {
             mBoardsRecyclerViewAdapter.swapCursor(data);
@@ -408,23 +409,32 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private void playBeep(Cursor cursor) {
         String audioFileName = cursor.getString(Constants.BEEPS_COL_AUDIO);
         int beepKey = cursor.getInt(Constants.BEEPS_COL_BEEP_ID);
+
         boolean beepEdited = cursor.getInt(Constants.BEEPS_COL_FX) > 0;
         Log.d(TAG, "Beep edited? " + beepEdited);
 
-        int playCount = cursor.getInt(Constants.BEEPS_COL_PLAY_COUNT);
+        Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
+
+        String whereClause = BeepDbContract.BeepEntry._ID+"=?";
+        String [] whereArgs = {beepKey+""};
+        Cursor playedBeepCursor = mContext.getContentResolver().query(
+                uri,
+                Constants.BEEP_COLUMNS,
+                whereClause,
+                whereArgs,
+                null);
+        playedBeepCursor.moveToFirst();
+        int playCount = playedBeepCursor.getInt(Constants.BEEPS_COL_PLAY_COUNT);
+        Log.d(TAG, "Play count: " + playCount);
 
         ContentValues values = new ContentValues();
         values.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, playCount + 1);
 
-        Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
-        String whereClause = BeepDbContract.BeepEntry._ID+"=?";
-        String [] whereArgs = {beepKey+""};
         mContext.getContentResolver().update(
                 uri,
                 values,
                 whereClause,
                 whereArgs);
-        getLoaderManager().restartLoader(TOP_BEEPS_LOADER, null, MainActivity.this );
 
         String recordDir = mContext.getFilesDir().getAbsolutePath();
         String path = recordDir + "/" + audioFileName;
