@@ -12,8 +12,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Messenger;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
@@ -37,6 +41,7 @@ import java.io.File;
 import xyz.peast.beep.adapters.BeepRecyclerViewAdapter;
 import xyz.peast.beep.data.BeepDbContract;
 import xyz.peast.beep.services.CompressImageUpdateDbService;
+import xyz.peast.beep.services.LoadDownsampledBitmapImageService;
 
 public class BoardActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -62,6 +67,10 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     private TextView mBoardNameTextView;
     private FloatingActionButton mFab;
     private ImageView mBoardImage;
+
+    private Uri mImageUri;
+    private String mImagePath;
+    private Handler mImageHandler;
 
     private int mBoardKey;
 
@@ -271,6 +280,37 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                 return true;
             }
         });
+        mImageHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                Bundle reply = msg.getData();
+                Bitmap bitmap = reply.getParcelable(Constants.IMAGE_BITMAP_FROM_SERVICE);
+                mBoardImage.setImageBitmap(bitmap);
+            }
+        };
+    }
+    // Callback after image selected in photo picker
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case SELECT_PHOTO:
+                if (resultCode == Activity.RESULT_OK) {
+
+                    mImageUri = data.getData();
+                    mImagePath = Utility.getRealPathFromURI(mContext, mImageUri);
+                    loadImageView();
+                }
+        }
+    }
+    private void loadImageView() {
+        int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
+
+        Intent intent = new Intent(mContext, LoadDownsampledBitmapImageService.class);
+        intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(mImageHandler));
+        intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_URI, mImageUri.toString());
+        intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
+        mContext.startService(intent);
     }
 
     @Override
