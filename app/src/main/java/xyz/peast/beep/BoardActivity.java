@@ -323,7 +323,11 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        int position = -1;
+        Cursor cursor = mBeepsRecyclerViewAdapter.getCursor();
+        final int beepKey = cursor.getInt(Constants.BEEPS_COL_BEEP_ID);
+        final String beepName = cursor.getString(Constants.BEEPS_COL_NAME);
+        Log.d(TAG, "key: " + beepKey + " name: " + beepName);
+
         Log.d(TAG, "onContextItemSelected");
         switch (item.getItemId()) {
             case R.id.delete_beep:
@@ -334,6 +338,18 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 // continue with delete
+                                Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
+
+                                String whereClause = BeepDbContract.BeepEntry._ID + "=?";
+                                String[] whereArgs = {beepKey + ""};
+
+                                int numRows = mContext.getContentResolver().delete(
+                                        uri,
+                                        whereClause,
+                                        whereArgs);
+
+                                Log.d(TAG, "# Rows deleted: " + numRows);
+                                getLoaderManager().restartLoader(BEEPS_LOADER, null, BoardActivity.this );
                             }
                         })
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
