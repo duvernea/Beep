@@ -177,6 +177,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onResume() {
         super.onResume();
+
+        getLoaderManager().restartLoader(TOP_BEEPS_LOADER, null, this);
         if (mSharedPrefs.getBoolean(Constants.SHARED_PREF_FIRST_RUN, true)) {
             // If first time run, set to false
             mSharedPrefs.edit().putBoolean(Constants.SHARED_PREF_FIRST_RUN, false).apply();
