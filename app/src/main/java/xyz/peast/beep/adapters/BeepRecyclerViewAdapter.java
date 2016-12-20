@@ -29,11 +29,13 @@ public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerVi
     private Context mContext;
 
     final private BeepAdapterOnClickHandler mClickHandler;
+    final private BeepAdapterOnLongClickHandler mLongClickHandler;
 
-    public BeepRecyclerViewAdapter(Context context, BeepAdapterOnClickHandler dh, Cursor cursor, int flags) {
+    public BeepRecyclerViewAdapter(Context context, BeepAdapterOnClickHandler clickHandler, BeepAdapterOnLongClickHandler longClickHandler, Cursor cursor, int flags) {
         mCursor = cursor;
         mContext = context;
-        mClickHandler = dh;
+        mClickHandler = clickHandler;
+        mLongClickHandler = longClickHandler;
     }
     @Override
     public BeepViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -65,7 +67,7 @@ public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerVi
         return mCursor.getCount();
     }
 
-    public class BeepViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class BeepViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         public final TextView mBeepNameTextView;
         public final ImageView mBeepImageView;
 
@@ -74,6 +76,7 @@ public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerVi
             mBeepNameTextView = (TextView) view.findViewById(R.id.beep_name_textview);
             mBeepImageView = (ImageView) view.findViewById(R.id.beep_imageview);
             view.setOnClickListener(this);
+            view.setOnLongClickListener(this);
         }
         @Override
         public void onClick(View v) {
@@ -81,6 +84,15 @@ public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerVi
             mCursor.moveToPosition(adapterPosition);
             mClickHandler.onClick(this);
         }
+
+        @Override
+        public boolean onLongClick(View v) {
+            int adapterPosition = getAdapterPosition();
+            mCursor.moveToPosition(adapterPosition);
+            mLongClickHandler.onLongClick(this);
+            return true;
+        }
+
         public int getBeepKey() {
             int adapterPosition = getAdapterPosition();
             mCursor.moveToPosition(adapterPosition);
@@ -90,6 +102,9 @@ public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerVi
     }
     public static interface BeepAdapterOnClickHandler {
         void onClick(BeepViewHolder vh);
+    }
+    public static interface BeepAdapterOnLongClickHandler {
+        void onLongClick(BeepViewHolder vh);
     }
     public void swapCursor(Cursor newCursor) {
             mCursor = newCursor;

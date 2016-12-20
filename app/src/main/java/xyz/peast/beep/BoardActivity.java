@@ -148,8 +148,8 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                         int key = vh.getBeepKey();
                         Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
 
-                        String whereClause = BeepDbContract.BeepEntry._ID+"=?";
-                        String [] whereArgs = {key+""};
+                        String whereClause = BeepDbContract.BeepEntry._ID + "=?";
+                        String[] whereArgs = {key + ""};
 
                         Cursor playedBeepCursor = mContext.getContentResolver().query(
                                 uri,
@@ -177,7 +177,12 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                         mIsPlaying = !mIsPlaying;
                         onPlayPause(path, mIsPlaying, 0);
                     }
-                }, null, 0);
+                }, new BeepRecyclerViewAdapter.BeepAdapterOnLongClickHandler() {
+            @Override
+            public void onLongClick(BeepRecyclerViewAdapter.BeepViewHolder vh) {
+                Log.d(TAG, "onLongClick");
+            }
+        }, null, 0);
 
         mBeepsRecyclerView = (RecyclerView) findViewById(R.id.beeps_recyclerview);
         mBeepsRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
