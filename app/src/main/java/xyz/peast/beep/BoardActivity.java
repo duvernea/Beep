@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
@@ -13,12 +14,14 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -316,6 +319,39 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         if (loader.getId() == BEEPS_LOADER) {
              mBeepsRecyclerViewAdapter.swapCursor(data);
         }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        int position = -1;
+        Log.d(TAG, "onContextItemSelected");
+        switch (item.getItemId()) {
+            case R.id.delete_beep:
+                Log.d(TAG, "Delete Beep");
+                new AlertDialog.Builder(mContext)
+                        .setTitle("Delete Beep")
+                        .setMessage("Are you sure?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // continue with delete
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+
+                break;
+            case R.id.edit_beep:
+                Log.d(TAG, "Edit beep");
+                break;
+        }
+
+        return super.onContextItemSelected(item);
     }
 
     @Override

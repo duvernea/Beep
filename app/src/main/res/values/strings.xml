@@ -13,6 +13,10 @@
     <string name="random_button_text">Random</string>
     <string name="no_beeps_yet_msg">No beeps yet. Record one!</string>
 
+    // Board Activity - Context Menu
+    <string name="beep_context_menu_delete">Delete</string>
+    <string name="beep_context_menu_edit">Edit - Not implemented</string>
+
     // Create Board Activity
     <string name="dialog_new_board_name">Board name</string>
     <string name="cancel_button_text">Cancel</string>
