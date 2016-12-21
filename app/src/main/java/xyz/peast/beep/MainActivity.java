@@ -415,28 +415,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         boolean beepEdited = cursor.getInt(Constants.BEEPS_COL_FX) > 0;
         Log.d(TAG, "Beep edited? " + beepEdited);
 
-        Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
-
-        String whereClause = BeepDbContract.BeepEntry._ID+"=?";
-        String [] whereArgs = {beepKey+""};
-        Cursor playedBeepCursor = mContext.getContentResolver().query(
-                uri,
-                Constants.BEEP_COLUMNS,
-                whereClause,
-                whereArgs,
-                null);
-        playedBeepCursor.moveToFirst();
-        int playCount = playedBeepCursor.getInt(Constants.BEEPS_COL_PLAY_COUNT);
-        Log.d(TAG, "Play count: " + playCount);
-
-        ContentValues values = new ContentValues();
-        values.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, playCount + 1);
-
-        mContext.getContentResolver().update(
-                uri,
-                values,
-                whereClause,
-                whereArgs);
+        // Increment play count by 1
+        Utility.incrementBeepPlayCount(mContext, beepKey);
 
         String recordDir = mContext.getFilesDir().getAbsolutePath();
         String path = recordDir + "/" + audioFileName;
@@ -444,6 +424,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             path += "_edit";
         }
         path += Constants.WAV_FILE_SUFFIX;
+
+
+
 
         onFileChange(path, 0, 0);
         mIsPlaying = !mIsPlaying;

@@ -169,29 +169,9 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
 
                         String audioFileName = cursor.getString(Constants.BEEPS_COL_AUDIO);
                         int key = vh.getBeepKey();
-                        Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
 
-                        String whereClause = BeepDbContract.BeepEntry._ID + "=?";
-                        String[] whereArgs = {key + ""};
-
-                        Cursor playedBeepCursor = mContext.getContentResolver().query(
-                                uri,
-                                Constants.BEEP_COLUMNS,
-                                whereClause,
-                                whereArgs,
-                                null);
-                        playedBeepCursor.moveToFirst();
-                        int playCount = playedBeepCursor.getInt(Constants.BEEPS_COL_PLAY_COUNT);
-                        Log.d(TAG, "Play count: " + playCount);
-
-                        ContentValues values = new ContentValues();
-                        values.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, playCount + 1);
-
-                        mContext.getContentResolver().update(
-                                uri,
-                                values,
-                                whereClause,
-                                whereArgs);
+                        // Increase play count by 1
+                        Utility.incrementBeepPlayCount(mContext, key);
 
                         String recordDir = mContext.getFilesDir().getAbsolutePath();
                         String path = recordDir + "/" + audioFileName + Constants.WAV_FILE_SUFFIX;

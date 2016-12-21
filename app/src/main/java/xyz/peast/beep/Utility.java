@@ -197,5 +197,28 @@ public class Utility {
 
         activity.sendBroadcast(updateWidgetIntent);
 }
+    public static void incrementBeepPlayCount(Context context, int beepKey) {
 
+        Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
+        String whereClause = BeepDbContract.BeepEntry._ID+"=?";
+        String [] whereArgs = {beepKey+""};
+        Cursor playedBeepCursor = context.getContentResolver().query(
+                uri,
+                Constants.BEEP_COLUMNS,
+                whereClause,
+                whereArgs,
+                null);
+        playedBeepCursor.moveToFirst();
+        int playCount = playedBeepCursor.getInt(Constants.BEEPS_COL_PLAY_COUNT);
+        Log.d(TAG, "Play count: " + playCount);
+
+        ContentValues values = new ContentValues();
+        values.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, playCount + 1);
+
+        context.getContentResolver().update(
+                uri,
+                values,
+                whereClause,
+                whereArgs);
+    }
 }
