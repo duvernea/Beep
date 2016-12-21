@@ -37,6 +37,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 
 import java.io.File;
+import java.util.Calendar;
 
 import xyz.peast.beep.adapters.BeepRecyclerViewAdapter;
 import xyz.peast.beep.data.BeepDbContract;
@@ -300,6 +301,45 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                     mImageUri = data.getData();
                     mImagePath = Utility.getRealPathFromURI(mContext, mImageUri);
                     loadImageView();
+
+
+                    String whereClause = BeepDbContract.BeepEntry._ID+"=?";
+                    String [] whereArgs = {mBoardKey+""};
+                    // Delete old image if exists
+                    Cursor cursor = mContext.getContentResolver().query(
+                            BeepDbContract.BoardEntry.CONTENT_URI,
+                            Constants.BOARD_COLUMNS,
+                            whereClause,
+                            whereArgs,
+                            null);
+                    if (cursor.getCount() == 1) {
+                        cursor.moveToFirst();
+                        String imageFile = cursor.getString(Constants.BOARDS_COL_IMAGE);
+                        Log.d(TAG, "current imageFile name: " + imageFile);
+                        if (imageFile != null) {
+                            // TODO - delete the existing image file from disk
+                        }
+                        Uri uri = BeepDbContract.BoardEntry.CONTENT_URI;
+                        Log.d(TAG, "base uri: " + uri);
+                        int key =  cursor.getInt(Constants.BOARDS_BOARD_ID);
+                        uri = Uri.withAppendedPath(uri, Integer.toString(key));
+                        Log.d(TAG, "build upon uri: " + uri);
+
+
+                        Log.d(TAG, "Utility: Insert board into ContentProvider: " + uri.toString());
+                        Intent serviceIntent = new Intent(mContext, CompressImageUpdateDbService.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(Utility.ORIGINAL_IMAGE_FILE_URI, mImageUri.toString());
+                        bundle.putString(Utility.INSERTED_RECORD_URI, uri.toString());
+                        serviceIntent.putExtra(Constants.DB_TABLE_ENUM, Constants.DbTable.BOARD);
+
+                        serviceIntent.putExtras(bundle);
+                        mContext.startService(serviceIntent);
+
+                    //ContentValues values = new ContentValues();
+                    //values.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, playCount);
+
+                }
                 }
         }
     }
