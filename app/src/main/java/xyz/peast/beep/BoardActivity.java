@@ -314,10 +314,18 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                             null);
                     if (cursor.getCount() == 1) {
                         cursor.moveToFirst();
-                        String imageFile = cursor.getString(Constants.BOARDS_COL_IMAGE);
-                        Log.d(TAG, "current imageFile name: " + imageFile);
-                        if (imageFile != null) {
+                        String imageFileName = cursor.getString(Constants.BOARDS_COL_IMAGE);
+                        Log.d(TAG, "current imageFile name: " + imageFileName);
+                        if (imageFileName != null) {
                             // TODO - delete the existing image file from disk
+                            // Delete the image files associated with this beep
+                            String recordDir = mContext.getFilesDir().getAbsolutePath();
+                            String imagePath = recordDir + "/" + imageFileName;
+                            File imageFile = new File(imagePath);
+                            mBoardImage.setImageResource(R.drawable.beep_item_temp);
+                            boolean deleted = imageFile.delete();
+                            Log.d(TAG, "image file deleted? - " + deleted);
+
                         }
                         Uri uri = BeepDbContract.BoardEntry.CONTENT_URI;
                         Log.d(TAG, "base uri: " + uri);
@@ -336,8 +344,6 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                         serviceIntent.putExtras(bundle);
                         mContext.startService(serviceIntent);
 
-                    //ContentValues values = new ContentValues();
-                    //values.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, playCount);
 
                 }
                 }
