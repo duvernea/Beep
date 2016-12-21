@@ -36,6 +36,10 @@ public class Utility {
     public static final String ORIGINAL_IMAGE_FILE_URI = "ORIGINAL_IMAGE_FILE_URI";
     public static final String INSERTED_RECORD_URI = "beep_uri";
 
+    private static final String EDITED_FILE_SUFFIX = "_edit";
+    private static final String FORWARD_SLASH = "/";
+
+
     public static float dpToPx(float dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
@@ -221,4 +225,15 @@ public class Utility {
                 whereClause,
                 whereArgs);
     }
+    public static String getFullWavPath(Context context, String audioFileName, boolean beepEdited) {
+
+        String recordDir = context.getFilesDir().getAbsolutePath();
+        String path = recordDir + FORWARD_SLASH + audioFileName;
+        if (beepEdited) {
+            path += EDITED_FILE_SUFFIX;
+        }
+        path += Constants.WAV_FILE_SUFFIX;
+        return path;
+    }
+
 }

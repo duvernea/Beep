@@ -168,13 +168,13 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                         cursor.moveToPosition(vh.getAdapterPosition());
 
                         String audioFileName = cursor.getString(Constants.BEEPS_COL_AUDIO);
+                        boolean beepEdited = cursor.getInt(Constants.BEEPS_COL_FX) > 0;
+
                         int key = vh.getBeepKey();
 
                         // Increase play count by 1
                         Utility.incrementBeepPlayCount(mContext, key);
-
-                        String recordDir = mContext.getFilesDir().getAbsolutePath();
-                        String path = recordDir + "/" + audioFileName + Constants.WAV_FILE_SUFFIX;
+                        String path = Utility.getFullWavPath(mContext, audioFileName, beepEdited);
 
                         onFileChange(path, 0, 0);
                         mIsPlaying = !mIsPlaying;
