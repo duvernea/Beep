@@ -90,8 +90,6 @@ public class RecordActivity extends AppCompatActivity
         String recordDir = mContext.getFilesDir().getAbsolutePath();
         String recordFilePath = recordDir + "/" + mRecordFileName;
         Log.d(TAG, "recordFilePath: " + recordFilePath);
-        // TODO - send in all the parameters and settings to make the wav file
-        //createWav(recordFilePath, Constants.CHIPMUNK);
 
 
         ShareFragment shareFragment = new ShareFragment();

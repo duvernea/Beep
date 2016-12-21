@@ -43,7 +43,6 @@ public class RecordFragment extends Fragment {
     private Button mPlayButton;
     private Button mNextButton;
     private Button mRedoButton;
-    private Button mCreateWavButton;
 
     // Menu State
     // false = initial state, true = first recording complete
@@ -79,7 +78,6 @@ public class RecordFragment extends Fragment {
 
             mRedoButton = (Button) rootView.findViewById(R.id.redo_record_button);
             mNextButton = (Button) rootView.findViewById(R.id.next_button);
-            mCreateWavButton = (Button) rootView.findViewById(R.id.createwavtest_button);
             mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressbar_level);
             //mProgressBar.setMax(32768*32768/2);  // 32768 = 16 bit signed int max
             double powerdB = 10f*Math.log10(32768*32768/2);
