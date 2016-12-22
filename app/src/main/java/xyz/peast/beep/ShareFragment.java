@@ -19,7 +19,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 import java.io.File;
 
 import xyz.peast.beep.services.LoadDownsampledBitmapImageService;
@@ -46,6 +45,7 @@ public class ShareFragment extends Fragment {
     private String mBeepName;
     private String mNewTempFilePath;
     private String mRecordFileName;
+    private boolean mBeepEdited;
 
     private String mBeepMp3Path;
 
@@ -65,27 +65,32 @@ public class ShareFragment extends Fragment {
         mDontShareButton = (Button) rootView.findViewById(R.id.no_button);
 
         Bundle bundle = this.getArguments();
-        mRecordFileName = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME) + ".wav";
+        mRecordFileName = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME);
         String imagefile = bundle.getString(RecordActivity.IMAGE_FILE_UNIQUE_NAME);
         String imageUri = bundle.getString(RecordActivity.IMAGE_FILE_URI_UNCOMPRESSED);
         mBoardName = bundle.getString(RecordActivity.BOARD_NAME);
         mBoardKey = bundle.getInt(RecordActivity.BOARD_KEY);
+        mBeepEdited = bundle.getBoolean(RecordActivity.BEEP_EDITED);
 
         mBeepName = bundle.getString(RecordActivity.BEEP_NAME);
         mBeepNameTextView.setText(mBeepName);
 
+        String audioWavPath = Utility.getFullWavPath(mContext, mRecordFileName, mBeepEdited);
+
         // Encode the wav to mp3 for sharing
         Bundle bundleEncodeAudio = new Bundle();
-        bundleEncodeAudio.putString(Constants.RECORD_FILE_NAME, mRecordFileName);
+        bundleEncodeAudio.putString(Constants.WAV_FILE_PATH, audioWavPath);
         bundleEncodeAudio.putString(Constants.BEEP_NAME, mBeepName);
+        bundleEncodeAudio.putBoolean(Constants.BEEP_EDITED, mBeepEdited);
         Intent encodeAudioIntent = new Intent(mContext, EncodeAudioService.class);
         encodeAudioIntent.putExtras(bundleEncodeAudio);
 
         mContext.startService(encodeAudioIntent);
-        String filename = bundle.getString(Constants.RECORD_FILE_NAME);
+        String filename = bundle.getString(Constants.WAV_FILE_PATH);
         String beepName = bundle.getString(Constants.BEEP_NAME);
 
-        boolean encodeMp3Success = AudioUtility.encodeMp3(mContext, mRecordFileName, mBeepName);
+        //Log.d(TAG, "mAudioWavPath: " + audioWavPath);
+        //boolean encodeMp3Success = AudioUtility.encodeMp3(mContext, audioWavPath, mBeepName);
 
         mDontShareButton.setOnClickListener(new View.OnClickListener() {
             @Override

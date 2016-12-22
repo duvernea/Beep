@@ -21,17 +21,18 @@ public class AudioUtility {
     private static final String TAG = AudioUtility.class.getSimpleName();
 
     // Encode an mp3 to a wav. Save the file as the more friendly "Beep Name" .mp3
-    public static boolean encodeMp3(Context context, String filename, String beepName) {
+    public static boolean encodeMp3(Context context, String wavPath, String beepName) {
         BufferedOutputStream outputStream;
         final int OUTPUT_STREAM_BUFFER = 8192;
 
         String audioDir = context.getFilesDir().getAbsolutePath();
-        String audioPath = audioDir + "/" + filename;
-        File input = new File(audioPath);
+
+        Log.d(TAG, "wav path: " + wavPath);
+        File inputWavFile = new File(wavPath);
         final File output = new File( audioDir + "/" + beepName + ".mp3");
         int CHUNK_SIZE = 8192;
 
-        WaveReader waveReader = new WaveReader(input);
+        WaveReader waveReader = new WaveReader(inputWavFile);
         try {
             waveReader.openWave();
         } catch (IOException e) {

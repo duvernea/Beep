@@ -43,6 +43,7 @@ public class RecordActivity extends AppCompatActivity
     public static final String BEEP_NAME = "beep_name";
     public static final String BOARD_NAME = "board_name";
     public static final String BOARD_KEY = "board_key";
+    public static final String BEEP_EDITED = "beep_edited";
 
     public static final String BEEP_FX_PARCELABLE = "beep_fx_parcelable";
 
@@ -89,7 +90,7 @@ public class RecordActivity extends AppCompatActivity
 
     @Override
     public void onSaveNextButton(String beepname, String audiofile, Uri imageUri,
-                                 String boardName, int boardKey) {
+                                 String boardName, int boardKey, boolean beepEdited) {
 
         ShareFragment shareFragment = new ShareFragment();
         Bundle bundle = new Bundle();
@@ -100,6 +101,7 @@ public class RecordActivity extends AppCompatActivity
         }
         bundle.putString(BOARD_NAME, boardName);
         bundle.putInt(BOARD_KEY, boardKey);
+        bundle.putBoolean(BEEP_EDITED, beepEdited);
         shareFragment.setArguments(bundle);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,

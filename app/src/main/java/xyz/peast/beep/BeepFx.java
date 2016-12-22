@@ -30,6 +30,14 @@ public class BeepFx implements Parcelable {
         return mEcho;
     }
 
+    public boolean getEditStatus() {
+        if (mPitchShift == 0 && !mEcho) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public void setEcho(boolean echo) {
         mEcho = echo;
     }

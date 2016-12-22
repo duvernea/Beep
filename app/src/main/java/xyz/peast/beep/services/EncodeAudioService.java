@@ -22,10 +22,11 @@ public class EncodeAudioService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Bundle bundle = intent.getExtras();
-        String filename = bundle.getString(Constants.RECORD_FILE_NAME);
-        String beepName = bundle.getString(Constants.BEEP_NAME);
+            Bundle bundle = intent.getExtras();
+            String wavPath = bundle.getString(Constants.WAV_FILE_PATH);
+            String beepName = bundle.getString(Constants.BEEP_NAME);
+            boolean beepEdited = bundle.getBoolean(Constants.BEEP_EDITED);
         Context context = getApplicationContext();
-        AudioUtility.encodeMp3(context, filename, beepName);
+        AudioUtility.encodeMp3(context, wavPath, beepName);
     }
 }

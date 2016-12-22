@@ -23,8 +23,9 @@ public class Constants {
     public static String DB_TABLE_ENUM = "db_table_enum";
 
     // Bundle extras
-    public static final String RECORD_FILE_NAME = "record_file_name";
+    public static final String WAV_FILE_PATH = "record_file_name";
     public static final String BEEP_NAME = "beep_name";
+    public static final String BEEP_EDITED = "beep_edited";
 
     // Bundle extras for LoadDownsampledBitmapImageService 'messenger'
     public static final String IMAGE_MESSENGER = "image_messenger";

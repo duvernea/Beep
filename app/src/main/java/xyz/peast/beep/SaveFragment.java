@@ -114,7 +114,7 @@ public class SaveFragment extends Fragment implements LocationListener {
     // SaveCallback interface - implemented in RecordActivity
     public interface SaveCallback{
         public void onSaveNextButton(String beepName, String audioFile, Uri imageUri,
-                                     String boardname, int boardkey);
+                                     String boardname, int boardkey, boolean beepEdited);
     }
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -213,12 +213,15 @@ public class SaveFragment extends Fragment implements LocationListener {
                 String boardname = selected.getName();
                 ((RecordActivity) mActivity).setPitchShift(0);
 
+                Log.d(TAG, "mbeepfx edit status: " + mBeepFx.getEditStatus());
+
 
                 ((SaveCallback) getActivity()).onSaveNextButton(beepName,
                         mRecordFileName,
                         mImageUri,
                         boardname,
-                        selectedKey
+                        selectedKey,
+                        mBeepFx.getEditStatus()
                 );
             }
         });
@@ -293,7 +296,8 @@ public class SaveFragment extends Fragment implements LocationListener {
         int spinnerSelectedItemPosition  = mBoardSpinner.getSelectedItemPosition();
         Board selected = mSpinnerItems.get(spinnerSelectedItemPosition);
         int selectedKey = selected.getKey();
-        boolean beepEdited = true;
+        // TODO - beep edited should not be set hard true
+        boolean beepEdited = mBeepFx.getEditStatus();
         if (beepEdited) {
             // Note here the path does not contain ".wav"
             String recordDir = mContext.getFilesDir().getAbsolutePath();
