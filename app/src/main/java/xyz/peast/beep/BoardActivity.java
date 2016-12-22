@@ -421,10 +421,8 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         final int beepKey = cursor.getInt(Constants.BEEPS_COL_BEEP_ID);
         final String beepName = cursor.getString(Constants.BEEPS_COL_NAME);
         final boolean edited = cursor.getInt(Constants.BEEPS_COL_FX) > 0;
-        final String audioName = cursor.getString(Constants.BEEPS_COL_AUDIO);
-        Log.d(TAG, "audioName: " + audioName);
-        final String imageName = cursor.getString(Constants.BEEPS_COL_IMAGE);
-        Log.d(TAG, "imageName: " + imageName);
+        final String audioFileBase = cursor.getString(Constants.BEEPS_COL_AUDIO);
+        final String imageFileBase = cursor.getString(Constants.BEEPS_COL_IMAGE);
         Log.d(TAG, "key: " + beepKey + " name: " + beepName);
 
         Log.d(TAG, "onContextItemSelected");
@@ -436,39 +434,13 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                         .setMessage("Are you sure?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                // continue with delete
-                                Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
+                                // {audioUneditedDeleted, audioEditedDeleted, imageDeleted}
+                                boolean[] filesDeletedSuccess = new boolean[3];
+                                filesDeletedSuccess = Utility.deleteBeep(mContext, beepKey, audioFileBase, edited, imageFileBase);
+                                Log.d(TAG, "Audio Unedited Deleted: " + filesDeletedSuccess[0]);
+                                Log.d(TAG, "Audio Edited Deleted: " + filesDeletedSuccess[1]);
+                                Log.d(TAG, "Image Deleted: " + filesDeletedSuccess[2]);
 
-                                String whereClause = BeepDbContract.BeepEntry._ID + "=?";
-                                String[] whereArgs = {beepKey + ""};
-
-                                int numRows = mContext.getContentResolver().delete(
-                                        uri,
-                                        whereClause,
-                                        whereArgs);
-
-                                Log.d(TAG, "# Rows deleted: " + numRows);
-                                // Delete the audio and image files associated with this beep
-                                String recordDir = mContext.getFilesDir().getAbsolutePath();
-                                String audioPath = recordDir + "/" + audioName + Constants.WAV_FILE_SUFFIX;
-                                File audioFileName = new File(audioPath);
-                                boolean deleted = audioFileName.delete();
-                                Log.d(TAG, "audio file deleted? - " + deleted);
-
-                                if (edited) {
-                                    String audioPathEdited = recordDir + "/" + audioName +
-                                            Constants.EDITED_FILE_SUFFIX + Constants.WAV_FILE_SUFFIX;
-                                    Log.d(TAG, "Audio file edited: " + audioPathEdited);
-                                    File audioNameEdited = new File(audioPathEdited);
-                                    boolean deletedEdited = audioNameEdited.delete();
-                                    Log.d(TAG, "audio file deleted edited? - " + deletedEdited);
-
-                                }
-                                if (imageName != null) {
-                                    File imageFile = new File(recordDir + "/" + imageName);
-                                    boolean deletedImage = imageFile.delete();
-                                    Log.d(TAG, "image file deleted? " + deletedImage);
-                                }
                                 getLoaderManager().restartLoader(BEEPS_LOADER, null, BoardActivity.this );
                             }
                         })

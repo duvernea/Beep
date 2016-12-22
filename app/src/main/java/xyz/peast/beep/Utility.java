@@ -20,6 +20,7 @@ import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import java.io.File;
 import java.util.Calendar;
 
 import xyz.peast.beep.data.BeepDbContract;
@@ -197,15 +198,16 @@ public class Utility {
         updateWidgetIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         int[] ids = AppWidgetManager.getInstance(activity.getApplication()).
                 getAppWidgetIds(new ComponentName(activity.getApplication(), WidgetProvider.class));
-        updateWidgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
+        updateWidgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
 
         activity.sendBroadcast(updateWidgetIntent);
-}
+    }
+
     public static void incrementBeepPlayCount(Context context, int beepKey) {
 
         Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
-        String whereClause = BeepDbContract.BeepEntry._ID+"=?";
-        String [] whereArgs = {beepKey+""};
+        String whereClause = BeepDbContract.BeepEntry._ID + "=?";
+        String[] whereArgs = {beepKey + ""};
         Cursor playedBeepCursor = context.getContentResolver().query(
                 uri,
                 Constants.BEEP_COLUMNS,
@@ -225,6 +227,7 @@ public class Utility {
                 whereClause,
                 whereArgs);
     }
+
     public static String getFullWavPath(Context context, String audioFileName, boolean beepEdited) {
 
         String recordDir = context.getFilesDir().getAbsolutePath();
@@ -234,6 +237,44 @@ public class Utility {
         }
         path += Constants.WAV_FILE_SUFFIX;
         return path;
+    }
+
+    public static final boolean[] deleteBeep(Context context, int beepKey, String audioFileBase, boolean edited,
+                                           String imageFileBase) {
+        boolean audioUneditedDeleted = false;
+        boolean audioEditedDeleted = false;
+        boolean imageDeleted = false;
+        // continue with delete
+        Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
+
+        String whereClause = BeepDbContract.BeepEntry._ID + "=?";
+        String[] whereArgs = {beepKey + ""};
+
+        int numRows = context.getContentResolver().delete(
+                uri,
+                whereClause,
+                whereArgs);
+
+        // Delete the no FX audio version
+        String audioFilePathUnedited = getFullWavPath(context, audioFileBase, false);
+
+        File audioFileUnedited = new File(audioFilePathUnedited);
+        audioUneditedDeleted = audioFileUnedited.delete();
+
+        if (edited) {
+            String audioFilePathEdited = getFullWavPath(context, audioFileBase, true);
+
+            File audioFileEdited = new File(audioFilePathEdited);
+            audioEditedDeleted = audioFileEdited.delete();
+        }
+        if (imageFileBase != null) {
+            String imageDir = context.getFilesDir().getAbsolutePath();
+            File imageFile = new File(imageDir + FORWARD_SLASH + imageFileBase);
+            imageDeleted = imageFile.delete();
+        }
+
+        boolean[] filesDeletedSuccess = {audioUneditedDeleted, audioEditedDeleted, imageDeleted};
+        return filesDeletedSuccess;
     }
 
 }
