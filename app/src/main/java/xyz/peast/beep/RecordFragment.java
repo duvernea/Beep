@@ -186,7 +186,8 @@ public class RecordFragment extends Fragment {
                 }
             });
         } else {
-            Log.e("OpenGLES 2", "Your device doesn't support ES2. )" + info.reqGlEsVersion + ")");
+            String msg = getResources().getString(R.string.open_gl_error);
+            Log.e("OpenGLES 2", msg + info.reqGlEsVersion + ")");
         }
 
         if (savedInstanceState != null) {
