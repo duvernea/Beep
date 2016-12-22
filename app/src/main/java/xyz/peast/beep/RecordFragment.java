@@ -147,8 +147,8 @@ public class RecordFragment extends Fragment {
             });
             mRendererSet = true;
             // Rendering mode is CONTINUOUS by default
-            //mGlSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
-            mGlSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+            mGlSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+            //GlSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
             // This only calls ondrawFrame 1 time
             mGlSurfaceView.requestRender();

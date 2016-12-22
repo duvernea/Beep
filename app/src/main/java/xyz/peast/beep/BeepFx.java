@@ -1,9 +1,12 @@
 package xyz.peast.beep;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by duvernea on 11/14/16.
  */
-public class BeepFx {
+public class BeepFx implements Parcelable {
 
     // Currently we are setting pitchshift + 8 for chipmunk and -8 for slomo
 
@@ -30,4 +33,28 @@ public class BeepFx {
     public void setEcho(boolean echo) {
         mEcho = echo;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(mPitchShift);
+        dest.writeByte((byte) (mEcho ? 1 : 0));
+    }
+    private BeepFx(Parcel in) {
+        mPitchShift = in.readInt();
+        mEcho = in.readByte() != 0;
+    }
+    public static final Parcelable.Creator<BeepFx> CREATOR
+            = new Parcelable.Creator<BeepFx>() {
+        public BeepFx createFromParcel(Parcel in) {
+            return new BeepFx(in);
+        }
+        public BeepFx[] newArray(int size) {
+            return new BeepFx[size];
+        }
+    };
 }
