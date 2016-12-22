@@ -40,7 +40,7 @@ public class EditFragment extends Fragment {
     boolean mReverse=false;
 
     public interface NextCallback{
-        void onEditNextButton();
+        void onEditNextButton(BeepFx beepFx);
     }
 
     private static final int CHIPMUNK_PITCH_SHIFT = 8;
@@ -174,6 +174,6 @@ public class EditFragment extends Fragment {
 
 
     private void handleNextButtonPress() {
-        ((EditFragment.NextCallback) getActivity()).onEditNextButton();
+        ((EditFragment.NextCallback) getActivity()).onEditNextButton(mBeepFx);
     }
 }

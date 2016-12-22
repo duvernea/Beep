@@ -125,6 +125,9 @@ public class SaveFragment extends Fragment implements LocationListener {
         Bundle bundle = this.getArguments();
         mRecordFileName = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME);
         mBoardOriginKey = bundle.getInt(RecordActivity.BOARD_ORIGIN_KEY);
+        BeepFx beepFx = (BeepFx) bundle.getParcelable(RecordActivity.BEEP_FX_PARCELABLE);
+        Log.d(TAG, "beep Fx Echo: " + beepFx.getEcho());
+        Log.d(TAG, "beep Fx Pitch shift: " + beepFx.getmPitchShift());
         Log.d(TAG, "mBoardOriginKey: " + mBoardOriginKey);
 
         // Get Location manager, so that GPS coordinates can be saved

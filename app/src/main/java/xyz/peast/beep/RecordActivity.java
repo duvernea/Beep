@@ -44,6 +44,8 @@ public class RecordActivity extends AppCompatActivity
     public static final String BOARD_NAME = "board_name";
     public static final String BOARD_KEY = "board_key";
 
+    public static final String BEEP_FX_PARCELABLE = "beep_fx_parcelable";
+
     // Input intent extras
     public static final String BOARD_ORIGIN_KEY = "board_origin_key";
     private int mBoardOriginKey;
@@ -68,13 +70,14 @@ public class RecordActivity extends AppCompatActivity
         transaction.commit();
     }
     @Override
-    public void onEditNextButton() {
+    public void onEditNextButton(BeepFx beepFx) {
 
         SaveFragment saveFragment = new SaveFragment();
 
         Bundle bundle = new Bundle();
         bundle.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
         bundle.putInt(BOARD_ORIGIN_KEY, mBoardOriginKey);
+        bundle.putParcelable(BEEP_FX_PARCELABLE, beepFx);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         saveFragment.setArguments(bundle);
         transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
