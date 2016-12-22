@@ -100,6 +100,9 @@ public class SaveFragment extends Fragment implements LocationListener {
     // Image loading
     Handler mImageHandler;
 
+    // Beep Fx class
+    BeepFx mBeepFx;
+
     // Audio variables
     private boolean mIsPlaying;
 
@@ -125,9 +128,9 @@ public class SaveFragment extends Fragment implements LocationListener {
         Bundle bundle = this.getArguments();
         mRecordFileName = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME);
         mBoardOriginKey = bundle.getInt(RecordActivity.BOARD_ORIGIN_KEY);
-        BeepFx beepFx = (BeepFx) bundle.getParcelable(RecordActivity.BEEP_FX_PARCELABLE);
-        Log.d(TAG, "beep Fx Echo: " + beepFx.getEcho());
-        Log.d(TAG, "beep Fx Pitch shift: " + beepFx.getmPitchShift());
+        mBeepFx = (BeepFx) bundle.getParcelable(RecordActivity.BEEP_FX_PARCELABLE);
+        Log.d(TAG, "beep Fx Echo: " + mBeepFx.getEcho());
+        Log.d(TAG, "beep Fx Pitch shift: " + mBeepFx.getmPitchShift());
         Log.d(TAG, "mBoardOriginKey: " + mBoardOriginKey);
 
         // Get Location manager, so that GPS coordinates can be saved
@@ -295,7 +298,23 @@ public class SaveFragment extends Fragment implements LocationListener {
             // Note here the path does not contain ".wav"
             String recordDir = mContext.getFilesDir().getAbsolutePath();
             final String filePath = recordDir + "/" + mRecordFileName;
-            ((RecordActivity) mActivity).createWav(filePath, Constants.SLOMO);
+            int fx;
+            switch (mBeepFx.getmPitchShift()) {
+
+                case -8:
+                    fx = Constants.SLOMO_PITCH;
+                    break;
+                case 0:
+                    fx = Constants.NORMAL_PITCH;
+                    break;
+                case +8:
+                    fx = Constants.CHIPMUNK_PITCH;
+                    break;
+                default:
+                    fx = Constants.NORMAL_PITCH;
+            }
+
+            ((RecordActivity) mActivity).createWav(filePath, fx);
         }
         Utility.insertNewBeep(mContext, beepName, mRecordFileName, beepEdited,
                 mMostRecentLocation, selectedKey, mImageUri);
