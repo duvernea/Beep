@@ -87,10 +87,6 @@ public class RecordActivity extends AppCompatActivity
     @Override
     public void onSaveNextButton(String beepname, String audiofile, Uri imageUri,
                                  String boardName, int boardKey) {
-        String recordDir = mContext.getFilesDir().getAbsolutePath();
-        String recordFilePath = recordDir + "/" + mRecordFileName;
-        Log.d(TAG, "recordFilePath: " + recordFilePath);
-
 
         ShareFragment shareFragment = new ShareFragment();
         Bundle bundle = new Bundle();

@@ -100,8 +100,9 @@ public class RecordFragment extends Fragment {
             ((RecordActivity) mActivity).setupAudio();
 
             Bundle bundle = this.getArguments();
-            String uniqueID = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME);
 
+            // Note - here we use just the path, without the ".wav" extension
+            String uniqueID = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME);
             String recordDir = mContext.getFilesDir().getAbsolutePath();
             mRecordFilePath = recordDir + "/" + uniqueID;
             ((RecordActivity) mActivity).setRecordPath(mRecordFilePath);

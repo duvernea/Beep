@@ -226,10 +226,10 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                         whereClause,
                         whereArgs);
                 getLoaderManager().restartLoader(BEEPS_LOADER, null, BoardActivity.this );
-
+                
+                boolean edited = cursor.getInt(Constants.BEEPS_COL_FX) > 0;
                 String audioFileName = cursor.getString(Constants.BEEPS_COL_AUDIO);
-                String recordDir = mContext.getFilesDir().getAbsolutePath();
-                String path = recordDir + "/" + audioFileName + Constants.WAV_FILE_SUFFIX;
+                String path = Utility.getFullWavPath(mContext, audioFileName, edited);
 
                 onFileChange(path, 0, 0);
                 mIsPlaying = !mIsPlaying;
@@ -297,11 +297,9 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                         String imageFileName = cursor.getString(Constants.BOARDS_COL_IMAGE);
                         Log.d(TAG, "current imageFile name: " + imageFileName);
                         if (imageFileName != null) {
-                            // TODO - delete the existing image file from disk
-                            // Delete the image files associated with this beep
-                            String recordDir = mContext.getFilesDir().getAbsolutePath();
-                            String imagePath = recordDir + "/" + imageFileName;
-                            File imageFile = new File(imagePath);
+                            // Delete the image file associated with this beep
+                            String path = Utility.getFullImagePath(mContext, imageFileName);
+                            File imageFile = new File(path);
                             mBoardImage.setImageResource(R.drawable.beep_item_temp);
                             boolean deleted = imageFile.delete();
                             Log.d(TAG, "image file deleted? - " + deleted);

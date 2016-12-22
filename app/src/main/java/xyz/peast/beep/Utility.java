@@ -238,6 +238,11 @@ public class Utility {
         path += Constants.WAV_FILE_SUFFIX;
         return path;
     }
+    public static String getFullImagePath(Context context, String imageFileName) {
+        String imageDir = context.getFilesDir().getAbsolutePath();
+        String imagePath = imageDir + FORWARD_SLASH + imageFileName;
+        return imagePath;
+    }
 
     public static final boolean[] deleteBeep(Context context, int beepKey, String audioFileBase, boolean edited,
                                            String imageFileBase) {
@@ -276,5 +281,4 @@ public class Utility {
         boolean[] filesDeletedSuccess = {audioUneditedDeleted, audioEditedDeleted, imageDeleted};
         return filesDeletedSuccess;
     }
-
 }

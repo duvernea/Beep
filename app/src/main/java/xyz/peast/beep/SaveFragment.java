@@ -228,8 +228,7 @@ public class SaveFragment extends Fragment implements LocationListener {
         getAndPopulateBoardData();
 
         // Audio File Name path
-        String recordDir = mContext.getFilesDir().getAbsolutePath();
-        final String filePath = recordDir + "/" + mRecordFileName + ".wav";
+        final String filePath = Utility.getFullWavPath(mContext, mRecordFileName, false);
 
         // Replay audio button
         mReplayButton.setOnClickListener(new View.OnClickListener() {
@@ -290,6 +289,7 @@ public class SaveFragment extends Fragment implements LocationListener {
         int selectedKey = selected.getKey();
         boolean beepEdited = true;
         if (beepEdited) {
+            // Note here the path does not contain ".wav"
             String recordDir = mContext.getFilesDir().getAbsolutePath();
             final String filePath = recordDir + "/" + mRecordFileName;
             ((RecordActivity) mActivity).createWav(filePath, Constants.SLOMO);

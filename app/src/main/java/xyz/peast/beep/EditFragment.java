@@ -59,14 +59,10 @@ public class EditFragment extends Fragment {
         mActivity = getActivity();
 
         Bundle bundle = this.getArguments();
-        mRecordFileName = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME) + ".wav";
-
-        String recordDir = mContext.getFilesDir().getAbsolutePath();
-        mRecordFilePath = recordDir + "/" + mRecordFileName;
-        Log.i(TAG, "recordfilepath: " + mRecordFilePath);
+        mRecordFileName = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME);
+        mRecordFilePath = Utility.getFullWavPath(mContext, mRecordFileName, false);
 
         ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
-
 
         mNoEffectButton = (Button) rootView.findViewById(R.id.noeffect_button);
         mChipmunkButton = (ToggleButton) rootView.findViewById(R.id.chipmunk_button);
