@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /**
  * Created by duverneay on 9/11/16.
@@ -23,13 +25,16 @@ public class AudioUtility {
     // Encode an mp3 to a wav. Save the file as the more friendly "Beep Name" .mp3
     public static boolean encodeMp3(Context context, String wavPath, String beepName) {
         BufferedOutputStream outputStream;
+        BufferedOutputStream outputStream_test;
         final int OUTPUT_STREAM_BUFFER = 8192;
+        final int OUTPUT_STREAM_BUFFER_test = 8192 * 2;
 
         String audioDir = context.getFilesDir().getAbsolutePath();
 
         Log.d(TAG, "wav path: " + wavPath);
         File inputWavFile = new File(wavPath);
         final File output = new File( audioDir + "/" + beepName + ".mp3");
+        final File output_test = new File( audioDir + "/" + beepName + "test.wav");
         int CHUNK_SIZE = 8192;
 
         WaveReader waveReader = new WaveReader(inputWavFile);
@@ -49,6 +54,7 @@ public class AudioUtility {
 
         try {
             outputStream = new BufferedOutputStream(new FileOutputStream(output), OUTPUT_STREAM_BUFFER);
+            outputStream_test = new BufferedOutputStream(new FileOutputStream(output_test), OUTPUT_STREAM_BUFFER_test);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return false;
@@ -57,6 +63,7 @@ public class AudioUtility {
 
         short[] buffer_l = new short[CHUNK_SIZE];
         short[] buffer_r = new short[CHUNK_SIZE];
+        short[] buffer_lr = new short[CHUNK_SIZE];
         byte[] mp3Buf = new byte[CHUNK_SIZE];
 
         int channels = waveReader.getChannels();
@@ -66,10 +73,23 @@ public class AudioUtility {
                 if (channels == 2) {
 
                     bytesRead = waveReader.read(buffer_l, buffer_r, CHUNK_SIZE);
+                    Log.d(TAG, "bytes read: " + bytesRead);
+                    /*** TROUBLESHOOTING ********/
+                    int bytesRead_temp = bytesRead * 2;
+                    ByteBuffer buffer = ByteBuffer.allocate(bytesRead_temp);
+                    buffer.order(ByteOrder.LITTLE_ENDIAN);
+                    buffer.asShortBuffer().put(buffer_l);
+                    byte[] bytes = buffer.array();
+                    int shortbufferlength = bytes.length;
+                    outputStream_test.write(bytes, 0, bytesRead_temp);
+                    /*** TROUBLESHOOTING ********/
+
                     if (bytesRead > 0) {
+                        Log.d(TAG, "bytes read from wav: " + bytesRead);
 
                         int bytesEncoded = 0;
                         bytesEncoded = androidLame.encode(buffer_l, buffer_r, bytesRead, mp3Buf);
+                        Log.d(TAG, "bytes encoded: " + bytesEncoded);
                         if (bytesEncoded > 0) {
                             try {
                                 outputStream.write(mp3Buf, 0, bytesEncoded);
@@ -107,6 +127,7 @@ public class AudioUtility {
             try {
                 outputStream.write(mp3Buf, 0, outputMp3buf);
                 outputStream.close();
+                outputStream_test.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
