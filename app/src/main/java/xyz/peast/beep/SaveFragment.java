@@ -4,12 +4,14 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -19,9 +21,12 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.InputFilter;
@@ -43,8 +48,10 @@ import android.widget.Toast;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import xyz.peast.beep.adapters.Board;
 import xyz.peast.beep.adapters.BoardSpinnerAdapter;
@@ -70,6 +77,8 @@ public class SaveFragment extends Fragment implements LocationListener {
 
     // Request Code for Photo Picker Intent
     private static final int SELECT_PHOTO = 1;
+
+    private static final int YOUR_SELECT_PICTURE_REQUEST_CODE = 2;
 
     // Service for saving, compressing, resizing images
     private Intent mServiceIntent;
@@ -110,6 +119,8 @@ public class SaveFragment extends Fragment implements LocationListener {
     private int mNumberOfBoards;
 
     private int mBoardOriginKey;
+
+    private Uri outputFileUri;
 
     // SaveCallback interface - implemented in RecordActivity
     public interface SaveCallback{
@@ -184,9 +195,10 @@ public class SaveFragment extends Fragment implements LocationListener {
                 Log.d(TAG, "hasRecordAudioPermission: " + permissionReadExternal);
 
                 if (permissionReadExternal) {
-                    Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-                    photoPickerIntent.setType("image/*");
-                    startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+//                    Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+//                    photoPickerIntent.setType("image/*");
+//                    startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+                    openImageIntent();
 
                 } else {
                     requestReadExternalPermission();
@@ -276,18 +288,46 @@ public class SaveFragment extends Fragment implements LocationListener {
 
         return rootView;
     }
-    // Callback after image selected in photo picker
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case SELECT_PHOTO:
-                if (resultCode == Activity.RESULT_OK) {
-
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case SELECT_PHOTO:
                     mImageUri = data.getData();
+                    Log.d(TAG, "mImageUri: " + mImageUri);
+
                     mImagePath = Utility.getRealPathFromURI(mContext, mImageUri);
+                    Log.d(TAG, "mImagePath: " + mImagePath);
                     loadImageView();
-                }
+                    break;
+                    // TODO - handle camera and image picker, from stack overflow
+//                    final boolean isCamera;
+//                    if (data == null) {
+//                        isCamera = true;
+//                    } else {
+//                        final String action = data.getAction();
+//                        if (action == null) {
+//                            isCamera = false;
+//                        } else {
+//                            isCamera = action.equals(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+//                        }
+//                    }
+//                    Bundle extras = data.getExtras();
+//                    Bitmap imageBitmap = (Bitmap) extras.get("data");
+//                    Log.d(TAG, "image height: " + imageBitmap.getHeight());
+//                    Log.d(TAG, "image width: " + imageBitmap.getWidth());
+//
+//                    Uri selectedImageUri;
+//                    if (isCamera) {
+//                        //selectedImageUri = outputFileUri;
+//                    } else {
+//                        //selectedImageUri = data == null ? null : data.getData();
+//                    }
+//                    break;
+            }
+
+
+
         }
     }
     // Insert beep into database
@@ -597,6 +637,55 @@ public class SaveFragment extends Fragment implements LocationListener {
         intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_URI, mImageUri.toString());
         intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
         mContext.startService(intent);
+    }
+    private void openImageIntent() {
+
+// Determine Uri of camera image to save.
+        //final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "MyDir" + File.separator);
+        //root.mkdirs();
+        //Log.d(TAG, "File root: " + root);
+        //final String fname = Utils.getUniqueImageFilename();
+        //final String fname = "test_test+123";
+        //final File sdImageMainDirectory = new File(root, fname);
+        //outputFileUri = Uri.fromFile(sdImageMainDirectory);
+        //Log.d(TAG, "outputFileUri: " + outputFileUri);
+
+        String tempImageName = "temp_camera_image.jpg";
+        String tempImagePath = mContext.getFilesDir().getAbsolutePath() + File.separator + tempImageName;
+        Log.d(TAG, "Tempimagepath: " + tempImagePath);
+        File tempImageFile = new File(tempImagePath);
+        outputFileUri = Uri.fromFile(tempImageFile);
+        Log.d(TAG, "Output File Uri: " + outputFileUri);
+
+        // Camera.
+        final List<Intent> cameraIntents = new ArrayList<Intent>();
+        final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        final PackageManager packageManager = getActivity().getPackageManager();
+        final List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
+        for(ResolveInfo res : listCam) {
+            final String packageName = res.activityInfo.packageName;
+            Log.d(TAG, "Resolve info packageName: " + packageName);
+            Log.d(TAG, "Resolve info Name: " + res.activityInfo.name);
+
+            final Intent intent = new Intent(captureIntent);
+            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+            intent.setPackage(packageName);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+            cameraIntents.add(intent);
+        }
+
+        // Filesystem.
+        final Intent galleryIntent = new Intent();
+        galleryIntent.setType("image/*");
+        galleryIntent.setAction(Intent.ACTION_PICK);
+
+        // Chooser of filesystem options.
+        final Intent chooserIntent = Intent.createChooser(galleryIntent, "Select Source");
+
+        // Add the camera options.
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
+
+        startActivityForResult(chooserIntent, SELECT_PHOTO);
     }
 
     // Required functions
