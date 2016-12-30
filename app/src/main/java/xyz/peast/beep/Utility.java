@@ -38,8 +38,6 @@ public class Utility {
     public static final String INSERTED_RECORD_URI = "beep_uri";
 
     private static final String EDITED_FILE_SUFFIX = "_edit";
-    private static final String FORWARD_SLASH = "/";
-
 
     public static float dpToPx(float dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
@@ -231,7 +229,7 @@ public class Utility {
     public static String getFullWavPath(Context context, String audioFileName, boolean beepEdited) {
 
         String recordDir = context.getFilesDir().getAbsolutePath();
-        String path = recordDir + FORWARD_SLASH + audioFileName;
+        String path = recordDir + File.separator + audioFileName;
         if (beepEdited) {
             path += EDITED_FILE_SUFFIX;
         }
@@ -240,7 +238,7 @@ public class Utility {
     }
     public static String getFullImagePath(Context context, String imageFileName) {
         String imageDir = context.getFilesDir().getAbsolutePath();
-        String imagePath = imageDir + FORWARD_SLASH + imageFileName;
+        String imagePath = imageDir + File.separator + imageFileName;
         return imagePath;
     }
 
@@ -274,7 +272,7 @@ public class Utility {
         }
         if (imageFileBase != null) {
             String imageDir = context.getFilesDir().getAbsolutePath();
-            File imageFile = new File(imageDir + FORWARD_SLASH + imageFileBase);
+            File imageFile = new File(imageDir + File.separator + imageFileBase);
             imageDeleted = imageFile.delete();
         }
 
