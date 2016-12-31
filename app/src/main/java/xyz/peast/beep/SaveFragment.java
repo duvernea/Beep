@@ -293,23 +293,36 @@ public class SaveFragment extends Fragment implements LocationListener {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case SELECT_PHOTO:
-                    mImageUri = data.getData();
-                    Log.d(TAG, "mImageUri: " + mImageUri);
+                    // Camera - new image taken
+                    // data is returned as null, but file saved at specified location
+                    if (data == null) {
 
-                    mImagePath = Utility.getRealPathFromURI(mContext, mImageUri);
-                    Log.d(TAG, "mImagePath: " + mImagePath);
-                    loadImageView();
-                    break;
-                    // TODO - handle camera and image picker, from stack overflow
+                        Log.d(TAG, "onActivityResult: data = null");
+                        mImageUri = outputFileUri;
+                        Log.d(TAG, "mImageUri: " + mImageUri);
+                        //mImagePath = Utility.getRealPathFromURI(mContext, mImageUri);
+                        // Log.d(TAG, "mImagePath: " + mImagePath);
+
+                    }
+                    // Image selected from existing photos
+                    else {
+                        Log.d(TAG, "onActivityResult: data != null");
+                        Log.d(TAG, "data.getAction(): " + data.getAction());
+                        mImageUri = data.getData();
+                        Log.d(TAG, "mImageUri: " + mImageUri);
+                        mImagePath = Utility.getRealPathFromURI(mContext, mImageUri);
+                        Log.d(TAG, "mImagePath: " + mImagePath);
+                        loadImageView();
+
+                    }
+//                    // TODO - handle camera and image picker, from stack overflow
 //                    final boolean isCamera;
 //                    if (data == null) {
 //                        isCamera = true;
 //                    } else {
 //                        final String action = data.getAction();
 //                        if (action == null) {
-//                            isCamera = false;
-//                        } else {
-//                            isCamera = action.equals(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+//                            isCamera = MediaStore.ACTION_IMAGE_CAPTURE.equals(data.getAction());
 //                        }
 //                    }
 //                    Bundle extras = data.getExtras();
