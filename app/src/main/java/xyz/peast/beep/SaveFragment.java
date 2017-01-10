@@ -29,6 +29,7 @@ import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.util.DisplayMetrics;
@@ -49,6 +50,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -663,16 +665,35 @@ public class SaveFragment extends Fragment implements LocationListener {
         //outputFileUri = Uri.fromFile(sdImageMainDirectory);
         //Log.d(TAG, "outputFileUri: " + outputFileUri);
 
-        String tempImageName = "temp_camera_image.jpg";
+
+        String tempImageName = "temp_camera_image";
         String tempImagePath = mContext.getFilesDir().getAbsolutePath() + File.separator + tempImageName;
         Log.d(TAG, "Tempimagepath: " + tempImagePath);
-        File tempImageFile = new File(tempImagePath);
-        outputFileUri = Uri.fromFile(tempImageFile);
-        Log.d(TAG, "Output File Uri: " + outputFileUri);
+        File storageDir = mContext.getFilesDir();
+        File image = null;
+        try {
+            image = File.createTempFile(
+                    tempImageName,
+                    ".jpg",
+                    storageDir);
+            String currentPhotoPath =image.getAbsolutePath();
+
+        } catch(IOException ioe) {
+            Log.d(TAG, "Temp image path not created");
+        }
+        if (image != null) {
+            outputFileUri = FileProvider.getUriForFile(mContext,
+                    "xyz.peast.beep.fileprovider",
+                    image);
+            Log.d(TAG, "photoURI: " + outputFileUri);
+        }
+        //File tempImageFile = new File(tempImagePath);
+        //outputFileUri = Uri.fromFile(tempImageFile);
+        //Log.d(TAG, "Output File Uri: " + outputFileUri);
 
         // Camera.
         final List<Intent> cameraIntents = new ArrayList<Intent>();
-        final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        final Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         final PackageManager packageManager = getActivity().getPackageManager();
         final List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
         for(ResolveInfo res : listCam) {
