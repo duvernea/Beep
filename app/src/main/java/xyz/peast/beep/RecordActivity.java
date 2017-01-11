@@ -40,6 +40,7 @@ public class RecordActivity extends AppCompatActivity
     public static final String RECORD_FILE_UNIQUE_NAME = "record_file_name";
     public static final String IMAGE_FILE_UNIQUE_NAME = "image_file_name";
     public static final String IMAGE_FILE_URI_UNCOMPRESSED = "uncompressed_image_uri";
+    public static final String IMAGE_FILE_PATH_UNCOMPRESSED = "uncompressed_image_path";
     public static final String BEEP_NAME = "beep_name";
     public static final String BOARD_NAME = "board_name";
     public static final String BOARD_KEY = "board_key";
@@ -89,7 +90,7 @@ public class RecordActivity extends AppCompatActivity
     }
 
     @Override
-    public void onSaveNextButton(String beepname, String audiofile, Uri imageUri,
+    public void onSaveNextButton(String beepname, String audiofile, Uri imageUri, String imageFilePath,
                                  String boardName, int boardKey, boolean beepEdited) {
 
         ShareFragment shareFragment = new ShareFragment();
@@ -98,6 +99,9 @@ public class RecordActivity extends AppCompatActivity
         bundle.putString(BEEP_NAME, beepname);
         if (imageUri != null) {
             bundle.putString(IMAGE_FILE_URI_UNCOMPRESSED, imageUri.toString());
+        }
+        if (imageFilePath != null) {
+            bundle.putString(IMAGE_FILE_PATH_UNCOMPRESSED, imageFilePath);
         }
         bundle.putString(BOARD_NAME, boardName);
         bundle.putInt(BOARD_KEY, boardKey);

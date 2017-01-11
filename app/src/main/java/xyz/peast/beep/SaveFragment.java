@@ -81,9 +81,6 @@ public class SaveFragment extends Fragment implements LocationListener {
 
     private static final int YOUR_SELECT_PICTURE_REQUEST_CODE = 2;
 
-    // Service for saving, compressing, resizing images
-    private Intent mServiceIntent;
-
     // Views
     private Spinner mBoardSpinner;
     private ImageView mBeepImage;
@@ -99,9 +96,6 @@ public class SaveFragment extends Fragment implements LocationListener {
     // Selected Image in Picker - Uri and Path
     private Uri mImageUri = null;
     private String mImagePath = null;
-    // Image Bitmap and Image FileName
-    private Bitmap mImageBitmap;
-    private String mImageFileName;
 
     // Camera image intent variables
     private String mCameraTempImagePath;
@@ -125,10 +119,9 @@ public class SaveFragment extends Fragment implements LocationListener {
 
     private int mBoardOriginKey;
 
-
     // SaveCallback interface - implemented in RecordActivity
     public interface SaveCallback{
-        public void onSaveNextButton(String beepName, String audioFile, Uri imageUri,
+        public void onSaveNextButton(String beepName, String audioFile, Uri imageUri, String imageFilePath,
                                      String boardname, int boardkey, boolean beepEdited);
     }
     @Override
@@ -199,11 +192,7 @@ public class SaveFragment extends Fragment implements LocationListener {
                 Log.d(TAG, "hasRecordAudioPermission: " + permissionReadExternal);
 
                 if (permissionReadExternal) {
-//                    Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-//                    photoPickerIntent.setType("image/*");
-//                    startActivityForResult(photoPickerIntent, SELECT_PHOTO);
                     openImageIntent();
-
                 } else {
                     requestReadExternalPermission();
                 }
@@ -231,10 +220,10 @@ public class SaveFragment extends Fragment implements LocationListener {
 
                 Log.d(TAG, "mbeepfx edit status: " + mBeepFx.getEditStatus());
 
-
                 ((SaveCallback) getActivity()).onSaveNextButton(beepName,
                         mRecordFileName,
                         mImageUri,
+                        mImagePath,
                         boardname,
                         selectedKey,
                         mBeepFx.getEditStatus()
@@ -280,9 +269,7 @@ public class SaveFragment extends Fragment implements LocationListener {
             if (savedInstanceState.containsKey(IMAGE_FILE_PATH)) {
                 mImagePath = savedInstanceState.getString(IMAGE_FILE_PATH);
             }
-            if (savedInstanceState.containsKey(IMAGE_FILE_NAME)) {
-                mImageFileName = savedInstanceState.getString(IMAGE_FILE_NAME);
-            }
+
         }
         if (mImagePath != null) {
             // Downsample and display bitmap
@@ -306,7 +293,6 @@ public class SaveFragment extends Fragment implements LocationListener {
                         Log.d(TAG, "mImageUri: " + mImageUri);
                         mImagePath = mCameraTempImagePath;
                         Log.d(TAG, "mImagePath: " + mImagePath);
-                        loadImageView();
 
                     }
                     // Image selected from existing photos
@@ -317,35 +303,11 @@ public class SaveFragment extends Fragment implements LocationListener {
                         Log.d(TAG, "mImageUri: " + mImageUri);
                         mImagePath = Utility.getRealPathFromURI(mContext, mImageUri);
                         Log.d(TAG, "mImagePath: " + mImagePath);
-                        loadImageView();
-
+                        mCameraIntentOutputFileUri = null;
+                        mCameraTempImagePath = null;
                     }
-//                    // TODO - handle camera and image picker, from stack overflow
-//                    final boolean isCamera;
-//                    if (data == null) {
-//                        isCamera = true;
-//                    } else {
-//                        final String action = data.getAction();
-//                        if (action == null) {
-//                            isCamera = MediaStore.ACTION_IMAGE_CAPTURE.equals(data.getAction());
-//                        }
-//                    }
-//                    Bundle extras = data.getExtras();
-//                    Bitmap imageBitmap = (Bitmap) extras.get("data");
-//                    Log.d(TAG, "image height: " + imageBitmap.getHeight());
-//                    Log.d(TAG, "image width: " + imageBitmap.getWidth());
-//
-//                    Uri selectedImageUri;
-//                    if (isCamera) {
-//                        //selectedImageUri = mCameraIntentOutputFileUri;
-//                    } else {
-//                        //selectedImageUri = data == null ? null : data.getData();
-//                    }
-//                    break;
+                    loadImageView();
             }
-
-
-
         }
     }
     // Insert beep into database
@@ -378,17 +340,17 @@ public class SaveFragment extends Fragment implements LocationListener {
 
             ((RecordActivity) mActivity).createWav(filePath, fx);
         }
+        Log.d(TAG, "save button, mImageuri: " + mImageUri);
+        Log.d(TAG, "save button, mImagePath: " + mImagePath);
         Utility.insertNewBeep(mContext, beepName, mRecordFileName, beepEdited,
-                mMostRecentLocation, selectedKey, mImageUri);
+                mMostRecentLocation, selectedKey, mImageUri, mImagePath);
 
     }
     // Save Image items
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mImageFileName != null) {
-            outState.putString(IMAGE_FILE_NAME, mImageFileName);
-        }
+
         if (mImageUri != null) {
             outState.putString(IMAGE_FILE_URI, mImageUri.toString());
         }
@@ -398,11 +360,6 @@ public class SaveFragment extends Fragment implements LocationListener {
     }
     private void getAndPopulateBoardData() {
         // Get the data to populate the Board Spinner
-//        String[] mProjection =
-//                {
-//                        BeepDbContract.BoardEntry._ID,
-//                        BeepDbContract.BoardEntry.COLUMN_NAME
-//                };
         Cursor cursor = mContext.getContentResolver().query(BeepDbContract.BoardEntry.CONTENT_URI,
                 Constants.BOARD_COLUMNS,
                 null,
@@ -652,29 +609,14 @@ public class SaveFragment extends Fragment implements LocationListener {
 
         Intent intent = new Intent(mContext, LoadDownsampledBitmapImageService.class);
         intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(mImageHandler));
-        if (true) {
-            intent.putExtra(LoadDownsampledBitmapImageService.ORIGINAL_IMAGE_FILE_ABS_PATH, mImagePath);
-        } else {
-            intent.putExtra(LoadDownsampledBitmapImageService.ORIGINAL_IMAGE_FILE_ABS_PATH,
-                    Utility.getRealPathFromURI(mContext, mImageUri));
-        }
-            intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
+        intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_PATH, mImagePath);
+
+        intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
         mContext.startService(intent);
     }
     private void openImageIntent() {
 
-// Determine Uri of camera image to save.
-        //final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "MyDir" + File.separator);
-        //root.mkdirs();
-        //Log.d(TAG, "File root: " + root);
-        //final String fname = Utils.getUniqueImageFilename();
-        //final String fname = "test_test+123";
-        //final File sdImageMainDirectory = new File(root, fname);
-        //mCameraIntentOutputFileUri = Uri.fromFile(sdImageMainDirectory);
-        //Log.d(TAG, "mCameraIntentOutputFileUri: " + mCameraIntentOutputFileUri);
-
-
-        String tempImageName = "temp_camera_image";
+        String tempImageName = getResources().getString(R.string.camera_temp_photo_filename_prefix);
         String tempImagePath = mContext.getFilesDir().getAbsolutePath() + File.separator + tempImageName;
         File storageDir = mContext.getFilesDir();
         File image = null;
@@ -695,10 +637,6 @@ public class SaveFragment extends Fragment implements LocationListener {
                     image);
             Log.d(TAG, "photoURI: " + mCameraIntentOutputFileUri);
         }
-        //File tempImageFile = new File(tempImagePath);
-        //mCameraIntentOutputFileUri = Uri.fromFile(tempImageFile);
-        //Log.d(TAG, "Output File Uri: " + mCameraIntentOutputFileUri);
-
         // Camera.
         final List<Intent> cameraIntents = new ArrayList<Intent>();
         final Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -712,6 +650,7 @@ public class SaveFragment extends Fragment implements LocationListener {
             final Intent intent = new Intent(captureIntent);
             intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
             intent.setPackage(packageName);
+            // Uri extra is temp file name for camera image
             intent.putExtra(MediaStore.EXTRA_OUTPUT, mCameraIntentOutputFileUri);
             cameraIntents.add(intent);
         }
@@ -722,11 +661,11 @@ public class SaveFragment extends Fragment implements LocationListener {
         galleryIntent.setAction(Intent.ACTION_PICK);
 
         // Chooser of filesystem options.
-        final Intent chooserIntent = Intent.createChooser(galleryIntent, "Select Source");
+        String intentChooserText = getResources().getString(R.string.beep_image_intent_chooser_text);
+        final Intent chooserIntent = Intent.createChooser(galleryIntent, intentChooserText);
 
         // Add the camera options.
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
-
         startActivityForResult(chooserIntent, SELECT_PHOTO);
     }
 

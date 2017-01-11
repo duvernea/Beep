@@ -35,6 +35,7 @@ public class Utility {
 
     // KEYs for Service Intent extras
     public static final String ORIGINAL_IMAGE_FILE_URI = "ORIGINAL_IMAGE_FILE_URI";
+    public static final String ORIGINAL_IMAGE_FILE_PATH = "original_image_file_path";
     public static final String INSERTED_RECORD_URI = "beep_uri";
 
     private static final String EDITED_FILE_SUFFIX = "_edit";
@@ -127,7 +128,8 @@ public class Utility {
     }
 
     public static void insertNewBeep(Context context, String beepName, String audioFileName,
-                                     boolean beepFx, Location location, int boardKey, Uri originalImageUri) {
+                                     boolean beepFx, Location location, int boardKey,
+                                     Uri originalImageUri, String originalImageFilePath) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_NAME, beepName);
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, audioFileName);
@@ -145,9 +147,10 @@ public class Utility {
         Log.d(TAG, "Utility: Insert beep into ContentProvider: " + uri.toString());
 
         // Use service to save, compress, crop, etc the image
-        if (originalImageUri != null) {
+        if (originalImageFilePath != null) {
             Intent serviceIntent = new Intent(context, CompressImageUpdateDbService.class);
             Bundle bundle = new Bundle();
+            bundle.putString(ORIGINAL_IMAGE_FILE_PATH, originalImageFilePath);
             bundle.putString(ORIGINAL_IMAGE_FILE_URI, originalImageUri.toString());
             bundle.putString(INSERTED_RECORD_URI, uri.toString());
             serviceIntent.putExtra(Constants.DB_TABLE_ENUM, Constants.DbTable.BEEP);

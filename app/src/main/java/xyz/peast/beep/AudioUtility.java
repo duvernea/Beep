@@ -73,23 +73,23 @@ public class AudioUtility {
                 if (channels == 2) {
 
                     bytesRead = waveReader.read(buffer_l, buffer_r, CHUNK_SIZE);
-                    Log.d(TAG, "bytes read: " + bytesRead);
-                    /*** TROUBLESHOOTING ********/
-                    int bytesRead_temp = bytesRead * 2;
-                    ByteBuffer buffer = ByteBuffer.allocate(bytesRead_temp);
-                    buffer.order(ByteOrder.LITTLE_ENDIAN);
-                    buffer.asShortBuffer().put(buffer_l);
-                    byte[] bytes = buffer.array();
-                    int shortbufferlength = bytes.length;
-                    outputStream_test.write(bytes, 0, bytesRead_temp);
-                    /*** TROUBLESHOOTING ********/
+                    //Log.d(TAG, "bytes read: " + bytesRead);
+//                    /*** TROUBLESHOOTING ********/
+//                    int bytesRead_temp = bytesRead * 2;
+//                    ByteBuffer buffer = ByteBuffer.allocate(bytesRead_temp);
+//                    buffer.order(ByteOrder.LITTLE_ENDIAN);
+//                    buffer.asShortBuffer().put(buffer_l);
+//                    byte[] bytes = buffer.array();
+//                    int shortbufferlength = bytes.length;
+//                    outputStream_test.write(bytes, 0, bytesRead_temp);
+//                    /*** TROUBLESHOOTING ********/
 
                     if (bytesRead > 0) {
-                        Log.d(TAG, "bytes read from wav: " + bytesRead);
+                        //Log.d(TAG, "bytes read from wav: " + bytesRead);
 
                         int bytesEncoded = 0;
                         bytesEncoded = androidLame.encode(buffer_l, buffer_r, bytesRead, mp3Buf);
-                        Log.d(TAG, "bytes encoded: " + bytesEncoded);
+                        //Log.d(TAG, "bytes encoded: " + bytesEncoded);
                         if (bytesEncoded > 0) {
                             try {
                                 outputStream.write(mp3Buf, 0, bytesEncoded);

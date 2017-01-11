@@ -68,6 +68,7 @@ public class ShareFragment extends Fragment {
         mRecordFileName = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME);
         String imagefile = bundle.getString(RecordActivity.IMAGE_FILE_UNIQUE_NAME);
         String imageUri = bundle.getString(RecordActivity.IMAGE_FILE_URI_UNCOMPRESSED);
+        String imagePath = bundle.getString(RecordActivity.IMAGE_FILE_PATH_UNCOMPRESSED);
         mBoardName = bundle.getString(RecordActivity.BOARD_NAME);
         mBoardKey = bundle.getInt(RecordActivity.BOARD_KEY);
         mBeepEdited = bundle.getBoolean(RecordActivity.BEEP_EDITED);
@@ -139,8 +140,9 @@ public class ShareFragment extends Fragment {
                 startActivityForResult (share, SHARE_BEEP);
             }
         });
+        Log.d(TAG, "imagePath: " + imagePath);
 
-        if (imageUri != null) {
+        if (imagePath != null) {
             int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
 
             Handler handler = new Handler() {
@@ -155,6 +157,7 @@ public class ShareFragment extends Fragment {
             Intent intent = new Intent(mContext, LoadDownsampledBitmapImageService.class);
             intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(handler));
             intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_URI, imageUri.toString());
+            intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_PATH, imagePath);
             intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
             mContext.startService(intent);
         }
