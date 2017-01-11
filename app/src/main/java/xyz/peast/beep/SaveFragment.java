@@ -21,7 +21,6 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
@@ -104,6 +103,10 @@ public class SaveFragment extends Fragment implements LocationListener {
     private Bitmap mImageBitmap;
     private String mImageFileName;
 
+    // Camera image intent variables
+    private String mCameraTempImagePath;
+    private Uri mCameraIntentOutputFileUri;
+
     // Location variables
     private LocationManager mLocationManager;
     private Location mMostRecentLocation;
@@ -122,7 +125,6 @@ public class SaveFragment extends Fragment implements LocationListener {
 
     private int mBoardOriginKey;
 
-    private Uri outputFileUri;
 
     // SaveCallback interface - implemented in RecordActivity
     public interface SaveCallback{
@@ -300,10 +302,11 @@ public class SaveFragment extends Fragment implements LocationListener {
                     if (data == null) {
 
                         Log.d(TAG, "onActivityResult: data = null");
-                        mImageUri = outputFileUri;
+                        mImageUri = mCameraIntentOutputFileUri;
                         Log.d(TAG, "mImageUri: " + mImageUri);
-                        //mImagePath = Utility.getRealPathFromURI(mContext, mImageUri);
-                        // Log.d(TAG, "mImagePath: " + mImagePath);
+                        mImagePath = mCameraTempImagePath;
+                        Log.d(TAG, "mImagePath: " + mImagePath);
+                        loadImageView();
 
                     }
                     // Image selected from existing photos
@@ -334,7 +337,7 @@ public class SaveFragment extends Fragment implements LocationListener {
 //
 //                    Uri selectedImageUri;
 //                    if (isCamera) {
-//                        //selectedImageUri = outputFileUri;
+//                        //selectedImageUri = mCameraIntentOutputFileUri;
 //                    } else {
 //                        //selectedImageUri = data == null ? null : data.getData();
 //                    }
@@ -649,8 +652,13 @@ public class SaveFragment extends Fragment implements LocationListener {
 
         Intent intent = new Intent(mContext, LoadDownsampledBitmapImageService.class);
         intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(mImageHandler));
-        intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_URI, mImageUri.toString());
-        intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
+        if (true) {
+            intent.putExtra(LoadDownsampledBitmapImageService.ORIGINAL_IMAGE_FILE_ABS_PATH, mImagePath);
+        } else {
+            intent.putExtra(LoadDownsampledBitmapImageService.ORIGINAL_IMAGE_FILE_ABS_PATH,
+                    Utility.getRealPathFromURI(mContext, mImageUri));
+        }
+            intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
         mContext.startService(intent);
     }
     private void openImageIntent() {
@@ -662,13 +670,12 @@ public class SaveFragment extends Fragment implements LocationListener {
         //final String fname = Utils.getUniqueImageFilename();
         //final String fname = "test_test+123";
         //final File sdImageMainDirectory = new File(root, fname);
-        //outputFileUri = Uri.fromFile(sdImageMainDirectory);
-        //Log.d(TAG, "outputFileUri: " + outputFileUri);
+        //mCameraIntentOutputFileUri = Uri.fromFile(sdImageMainDirectory);
+        //Log.d(TAG, "mCameraIntentOutputFileUri: " + mCameraIntentOutputFileUri);
 
 
         String tempImageName = "temp_camera_image";
         String tempImagePath = mContext.getFilesDir().getAbsolutePath() + File.separator + tempImageName;
-        Log.d(TAG, "Tempimagepath: " + tempImagePath);
         File storageDir = mContext.getFilesDir();
         File image = null;
         try {
@@ -676,20 +683,21 @@ public class SaveFragment extends Fragment implements LocationListener {
                     tempImageName,
                     ".jpg",
                     storageDir);
-            String currentPhotoPath =image.getAbsolutePath();
+            mCameraTempImagePath =image.getAbsolutePath();
+            Log.d(TAG, "Camera temp image path: " + mCameraTempImagePath);
 
         } catch(IOException ioe) {
             Log.d(TAG, "Temp image path not created");
         }
         if (image != null) {
-            outputFileUri = FileProvider.getUriForFile(mContext,
+            mCameraIntentOutputFileUri = FileProvider.getUriForFile(mContext,
                     "xyz.peast.beep.fileprovider",
                     image);
-            Log.d(TAG, "photoURI: " + outputFileUri);
+            Log.d(TAG, "photoURI: " + mCameraIntentOutputFileUri);
         }
         //File tempImageFile = new File(tempImagePath);
-        //outputFileUri = Uri.fromFile(tempImageFile);
-        //Log.d(TAG, "Output File Uri: " + outputFileUri);
+        //mCameraIntentOutputFileUri = Uri.fromFile(tempImageFile);
+        //Log.d(TAG, "Output File Uri: " + mCameraIntentOutputFileUri);
 
         // Camera.
         final List<Intent> cameraIntents = new ArrayList<Intent>();
@@ -704,7 +712,7 @@ public class SaveFragment extends Fragment implements LocationListener {
             final Intent intent = new Intent(captureIntent);
             intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
             intent.setPackage(packageName);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, mCameraIntentOutputFileUri);
             cameraIntents.add(intent);
         }
 
