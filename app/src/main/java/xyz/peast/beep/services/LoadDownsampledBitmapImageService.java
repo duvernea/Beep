@@ -3,15 +3,11 @@ package xyz.peast.beep.services;
 import android.app.IntentService;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
-
-import java.io.FileOutputStream;
-import java.util.UUID;
 
 import xyz.peast.beep.Constants;
 import xyz.peast.beep.Utility;
@@ -20,8 +16,6 @@ import xyz.peast.beep.Utility;
  * Created by duverneay on 9/11/16.
  */
 public class LoadDownsampledBitmapImageService extends IntentService {
-
-    public static final String ORIGINAL_IMAGE_FILE_ABS_PATH = "original_image_file_abs_path";
 
     private static String TAG = LoadDownsampledBitmapImageService.class.getSimpleName();
 
@@ -34,25 +28,19 @@ public class LoadDownsampledBitmapImageService extends IntentService {
         Bundle bundleIn = intent.getExtras();
         Messenger messenger = (Messenger) bundleIn.get(Constants.IMAGE_MESSENGER);
         int minImageSize = bundleIn.getInt(Constants.IMAGE_MIN_SIZE);
+        String imagePath = bundleIn.getString(Constants.ORIGINAL_IMAGE_FILE_PATH);
 
-        String imagePath = bundleIn.getString(Utility.ORIGINAL_IMAGE_FILE_PATH);
-        Log.d(TAG, "imagePath: " + imagePath);
-        String imageUriString = bundleIn.getString(Utility.ORIGINAL_IMAGE_FILE_URI);
-        //Uri imageUri = Uri.parse(imageUriString);
-        Log.d(TAG, "imagePath: " + imagePath);
+        // Downsample bitmap
+        Bitmap bitmap = Utility.subsampleBitmap(getApplicationContext(),
+                imagePath, minImageSize, minImageSize);
+        // Center crop bitmap
+        bitmap  = Utility.centerCropBitmap(getApplicationContext(), bitmap);
 
-
-        //imagePath = Utility.getRealPathFromURI(getApplicationContext(), imageUri);
-            // Downsample bitmap
-            Bitmap bitmap = Utility.subsampleBitmap(getApplicationContext(), imagePath, minImageSize, minImageSize);
-            // Center crop bitmap
-            bitmap  = Utility.centerCropBitmap(getApplicationContext(), bitmap);
-
+        // Create and Send bitmap message
         Message message = new Message();
         Bundle bitmapBundle = new Bundle();
         bitmapBundle.putParcelable(Constants.IMAGE_BITMAP_FROM_SERVICE, bitmap);
         message.setData(bitmapBundle);
-
         try {
             messenger.send(message);
         }

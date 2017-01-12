@@ -33,13 +33,6 @@ import xyz.peast.beep.widget.WidgetProvider;
 public class Utility {
     private static final String TAG = Utility.class.getSimpleName();
 
-    // KEYs for Service Intent extras
-    public static final String ORIGINAL_IMAGE_FILE_URI = "ORIGINAL_IMAGE_FILE_URI";
-    public static final String ORIGINAL_IMAGE_FILE_PATH = "original_image_file_path";
-    public static final String INSERTED_RECORD_URI = "beep_uri";
-
-    private static final String EDITED_FILE_SUFFIX = "_edit";
-
     public static float dpToPx(float dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
@@ -150,9 +143,9 @@ public class Utility {
         if (originalImageFilePath != null) {
             Intent serviceIntent = new Intent(context, CompressImageUpdateDbService.class);
             Bundle bundle = new Bundle();
-            bundle.putString(ORIGINAL_IMAGE_FILE_PATH, originalImageFilePath);
-            bundle.putString(ORIGINAL_IMAGE_FILE_URI, originalImageUri.toString());
-            bundle.putString(INSERTED_RECORD_URI, uri.toString());
+            bundle.putString(Constants.ORIGINAL_IMAGE_FILE_PATH, originalImageFilePath);
+            bundle.putString(Constants.ORIGINAL_IMAGE_FILE_URI, originalImageUri.toString());
+            bundle.putString(Constants.INSERTED_RECORD_URI, uri.toString());
             serviceIntent.putExtra(Constants.DB_TABLE_ENUM, Constants.DbTable.BEEP);
 
             serviceIntent.putExtras(bundle);
@@ -174,8 +167,8 @@ public class Utility {
         if (originalImageUri != null) {
             Intent serviceIntent = new Intent(context, CompressImageUpdateDbService.class);
             Bundle bundle = new Bundle();
-            bundle.putString(ORIGINAL_IMAGE_FILE_URI, originalImageUri.toString());
-            bundle.putString(INSERTED_RECORD_URI, uri.toString());
+            bundle.putString(Constants.ORIGINAL_IMAGE_FILE_URI, originalImageUri.toString());
+            bundle.putString(Constants.INSERTED_RECORD_URI, uri.toString());
             serviceIntent.putExtra(Constants.DB_TABLE_ENUM, Constants.DbTable.BOARD);
 
             serviceIntent.putExtras(bundle);
@@ -234,7 +227,7 @@ public class Utility {
         String recordDir = context.getFilesDir().getAbsolutePath();
         String path = recordDir + File.separator + audioFileName;
         if (beepEdited) {
-            path += EDITED_FILE_SUFFIX;
+            path += Constants.EDITED_FILE_SUFFIX;
         }
         path += Constants.WAV_FILE_SUFFIX;
         return path;

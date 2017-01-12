@@ -1,6 +1,10 @@
 package xyz.peast.beep;
 
+import android.content.Intent;
+import android.os.Messenger;
+
 import xyz.peast.beep.data.BeepDbContract;
+import xyz.peast.beep.services.LoadDownsampledBitmapImageService;
 
 /**
  * Created by BrianDuv on 9/8/2016.
@@ -16,6 +20,20 @@ public class Constants {
         BEEP, BOARD
     }
 
+    // *********** SERVICES ************
+
+    // LoadDownsampledBitmapImageService - In Keys
+    public static final String IMAGE_MESSENGER = "image_messenger";
+    public static final String IMAGE_MIN_SIZE = "image_size";
+    public static final String ORIGINAL_IMAGE_FILE_PATH = "original_image_file_path";
+    // LoadDownsampledBitmapImageService - Out Key for message
+    public static final String IMAGE_BITMAP_FROM_SERVICE = "image_bitmap";
+
+    // Utility, Image, etc constants
+    // KEYs for Service Intent extras
+
+    public static final String INSERTED_RECORD_URI = "beep_uri";
+
     public static final String EDITED_FILE_SUFFIX = "_edit";
     public static final String WAV_FILE_SUFFIX = ".wav";
 
@@ -26,11 +44,6 @@ public class Constants {
     public static final String WAV_FILE_PATH = "record_file_name";
     public static final String BEEP_NAME = "beep_name";
     public static final String BEEP_EDITED = "beep_edited";
-
-    // Bundle extras for LoadDownsampledBitmapImageService 'messenger'
-    public static final String IMAGE_MESSENGER = "image_messenger";
-    public static final String IMAGE_BITMAP_FROM_SERVICE = "image_bitmap";
-    public static final String IMAGE_MIN_SIZE = "image_size";
 
     // Audio Parameters Default - Sample Rate and Buffer Size
     public static final String SAMPLE_RATE_DEFAULT = "44100";

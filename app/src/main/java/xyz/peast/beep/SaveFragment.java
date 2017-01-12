@@ -609,7 +609,7 @@ public class SaveFragment extends Fragment implements LocationListener {
 
         Intent intent = new Intent(mContext, LoadDownsampledBitmapImageService.class);
         intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(mImageHandler));
-        intent.putExtra(Utility.ORIGINAL_IMAGE_FILE_PATH, mImagePath);
+        intent.putExtra(Constants.ORIGINAL_IMAGE_FILE_PATH, mImagePath);
 
         intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
         mContext.startService(intent);
