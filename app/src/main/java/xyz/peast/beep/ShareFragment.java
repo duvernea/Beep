@@ -156,7 +156,6 @@ public class ShareFragment extends Fragment {
 
             Intent intent = new Intent(mContext, LoadDownsampledBitmapImageService.class);
             intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(handler));
-            intent.putExtra(Constants.ORIGINAL_IMAGE_FILE_URI, imageUri.toString());
             intent.putExtra(Constants.ORIGINAL_IMAGE_FILE_PATH, imagePath);
             intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
             mContext.startService(intent);

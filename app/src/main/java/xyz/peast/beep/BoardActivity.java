@@ -315,7 +315,6 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                         Log.d(TAG, "Utility: Insert board into ContentProvider: " + uri.toString());
                         Intent serviceIntent = new Intent(mContext, CompressImageUpdateDbService.class);
                         Bundle bundle = new Bundle();
-                        bundle.putString(Constants.ORIGINAL_IMAGE_FILE_URI, mImageUri.toString());
                         bundle.putString(Constants.INSERTED_RECORD_URI, uri.toString());
                         serviceIntent.putExtra(Constants.DB_TABLE_ENUM, Constants.DbTable.BOARD);
 
@@ -332,7 +331,6 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
 
         Intent intent = new Intent(mContext, LoadDownsampledBitmapImageService.class);
         intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(mImageHandler));
-        intent.putExtra(Constants.ORIGINAL_IMAGE_FILE_URI, mImageUri.toString());
         intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
         mContext.startService(intent);
     }

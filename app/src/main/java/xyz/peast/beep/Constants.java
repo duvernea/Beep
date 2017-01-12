@@ -1,7 +1,9 @@
 package xyz.peast.beep;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Messenger;
+import android.support.v4.content.LocalBroadcastManager;
 
 import xyz.peast.beep.data.BeepDbContract;
 import xyz.peast.beep.services.LoadDownsampledBitmapImageService;
@@ -19,26 +21,29 @@ public class Constants {
     public enum DbTable {
         BEEP, BOARD
     }
+    public static final String JPG_EXTENSION = ".jpg";
 
     // *********** SERVICES ************
 
     // LoadDownsampledBitmapImageService - In Keys
     public static final String IMAGE_MESSENGER = "image_messenger";
     public static final String IMAGE_MIN_SIZE = "image_size";
+
+    // * this key also used for CompressImageUpdateDbService
     public static final String ORIGINAL_IMAGE_FILE_PATH = "original_image_file_path";
     // LoadDownsampledBitmapImageService - Out Key for message
     public static final String IMAGE_BITMAP_FROM_SERVICE = "image_bitmap";
 
+    // CompressImageUpdateDbService
+    // key for the two table types - used a Extras on Intent
+    public static String DB_TABLE_ENUM = "db_table_enum";
+    public static final String INSERTED_RECORD_URI = "beep_uri";
+
     // Utility, Image, etc constants
     // KEYs for Service Intent extras
 
-    public static final String INSERTED_RECORD_URI = "beep_uri";
-
     public static final String EDITED_FILE_SUFFIX = "_edit";
     public static final String WAV_FILE_SUFFIX = ".wav";
-
-    // key for the two table types - used a Extras on Intent
-    public static String DB_TABLE_ENUM = "db_table_enum";
 
     // Bundle extras
     public static final String WAV_FILE_PATH = "record_file_name";

@@ -314,7 +314,6 @@ public class CreateBoardActivity extends AppCompatActivity {
         int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
         Intent intent = new Intent(mContext, LoadDownsampledBitmapImageService.class);
         intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(mImageHandler));
-        intent.putExtra(Constants.ORIGINAL_IMAGE_FILE_URI, mImageUri.toString());
         intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
 
         mContext.startService(intent);

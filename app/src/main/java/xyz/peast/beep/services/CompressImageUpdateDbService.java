@@ -38,23 +38,22 @@ public class CompressImageUpdateDbService extends IntentService {
         LocalBroadcastManager broadcaster = LocalBroadcastManager.getInstance(this);
         Bundle bundle = intent.getExtras();
         Constants.DbTable dbTableType = (Constants.DbTable) intent.getSerializableExtra(Constants.DB_TABLE_ENUM);
-        String imageUriString = bundle.getString(Utility.ORIGINAL_IMAGE_FILE_URI);
-        String rowString = bundle.getString(Utility.INSERTED_RECORD_URI);
+
+        String originalImageFilePath = bundle.getString(Constants.ORIGINAL_IMAGE_FILE_PATH);
+        String rowString = bundle.getString(Constants.INSERTED_RECORD_URI);
         Uri rowUri = Uri.parse(rowString);
-        Uri imageUri = Uri.parse(imageUriString);
 
         // New compressed file name and path
         String imageDir = getApplicationContext().getFilesDir().getAbsolutePath();
-        String compressedImageFileName = UUID.randomUUID().toString() + ".jpg";
-        String compressedImageFilePath = imageDir + "/" + compressedImageFileName;
-        String originalFilePath = Utility.getRealPathFromURI(getApplicationContext(), imageUri);
+        String compressedImageFileName = UUID.randomUUID().toString() + Constants.JPG_EXTENSION;
+        String compressedImageFilePath = imageDir + File.separator + compressedImageFileName;
 
-        File originalImageFile = new File(originalFilePath);
+        File originalImageFile = new File(originalImageFilePath);
         long length = originalImageFile.length();
 
         // Downsample bitmap
-            Bitmap downsampledBitmap = Utility.subsampleBitmap(getApplicationContext(),
-                    Utility.getRealPathFromURI(getApplicationContext(), imageUri), 360, 360);
+        Bitmap downsampledBitmap = Utility.subsampleBitmap(getApplicationContext(),
+                    originalImageFilePath, 360, 360);
         // Center crop bitmap
         Bitmap centerCropBitmap = Utility.centerCropBitmap(getApplicationContext(), downsampledBitmap);
 

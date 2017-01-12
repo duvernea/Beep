@@ -623,7 +623,7 @@ public class SaveFragment extends Fragment implements LocationListener {
         try {
             image = File.createTempFile(
                     tempImageName,
-                    ".jpg",
+                    Constants.JPG_EXTENSION,
                     storageDir);
             mCameraTempImagePath =image.getAbsolutePath();
             Log.d(TAG, "Camera temp image path: " + mCameraTempImagePath);

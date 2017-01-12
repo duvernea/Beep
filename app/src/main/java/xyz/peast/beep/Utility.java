@@ -144,7 +144,6 @@ public class Utility {
             Intent serviceIntent = new Intent(context, CompressImageUpdateDbService.class);
             Bundle bundle = new Bundle();
             bundle.putString(Constants.ORIGINAL_IMAGE_FILE_PATH, originalImageFilePath);
-            bundle.putString(Constants.ORIGINAL_IMAGE_FILE_URI, originalImageUri.toString());
             bundle.putString(Constants.INSERTED_RECORD_URI, uri.toString());
             serviceIntent.putExtra(Constants.DB_TABLE_ENUM, Constants.DbTable.BEEP);
 
@@ -167,7 +166,6 @@ public class Utility {
         if (originalImageUri != null) {
             Intent serviceIntent = new Intent(context, CompressImageUpdateDbService.class);
             Bundle bundle = new Bundle();
-            bundle.putString(Constants.ORIGINAL_IMAGE_FILE_URI, originalImageUri.toString());
             bundle.putString(Constants.INSERTED_RECORD_URI, uri.toString());
             serviceIntent.putExtra(Constants.DB_TABLE_ENUM, Constants.DbTable.BOARD);
 
