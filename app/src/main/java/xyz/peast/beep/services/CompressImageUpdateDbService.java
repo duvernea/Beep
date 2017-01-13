@@ -41,6 +41,7 @@ public class CompressImageUpdateDbService extends IntentService {
 
         String originalImageFilePath = bundle.getString(Constants.ORIGINAL_IMAGE_FILE_PATH);
         String rowString = bundle.getString(Constants.INSERTED_RECORD_URI);
+        boolean deleteTempPic = bundle.getBoolean(Constants.DELETE_TEMP_PIC);
         Uri rowUri = Uri.parse(rowString);
 
         // New compressed file name and path
@@ -106,6 +107,11 @@ public class CompressImageUpdateDbService extends IntentService {
                 imageSavedIntent.putExtra(IMAGE_SAVED_MESSAGE, compressedImageFileName);
                 broadcaster.sendBroadcast(imageSavedIntent);
             }
+        }
+        // Delete image if it is a "temp" (taken by camera)
+        if (deleteTempPic) {
+            boolean deletedFile = originalImageFile.delete();
+            Log.d(TAG, "temp image file deleted: " + deletedFile);
         }
     }
 }

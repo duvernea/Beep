@@ -47,10 +47,13 @@
     <string name="dialog_new_beep_name">Beep name</string>
     <string name="edittext_hint_text">Tap here</string>
     <string name="no_beep_name_entered_msg">You need to enter a beep name</string>
-
     <string name="camera_temp_photo_filename_prefix">temp_camera_image_</string>
-
     <string name="beep_image_intent_chooser_text">Select Source</string>
+    <string name="create_new_board_spinner_item">Create New</string>
+    <string name="beep_name_dialog_positive">OK</string>
+    <string name="beep_name_dialog_negative">Cancel</string>
+
+
 
     // Share Fragment
     <string name="share">Share</string>

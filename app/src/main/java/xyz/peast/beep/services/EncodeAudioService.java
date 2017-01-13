@@ -19,7 +19,6 @@ public class EncodeAudioService extends IntentService {
         super("EncodeAudioService");
     }
 
-
     @Override
     protected void onHandleIntent(Intent intent) {
             Bundle bundle = intent.getExtras();

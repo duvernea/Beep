@@ -75,11 +75,10 @@ public class SaveFragment extends Fragment implements LocationListener {
     private static final String IMAGE_FILE_NAME = "image_file_name";
     private static final String IMAGE_FILE_URI = "image_file_uri";
     private static final String IMAGE_FILE_PATH = "image_file_path";
+    private static final String DELETE_TEMP_PIC = "delete_temp_pic";
 
     // Request Code for Photo Picker Intent
     private static final int SELECT_PHOTO = 1;
-
-    private static final int YOUR_SELECT_PICTURE_REQUEST_CODE = 2;
 
     // Views
     private Spinner mBoardSpinner;
@@ -100,6 +99,7 @@ public class SaveFragment extends Fragment implements LocationListener {
     // Camera image intent variables
     private String mCameraTempImagePath;
     private Uri mCameraIntentOutputFileUri;
+    private boolean mDeleteTempPic = false;
 
     // Location variables
     private LocationManager mLocationManager;
@@ -269,13 +269,14 @@ public class SaveFragment extends Fragment implements LocationListener {
             if (savedInstanceState.containsKey(IMAGE_FILE_PATH)) {
                 mImagePath = savedInstanceState.getString(IMAGE_FILE_PATH);
             }
-
+            if (savedInstanceState.containsKey(DELETE_TEMP_PIC)) {
+                mDeleteTempPic = savedInstanceState.getBoolean(DELETE_TEMP_PIC);
+            }
         }
         if (mImagePath != null) {
             // Downsample and display bitmap
             loadImageView();
         }
-
 
         return rootView;
     }
@@ -293,7 +294,7 @@ public class SaveFragment extends Fragment implements LocationListener {
                         Log.d(TAG, "mImageUri: " + mImageUri);
                         mImagePath = mCameraTempImagePath;
                         Log.d(TAG, "mImagePath: " + mImagePath);
-
+                        mDeleteTempPic = true;
                     }
                     // Image selected from existing photos
                     else {
@@ -305,6 +306,7 @@ public class SaveFragment extends Fragment implements LocationListener {
                         Log.d(TAG, "mImagePath: " + mImagePath);
                         mCameraIntentOutputFileUri = null;
                         mCameraTempImagePath = null;
+                        mDeleteTempPic = false;
                     }
                     loadImageView();
             }
@@ -343,7 +345,7 @@ public class SaveFragment extends Fragment implements LocationListener {
         Log.d(TAG, "save button, mImageuri: " + mImageUri);
         Log.d(TAG, "save button, mImagePath: " + mImagePath);
         Utility.insertNewBeep(mContext, beepName, mRecordFileName, beepEdited,
-                mMostRecentLocation, selectedKey, mImageUri, mImagePath);
+                mMostRecentLocation, selectedKey, mImagePath, mDeleteTempPic);
 
     }
     // Save Image items
@@ -357,6 +359,7 @@ public class SaveFragment extends Fragment implements LocationListener {
         if (mImagePath != null) {
             outState.putString(IMAGE_FILE_PATH, mImagePath);
         }
+        outState.putBoolean(DELETE_TEMP_PIC, mDeleteTempPic);
     }
     private void getAndPopulateBoardData() {
         // Get the data to populate the Board Spinner
@@ -392,7 +395,8 @@ public class SaveFragment extends Fragment implements LocationListener {
         }
         // Add item for creating new cursor
         // leave the date and image set to null for this - it doesn't actually
-        Board createNew = new Board(-1, "Create New", null, -1);
+        String createNewBoard = getResources().getString(R.string.create_new_board_spinner_item);
+        Board createNew = new Board(-1, createNewBoard, null, -1);
         mSpinnerItems.add(createNew);
 
         mBoardSpinnerAdapter = new BoardSpinnerAdapter(mContext,
@@ -433,14 +437,16 @@ public class SaveFragment extends Fragment implements LocationListener {
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(container);
 
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getResources().getString(R.string.beep_name_dialog_positive),
+                new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String newBeepName = input.getText().toString();
                 mBeepNameEditText.setText(newBeepName);
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getResources().getString(R.string.beep_name_dialog_negative),
+                new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -655,7 +661,7 @@ public class SaveFragment extends Fragment implements LocationListener {
             cameraIntents.add(intent);
         }
 
-        // Filesystem.
+        // Filesystem
         final Intent galleryIntent = new Intent();
         galleryIntent.setType("image/*");
         galleryIntent.setAction(Intent.ACTION_PICK);

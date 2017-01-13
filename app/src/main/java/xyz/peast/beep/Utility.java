@@ -122,7 +122,7 @@ public class Utility {
 
     public static void insertNewBeep(Context context, String beepName, String audioFileName,
                                      boolean beepFx, Location location, int boardKey,
-                                     Uri originalImageUri, String originalImageFilePath) {
+                                     String originalImageFilePath, boolean deleteTempPic) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_NAME, beepName);
         contentValues.put(BeepDbContract.BeepEntry.COLUMN_AUDIO, audioFileName);
@@ -145,6 +145,7 @@ public class Utility {
             Bundle bundle = new Bundle();
             bundle.putString(Constants.ORIGINAL_IMAGE_FILE_PATH, originalImageFilePath);
             bundle.putString(Constants.INSERTED_RECORD_URI, uri.toString());
+            bundle.putBoolean(Constants.DELETE_TEMP_PIC, deleteTempPic);
             serviceIntent.putExtra(Constants.DB_TABLE_ENUM, Constants.DbTable.BEEP);
 
             serviceIntent.putExtras(bundle);

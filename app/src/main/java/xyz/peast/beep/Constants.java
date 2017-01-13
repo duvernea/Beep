@@ -36,8 +36,9 @@ public class Constants {
 
     // CompressImageUpdateDbService
     // key for the two table types - used a Extras on Intent
-    public static String DB_TABLE_ENUM = "db_table_enum";
+    public static final String DB_TABLE_ENUM = "db_table_enum";
     public static final String INSERTED_RECORD_URI = "beep_uri";
+    public static final String DELETE_TEMP_PIC = "delete_temp_pic";
 
     // Utility, Image, etc constants
     // KEYs for Service Intent extras
