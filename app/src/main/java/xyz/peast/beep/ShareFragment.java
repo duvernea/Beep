@@ -87,6 +87,8 @@ public class ShareFragment extends Fragment {
         encodeAudioIntent.putExtras(bundleEncodeAudio);
 
         mContext.startService(encodeAudioIntent);
+        long time = System.currentTimeMillis();
+        Log.d(TAG, "EncodeAudioService intent process starting at: " + time);
         String filename = bundle.getString(Constants.WAV_FILE_PATH);
         String beepName = bundle.getString(Constants.BEEP_NAME);
 

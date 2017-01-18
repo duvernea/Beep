@@ -45,6 +45,7 @@ public class Constants {
 
     public static final String EDITED_FILE_SUFFIX = "_edit";
     public static final String WAV_FILE_SUFFIX = ".wav";
+    public static final String MP3_FILE_SUFFIX = ".mp3";
 
     // Bundle extras
     public static final String WAV_FILE_PATH = "record_file_name";
