@@ -24,6 +24,9 @@ public class AudioUtility {
 
     // Encode an mp3 to a wav. Save the file as the more friendly "Beep Name" .mp3
     public static boolean encodeMp3(Context context, String wavPath, String beepName) {
+        long time1 = System.currentTimeMillis();
+        Log.d(TAG, "Utility encodeMp3 process starting at: " + time1);
+
         BufferedOutputStream outputStream;
         BufferedOutputStream outputStream_test;
         final int OUTPUT_STREAM_BUFFER = 8192;
@@ -33,7 +36,7 @@ public class AudioUtility {
 
         Log.d(TAG, "wav path: " + wavPath);
         File inputWavFile = new File(wavPath);
-        final File output = new File( audioDir + "/" + beepName + ".mp3");
+        final File output = new File( audioDir + File.separator + beepName + Constants.MP3_FILE_SUFFIX);
         final File output_test = new File( audioDir + "/" + beepName + "test.wav");
         int CHUNK_SIZE = 8192;
 
@@ -132,6 +135,11 @@ public class AudioUtility {
                 e.printStackTrace();
             }
         }
+        long time2 = System.currentTimeMillis();
+        Log.d(TAG, "Utility encodeMp3 process stopping at: " + time2);
+        long elapsedTime = time2 - time1;
+        Log.d(TAG, "encodeMp3 process time: " + elapsedTime);
+
         return true;
     }
 
