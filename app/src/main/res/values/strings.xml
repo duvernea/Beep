@@ -19,6 +19,7 @@
     // Board Activity - Context Menu
     <string name="beep_context_menu_delete">Delete</string>
     <string name="beep_context_menu_edit">Edit - Not implemented</string>
+    <string name="beep_context_menu_share">Share</string>
 
     // Create Board Activity
     <string name="dialog_new_board_name">Board name</string>

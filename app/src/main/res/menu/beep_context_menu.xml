@@ -4,4 +4,6 @@
         android:title="@string/beep_context_menu_delete" />
     <item android:id="@+id/edit_beep"
         android:title="@string/beep_context_menu_edit" />
+    <item android:id="@+id/share_beep"
+        android:title="@string/beep_context_menu_share" />
 </menu>

@@ -452,6 +452,10 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                 break;
             case R.id.edit_beep:
                 Log.d(TAG, "Edit beep");
+                Toast.makeText(mContext, "Edit beep not implemented yet", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.share_beep:
+                Toast.makeText(mContext, "Share beep", Toast.LENGTH_SHORT).show();
                 break;
         }
 
