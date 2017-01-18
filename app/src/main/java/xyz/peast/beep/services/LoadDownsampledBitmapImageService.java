@@ -30,6 +30,8 @@ public class LoadDownsampledBitmapImageService extends IntentService {
         int minImageSize = bundleIn.getInt(Constants.IMAGE_MIN_SIZE);
         String imagePath = bundleIn.getString(Constants.ORIGINAL_IMAGE_FILE_PATH);
 
+
+
         // Downsample bitmap
         Bitmap bitmap = Utility.subsampleBitmap(getApplicationContext(),
                 imagePath, minImageSize, minImageSize);

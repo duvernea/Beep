@@ -316,6 +316,11 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                         Intent serviceIntent = new Intent(mContext, CompressImageUpdateDbService.class);
                         Bundle bundle = new Bundle();
                         bundle.putString(Constants.INSERTED_RECORD_URI, uri.toString());
+
+                        bundle.putString(Constants.ORIGINAL_IMAGE_FILE_PATH, mImagePath);
+                        // bundle.putBoolean(Constants.DELETE_TEMP_PIC, deleteTempPic);
+
+
                         serviceIntent.putExtra(Constants.DB_TABLE_ENUM, Constants.DbTable.BOARD);
 
                         serviceIntent.putExtras(bundle);
@@ -332,6 +337,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
         Intent intent = new Intent(mContext, LoadDownsampledBitmapImageService.class);
         intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(mImageHandler));
         intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
+        intent.putExtra(Constants.ORIGINAL_IMAGE_FILE_PATH, mImagePath);
         mContext.startService(intent);
     }
 

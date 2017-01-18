@@ -40,6 +40,7 @@ public class CompressImageUpdateDbService extends IntentService {
         Constants.DbTable dbTableType = (Constants.DbTable) intent.getSerializableExtra(Constants.DB_TABLE_ENUM);
 
         String originalImageFilePath = bundle.getString(Constants.ORIGINAL_IMAGE_FILE_PATH);
+
         String rowString = bundle.getString(Constants.INSERTED_RECORD_URI);
         boolean deleteTempPic = bundle.getBoolean(Constants.DELETE_TEMP_PIC);
         Uri rowUri = Uri.parse(rowString);
@@ -48,7 +49,7 @@ public class CompressImageUpdateDbService extends IntentService {
         String imageDir = getApplicationContext().getFilesDir().getAbsolutePath();
         String compressedImageFileName = UUID.randomUUID().toString() + Constants.JPG_EXTENSION;
         String compressedImageFilePath = imageDir + File.separator + compressedImageFileName;
-
+        Log.d(TAG, "originalImageFilePath: " + originalImageFilePath);
         File originalImageFile = new File(originalImageFilePath);
         long length = originalImageFile.length();
 
