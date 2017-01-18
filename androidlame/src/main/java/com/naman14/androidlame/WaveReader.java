@@ -209,7 +209,7 @@ public class WaveReader {
         int bytesRead = mInStream.read(buf, 0, numSamples * 4);
 
         for (int i = 0; i < bytesRead; i+=2) {
-            short val = byteToShortLE(buf[0], buf[i+1]);
+            short val = byteToShortLE(buf[i], buf[i+1]);
             if (i % 4 == 0) {
                 left[index] = val;
             } else {
