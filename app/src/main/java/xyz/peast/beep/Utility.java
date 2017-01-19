@@ -220,6 +220,10 @@ public class Utility {
                 whereClause,
                 whereArgs);
     }
+    public static String getBeepPath(Context context, String beepName) {
+        String audioPath = context.getFilesDir().getAbsolutePath();
+        return (audioPath + File.separator + beepName + Constants.MP3_FILE_SUFFIX);
+    }
 
     public static String getFullWavPath(Context context, String audioFileName, boolean beepEdited) {
 

@@ -61,6 +61,8 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     // Loader ids
     private static final int BEEPS_LOADER = 1;
 
+
+
     // Views
     private Button mRandomButton;
     private RecyclerView mBeepsRecyclerView;
@@ -74,12 +76,15 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     private Handler mImageHandler;
 
     private int mBoardKey;
+    private String mBeepMp3Path;
 
     // Permission Request Code
     public static final int PERMISSIONS_REQUEST_READ_EXTERNAL= 10;
 
     // Request Code for Photo Picker Intent
     private static final int SELECT_PHOTO = 1;
+    // Request code, share beep intent
+    private static final int SHARE_BEEP = 2;
 
     // Broadcast receiver for Board image save complete
     BroadcastReceiver mImageSavedBroadcastReceiver;
@@ -325,9 +330,14 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
 
                         serviceIntent.putExtras(bundle);
                         mContext.startService(serviceIntent);
-
-
+                    }
                 }
+            case SHARE_BEEP:
+                // Make sure the request was successful
+                Log.d(TAG, "onActivityResult SHARE_BEEP");
+                if (resultCode == Activity.RESULT_OK || resultCode == Activity.RESULT_CANCELED) {
+                    File file = new File(mBeepMp3Path);
+                    boolean deleted = file.delete();
                 }
         }
     }
@@ -457,11 +467,17 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
 
                 break;
             case R.id.edit_beep:
-                Log.d(TAG, "Edit beep");
                 Toast.makeText(mContext, "Edit beep not implemented yet", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.share_beep:
-                Toast.makeText(mContext, "Share beep", Toast.LENGTH_SHORT).show();
+                mBeepMp3Path = Utility.getBeepPath(mContext, beepName);
+                Uri fileUri = ShareUtility.encodeBeepGetUri(mContext, audioFileBase,
+                        beepName, mBeepMp3Path, edited);
+
+                Intent share = new Intent(Intent.ACTION_SEND);
+                share.setType("audio/*");
+                share.putExtra(Intent.EXTRA_STREAM, fileUri);
+                startActivityForResult (share, SHARE_BEEP);
                 break;
         }
 

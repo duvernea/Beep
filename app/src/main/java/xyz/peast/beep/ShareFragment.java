@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 
@@ -76,21 +77,19 @@ public class ShareFragment extends Fragment {
         mBeepName = bundle.getString(RecordActivity.BEEP_NAME);
         mBeepNameTextView.setText(mBeepName);
 
-        String audioWavPath = Utility.getFullWavPath(mContext, mRecordFileName, mBeepEdited);
+        final String audioWavPath = Utility.getFullWavPath(mContext, mRecordFileName, mBeepEdited);
 
         // Encode the wav to mp3 for sharing
-        Bundle bundleEncodeAudio = new Bundle();
-        bundleEncodeAudio.putString(Constants.WAV_FILE_PATH, audioWavPath);
-        bundleEncodeAudio.putString(Constants.BEEP_NAME, mBeepName);
-        bundleEncodeAudio.putBoolean(Constants.BEEP_EDITED, mBeepEdited);
-        Intent encodeAudioIntent = new Intent(mContext, EncodeAudioService.class);
-        encodeAudioIntent.putExtras(bundleEncodeAudio);
+//        Bundle bundleEncodeAudio = new Bundle();
+//        bundleEncodeAudio.putString(Constants.WAV_FILE_PATH, audioWavPath);
+//        bundleEncodeAudio.putString(Constants.BEEP_NAME, mBeepName);
+//        bundleEncodeAudio.putBoolean(Constants.BEEP_EDITED, mBeepEdited);
+//        Intent encodeAudioIntent = new Intent(mContext, EncodeAudioService.class);
+//        encodeAudioIntent.putExtras(bundleEncodeAudio);
+//        mContext.startService(encodeAudioIntent);
 
-        mContext.startService(encodeAudioIntent);
         long time = System.currentTimeMillis();
         Log.d(TAG, "EncodeAudioService intent process starting at: " + time);
-        String filename = bundle.getString(Constants.WAV_FILE_PATH);
-        String beepName = bundle.getString(Constants.BEEP_NAME);
 
         //Log.d(TAG, "mAudioWavPath: " + audioWavPath);
         //boolean encodeMp3Success = AudioUtility.encodeMp3(mContext, audioWavPath, mBeepName);
@@ -112,36 +111,17 @@ public class ShareFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                String audioPath = mContext.getFilesDir().getAbsolutePath();
-                mBeepMp3Path = audioPath + "/" + mBeepName + ".mp3";
-                //audioPath += "/" + mRecordFileName;
-                File beepMp3= new File(mBeepMp3Path);
+                mBeepMp3Path = Utility.getBeepPath(mContext, mBeepName);
+                Uri fileUri = ShareUtility.encodeBeepGetUri(mContext, mRecordFileName,
+                        mBeepName, mBeepMp3Path, mBeepEdited);
 
-                Uri fileUri;
-                //= Uri.parse(audioPath);
-                try {
-                    fileUri = FileProvider.getUriForFile(
-                            mContext,
-                            "xyz.peast.beep.fileprovider",
-                            beepMp3);
-                } catch (IllegalArgumentException e) {
-                    fileUri = null;
-                    Log.e("File Selector",
-                            "The selected file can't be shared: ");
-                }
-                if (fileUri != null) {
-                    Log.d(TAG, "fileUri: " + fileUri);
-                }
                 Intent share = new Intent(Intent.ACTION_SEND);
-
                 share.setType("audio/*");
                 share.putExtra(Intent.EXTRA_STREAM, fileUri);
-                String shareChooserTitle = getResources().getString(R.string.share_chooser_title);
-                startActivity(Intent.createChooser(share, shareChooserTitle));
-
                 startActivityForResult (share, SHARE_BEEP);
             }
         });
+
         Log.d(TAG, "imagePath: " + imagePath);
 
         if (imagePath != null) {
