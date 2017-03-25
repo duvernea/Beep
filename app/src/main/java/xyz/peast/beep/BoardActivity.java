@@ -332,6 +332,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                         mContext.startService(serviceIntent);
                     }
                 }
+                break;
             case SHARE_BEEP:
                 // Make sure the request was successful
                 Log.d(TAG, "onActivityResult SHARE_BEEP");
@@ -339,6 +340,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                     File file = new File(mBeepMp3Path);
                     boolean deleted = file.delete();
                 }
+                break;
         }
     }
     private void loadImageView() {
