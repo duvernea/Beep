@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Button
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="64dp"
+    android:text="Play"
+    android:id="@+id/replay_button"
+    android:layout_below="@+id/image_title_board_linearlayout"
+
+    android:layout_marginBottom="16dp"
+    android:drawableLeft="@drawable/ic_play_arrow_black_48dp"
+    android:drawableStart="@drawable/ic_play_arrow_black_48dp"
+    android:paddingLeft="@dimen/button_icon_padding_to_edge"
+    android:paddingStart="@dimen/button_icon_padding_to_edge"
+    android:paddingRight="@dimen/button_icon_padding_to_edge"
+    android:paddingEnd="@dimen/button_icon_padding_to_edge"
+    android:textSize="@dimen/button_text_size"
+    android:textAllCaps="false"
+    android:layout_centerHorizontal="true" />
