@@ -83,8 +83,15 @@
     <string name="dialog_negative_button">Cancel</string>
 
     // Edit Fragment
-    <string name="chipmunk_pitch_shift_label">chipmunk</string>
-    <string name="slomo_pitch_shift_label">slomo</string>
+    <string name="chipmunk_fx_label">chipmunk</string>
+    <string name="slomo_fx_label">slomo</string>
+    <string name="robot_fx_label">Robot</string>
+    <string name="church_fx_label">Church</string>
+    <string name="creepy_fx_label">Creepy</string>
+    <string name="echo_fx_label">Echo</string>
+    <string name="bass_textview">Bass</string>
+    <string name="treble_textview">Treble</string>
+    <string name="back">Back</string>
 
 
 </resources>
