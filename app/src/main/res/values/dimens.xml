@@ -40,7 +40,8 @@
 
     // Record Activity
     <dimen name="button_text_size">20sp</dimen>
-    <dimen name="button_icon_padding_to_edge">30dp</dimen>
+    <dimen name="button_icon_padding_to_edge">16dp</dimen>
+    <dimen name="button_icon_padding_to_edge_left">4dp</dimen>
     // Save Activity
     <dimen name="image_size_save_activity">160dp</dimen>
     <dimen name="save_fragment_label_size">20sp</dimen>
