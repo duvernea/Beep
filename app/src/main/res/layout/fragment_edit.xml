@@ -1,122 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <include layout="@layout/play_button"
-        android:layout_marginTop="16dp"
-        android:id="@+id/noeffect_button"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <include layout="@layout/play_button"
+            android:layout_marginTop="16dp"
+            android:id="@+id/noeffect_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"/>
+        <TextView
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="EQ"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_gravity="center_horizontal"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            >
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Treble"
+                    android:id="@+id/textView"
+                    android:textSize="24sp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textColor="@color/colorPrimaryDark"/>
+                <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/treble_seekBar"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:progress="12"
+                    android:background="@drawable/treblebass1"
+                    android:progressDrawable="@android:color/transparent"
+                    android:max="24" />
+                <!-- 12 dB range * 2 = 24. 12 is no effect = 0dB -->
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Bass"
+                    android:id="@+id/bass_textview"
+                    android:textSize="24sp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textColor="@color/colorPrimaryDark"/>
+                <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/bass_seekBar"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:progress="12"
+                    android:background="@drawable/treblebass1"
+                    android:progressDrawable="@android:color/transparent"
+                    android:max="24" />
+                <!-- 12 dB range * 2 = 24. 12 is no effect = 0dB -->
+
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ToggleButton
+                android:id="@+id/chipmunk_button"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:text="@string/chipmunk_pitch_shift_label"
+                android:textOn="@string/chipmunk_pitch_shift_label"
+                android:textOff="@string/chipmunk_pitch_shift_label"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:visibility="visible"
+                android:textColor="@android:color/white"
+                android:layout_margin="4dp"/>
+            <ToggleButton
+                android:id="@+id/slomo_button"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:text="@string/slomo_pitch_shift_label"
+                android:textOn="@string/slomo_pitch_shift_label"
+                android:textOff="@string/slomo_pitch_shift_label"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:visibility="visible"
+                android:textColor="@android:color/white"
+                android:layout_margin="4dp"/>
+            <ToggleButton
+                android:id="@+id/echo_button"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:text="echo"
+                android:textOn="echo"
+                android:textOff="echo"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:visibility="visible"
+                android:textColor="@android:color/white"
+                android:layout_margin="4dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/replay_button"
+            android:id="@+id/button_frame_layout"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:id="@+id/back_button"
+                android:text="Back"
+                android:background="@color/recordButtonStopRecording"
+                android:textSize="@dimen/button_text_size"
+                android:textColor="@android:color/white"
+                android:visibility="visible"
+                android:layout_weight="1"
+                android:textAllCaps="false"
+                />
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:id="@+id/next_button"
+                android:text="Next"
+                android:textColor="@android:color/white"
+
+                android:textSize="@dimen/button_text_size"
+                android:background="@color/recordButtonStartRecording"
+                android:visibility="visible"
+                android:layout_weight="1"
+                android:textAllCaps="false"
+                />
+
+            </LinearLayout>
+    </LinearLayout>
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"/>
+        android:gravity="bottom"
+        ads:adSize="SMART_BANNER"
+        ads:adUnitId="@string/banner_ad_unit_id"
+        android:contentDescription="@string/ad_content_description"
+        android:layout_alignParentBottom="true">
+    </com.google.android.gms.ads.AdView>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        >
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:text="Treble"
-
-                android:id="@+id/textView"
-                android:textSize="24sp"
-                android:gravity="center_vertical|center_horizontal" />
-            <SeekBar
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/treble_seekBar"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:progress="50"
-                android:background="@drawable/treblebass1"
-                android:progressDrawable="@android:color/transparent"
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:text="Bass"
-
-                android:id="@+id/bass_textview"
-                android:textSize="24sp"
-                android:gravity="center_vertical|center_horizontal" />
-            <SeekBar
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/bass_seekBar"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:progress="50"
-                android:background="@drawable/treblebass1"
-                android:progressDrawable="@android:color/transparent"
-                />
-        </LinearLayout>
-    </LinearLayout>
-
-    <ToggleButton
-        android:id="@+id/chipmunk_button"
-        android:layout_width="160dp"
-        android:layout_height="64dp"
-        android:text="@string/chipmunk_pitch_shift_label"
-        android:textOn="@string/chipmunk_pitch_shift_label"
-        android:textOff="@string/chipmunk_pitch_shift_label"
-        android:gravity="center"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:visibility="visible"
-        android:textColor="@android:color/white"
-        android:layout_margin="20dp"/>
-
-    <ToggleButton
-        android:id="@+id/slomo_button"
-        android:layout_width="160dp"
-        android:layout_height="64dp"
-        android:text="@string/slomo_pitch_shift_label"
-        android:textOn="@string/slomo_pitch_shift_label"
-        android:textOff="@string/slomo_pitch_shift_label"
-        android:gravity="center"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:visibility="visible"
-        android:textColor="@android:color/white"
-        android:layout_margin="20dp"/>
-
-    <ToggleButton
-        android:id="@+id/echo_button"
-        android:layout_width="160dp"
-        android:layout_height="64dp"
-        android:text="echo"
-        android:textOn="echo"
-        android:textOff="echo"
-        android:gravity="center"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:visibility="visible"
-        android:textColor="@android:color/white"
-        android:layout_margin="20dp"/>
-
-    <Button
-        android:id="@+id/next_button"
-        android:layout_width="160dp"
-        android:layout_height="64dp"
-        android:text="next"
-        android:gravity="center"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:visibility="visible"
-        android:textColor="@android:color/white"
-        android:layout_margin="20dp"/>
-
-</LinearLayout>
+</RelativeLayout>

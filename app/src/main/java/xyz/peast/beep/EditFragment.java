@@ -14,6 +14,9 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 /**
  * Created by duverneay on 9/22/16.
  */
@@ -29,6 +32,9 @@ public class EditFragment extends Fragment {
     ToggleButton mSlomoButton;
     ToggleButton mEchoButton;
     Button mNextButton;
+
+    private AdView mAdView;
+
 
     String mRecordFileName;
     String mRecordFilePath;
@@ -71,8 +77,14 @@ public class EditFragment extends Fragment {
 
         mNextButton = (Button) rootView.findViewById(R.id.next_button);
 
-        mBeepFx = new BeepFx(0);
+        mAdView = (AdView) rootView.findViewById(R.id.adview);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice("839737069995AAD5519D71B8B267924D")
+                .build();
+        mAdView.loadAd(adRequest);
 
+        mBeepFx = new BeepFx(0);
 
         mNoEffectButton.setOnClickListener(new View.OnClickListener() {
             @Override

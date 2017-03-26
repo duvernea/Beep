@@ -172,6 +172,7 @@ public class RecordFragment extends Fragment {
                 }
             });
             mPlayButton = (Button) rootView.findViewById(R.id.play_button);
+            mPlayButton.setVisibility(View.GONE);
             mPlayButton.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -215,16 +216,19 @@ public class RecordFragment extends Fragment {
             mRecordButton.setVisibility(View.GONE);
             mRedoButton.setVisibility(View.VISIBLE);
             mNextButton.setVisibility(View.VISIBLE);
+            mPlayButton.setVisibility(View.VISIBLE);
         }
         else {
             mRecordButton.setVisibility(View.VISIBLE);
             mRedoButton.setVisibility(View.GONE);
             mNextButton.setVisibility(View.GONE);
+            mPlayButton.setVisibility(View.GONE);
         }
     }
     private void resetMenuState(boolean state) {
         if (state) {
             mRecordButton.setVisibility(View.GONE);
+            mPlayButton.setVisibility(View.GONE);
             mRedoButton.setVisibility(View.VISIBLE);
             mNextButton.setVisibility(View.VISIBLE);
         }
