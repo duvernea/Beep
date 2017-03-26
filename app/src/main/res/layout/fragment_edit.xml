@@ -22,7 +22,6 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
             android:layout_gravity="center_horizontal"/>
 
         <LinearLayout
@@ -30,7 +29,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
             >
             <LinearLayout
                 android:orientation="horizontal"
@@ -56,6 +54,7 @@
                     android:max="24" />
                 <!-- 12 dB range * 2 = 24. 12 is no effect = 0dB -->
             </LinearLayout>
+
             <LinearLayout
                 android:layout_marginTop="16dp"
                 android:orientation="horizontal"
@@ -83,6 +82,15 @@
 
             </LinearLayout>
         </LinearLayout>
+        <TextView
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FX"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_gravity="center_horizontal"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -97,10 +105,13 @@
                 android:textOff="@string/chipmunk_pitch_shift_label"
                 android:gravity="center"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
                 android:visibility="visible"
-                android:textColor="@android:color/white"
-                android:layout_margin="4dp"/>
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_margin="4dp"
+                android:checked="false"
+                android:background="@drawable/toggle_button_background" />
+
+
             <ToggleButton
                 android:id="@+id/slomo_button"
                 android:layout_weight="1"
@@ -111,10 +122,10 @@
                 android:textOff="@string/slomo_pitch_shift_label"
                 android:gravity="center"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
                 android:visibility="visible"
-                android:textColor="@android:color/white"
-                android:layout_margin="4dp"/>
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_margin="4dp"
+                android:background="@drawable/toggle_button_background"/>
             <ToggleButton
                 android:id="@+id/echo_button"
                 android:layout_weight="1"
@@ -125,18 +136,65 @@
                 android:textOff="echo"
                 android:gravity="center"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
                 android:visibility="visible"
-                android:textColor="@android:color/white"
-                android:layout_margin="4dp"/>
-
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_margin="4dp"
+                android:background="@drawable/toggle_button_background"/>
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/replay_button"
-            android:id="@+id/button_frame_layout"
+            android:orientation="horizontal"
+            android:id="@+id/fx_row1">
+            <ToggleButton
+                android:id="@+id/creepy_button"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:text="creepy"
+                android:textOn="creepy"
+                android:textOff="creepy"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:visibility="visible"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_margin="4dp"
+                android:checked="false"
+                android:background="@drawable/toggle_button_background"/>
+            <ToggleButton
+                android:id="@+id/robot_button"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:text="robot"
+                android:textOn="robot"
+                android:textOff="robot"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:visibility="visible"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_margin="4dp"
+                android:background="@drawable/toggle_button_background"/>
+            <ToggleButton
+                android:id="@+id/church_button"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:text="church"
+                android:textOn="church"
+                android:textOff="church"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:visibility="visible"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_margin="4dp"
+                android:background="@drawable/toggle_button_background"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fx_row1"
+            android:id="@+id/fx_row2"
             android:orientation="horizontal"
             android:gravity="center_horizontal">
             <Button
@@ -149,22 +207,18 @@
                 android:textColor="@android:color/white"
                 android:visibility="visible"
                 android:layout_weight="1"
-                android:textAllCaps="false"
-                />
+                android:textAllCaps="false" />
             <Button
                 android:layout_width="0dp"
                 android:layout_height="64dp"
                 android:id="@+id/next_button"
                 android:text="Next"
                 android:textColor="@android:color/white"
-
                 android:textSize="@dimen/button_text_size"
                 android:background="@color/recordButtonStartRecording"
                 android:visibility="visible"
                 android:layout_weight="1"
-                android:textAllCaps="false"
-                />
-
+                android:textAllCaps="false" />
             </LinearLayout>
     </LinearLayout>
     <com.google.android.gms.ads.AdView
@@ -177,5 +231,4 @@
         android:contentDescription="@string/ad_content_description"
         android:layout_alignParentBottom="true">
     </com.google.android.gms.ads.AdView>
-
 </RelativeLayout>
