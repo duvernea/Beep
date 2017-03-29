@@ -10,6 +10,9 @@ public class BeepFx implements Parcelable {
 
     // Currently we are setting pitchshift + 8 for chipmunk and -8 for slomo
 
+    private double mTreble = 1;
+    private double mBass = 1;
+
     private int mPitchShift = 0;
     private boolean mEcho = false;
 
@@ -36,6 +39,18 @@ public class BeepFx implements Parcelable {
         } else {
             return true;
         }
+    }
+    public void setBass(double bass) {
+        mBass = bass;
+    }
+    public double getBass() {
+        return mBass;
+    }
+    public void setTreble(double treble) {
+        mTreble = treble;
+    }
+    public double getTreble() {
+        return mTreble;
     }
 
     public void setEcho(boolean echo) {

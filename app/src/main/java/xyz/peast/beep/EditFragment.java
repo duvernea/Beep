@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.SeekBar;
 import android.widget.ToggleButton;
 
 import com.google.android.gms.ads.AdRequest;
@@ -28,6 +29,8 @@ public class EditFragment extends Fragment {
     Activity mActivity;
 
     Button mNoEffectButton;
+    SeekBar mTrebleSeekBar;
+    SeekBar mBassSeekBar;
     ToggleButton mChipmunkButton;
     ToggleButton mSlomoButton;
     ToggleButton mEchoButton;
@@ -75,6 +78,9 @@ public class EditFragment extends Fragment {
         mSlomoButton = (ToggleButton) rootView.findViewById(R.id.slomo_button);
         mEchoButton = (ToggleButton) rootView.findViewById(R.id.echo_button);
 
+        mBassSeekBar = (SeekBar) rootView.findViewById(R.id.bass_seekBar);
+        mTrebleSeekBar = (SeekBar) rootView.findViewById(R.id.treble_seekBar);
+
         mNextButton = (Button) rootView.findViewById(R.id.next_button);
 
         mAdView = (AdView) rootView.findViewById(R.id.adview);
@@ -85,6 +91,41 @@ public class EditFragment extends Fragment {
         mAdView.loadAd(adRequest);
 
         mBeepFx = new BeepFx(0);
+
+        mTrebleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                Log.d(TAG, "Progress: " + progress);
+                // raw progress is 0 - 24
+                // center around 0
+                double dB = progress - 12;
+                Log.d(TAG, "Progress dB scale: " + dB);
+                mBeepFx.setTreble(Math.pow(10, dB/20));
+                Log.d(TAG, "Progress linear scale; " + mBeepFx.getTreble());
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+        mBassSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                Log.d(TAG, "Progress: " + progress);
+                // raw progress is 0 - 24
+                // center around 0
+                double dB = progress - 12;
+                Log.d(TAG, "Progress dB scale: " + dB);
+                mBeepFx.setBass(Math.pow(10, dB/20));
+                Log.d(TAG, "Progress linear scale; " + mBeepFx.getBass());
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
 
         mNoEffectButton.setOnClickListener(new View.OnClickListener() {
             @Override
