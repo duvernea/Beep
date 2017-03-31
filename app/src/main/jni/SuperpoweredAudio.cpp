@@ -82,9 +82,15 @@ SuperpoweredAudio::SuperpoweredAudio(unsigned int samplerate, unsigned int buffe
 
     const char *temp = "/data/data/xyz.peast.beep/files/temp.wav";
     recorder = new SuperpoweredRecorder(temp, samplerate);
-
     roll = new SuperpoweredRoll(samplerate);
     //filter->setResonantParameters(floatToFrequency(1.0f - .5f), 0.2f);
+    // 3 Band EQ
+    equalizer = new Superpowered3BandEQ(samplerate);
+    equalizer->enable(true);
+
+    equalizer->bands[0] = 1.0f;
+    equalizer->bands[1] = 1.0f;
+    equalizer->bands[1] = 1.0f;
 
     filter = new SuperpoweredFilter(SuperpoweredFilter_Resonant_Lowpass, samplerate);
 
@@ -182,6 +188,12 @@ void SuperpoweredAudio::onFxOff() {
 }
 void SuperpoweredAudio::setEcho(bool echoSetting) {
     echo->enable(echoSetting);
+}
+void SuperpoweredAudio::setBass(float bass) {
+    equalizer->bands[0] = bass;
+}
+void SuperpoweredAudio::setTreble(float treble) {
+    equalizer->bands[2] = treble;
 }
 
 void SuperpoweredAudio::shutdownAudio() {
@@ -394,6 +406,7 @@ bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples)
 
         // TODO - testing echo
         if (!silence) {
+            equalizer->process(stereoBuffer, stereoBuffer, numberOfSamples);
             echo->process(stereoBuffer, stereoBuffer, numberOfSamples);
         }
 
@@ -587,6 +600,16 @@ void Java_xyz_peast_beep_RecordActivity_setReverse(JNIEnv * __unused javaEnviron
 extern "C" JNIEXPORT
 void Java_xyz_peast_beep_RecordActivity_setEcho(JNIEnv * __unused javaEnvironment, jobject __unused obj, jboolean echo) {
     myAudio->setEcho(echo);
+}
+// set bass
+extern "C" JNIEXPORT
+void Java_xyz_peast_beep_RecordActivity_setBass(JNIEnv * __unused javaEnvironment, jobject __unused obj, jfloat bass) {
+    myAudio->setBass(bass);
+}
+// set treble
+extern "C" JNIEXPORT
+void Java_xyz_peast_beep_RecordActivity_setTreble(JNIEnv * __unused javaEnvironment, jobject __unused obj, jfloat treble) {
+    myAudio->setTreble(treble);
 }
 //createWAV
 extern "C" JNIEXPORT

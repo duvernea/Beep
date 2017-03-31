@@ -11,6 +11,7 @@
 #include <SuperpoweredFlanger.h>
 #include <SuperpoweredRecorder.h>
 #include <SuperpoweredEcho.h>
+#include <Superpowered3BandEQ.h>
 #include <AndroidIO/SuperpoweredAndroidAudioIO.h>
 #include <jni.h>
 #include <iosfwd>
@@ -40,6 +41,8 @@ public:
 	void startupAudio();
 	void createWav(const char *path, int parameters);
 	void setEcho(bool echoSetting);
+	void setBass(float bass);
+	void setTreble(float treble);
 
 private:
     pthread_mutex_t mutex;
@@ -50,6 +53,7 @@ private:
     SuperpoweredFilter *filter;
     SuperpoweredFlanger *flanger;
 	SuperpoweredRecorder *recorder;
+	Superpowered3BandEQ *equalizer;
     float *stereoBuffer;
 	float *recordBuffer;
     unsigned char activeFx;

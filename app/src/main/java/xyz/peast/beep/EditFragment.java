@@ -100,8 +100,10 @@ public class EditFragment extends Fragment {
                 // center around 0
                 double dB = progress - 12;
                 Log.d(TAG, "Progress dB scale: " + dB);
-                mBeepFx.setTreble(Math.pow(10, dB/20));
+                mBeepFx.setTreble((float) Math.pow(10, dB/20));
                 Log.d(TAG, "Progress linear scale; " + mBeepFx.getTreble());
+
+                ((RecordActivity) mActivity).setTreble((float) mBeepFx.getTreble());
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -115,10 +117,12 @@ public class EditFragment extends Fragment {
                 Log.d(TAG, "Progress: " + progress);
                 // raw progress is 0 - 24
                 // center around 0
-                double dB = progress - 12;
+                float dB = progress - 12;
                 Log.d(TAG, "Progress dB scale: " + dB);
-                mBeepFx.setBass(Math.pow(10, dB/20));
+                mBeepFx.setBass((float) Math.pow(10, dB/20));
                 Log.d(TAG, "Progress linear scale; " + mBeepFx.getBass());
+
+                ((RecordActivity) mActivity).setBass((float) mBeepFx.getBass());
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
