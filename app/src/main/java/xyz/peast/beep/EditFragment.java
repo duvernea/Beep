@@ -28,7 +28,7 @@ public class EditFragment extends Fragment {
     Context mContext;
     Activity mActivity;
 
-    Button mNoEffectButton;
+    Button mPlayButton;
     SeekBar mTrebleSeekBar;
     SeekBar mBassSeekBar;
     ToggleButton mChipmunkButton;
@@ -73,7 +73,7 @@ public class EditFragment extends Fragment {
 
         ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
 
-        mNoEffectButton = (Button) rootView.findViewById(R.id.noeffect_button);
+        mPlayButton = (Button) rootView.findViewById(R.id.play_button);
         mChipmunkButton = (ToggleButton) rootView.findViewById(R.id.chipmunk_button);
         mSlomoButton = (ToggleButton) rootView.findViewById(R.id.slomo_button);
         mEchoButton = (ToggleButton) rootView.findViewById(R.id.echo_button);
@@ -109,7 +109,10 @@ public class EditFragment extends Fragment {
             public void onStartTrackingTouch(SeekBar seekBar) {}
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+
+            }
         });
         mBassSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -128,17 +131,16 @@ public class EditFragment extends Fragment {
             public void onStartTrackingTouch(SeekBar seekBar) {}
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+            }
         });
 
-        mNoEffectButton.setOnClickListener(new View.OnClickListener() {
+        mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "mIsPlaying start: " + mIsPlaying);
                 mIsPlaying = true;
-                ((RecordActivity) mActivity).setPitchShift(0);
-                ((RecordActivity) mActivity).setEcho(false);
-
                 ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
             }
         });
