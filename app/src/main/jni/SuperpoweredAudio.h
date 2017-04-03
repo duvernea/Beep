@@ -59,6 +59,7 @@ private:
     unsigned char activeFx;
     float volA;
 	bool isRecording;
+	bool reverse;
 	std::string recordFileName;
 
 };

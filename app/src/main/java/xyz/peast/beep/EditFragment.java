@@ -33,6 +33,7 @@ public class EditFragment extends Fragment {
     SeekBar mBassSeekBar;
     ToggleButton mChipmunkButton;
     ToggleButton mSlomoButton;
+    ToggleButton mCreepyButton;
     ToggleButton mEchoButton;
     Button mNextButton;
 
@@ -76,6 +77,7 @@ public class EditFragment extends Fragment {
         mPlayButton = (Button) rootView.findViewById(R.id.play_button);
         mChipmunkButton = (ToggleButton) rootView.findViewById(R.id.chipmunk_button);
         mSlomoButton = (ToggleButton) rootView.findViewById(R.id.slomo_button);
+        mCreepyButton = (ToggleButton) rootView.findViewById(R.id.creepy_button);
         mEchoButton = (ToggleButton) rootView.findViewById(R.id.echo_button);
 
         mBassSeekBar = (SeekBar) rootView.findViewById(R.id.bass_seekBar);
@@ -155,7 +157,7 @@ public class EditFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.d(TAG, "onCheckedChanged listener");
                 Log.d(TAG, "check state: " + mChipmunkButton.isChecked());
-                ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
+                // ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
                 if (isChecked) {
                     mSlomoButton.setChecked(false);
                     ((RecordActivity) mActivity).setPitchShift(CHIPMUNK_PITCH_SHIFT);
@@ -165,7 +167,6 @@ public class EditFragment extends Fragment {
                     ((RecordActivity) mActivity).setPitchShift(NO_PITCH_SHIFT);
                     mBeepFx.setPitchShift(NO_PITCH_SHIFT);
                 }
-                //mReverse = !mReverse;
                 // TODO determine max and min shift
                 ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
             }
@@ -181,7 +182,7 @@ public class EditFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.d(TAG, "onCheckedChanged listener");
                 Log.d(TAG, "check state: " + mChipmunkButton.isChecked());
-                ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
+                // ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
                 if (isChecked) {
                     mChipmunkButton.setChecked(false);
                     ((RecordActivity) mActivity).setPitchShift(SLOMO_PITCH_SHIFT);
@@ -190,6 +191,25 @@ public class EditFragment extends Fragment {
                 else {
                     ((RecordActivity) mActivity).setPitchShift(NO_PITCH_SHIFT);
                     mBeepFx.setPitchShift(NO_PITCH_SHIFT);
+                }
+                //mReverse = !mReverse;
+                // TODO determine max and min shift
+                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+            }
+        });
+        mCreepyButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d(TAG, "onCheckedChanged listener");
+                Log.d(TAG, "check state: " + mCreepyButton.isChecked());
+                // ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
+                if (isChecked) {
+                    ((RecordActivity) mActivity).setReverse(true);
+                    mBeepFx.setReverse(true);
+                }
+                else {
+                    ((RecordActivity) mActivity).setReverse(false);
+                    mBeepFx.setReverse(false);
                 }
                 //mReverse = !mReverse;
                 // TODO determine max and min shift
@@ -208,7 +228,7 @@ public class EditFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.d(TAG, "onCheckedChanged listener");
                 Log.d(TAG, "check state: " + mEchoButton.isChecked());
-                ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
+                // ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
                 if (isChecked) {
                     ((RecordActivity) mActivity).setEcho(true);
                     mBeepFx.setEcho(true);

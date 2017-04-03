@@ -15,6 +15,7 @@ public class BeepFx implements Parcelable {
 
     private int mPitchShift = 0;
     private boolean mEcho = false;
+    private boolean mReverse = false;
 
     public int getmPitchShift() {
         return mPitchShift;
@@ -56,6 +57,9 @@ public class BeepFx implements Parcelable {
     public void setEcho(boolean echo) {
         mEcho = echo;
     }
+
+    public void setReverse(boolean reverse) {mReverse = reverse;}
+    public boolean getReverse() {return mReverse;}
 
     @Override
     public int describeContents() {

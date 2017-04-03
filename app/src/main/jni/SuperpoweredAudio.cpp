@@ -22,6 +22,7 @@ static jclass activityClass;
 static jobject activityObj;
 static jmethodID playbackEndCallback;
 static jmethodID recordLevelCallback;
+static uint duration;
 
 
 // New function declarations
@@ -73,12 +74,11 @@ SuperpoweredAudio::SuperpoweredAudio(unsigned int samplerate, unsigned int buffe
 
     isRecording = false;
 
-    playerA = new SuperpoweredAdvancedAudioPlayer(&playerA , playerEventCallbackA, samplerate, 0);
+    playerA = new SuperpoweredAdvancedAudioPlayer(&playerA , playerEventCallbackA, samplerate, 2);
     //playerA->open(path, fileAoffset, fileAlength);
-    //playerB = new SuperpoweredAdvancedAudioPlayer(&playerB, playerEventCallbackB, samplerate, 0);
-    //playerB->open(path, fileBoffset, fileBlength);
 
     playerA->syncMode = SuperpoweredAdvancedAudioPlayerSyncMode_None;
+    reverse = false;
 
     const char *temp = "/data/data/xyz.peast.beep/files/temp.wav";
     recorder = new SuperpoweredRecorder(temp, samplerate);
@@ -134,7 +134,12 @@ void SuperpoweredAudio::onFileChange(const char *path, int fileOffset, int fileL
     __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudioOnFileChange", path);
 
     playerA->open(path);
+    duration = playerA->durationMs;
+    __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "track duration %u\n", duration);
+
     playerA->cachePosition(0, 255);
+    duration = playerA->durationMs;
+    playerA->cachePosition(duration, 255);
     //pthread_mutex_unlock(&mutex);
 }
 
@@ -145,11 +150,15 @@ void SuperpoweredAudio::setPitchShift(int pitchShift) {
     playerA->setPitchShift (pitchShift);
 }
 void SuperpoweredAudio::setReverse(bool reverse) {
-    playerA->setReverse(reverse, 0);
+    __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "set reverse %d\n", reverse);
+    myAudio->reverse = reverse;
 }
 
 void SuperpoweredAudio::onPlayPause(const char *path, bool play, int size) {
     //__android_log_write(ANDROID_LOG_ERROR, "SuperpoweredPATH", path);
+
+    duration = playerA->durationMs;
+    __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "track duration %u\n", duration);
 
     //pthread_mutex_lock(&mutex);
 
@@ -157,9 +166,23 @@ void SuperpoweredAudio::onPlayPause(const char *path, bool play, int size) {
     //const char *path = "/data/data/xyz.peast.beep/files/d5925c56-c611-49ae-91bd-bc1d25ff6b56.mp3";
     //playerA->open(path, 0, size);
     if (!isRecording) {
-    playerA->setPosition(0, false, false);
-    //playerA->seek(0);
-    playerA->play(0);
+    // playerA->setPosition(0, false, false);
+        if (myAudio->reverse)
+        {
+            __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "onPlayPause reverse");
+            playerA->setReverse(reverse, 5);
+            playerA->setPosition((double) duration, false, false);
+            // playerA->setReverse(reverse, 0);
+            // playerA->seek(50);
+            playerA->play(0);
+        } else {
+            __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "onPlayPause forward");
+            playerA->setReverse(reverse, 5);
+
+            playerA->setPosition(0, false, false);
+            playerA->seek(0);
+            playerA->play(0);
+        }
 //    if (!play) {
 //        __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredAudio", "onPlayPause PAUSE");
 //
@@ -388,12 +411,9 @@ bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples)
 //            localAudioPointer+=1;
 //        }
 
-
         recorder->process(recordBuffer, NULL, numberOfSamples);
         silence = !playerA->process(stereoBuffer, false, numberOfSamples);
         //__android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", "process end");
-
-
     }
     else {
 
