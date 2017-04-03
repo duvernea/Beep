@@ -153,6 +153,10 @@ void SuperpoweredAudio::setReverse(bool reverse) {
     __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "set reverse %d\n", reverse);
     myAudio->reverse = reverse;
 }
+void SuperpoweredAudio::setReverb(bool reverb) {
+    __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "set reverb %d\n", reverb);
+    myAudio->enableReverb = reverb;
+}
 
 void SuperpoweredAudio::onPlayPause(const char *path, bool play, int size) {
     //__android_log_write(ANDROID_LOG_ERROR, "SuperpoweredPATH", path);
@@ -615,6 +619,11 @@ void Java_xyz_peast_beep_RecordActivity_setPitchShift(JNIEnv * __unused javaEnvi
 extern "C" JNIEXPORT
 void Java_xyz_peast_beep_RecordActivity_setReverse(JNIEnv * __unused javaEnvironment, jobject __unused obj, jboolean reverse) {
     myAudio->setReverse(reverse);
+}
+// setReverb
+extern "C" JNIEXPORT
+void Java_xyz_peast_beep_RecordActivity_setReverb(JNIEnv * __unused javaEnvironment, jobject __unused obj, jboolean reverb) {
+    myAudio->setReverb(reverb);
 }
 // set echo
 extern "C" JNIEXPORT

@@ -12,6 +12,7 @@
 #include <SuperpoweredRecorder.h>
 #include <SuperpoweredEcho.h>
 #include <Superpowered3BandEQ.h>
+#include <SuperpoweredReverb.h>
 #include <AndroidIO/SuperpoweredAndroidAudioIO.h>
 #include <jni.h>
 #include <iosfwd>
@@ -43,6 +44,7 @@ public:
 	void setEcho(bool echoSetting);
 	void setBass(float bass);
 	void setTreble(float treble);
+	void setReverb(bool reverbSetting);
 
 private:
     pthread_mutex_t mutex;
@@ -54,12 +56,14 @@ private:
     SuperpoweredFlanger *flanger;
 	SuperpoweredRecorder *recorder;
 	Superpowered3BandEQ *equalizer;
+	SuperpoweredReverb *reverb;
     float *stereoBuffer;
 	float *recordBuffer;
     unsigned char activeFx;
     float volA;
 	bool isRecording;
 	bool reverse;
+	bool enableReverb;
 	std::string recordFileName;
 
 };

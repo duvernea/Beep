@@ -226,6 +226,7 @@ public class RecordActivity extends AppCompatActivity
     public native void setEcho(boolean echoSetting);
     public native void setTreble(float treble);
     public native void setBass(float bass);
+    public native void setReverb(boolean reverb);
 
 
     static {

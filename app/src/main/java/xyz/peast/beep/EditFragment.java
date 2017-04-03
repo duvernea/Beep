@@ -35,6 +35,7 @@ public class EditFragment extends Fragment {
     ToggleButton mSlomoButton;
     ToggleButton mCreepyButton;
     ToggleButton mEchoButton;
+    ToggleButton mChurchButton;
     Button mNextButton;
 
     private AdView mAdView;
@@ -79,6 +80,7 @@ public class EditFragment extends Fragment {
         mSlomoButton = (ToggleButton) rootView.findViewById(R.id.slomo_button);
         mCreepyButton = (ToggleButton) rootView.findViewById(R.id.creepy_button);
         mEchoButton = (ToggleButton) rootView.findViewById(R.id.echo_button);
+        mChurchButton = (ToggleButton) rootView.findViewById(R.id.church_button);
 
         mBassSeekBar = (SeekBar) rootView.findViewById(R.id.bass_seekBar);
         mTrebleSeekBar = (SeekBar) rootView.findViewById(R.id.treble_seekBar);
@@ -236,6 +238,31 @@ public class EditFragment extends Fragment {
                 else {
                     ((RecordActivity) mActivity).setEcho(false);
                     mBeepFx.setEcho(false);
+                }
+                //mReverse = !mReverse;
+                // TODO determine max and min shift
+                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+            }
+        });
+        mEchoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick listener");
+
+            }
+        });
+        mChurchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d(TAG, "onCheckedChanged listener");
+                Log.d(TAG, "check state: " + mChurchButton.isChecked());
+                if (isChecked) {
+                    ((RecordActivity) mActivity).setReverb(true);
+                    mBeepFx.setReverb(true);
+                }
+                else {
+                    ((RecordActivity) mActivity).setReverb(false);
+                    mBeepFx.setReverb(false);
                 }
                 //mReverse = !mReverse;
                 // TODO determine max and min shift
