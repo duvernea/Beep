@@ -102,13 +102,19 @@ SuperpoweredAudio::SuperpoweredAudio(unsigned int samplerate, unsigned int buffe
 
     // TODO update
     echo = new SuperpoweredEcho(samplerate);
-    echo->setMix(.8f);
-    echo->bpm = 240.0f;
-    echo->decay=0.5f;
+    echo->setMix(1.0f);
+    echo->bpm = 140.0f;
+    echo->beats = .125f;
+    echo->decay=0.55f;
     echo->enable(false);
 
     filter->enable(false);
     flanger = new SuperpoweredFlanger(samplerate);
+    flanger->setDepth(0.8f);
+    // Set this right for a nice sounding lfo. Limited to >= 60.0f and <= 240.0f. Read-write.
+    flanger->bpm = 120.0f;
+    // LFOBeats >= 0.25f and <= 64.0f
+    flanger->setLFOBeats(.25f);
 
     /**
     @brief Creates an audio I/O instance. Audio input and/or output immediately starts after calling this.
@@ -163,53 +169,32 @@ void SuperpoweredAudio::setReverb(bool enableReverb) {
     __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "set reverb %d\n", enableReverb);
     myAudio->enableReverb = enableReverb;
     reverb->enable(enableReverb);
-
+}
+void SuperpoweredAudio::setRobot(bool enableRobot) {
+    __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "set robot %d\n", enableRobot);
+    flanger->enable(enableRobot);
+    // TODO
+    // echo
+    // flanger
+    // pitch shift
 }
 
 void SuperpoweredAudio::onPlayPause(const char *path, bool play, int size) {
     //__android_log_write(ANDROID_LOG_ERROR, "SuperpoweredPATH", path);
-
     duration = playerA->durationMs;
-    __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "track duration %u\n", duration);
-
-    //pthread_mutex_lock(&mutex);
-
-    //audioSystem->start();
     //const char *path = "/data/data/xyz.peast.beep/files/d5925c56-c611-49ae-91bd-bc1d25ff6b56.mp3";
-    //playerA->open(path, 0, size);
     if (!isRecording) {
-    // playerA->setPosition(0, false, false);
-        if (myAudio->reverse)
-        {
-            __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "onPlayPause reverse");
+        if (myAudio->reverse) {
             playerA->setReverse(reverse, 5);
             playerA->setPosition((double) duration, false, false);
-            // playerA->setReverse(reverse, 0);
-            // playerA->seek(50);
             playerA->play(0);
         } else {
-            __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "onPlayPause forward");
             playerA->setReverse(reverse, 5);
-
             playerA->setPosition(0, false, false);
             playerA->seek(0);
             playerA->play(0);
         }
-//    if (!play) {
-//        __android_log_write(ANDROID_LOG_ERROR, "SuperpoweredAudio", "onPlayPause PAUSE");
-//
-//        //playerA->seek(0);
-//        //playerA->play(0);
-//        playerA->pause();
-//        playerB->pause();
-//    } else {
-//        bool masterIsA = (crossValue <= 0.5f);
-//        playerA->play(!masterIsA);
-//        playerB->play(masterIsA);
-//    };
     }
-    //pthread_mutex_unlock(&mutex);
-    //__android_log_write(ANDROID_LOG_ERROR, "Superpowered", "onPlayPause mutex unlocked");
 }
 void SuperpoweredAudio::onFxSelect(int value) {
 	__android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", "FXSEL %i", value);
@@ -375,12 +360,9 @@ void SuperpoweredAudio::createWav(const char *path, int parameters) {
 }
 
 bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples) {
-    //const char* numSamples =  (std::to_string(numberOfSamples)).c_str();
-    //pthread_mutex_lock(&mutex);
     bool silence = false;
 
     if (isRecording) {
-
         // short int -32,768 to 32,767
         short int *localAudioPointer = output;
         float RMS =0;
@@ -407,9 +389,7 @@ bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples)
         }
         jvm->DetachCurrentThread();
 
-
         //__android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", "process record start");
-
         //__android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", "process.. isRecording");
 
         SuperpoweredShortIntToFloat(output, recordBuffer, (unsigned int) numberOfSamples);
@@ -433,38 +413,17 @@ bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples)
         double masterBpm = playerA->currentBpm;
         double msElapsedSinceLastBeatA = playerA->msElapsedSinceLastBeat; // When playerB needs it, playerA has already stepped this value, so save it now.
 
-        silence = !playerA->process(stereoBuffer, false, numberOfSamples, volA, 0.0f,
-                                    -1);
+        silence = !playerA->process(stereoBuffer, false, numberOfSamples, volA, 0.0f, -1);
 
-        // TODO - testing echo
         if (!silence) {
             equalizer->process(stereoBuffer, stereoBuffer, numberOfSamples);
+            flanger->process(stereoBuffer, stereoBuffer, numberOfSamples);
             reverb->process(stereoBuffer, stereoBuffer, numberOfSamples);
             echo->process(stereoBuffer, stereoBuffer, numberOfSamples);
         }
-
-//        if (roll->process(silence ? NULL : stereoBuffer, stereoBuffer, numberOfSamples) &&
-//            silence)
-//            silence = false;
-//        filter->process(stereoBuffer, stereoBuffer, numberOfSamples);
-//
-//        if (!silence) {
-//            filter->process(stereoBuffer, stereoBuffer, numberOfSamples);
-//            flanger->process(stereoBuffer, stereoBuffer, numberOfSamples);
-//        };
-
         // The stereoBuffer is ready now, let's put the finished audio into the requested buffers.
         if (!silence) SuperpoweredFloatToShortInt(stereoBuffer, output, numberOfSamples);
     }
-//    if (silence == 1) {
-//        __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", "silence true");
-//    }
-//    else {
-//        __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", "silence false");
-//    }
-
-    //pthread_mutex_unlock(&mutex);
-
     return !silence;
 }
 void SuperpoweredAudio::setRecordFileName(std::string filename) {
@@ -638,6 +597,11 @@ void Java_xyz_peast_beep_RecordActivity_setReverb(JNIEnv * __unused javaEnvironm
 extern "C" JNIEXPORT
 void Java_xyz_peast_beep_RecordActivity_setEcho(JNIEnv * __unused javaEnvironment, jobject __unused obj, jboolean echo) {
     myAudio->setEcho(echo);
+}
+// set robot
+extern "C" JNIEXPORT
+void Java_xyz_peast_beep_RecordActivity_setRobot(JNIEnv * __unused javaEnvironment, jobject __unused obj, jboolean robot) {
+    myAudio->setRobot(robot);
 }
 // set bass
 extern "C" JNIEXPORT

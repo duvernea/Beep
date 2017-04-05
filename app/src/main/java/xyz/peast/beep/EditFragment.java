@@ -36,6 +36,7 @@ public class EditFragment extends Fragment {
     ToggleButton mCreepyButton;
     ToggleButton mEchoButton;
     ToggleButton mChurchButton;
+    ToggleButton mRobotButton;
     Button mNextButton;
 
     private AdView mAdView;
@@ -81,6 +82,7 @@ public class EditFragment extends Fragment {
         mCreepyButton = (ToggleButton) rootView.findViewById(R.id.creepy_button);
         mEchoButton = (ToggleButton) rootView.findViewById(R.id.echo_button);
         mChurchButton = (ToggleButton) rootView.findViewById(R.id.church_button);
+        mRobotButton = (ToggleButton) rootView.findViewById(R.id.robot_button);
 
         mBassSeekBar = (SeekBar) rootView.findViewById(R.id.bass_seekBar);
         mTrebleSeekBar = (SeekBar) rootView.findViewById(R.id.treble_seekBar);
@@ -266,6 +268,22 @@ public class EditFragment extends Fragment {
                 }
                 //mReverse = !mReverse;
                 // TODO determine max and min shift
+                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+            }
+        });
+        mRobotButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d(TAG, "onCheckedChanged listener");
+                Log.d(TAG, "check state: " + mRobotButton.isChecked());
+                if (isChecked) {
+                    ((RecordActivity) mActivity).setRobot(true);
+                    mBeepFx.setRobot(true);
+                }
+                else {
+                    ((RecordActivity) mActivity).setRobot(false);
+                    mBeepFx.setRobot(false);
+                }
                 ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
             }
         });

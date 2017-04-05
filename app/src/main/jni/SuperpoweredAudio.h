@@ -45,6 +45,7 @@ public:
 	void setBass(float bass);
 	void setTreble(float treble);
 	void setReverb(bool reverbSetting);
+	void setRobot(bool robotSetting);
 
 private:
     pthread_mutex_t mutex;
@@ -65,7 +66,6 @@ private:
 	bool reverse;
 	bool enableReverb;
 	std::string recordFileName;
-
 };
 
 #endif
