@@ -87,7 +87,6 @@ SuperpoweredAudio::SuperpoweredAudio(unsigned int samplerate, unsigned int buffe
     // 3 Band EQ
     equalizer = new Superpowered3BandEQ(samplerate);
     equalizer->enable(true);
-
     equalizer->bands[0] = 1.0f;
     equalizer->bands[1] = 1.0f;
     equalizer->bands[1] = 1.0f;
@@ -99,22 +98,25 @@ SuperpoweredAudio::SuperpoweredAudio(unsigned int samplerate, unsigned int buffe
     reverb->enable(false);
 
     filter = new SuperpoweredFilter(SuperpoweredFilter_Resonant_Lowpass, samplerate);
-
-    // TODO update
-    echo = new SuperpoweredEcho(samplerate);
-    echo->setMix(1.0f);
-    echo->bpm = 140.0f;
-    echo->beats = .125f;
-    echo->decay=0.55f;
-    echo->enable(false);
-
     filter->enable(false);
+
     flanger = new SuperpoweredFlanger(samplerate);
-    flanger->setDepth(0.8f);
+    flanger->clipperThresholdDb = -30.0f;
+    flanger->clipperMaximumDb = -30.0f;
+    flanger->setWet(.8f);
+    flanger->setDepth(.99f);
     // Set this right for a nice sounding lfo. Limited to >= 60.0f and <= 240.0f. Read-write.
     flanger->bpm = 120.0f;
     // LFOBeats >= 0.25f and <= 64.0f
-    flanger->setLFOBeats(.25f);
+    flanger->setLFOBeats(3.0f);
+
+    // TODO update
+    echo = new SuperpoweredEcho(samplerate);
+    echo->setMix(.7f);
+    echo->bpm = 200.0f;
+    echo->beats = .255f;
+    echo->decay=0.40f;
+    echo->enable(false);
 
     /**
     @brief Creates an audio I/O instance. Audio input and/or output immediately starts after calling this.
