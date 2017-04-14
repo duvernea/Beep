@@ -12,12 +12,10 @@ public class BeepFx implements Parcelable {
 
     private float mTreble = 1;
     private float mBass = 1;
-
     private int mPitchShift = 0;
     private boolean mEcho = false;
     private boolean mReverse = false;
     private boolean mReverb = false;
-
     private boolean mRobot = false;
 
     public int getmPitchShift() {

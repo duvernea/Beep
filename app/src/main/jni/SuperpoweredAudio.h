@@ -40,7 +40,7 @@ public:
 	void setRecordFileName(std::string filename);
 	void shutdownAudio();
 	void startupAudio();
-	void createWav(const char *path, int parameters);
+	void createWav(const char *path, int pitchShift);
 	void setEcho(bool echoSetting);
 	void setBass(float bass);
 	void setTreble(float treble);

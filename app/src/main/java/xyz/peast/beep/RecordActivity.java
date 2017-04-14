@@ -220,7 +220,7 @@ public class RecordActivity extends AppCompatActivity
     public native void setRecordPath(String path);
     public native void shutdownAudio();
     private native void startupAudio();
-    public native void createWav(String filepath, int parameters);
+    public native void createWav(String filepath, int pitchShift, BeepFx beepFx);
     public native void setPitchShift(int pitchShift);
     public native void setReverse(boolean reverse);
     public native void setEcho(boolean echoSetting);

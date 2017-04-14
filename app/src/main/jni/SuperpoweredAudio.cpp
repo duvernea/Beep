@@ -251,7 +251,7 @@ void SuperpoweredAudio::onFxValue(int ivalue) {
             roll->enable(false);
     };
 }
-void SuperpoweredAudio::createWav(const char *path, int parameters) {
+void SuperpoweredAudio::createWav(const char *path, int pitchShift) {
 
     // Note: passed in path does not have '.wav' appended
     int fileExtension = 4;
@@ -298,14 +298,7 @@ void SuperpoweredAudio::createWav(const char *path, int parameters) {
     // 1.0f = playback rate, 8 = pitchshift
     SuperpoweredTimeStretching *timeStretch = new SuperpoweredTimeStretching(decoder->samplerate);
     // chipmunk == 1
-    if (parameters == 1) {
-        timeStretch->setRateAndPitchShift(1.0f, 8);
-    }
-    // slomo == 2
-    else if (parameters == 2) {
-        timeStretch->setRateAndPitchShift(1.0f, -8);
-
-    }
+    timeStretch->setRateAndPitchShift(1.0f, pitchShift);
     // This buffer list will receive the time-stretched samples.
     SuperpoweredAudiopointerList *outputBuffers = new SuperpoweredAudiopointerList(8, 16);
     // Create a buffer for the 16-bit integer samples.
@@ -617,9 +610,19 @@ void Java_xyz_peast_beep_RecordActivity_setTreble(JNIEnv * __unused javaEnvironm
 }
 //createWAV
 extern "C" JNIEXPORT
-void Java_xyz_peast_beep_RecordActivity_createWav(JNIEnv * javaEnvironment, jobject, jstring filePath, jint parameters) {
+void Java_xyz_peast_beep_RecordActivity_createWav(JNIEnv * javaEnvironment, jobject, jstring filePath, jint pitchShift, jobject jBeepFx) {
     const char *path = javaEnvironment->GetStringUTFChars(filePath, JNI_FALSE);
-    myAudio->createWav(path, parameters);
+
+    // Get Field IDs
+    jclass cls = javaEnvironment->GetObjectClass(jBeepFx);
+    jfieldID fidTreble = javaEnvironment->GetFieldID(cls, "mTreble", "F");
+    jfieldID fidBass = javaEnvironment->GetFieldID(cls, "mBass", "F");
+    // Get Field Values
+    float treble = (float) javaEnvironment->GetFloatField(jBeepFx, fidTreble);
+    float bass = (float) javaEnvironment->GetFloatField(jBeepFx, fidBass);
+
+
+    myAudio->createWav(path, pitchShift);
     __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio createWAV path", path);
 
     javaEnvironment->ReleaseStringUTFChars(filePath, path);

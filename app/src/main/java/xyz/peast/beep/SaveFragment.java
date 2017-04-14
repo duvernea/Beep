@@ -340,7 +340,7 @@ public class SaveFragment extends Fragment implements LocationListener {
                     fx = Constants.NORMAL_PITCH;
             }
 
-            ((RecordActivity) mActivity).createWav(filePath, fx);
+            ((RecordActivity) mActivity).createWav(filePath, mBeepFx.getmPitchShift(), mBeepFx);
         }
         Log.d(TAG, "save button, mImageuri: " + mImageUri);
         Log.d(TAG, "save button, mImagePath: " + mImagePath);
