@@ -10,8 +10,8 @@ public class BeepFx implements Parcelable {
 
     // Currently we are setting pitchshift + 8 for chipmunk and -8 for slomo
 
-    private float mTreble = 1;
-    private float mBass = 1;
+    private float mTreble = 1f;
+    private float mBass = 1f;
     private int mPitchShift = 0;
     private boolean mEcho = false;
     private boolean mReverse = false;
@@ -40,7 +40,8 @@ public class BeepFx implements Parcelable {
     public boolean getRobot() { return mRobot; }
 
     public boolean getEditStatus() {
-        if (mPitchShift == 0 && !mEcho) {
+        if (mTreble == 1.0 && mBass == 1.0 && mPitchShift == 0 &&
+                !mEcho && !mReverse && !mReverb && !mRobot) {
             return false;
         } else {
             return true;
@@ -77,12 +78,22 @@ public class BeepFx implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeFloat(mTreble);
+        dest.writeFloat(mBass);
         dest.writeInt(mPitchShift);
         dest.writeByte((byte) (mEcho ? 1 : 0));
+        dest.writeByte((byte) (mReverse ? 1 : 0));
+        dest.writeByte((byte) (mReverb ? 1 : 0));
+        dest.writeByte((byte) (mRobot ? 1 : 0));
     }
     private BeepFx(Parcel in) {
+        mTreble = in.readFloat();
+        mBass = in.readFloat();
         mPitchShift = in.readInt();
         mEcho = in.readByte() != 0;
+        mReverse = in.readByte() != 0;
+        mReverb = in.readByte() != 0;
+        mRobot = in.readByte() != 0;
     }
     public static final Parcelable.Creator<BeepFx> CREATOR
             = new Parcelable.Creator<BeepFx>() {
