@@ -324,21 +324,6 @@ public class SaveFragment extends Fragment implements LocationListener {
             // Note here the path does not contain ".wav"
             String recordDir = mContext.getFilesDir().getAbsolutePath();
             final String filePath = recordDir + "/" + mRecordFileName;
-            int fx;
-            switch (mBeepFx.getmPitchShift()) {
-
-                case -8:
-                    fx = Constants.SLOMO_PITCH;
-                    break;
-                case 0:
-                    fx = Constants.NORMAL_PITCH;
-                    break;
-                case +8:
-                    fx = Constants.CHIPMUNK_PITCH;
-                    break;
-                default:
-                    fx = Constants.NORMAL_PITCH;
-            }
 
             ((RecordActivity) mActivity).createWav(filePath, mBeepFx.getmPitchShift(), mBeepFx);
         }

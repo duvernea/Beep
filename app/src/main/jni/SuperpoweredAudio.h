@@ -5,6 +5,7 @@
 #include <pthread.h>
 
 #include "SuperpoweredAudio.h"
+#include "BeepFx.h"
 #include <SuperpoweredAdvancedAudioPlayer.h>
 #include <SuperpoweredFilter.h>
 #include <SuperpoweredRoll.h>
@@ -40,7 +41,7 @@ public:
 	void setRecordFileName(std::string filename);
 	void shutdownAudio();
 	void startupAudio();
-	void createWav(const char *path, int pitchShift);
+	void createWav(const char *path, BeepFx beepFx);
 	void setEcho(bool echoSetting);
 	void setBass(float bass);
 	void setTreble(float treble);

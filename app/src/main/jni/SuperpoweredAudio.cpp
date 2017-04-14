@@ -251,7 +251,7 @@ void SuperpoweredAudio::onFxValue(int ivalue) {
             roll->enable(false);
     };
 }
-void SuperpoweredAudio::createWav(const char *path, int pitchShift) {
+void SuperpoweredAudio::createWav(const char *path, BeepFx beepFx) {
 
     // Note: passed in path does not have '.wav' appended
     int fileExtension = 4;
@@ -298,7 +298,7 @@ void SuperpoweredAudio::createWav(const char *path, int pitchShift) {
     // 1.0f = playback rate, 8 = pitchshift
     SuperpoweredTimeStretching *timeStretch = new SuperpoweredTimeStretching(decoder->samplerate);
     // chipmunk == 1
-    timeStretch->setRateAndPitchShift(1.0f, pitchShift);
+    timeStretch->setRateAndPitchShift(1.0f, beepFx.pitchShift);
     // This buffer list will receive the time-stretched samples.
     SuperpoweredAudiopointerList *outputBuffers = new SuperpoweredAudiopointerList(8, 16);
     // Create a buffer for the 16-bit integer samples.
@@ -613,16 +613,20 @@ extern "C" JNIEXPORT
 void Java_xyz_peast_beep_RecordActivity_createWav(JNIEnv * javaEnvironment, jobject, jstring filePath, jint pitchShift, jobject jBeepFx) {
     const char *path = javaEnvironment->GetStringUTFChars(filePath, JNI_FALSE);
 
+    BeepFx beepFx;
+
     // Get Field IDs
     jclass cls = javaEnvironment->GetObjectClass(jBeepFx);
     jfieldID fidTreble = javaEnvironment->GetFieldID(cls, "mTreble", "F");
     jfieldID fidBass = javaEnvironment->GetFieldID(cls, "mBass", "F");
     // Get Field Values
-    float treble = (float) javaEnvironment->GetFloatField(jBeepFx, fidTreble);
-    float bass = (float) javaEnvironment->GetFloatField(jBeepFx, fidBass);
+    beepFx.treble = (float) javaEnvironment->GetFloatField(jBeepFx, fidTreble);
+    beepFx.bass = (float) javaEnvironment->GetFloatField(jBeepFx, fidBass);
+    beepFx.pitchShift = pitchShift;
 
 
-    myAudio->createWav(path, pitchShift);
+
+    myAudio->createWav(path, beepFx);
     __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio createWAV path", path);
 
     javaEnvironment->ReleaseStringUTFChars(filePath, path);
