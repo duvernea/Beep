@@ -610,7 +610,7 @@ void Java_xyz_peast_beep_RecordActivity_setTreble(JNIEnv * __unused javaEnvironm
 }
 //createWAV
 extern "C" JNIEXPORT
-void Java_xyz_peast_beep_RecordActivity_createWav(JNIEnv * javaEnvironment, jobject, jstring filePath, jint pitchShift, jobject jBeepFx) {
+void Java_xyz_peast_beep_RecordActivity_createWav(JNIEnv * javaEnvironment, jobject, jstring filePath, jobject jBeepFx) {
     const char *path = javaEnvironment->GetStringUTFChars(filePath, JNI_FALSE);
 
     BeepFx beepFx;
@@ -619,12 +619,20 @@ void Java_xyz_peast_beep_RecordActivity_createWav(JNIEnv * javaEnvironment, jobj
     jclass cls = javaEnvironment->GetObjectClass(jBeepFx);
     jfieldID fidTreble = javaEnvironment->GetFieldID(cls, "mTreble", "F");
     jfieldID fidBass = javaEnvironment->GetFieldID(cls, "mBass", "F");
+    jfieldID fidPitchShift = javaEnvironment->GetFieldID(cls, "mPitchShift", "I");
+    jfieldID fidEcho = javaEnvironment->GetFieldID(cls, "mEcho", "B");
+    jfieldID fidReverse = javaEnvironment->GetFieldID(cls, "mReverse", "B");
+    jfieldID fidReverb = javaEnvironment->GetFieldID(cls, "mReverb", "B");
+    jfieldID fidRobot = javaEnvironment->GetFieldID(cls, "mRobot", "B");
+
     // Get Field Values
     beepFx.treble = (float) javaEnvironment->GetFloatField(jBeepFx, fidTreble);
     beepFx.bass = (float) javaEnvironment->GetFloatField(jBeepFx, fidBass);
-    beepFx.pitchShift = pitchShift;
-
-
+    beepFx.pitchShift = (int) javaEnvironment->GetFloatField(jBeepFx, fidPitchShift);
+    beepFx.echo = (bool) javaEnvironment->GetFloatField(jBeepFx, fidEcho);
+    beepFx.reverse = (bool) javaEnvironment->GetFloatField(jBeepFx, fidReverse);
+    beepFx.reverb = (bool) javaEnvironment->GetFloatField(jBeepFx, fidReverb);
+    beepFx.robot = (bool) javaEnvironment->GetFloatField(jBeepFx, fidRobot);
 
     myAudio->createWav(path, beepFx);
     __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio createWAV path", path);
