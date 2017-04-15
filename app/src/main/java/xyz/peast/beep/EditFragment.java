@@ -33,7 +33,7 @@ public class EditFragment extends Fragment {
     SeekBar mBassSeekBar;
     ToggleButton mChipmunkButton;
     ToggleButton mSlomoButton;
-    ToggleButton mCreepyButton;
+    ToggleButton mReverseButton;
     ToggleButton mEchoButton;
     ToggleButton mChurchButton;
     ToggleButton mRobotButton;
@@ -79,7 +79,7 @@ public class EditFragment extends Fragment {
         mPlayButton = (Button) rootView.findViewById(R.id.play_button);
         mChipmunkButton = (ToggleButton) rootView.findViewById(R.id.chipmunk_button);
         mSlomoButton = (ToggleButton) rootView.findViewById(R.id.slomo_button);
-        mCreepyButton = (ToggleButton) rootView.findViewById(R.id.creepy_button);
+        mReverseButton = (ToggleButton) rootView.findViewById(R.id.reverse_button);
         mEchoButton = (ToggleButton) rootView.findViewById(R.id.echo_button);
         mChurchButton = (ToggleButton) rootView.findViewById(R.id.church_button);
         mRobotButton = (ToggleButton) rootView.findViewById(R.id.robot_button);
@@ -201,11 +201,11 @@ public class EditFragment extends Fragment {
                 ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
             }
         });
-        mCreepyButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mReverseButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.d(TAG, "onCheckedChanged listener");
-                Log.d(TAG, "check state: " + mCreepyButton.isChecked());
+                Log.d(TAG, "check state: " + mReverseButton.isChecked());
                 // ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
                 if (isChecked) {
                     ((RecordActivity) mActivity).setReverse(true);

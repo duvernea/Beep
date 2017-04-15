@@ -87,7 +87,7 @@
     <string name="slomo_fx_label">slomo</string>
     <string name="robot_fx_label">Robot</string>
     <string name="church_fx_label">Church</string>
-    <string name="creepy_fx_label">Creepy</string>
+    <string name="reverse_fx_label">Reverse</string>
     <string name="echo_fx_label">Echo</string>
     <string name="bass_textview">Bass</string>
     <string name="treble_textview">Treble</string>

@@ -143,13 +143,13 @@
             android:orientation="horizontal"
             android:id="@+id/fx_row1">
             <ToggleButton
-                android:id="@+id/creepy_button"
+                android:id="@+id/reverse_button"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="64dp"
-                android:text="@string/creepy_fx_label"
-                android:textOn="@string/creepy_fx_label"
-                android:textOff="@string/creepy_fx_label"
+                android:text="@string/reverse_fx_label"
+                android:textOn="@string/reverse_fx_label"
+                android:textOff="@string/reverse_fx_label"
                 android:gravity="center"
                 android:layout_gravity="center_horizontal"
                 android:visibility="visible"
