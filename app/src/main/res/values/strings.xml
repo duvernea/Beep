@@ -57,7 +57,7 @@
 
     // Share Fragment
     <string name="share">Share</string>
-    <string name="no">Nope.</string>
+    <string name="no">Nope</string>
     <string name="share_chooser_title">Share Your Beep</string>
 
 
