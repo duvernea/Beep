@@ -446,7 +446,7 @@ public class SaveFragment extends Fragment implements LocationListener {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 
-        String dialogTitle = getResources().getString(R.string.dialog_new_beep_name);
+        String dialogTitle = getResources().getString(R.string.dialog_new_board_name);
         builder.setTitle(dialogTitle);
         final EditText input = new EditText(mContext);
         input.setMaxLines(1);
