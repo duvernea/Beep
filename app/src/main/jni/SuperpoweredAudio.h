@@ -47,6 +47,7 @@ public:
 	void setTreble(float treble);
 	void setReverb(bool reverbSetting);
 	void setRobot(bool robotSetting);
+	void turnFxOff();
 
 private:
     pthread_mutex_t mutex;

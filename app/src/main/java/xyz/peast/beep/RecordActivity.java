@@ -93,6 +93,8 @@ public class RecordActivity extends AppCompatActivity
     public void onSaveNextButton(String beepname, String audiofile, Uri imageUri, String imageFilePath,
                                  String boardName, int boardKey, boolean beepEdited) {
 
+        Log.d(TAG, "beepEdited: " + beepEdited);
+
         ShareFragment shareFragment = new ShareFragment();
         Bundle bundle = new Bundle();
         bundle.putString(RECORD_FILE_UNIQUE_NAME, mRecordFileName);
@@ -220,7 +222,7 @@ public class RecordActivity extends AppCompatActivity
     public native void setRecordPath(String path);
     public native void shutdownAudio();
     private native void startupAudio();
-    public native void createWav(String filepath, int pitchShift, BeepFx beepFx);
+    public native void createWav(String filepath, BeepFx beepFx);
     public native void setPitchShift(int pitchShift);
     public native void setReverse(boolean reverse);
     public native void setEcho(boolean echoSetting);
