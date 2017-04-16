@@ -20,6 +20,7 @@ import android.os.Message;
 import android.os.Messenger;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -105,6 +106,11 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ActionBar ab = getSupportActionBar();
+        if (ab != null) {
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setDisplayShowTitleEnabled(false);
+        }
 
         mBoardImage = (ImageView) findViewById(R.id.board_imageview);
         mImageSavedBroadcastReceiver = new BroadcastReceiver() {
