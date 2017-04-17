@@ -42,6 +42,7 @@ public:
 	void shutdownAudio();
 	void startupAudio();
 	void createWav(const char *path, BeepFx beepFx);
+	void createReverseWav(const char *path);
 	void setEcho(bool echoSetting);
 	void setBass(float bass);
 	void setTreble(float treble);

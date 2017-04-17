@@ -257,6 +257,81 @@ void SuperpoweredAudio::onFxValue(int ivalue) {
             roll->enable(false);
     };
 }
+void SuperpoweredAudio::createReverseWav(const char *path) {
+    int fileExtension = 4;
+    int editFileSuffix = strlen("_edit");
+
+    char *pathWithExtension;
+    pathWithExtension = (char *) calloc(strlen(path) + fileExtension, sizeof(char));
+    strcpy(pathWithExtension, path);
+    strcat(pathWithExtension, ".wav");
+
+    char *editPathWithExtension;
+    editPathWithExtension = (char *) calloc(strlen(path) + editFileSuffix + fileExtension, sizeof(char));
+    strcpy(editPathWithExtension, path);
+    strcat(editPathWithExtension, "_edit");
+    strcat(editPathWithExtension, ".wav");
+
+    // Open the input file
+    __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio pathoriginal", pathWithExtension);
+    __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio pathedited", editPathWithExtension);
+
+    SuperpoweredDecoder *decoder = new SuperpoweredDecoder();
+    const char *openError = decoder->open(pathWithExtension, false, 0, 0);
+    if (openError) {
+        __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", openError);
+        delete decoder;
+        return;
+    }
+    int64_t durationSamples = decoder->durationSamples;
+    int64_t samplePosition = decoder->samplePosition;
+    uint samplesPerFrame = decoder->samplesPerFrame;
+
+    // Create the output WAV file.
+    FILE *fd = createWAV(editPathWithExtension, decoder->samplerate, 2);
+
+    // Create a buffer for the 16-bit integer samples.
+    short int *intBuffer = (short int *)malloc(decoder->samplesPerFrame * 2 * sizeof(short int) + 16384);
+    // Create a buffer for 16-bit, reversed samples
+    short int *intBufferReverse = (short int *)malloc(decoder->samplesPerFrame * 2 * sizeof(short int) + 16384);
+
+    int64_t startSample = durationSamples - samplesPerFrame;
+
+    int iteration = 0;
+    // processing
+    while (true) {
+        // Decode one frame. samplesDecoded will be overwritten with the actual decoded number of samples
+
+        unsigned int samplesDecoded = decoder->samplesPerFrame;
+        if (startSample <= 0) {
+            break;
+        }
+
+        decoder->seekTo(startSample, true);
+
+        if (decoder->decode(intBuffer, &samplesDecoded) == SUPERPOWEREDDECODER_ERROR) break;
+        if (samplesDecoded < 1) break;
+
+        // Reverse audio - Stereo interleaved samples*2 for left and right channel
+        for (unsigned int i=0; i<samplesDecoded*2; i=i+2) {
+            intBufferReverse[i] = intBuffer[samplesDecoded*2-i-2];
+            intBufferReverse[i+1] = intBuffer[samplesDecoded*2-i-1];
+        }
+        // Write the audio to disk
+        fwrite(intBufferReverse, 1, samplesDecoded * 4, fd);
+
+        startSample = startSample-samplesPerFrame;
+
+    };
+    // Cleanup
+    closeWAV(fd);
+    delete decoder;
+    free(intBuffer);
+    free(intBufferReverse);
+
+}
+
+
 void SuperpoweredAudio::createWav(const char *path, BeepFx beepFx) {
 
     // Note: passed in path does not have '.wav' appended
@@ -273,10 +348,6 @@ void SuperpoweredAudio::createWav(const char *path, BeepFx beepFx) {
     strcpy(editPathWithExtension, path);
     strcat(editPathWithExtension, "_edit");
     strcat(editPathWithExtension, ".wav");
-    __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudioTEST", editPathWithExtension);
-
-    //const char * editedFilePath = path + "test";
-    //const char * temppath = "/data/data/xyz.peast.beep/files/createwavtest.wav";
 
     const char *recordedFile = recordFileName.c_str();
     const char *testFile = "data/data/xyz.peast.beep/files/04505f9a-2ab1-496b-acd3-6f26d9466892.wav";
@@ -285,17 +356,14 @@ void SuperpoweredAudio::createWav(const char *path, BeepFx beepFx) {
         __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio pathoriginal", pathWithExtension);
     __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio pathedited", editPathWithExtension);
 
+    int numSamples = 0;
     SuperpoweredDecoder *decoder = new SuperpoweredDecoder();
-    // TODO - use actual file name
     const char *openError = decoder->open(pathWithExtension, false, 0, 0);
     if (openError) {
         __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", openError);
         delete decoder;
         return;
     }
-    __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio pathoriginal", pathWithExtension);
-    __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio pathedited", editPathWithExtension);
-
 
     // Create the output WAV file.
     FILE *fd = createWAV(editPathWithExtension, decoder->samplerate, 2);
@@ -303,24 +371,23 @@ void SuperpoweredAudio::createWav(const char *path, BeepFx beepFx) {
     /* Need to use variable size buffer chains for time stretching */
     // 1.0f = playback rate, 8 = pitchshift
     SuperpoweredTimeStretching *timeStretch = new SuperpoweredTimeStretching(decoder->samplerate);
-
-    char temp[10];
-
-    snprintf(temp, 50, "%i", beepFx.pitchShift);
-    __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio beepFx pitch", temp);
-
+    
     timeStretch->setRateAndPitchShift(1.0f, beepFx.pitchShift);
-
 
     // This buffer list will receive the time-stretched samples.
     SuperpoweredAudiopointerList *outputBuffers = new SuperpoweredAudiopointerList(8, 16);
     // Create a buffer for the 16-bit integer samples.
     short int *intBuffer = (short int *)malloc(decoder->samplesPerFrame * 2 * sizeof(short int) + 16384);
 
+    // for reverse
+    int64_t startSample = durationSamples;
     // processing
     while (true) {
         // Decode one frame. samplesDecoded will be overwritten with the actual decoded number of samples
 
+        startSample = startSample-samplesPerFrame;
+        if (startSample < 0) startSample = 0;
+        decoder->seekTo(startSample, true);
         unsigned int samplesDecoded = decoder->samplesPerFrame;
         if (decoder->decode(intBuffer, &samplesDecoded) == SUPERPOWEREDDECODER_ERROR) break;
         if (samplesDecoded < 1) break;
@@ -345,7 +412,6 @@ void SuperpoweredAudio::createWav(const char *path, BeepFx beepFx) {
             while (true) {
                 // Iterate on every output slice.
                 // Get pointer to the output samples.
-                int numSamples = 0;
                 float *timeStretchedAudio = (float *) outputBuffers->nextSliceItem(&numSamples);
                 if (!timeStretchedAudio) break;
 
@@ -358,7 +424,9 @@ void SuperpoweredAudio::createWav(const char *path, BeepFx beepFx) {
                 // Convert the time stretched PCM samples from 32-bit floating point to 16-bit integer.
                 SuperpoweredFloatToShortInt(timeStretchedAudio, intBuffer, numSamples);
                 // Write the audio to disk
+
                 fwrite(intBuffer, 1, numSamples * 4, fd);
+                if (samplesDecoded < samplesPerFrame) break;
 
             };
             // Clear the output buffer list.
@@ -436,7 +504,9 @@ bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples)
             echo->process(stereoBuffer, stereoBuffer, numberOfSamples);
         }
         // The stereoBuffer is ready now, let's put the finished audio into the requested buffers.
-        if (!silence) SuperpoweredFloatToShortInt(stereoBuffer, output, numberOfSamples);
+        if (!silence) {
+            SuperpoweredFloatToShortInt(stereoBuffer, output, numberOfSamples);
+        }
     }
     return !silence;
 }
@@ -654,12 +724,12 @@ void Java_xyz_peast_beep_RecordActivity_createWav(JNIEnv * javaEnvironment, jobj
     beepFx.reverb = (bool) javaEnvironment->GetBooleanField(jBeepFx, fidReverb);
     beepFx.robot = (bool) javaEnvironment->GetBooleanField(jBeepFx, fidRobot);
 
-    myAudio->createWav(path, beepFx);
+    // myAudio->createWav(path, beepFx);
+    myAudio->createReverseWav(path);
     __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio createWAV path", path);
 
     javaEnvironment->ReleaseStringUTFChars(filePath, path);
 }
-
 
 //toggleRecord
 extern "C" JNIEXPORT
@@ -723,9 +793,6 @@ void Java_xyz_peast_beep_BoardActivity_turnFxOff(JNIEnv *javaEnvironment, jobjec
     myAudio->turnFxOff();
 }
 
-
-
-
 /***************************  Helper Functions ***************************************/
 
 // Set the static Activity Class to be the current activity
@@ -745,7 +812,6 @@ void setup(JNIEnv *javaEnvironment, jobject thisObj) {
  //*********************************************************************************/
 
     jclass thisClass = (javaEnvironment)->GetObjectClass(thisObj);
-
 
     if (activityClass == NULL) {
         activityClass = (jclass) javaEnvironment->NewGlobalRef(thisClass);
