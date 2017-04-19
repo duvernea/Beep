@@ -30,16 +30,19 @@ public class EditFragment extends Fragment {
     Button mPlayButton;
 //    SeekBar mTrebleSeekBar;
 //    SeekBar mBassSeekBar;
+    ToggleButton mChipmunkButton;
+    ToggleButton mFastFwdButton;
     ToggleButton mHeliumButton;
+    ToggleButton mEvilButton;
+    ToggleButton mSlomoButton;
     ToggleButton mDeepButton;
-    ToggleButton mReverseButton;
     ToggleButton mEchoButton;
     ToggleButton mChurchButton;
+    ToggleButton mReverseButton;
     ToggleButton mRobotButton;
     Button mNextButton;
 
     private AdView mAdView;
-
 
     String mRecordFileName;
     String mRecordFilePath;
@@ -74,11 +77,16 @@ public class EditFragment extends Fragment {
         ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
 
         mPlayButton = (Button) rootView.findViewById(R.id.play_button);
-        mHeliumButton = (ToggleButton) rootView.findViewById(R.id.chipmunk_button);
-        mDeepButton = (ToggleButton) rootView.findViewById(R.id.slomo_button);
-        mReverseButton = (ToggleButton) rootView.findViewById(R.id.reverse_button);
+
+        mChipmunkButton = (ToggleButton) rootView.findViewById(R.id.chipmunk_button);
+        mFastFwdButton = (ToggleButton) rootView.findViewById(R.id.fastfwd_button);
+        mHeliumButton = (ToggleButton) rootView.findViewById(R.id.helium_button);
+        mEvilButton = (ToggleButton) rootView.findViewById(R.id.evil_button);
+        mSlomoButton = (ToggleButton) rootView.findViewById(R.id.slomo_button);
+        mDeepButton = (ToggleButton) rootView.findViewById(R.id.deep_button);
         mEchoButton = (ToggleButton) rootView.findViewById(R.id.echo_button);
         mChurchButton = (ToggleButton) rootView.findViewById(R.id.church_button);
+        mReverseButton = (ToggleButton) rootView.findViewById(R.id.reverse_button);
         mRobotButton = (ToggleButton) rootView.findViewById(R.id.robot_button);
 //
 //        mBassSeekBar = (SeekBar) rootView.findViewById(R.id.bass_seekBar);
@@ -94,50 +102,6 @@ public class EditFragment extends Fragment {
         mAdView.loadAd(adRequest);
 
         mBeepFx = new BeepFx(0);
-
-//        mTrebleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//            @Override
-//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//                Log.d(TAG, "Progress: " + progress);
-//                // raw progress is 0 - 24
-//                // center around 0
-//                double dB = progress - 12;
-//                Log.d(TAG, "Progress dB scale: " + dB);
-//                mBeepFx.setTreble((float) Math.pow(10, dB/20));
-//                Log.d(TAG, "Progress linear scale; " + mBeepFx.getTreble());
-//
-//                ((RecordActivity) mActivity).setTreble((float) mBeepFx.getTreble());
-//            }
-//            @Override
-//            public void onStartTrackingTouch(SeekBar seekBar) {}
-//
-//            @Override
-//            public void onStopTrackingTouch(SeekBar seekBar) {
-//                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
-//
-//            }
-//        });
-//        mBassSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//            @Override
-//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//                Log.d(TAG, "Progress: " + progress);
-//                // raw progress is 0 - 24
-//                // center around 0
-//                float dB = progress - 12;
-//                Log.d(TAG, "Progress dB scale: " + dB);
-//                mBeepFx.setBass((float) Math.pow(10, dB/20));
-//                Log.d(TAG, "Progress linear scale; " + mBeepFx.getBass());
-//
-//                ((RecordActivity) mActivity).setBass((float) mBeepFx.getBass());
-//            }
-//            @Override
-//            public void onStartTrackingTouch(SeekBar seekBar) {}
-//
-//            @Override
-//            public void onStopTrackingTouch(SeekBar seekBar) {
-//                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
-//            }
-//        });
 
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,6 +123,10 @@ public class EditFragment extends Fragment {
                 Log.d(TAG, "onCheckedChanged listener");
                 Log.d(TAG, "check state: " + mHeliumButton.isChecked());
                 if (isChecked) {
+                    mChipmunkButton.setChecked(false);
+                    mFastFwdButton.setChecked(false);
+                    mEvilButton.setChecked(false);
+                    mSlomoButton.setChecked(false);
                     mDeepButton.setChecked(false);
                     ((RecordActivity) mActivity).setPitchShift(HELIUM_PITCH_SHIFT);
                     mBeepFx.setPitchShift(HELIUM_PITCH_SHIFT);
@@ -184,7 +152,11 @@ public class EditFragment extends Fragment {
                 Log.d(TAG, "check state: " + mHeliumButton.isChecked());
                 // ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
                 if (isChecked) {
+                    mChipmunkButton.setChecked(false);
+                    mFastFwdButton.setChecked(false);
                     mHeliumButton.setChecked(false);
+                    mEvilButton.setChecked(false);
+                    mSlomoButton.setChecked(false);
                     ((RecordActivity) mActivity).setPitchShift(DEEP_PITCH_SHIFT);
                     mBeepFx.setPitchShift(DEEP_PITCH_SHIFT);
                 }
