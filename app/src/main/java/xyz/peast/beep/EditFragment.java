@@ -64,6 +64,7 @@ public class EditFragment extends Fragment {
     private static final double NORMAL_TEMPO = 1.0;
     private static final double CHIPMUNK_TEMPO = 1.6;
     private static final double EVIL_TEMPO = 0.7;
+    private static final double FASTFWD_TEMPO = 2.0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -135,6 +136,31 @@ public class EditFragment extends Fragment {
                     ((RecordActivity) mActivity).setPitchShift(NO_PITCH_SHIFT);
                     ((RecordActivity) mActivity).setTempo(NORMAL_TEMPO);
                     mBeepFx.setPitchShift(NO_PITCH_SHIFT);
+                    mBeepFx.setTempo(NORMAL_TEMPO);
+                }
+                // TODO determine max and min shift
+                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+            }
+        });
+        mFastFwdButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d(TAG, "onCheckedChanged listener");
+                Log.d(TAG, "check state: " + mHeliumButton.isChecked());
+                if (isChecked) {
+                    mChipmunkButton.setChecked(false);
+                    mHeliumButton.setChecked(false);
+                    mEvilButton.setChecked(false);
+                    mSlomoButton.setChecked(false);
+                    mDeepButton.setChecked(false);
+                    ((RecordActivity) mActivity).setTempo(FASTFWD_TEMPO);
+                    mBeepFx.setTempo(FASTFWD_TEMPO);
+                }
+                else {
+                    ((RecordActivity) mActivity).setPitchShift(NO_PITCH_SHIFT);
+                    ((RecordActivity) mActivity).setTempo(NORMAL_TEMPO);
+                    mBeepFx.setPitchShift(NO_PITCH_SHIFT);
+                    mBeepFx.setTempo(NORMAL_TEMPO);
                 }
                 // TODO determine max and min shift
                 ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
@@ -158,6 +184,7 @@ public class EditFragment extends Fragment {
                 else {
                     ((RecordActivity) mActivity).setPitchShift(NO_PITCH_SHIFT);
                     mBeepFx.setPitchShift(NO_PITCH_SHIFT);
+                    mBeepFx.setTempo(NORMAL_TEMPO);
                 }
                 // TODO determine max and min shift
                 ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
@@ -181,6 +208,7 @@ public class EditFragment extends Fragment {
                 else {
                     ((RecordActivity) mActivity).setPitchShift(NO_PITCH_SHIFT);
                     mBeepFx.setPitchShift(NO_PITCH_SHIFT);
+                    mBeepFx.setTempo(NORMAL_TEMPO);
                 }
                 //mReverse = !mReverse;
                 // TODO determine max and min shift
