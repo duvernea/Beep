@@ -13,6 +13,7 @@ public class BeepFx implements Parcelable {
     private float mTreble = 1f;
     private float mBass = 1f;
     private int mPitchShift = 0;
+    private double mTempo = 1.0;
     private boolean mEcho = false;
     private boolean mReverse = false;
     private boolean mReverb = false;
@@ -24,6 +25,14 @@ public class BeepFx implements Parcelable {
 
     public void setPitchShift(int pitchshift) {
         mPitchShift = pitchshift;
+    }
+
+    public double getTempo() {
+        return mTempo;
+    }
+
+    public void setTempo(double tempo) {
+        mTempo = tempo;
     }
 
     public BeepFx(int pitchshift) {

@@ -61,6 +61,10 @@ public class EditFragment extends Fragment {
     private static final int DEEP_PITCH_SHIFT = -8;
     private static final int NO_PITCH_SHIFT = 0;
 
+    private static final double NORMAL_TEMPO = 1.0;
+    private static final double CHIPMUNK_TEMPO = 1.6;
+    private static final double EVIL_TEMPO = 0.7;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView");
@@ -111,12 +115,32 @@ public class EditFragment extends Fragment {
                 ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
             }
         });
-        mHeliumButton.setOnClickListener(new View.OnClickListener() {
+        mChipmunkButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick listener");
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d(TAG, "onCheckedChanged listener");
+                Log.d(TAG, "check state: " + mHeliumButton.isChecked());
+                if (isChecked) {
+                    mFastFwdButton.setChecked(false);
+                    mHeliumButton.setChecked(false);
+                    mEvilButton.setChecked(false);
+                    mSlomoButton.setChecked(false);
+                    mDeepButton.setChecked(false);
+                    ((RecordActivity) mActivity).setPitchShift(HELIUM_PITCH_SHIFT);
+                    ((RecordActivity) mActivity).setTempo(CHIPMUNK_TEMPO);
+                    mBeepFx.setPitchShift(HELIUM_PITCH_SHIFT);
+                    mBeepFx.setTempo(CHIPMUNK_TEMPO);
+                }
+                else {
+                    ((RecordActivity) mActivity).setPitchShift(NO_PITCH_SHIFT);
+                    ((RecordActivity) mActivity).setTempo(NORMAL_TEMPO);
+                    mBeepFx.setPitchShift(NO_PITCH_SHIFT);
+                }
+                // TODO determine max and min shift
+                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
             }
         });
+
         mHeliumButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -137,12 +161,6 @@ public class EditFragment extends Fragment {
                 }
                 // TODO determine max and min shift
                 ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
-            }
-        });
-        mDeepButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick listener");
             }
         });
         mDeepButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
