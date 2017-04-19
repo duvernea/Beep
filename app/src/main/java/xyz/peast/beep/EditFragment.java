@@ -60,11 +60,13 @@ public class EditFragment extends Fragment {
     private static final int HELIUM_PITCH_SHIFT = 8;
     private static final int DEEP_PITCH_SHIFT = -8;
     private static final int NO_PITCH_SHIFT = 0;
+    private static final int EVIL_PITCH_SHIFT = -12;
 
     private static final double NORMAL_TEMPO = 1.0;
     private static final double CHIPMUNK_TEMPO = 1.6;
     private static final double EVIL_TEMPO = 0.7;
     private static final double FASTFWD_TEMPO = 2.0;
+    private static final double SLOMO_TEMPO = 0.4;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -183,6 +185,57 @@ public class EditFragment extends Fragment {
                 }
                 else {
                     ((RecordActivity) mActivity).setPitchShift(NO_PITCH_SHIFT);
+                    ((RecordActivity) mActivity).setTempo(NORMAL_TEMPO);
+                    mBeepFx.setPitchShift(NO_PITCH_SHIFT);
+                    mBeepFx.setTempo(NORMAL_TEMPO);
+                }
+                // TODO determine max and min shift
+                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+            }
+        });
+        mEvilButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d(TAG, "onCheckedChanged listener");
+                Log.d(TAG, "check state: " + mHeliumButton.isChecked());
+                if (isChecked) {
+                    mChipmunkButton.setChecked(false);
+                    mFastFwdButton.setChecked(false);
+                    mHeliumButton.setChecked(false);
+                    mSlomoButton.setChecked(false);
+                    mDeepButton.setChecked(false);
+                    ((RecordActivity) mActivity).setPitchShift(EVIL_PITCH_SHIFT);
+                    mBeepFx.setPitchShift(EVIL_PITCH_SHIFT);
+                    ((RecordActivity) mActivity).setTempo(EVIL_TEMPO);
+                    mBeepFx.setTempo(EVIL_TEMPO);
+                }
+                else {
+                    ((RecordActivity) mActivity).setPitchShift(NO_PITCH_SHIFT);
+                    ((RecordActivity) mActivity).setTempo(NORMAL_TEMPO);
+                    mBeepFx.setPitchShift(NO_PITCH_SHIFT);
+                    mBeepFx.setTempo(NORMAL_TEMPO);
+                }
+                // TODO determine max and min shift
+                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+            }
+        });
+        mSlomoButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d(TAG, "onCheckedChanged listener");
+                Log.d(TAG, "check state: " + mHeliumButton.isChecked());
+                if (isChecked) {
+                    mChipmunkButton.setChecked(false);
+                    mFastFwdButton.setChecked(false);
+                    mHeliumButton.setChecked(false);
+                    mEvilButton.setChecked(false);
+                    mDeepButton.setChecked(false);
+                    ((RecordActivity) mActivity).setTempo(SLOMO_TEMPO);
+                    mBeepFx.setTempo(SLOMO_TEMPO);
+                }
+                else {
+                    ((RecordActivity) mActivity).setPitchShift(NO_PITCH_SHIFT);
+                    ((RecordActivity) mActivity).setTempo(NORMAL_TEMPO);
                     mBeepFx.setPitchShift(NO_PITCH_SHIFT);
                     mBeepFx.setTempo(NORMAL_TEMPO);
                 }
@@ -207,6 +260,7 @@ public class EditFragment extends Fragment {
                 }
                 else {
                     ((RecordActivity) mActivity).setPitchShift(NO_PITCH_SHIFT);
+                    ((RecordActivity) mActivity).setTempo(NORMAL_TEMPO);
                     mBeepFx.setPitchShift(NO_PITCH_SHIFT);
                     mBeepFx.setTempo(NORMAL_TEMPO);
                 }
