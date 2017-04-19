@@ -224,6 +224,7 @@ public class RecordActivity extends AppCompatActivity
     private native void startupAudio();
     public native void createWav(String filepath, BeepFx beepFx);
     public native void setPitchShift(int pitchShift);
+    public native void setTempo(double tempo);
     public native void setReverse(boolean reverse);
     public native void setEcho(boolean echoSetting);
     public native void setTreble(float treble);
