@@ -84,11 +84,20 @@
 
     // Edit Fragment
     <string name="chipmunk_fx_label">chipmunk</string>
+    <string name="fastfwd_fx_label">fast fwd</string>
+    <string name="helium_fx_label">helium</string>
+    <string name="evil_fx_label">evil</string>
     <string name="slomo_fx_label">slomo</string>
-    <string name="robot_fx_label">Robot</string>
-    <string name="church_fx_label">Church</string>
-    <string name="reverse_fx_label">Reverse</string>
+    <string name="deep_fx_label">deep</string>
     <string name="echo_fx_label">Echo</string>
+    <string name="church_fx_label">Church</string>
+    <string name="otherreverbdelay_fx_label">*other*</string>
+    <string name="reverse_fx_label">Reverse</string>
+    <string name="robot_fx_label">Robot</string>
+    <string name="otherfx_fx_label">-other-</string>
+
+
+
     <string name="bass_textview">Bass</string>
     <string name="treble_textview">Treble</string>
     <string name="back">Back</string>

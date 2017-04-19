@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.SeekBar;
 import android.widget.ToggleButton;
 
 import com.google.android.gms.ads.AdRequest;
@@ -29,8 +28,8 @@ public class EditFragment extends Fragment {
     Activity mActivity;
 
     Button mPlayButton;
-    SeekBar mTrebleSeekBar;
-    SeekBar mBassSeekBar;
+//    SeekBar mTrebleSeekBar;
+//    SeekBar mBassSeekBar;
     ToggleButton mChipmunkButton;
     ToggleButton mSlomoButton;
     ToggleButton mReverseButton;
@@ -55,11 +54,9 @@ public class EditFragment extends Fragment {
         void onEditNextButton(BeepFx beepFx);
     }
 
-    private static final int CHIPMUNK_PITCH_SHIFT = 8;
-    private static final int SLOMO_PITCH_SHIFT = -8;
+    private static final int HELIUM_PITCH_SHIFT = 8;
+    private static final int DEEP_PITCH_SHIFT = -8;
     private static final int NO_PITCH_SHIFT = 0;
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -83,9 +80,9 @@ public class EditFragment extends Fragment {
         mEchoButton = (ToggleButton) rootView.findViewById(R.id.echo_button);
         mChurchButton = (ToggleButton) rootView.findViewById(R.id.church_button);
         mRobotButton = (ToggleButton) rootView.findViewById(R.id.robot_button);
-
-        mBassSeekBar = (SeekBar) rootView.findViewById(R.id.bass_seekBar);
-        mTrebleSeekBar = (SeekBar) rootView.findViewById(R.id.treble_seekBar);
+//
+//        mBassSeekBar = (SeekBar) rootView.findViewById(R.id.bass_seekBar);
+//        mTrebleSeekBar = (SeekBar) rootView.findViewById(R.id.treble_seekBar);
 
         mNextButton = (Button) rootView.findViewById(R.id.next_button);
 
@@ -98,49 +95,49 @@ public class EditFragment extends Fragment {
 
         mBeepFx = new BeepFx(0);
 
-        mTrebleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                Log.d(TAG, "Progress: " + progress);
-                // raw progress is 0 - 24
-                // center around 0
-                double dB = progress - 12;
-                Log.d(TAG, "Progress dB scale: " + dB);
-                mBeepFx.setTreble((float) Math.pow(10, dB/20));
-                Log.d(TAG, "Progress linear scale; " + mBeepFx.getTreble());
-
-                ((RecordActivity) mActivity).setTreble((float) mBeepFx.getTreble());
-            }
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
-
-            }
-        });
-        mBassSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                Log.d(TAG, "Progress: " + progress);
-                // raw progress is 0 - 24
-                // center around 0
-                float dB = progress - 12;
-                Log.d(TAG, "Progress dB scale: " + dB);
-                mBeepFx.setBass((float) Math.pow(10, dB/20));
-                Log.d(TAG, "Progress linear scale; " + mBeepFx.getBass());
-
-                ((RecordActivity) mActivity).setBass((float) mBeepFx.getBass());
-            }
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
-            }
-        });
+//        mTrebleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                Log.d(TAG, "Progress: " + progress);
+//                // raw progress is 0 - 24
+//                // center around 0
+//                double dB = progress - 12;
+//                Log.d(TAG, "Progress dB scale: " + dB);
+//                mBeepFx.setTreble((float) Math.pow(10, dB/20));
+//                Log.d(TAG, "Progress linear scale; " + mBeepFx.getTreble());
+//
+//                ((RecordActivity) mActivity).setTreble((float) mBeepFx.getTreble());
+//            }
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekBar) {}
+//
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekBar) {
+//                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+//
+//            }
+//        });
+//        mBassSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                Log.d(TAG, "Progress: " + progress);
+//                // raw progress is 0 - 24
+//                // center around 0
+//                float dB = progress - 12;
+//                Log.d(TAG, "Progress dB scale: " + dB);
+//                mBeepFx.setBass((float) Math.pow(10, dB/20));
+//                Log.d(TAG, "Progress linear scale; " + mBeepFx.getBass());
+//
+//                ((RecordActivity) mActivity).setBass((float) mBeepFx.getBass());
+//            }
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekBar) {}
+//
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekBar) {
+//                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+//            }
+//        });
 
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,8 +161,8 @@ public class EditFragment extends Fragment {
                 // ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
                 if (isChecked) {
                     mSlomoButton.setChecked(false);
-                    ((RecordActivity) mActivity).setPitchShift(CHIPMUNK_PITCH_SHIFT);
-                    mBeepFx.setPitchShift(CHIPMUNK_PITCH_SHIFT);
+                    ((RecordActivity) mActivity).setPitchShift(HELIUM_PITCH_SHIFT);
+                    mBeepFx.setPitchShift(HELIUM_PITCH_SHIFT);
                 }
                 else {
                     ((RecordActivity) mActivity).setPitchShift(NO_PITCH_SHIFT);
@@ -189,8 +186,8 @@ public class EditFragment extends Fragment {
                 // ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
                 if (isChecked) {
                     mChipmunkButton.setChecked(false);
-                    ((RecordActivity) mActivity).setPitchShift(SLOMO_PITCH_SHIFT);
-                    mBeepFx.setPitchShift(SLOMO_PITCH_SHIFT);
+                    ((RecordActivity) mActivity).setPitchShift(DEEP_PITCH_SHIFT);
+                    mBeepFx.setPitchShift(DEEP_PITCH_SHIFT);
                 }
                 else {
                     ((RecordActivity) mActivity).setPitchShift(NO_PITCH_SHIFT);

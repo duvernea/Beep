@@ -12,73 +12,8 @@
             android:id="@+id/play_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp"/>
-        <TextView
-            style="@style/TextAppearance.AppCompat.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="EQ"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="16dp">
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="Treble"
-                    android:id="@+id/textView"
-                    android:textSize="24sp"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:textColor="@color/colorPrimaryDark"/>
-                <SeekBar
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/treble_seekBar"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:progress="12"
-                    android:background="@drawable/treblebass1"
-                    android:progressDrawable="@android:color/transparent"
-                    android:max="24" />
-                <!-- 12 dB range * 2 = 24. 12 is no effect = 0dB -->
-            </LinearLayout>
-            <LinearLayout
-                android:layout_marginTop="16dp"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/bass_textview"
-                    android:id="@+id/bass_textview"
-                    android:textSize="24sp"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:textColor="@color/colorPrimaryDark"/>
-                <SeekBar
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/bass_seekBar"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:progress="12"
-                    android:background="@drawable/treblebass1"
-                    android:progressDrawable="@android:color/transparent"
-                    android:max="24" />
-                <!-- 12 dB range * 2 = 24. 12 is no effect = 0dB -->
-            </LinearLayout>
-        </LinearLayout>
         <TextView
             style="@style/TextAppearance.AppCompat.Title"
             android:layout_width="wrap_content"
@@ -92,7 +27,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:id="@+id/fx_row1">
             <ToggleButton
                 android:id="@+id/chipmunk_button"
                 android:layout_weight="1"
@@ -101,6 +37,55 @@
                 android:text="@string/chipmunk_fx_label"
                 android:textOn="@string/chipmunk_fx_label"
                 android:textOff="@string/chipmunk_fx_label"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:visibility="visible"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_margin="4dp"
+                android:checked="false"
+                android:background="@drawable/toggle_button_background" />
+            <ToggleButton
+                android:id="@+id/fastfwd_button"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:text="@string/fastfwd_fx_label"
+                android:textOn="@string/fastfwd_fx_label"
+                android:textOff="@string/fastfwd_fx_label"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:visibility="visible"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_margin="4dp"
+                android:background="@drawable/toggle_button_background"/>
+            <ToggleButton
+                android:id="@+id/helium_button"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:text="@string/helium_fx_label"
+                android:textOn="@string/helium_fx_label"
+                android:textOff="@string/helium_fx_label"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:visibility="visible"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_margin="4dp"
+                android:background="@drawable/toggle_button_background"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/fx_row2">
+            <ToggleButton
+                android:id="@+id/evil_button"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:text="@string/evil_fx_label"
+                android:textOn="@string/evil_fx_label"
+                android:textOff="@string/evil_fx_label"
                 android:gravity="center"
                 android:layout_gravity="center_horizontal"
                 android:visibility="visible"
@@ -123,6 +108,26 @@
                 android:layout_margin="4dp"
                 android:background="@drawable/toggle_button_background"/>
             <ToggleButton
+                android:id="@+id/deep_button"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:text="@string/deep_fx_label"
+                android:textOn="@string/deep_fx_label"
+                android:textOff="@string/deep_fx_label"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:visibility="visible"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_margin="4dp"
+                android:background="@drawable/toggle_button_background"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/fx_row3">
+            <ToggleButton
                 android:id="@+id/echo_button"
                 android:layout_weight="1"
                 android:layout_width="0dp"
@@ -135,13 +140,42 @@
                 android:visibility="visible"
                 android:textColor="@color/colorPrimaryDark"
                 android:layout_margin="4dp"
+                android:checked="false"
+                android:background="@drawable/toggle_button_background"/>
+            <ToggleButton
+                android:id="@+id/church_button"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:text="@string/church_fx_label"
+                android:textOn="@string/church_fx_label"
+                android:textOff="@string/church_fx_label"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:visibility="visible"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_margin="4dp"
+                android:background="@drawable/toggle_button_background"/>
+            <ToggleButton
+                android:id="@+id/otherreverbdelay_button"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:text="@string/otherreverbdelay_fx_label"
+                android:textOn="@string/otherreverbdelay_fx_label"
+                android:textOff="@string/otherreverbdelay_fx_label"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:visibility="visible"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_margin="4dp"
                 android:background="@drawable/toggle_button_background"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:id="@+id/fx_row1">
+            android:id="@+id/fx_row4">
             <ToggleButton
                 android:id="@+id/reverse_button"
                 android:layout_weight="1"
@@ -172,13 +206,13 @@
                 android:layout_margin="4dp"
                 android:background="@drawable/toggle_button_background"/>
             <ToggleButton
-                android:id="@+id/church_button"
+                android:id="@+id/otherfx_button"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="64dp"
-                android:text="@string/church_fx_label"
-                android:textOn="@string/church_fx_label"
-                android:textOff="@string/church_fx_label"
+                android:text="@string/otherfx_fx_label"
+                android:textOn="@string/otherfx_fx_label"
+                android:textOff="@string/otherfx_fx_label"
                 android:gravity="center"
                 android:layout_gravity="center_horizontal"
                 android:visibility="visible"
@@ -192,7 +226,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/adview"
-        android:id="@+id/fx_row2"
+        android:id="@+id/navigation"
         android:orientation="horizontal"
         android:gravity="center_horizontal">
         <Button
