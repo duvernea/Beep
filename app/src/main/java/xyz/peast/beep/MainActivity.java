@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     );
         }
         else if (id == BOARDS_LOADER) {
-            uri = BeepDbContract.BoardEntry.CONTENT_URI;
+            uri = BeepDbContract.BoardEntry.CONTENT_URI_NUM_BEEPS;
             loader = new CursorLoader(mContext,
                     uri,
                     Constants.BOARD_COLUMNS,

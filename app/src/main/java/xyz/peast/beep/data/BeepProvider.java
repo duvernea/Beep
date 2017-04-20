@@ -37,7 +37,10 @@ public class BeepProvider extends ContentProvider {
         Cursor cursor;
 
         switch(sUriMatcher.match(uri)) {
+
             case BEEP:
+
+
                 cursor = mBeepDbHelper.getReadableDatabase().query(
                         BeepDbContract.BeepEntry.TABLE_NAME,
                         projection,
@@ -48,6 +51,8 @@ public class BeepProvider extends ContentProvider {
                         sortOrder);
                 break;
             case BOARD:
+                Log.d(TAG, uri.toString());
+
                 cursor = mBeepDbHelper.getReadableDatabase().query(
                         BeepDbContract.BoardEntry.TABLE_NAME,
                         projection,
@@ -58,7 +63,9 @@ public class BeepProvider extends ContentProvider {
                         sortOrder);
                 break;
             case BOARD_WITH_NUM_BEEPS: {
-                // TODO - probably need rawQuery - put in method
+                Log.d(TAG, uri.toString());
+
+                // TODO - probably need rawQuery - query board + number of beeps
                 cursor = getBoardWithNumBeeps(uri, projection, selection, selectionArgs, sortOrder);
                 break;
             }
@@ -179,7 +186,14 @@ public class BeepProvider extends ContentProvider {
     private Cursor getBoardWithNumBeeps(Uri uri, String[] projection, String selection,
                                         String[] selectionArgs, String sortOrder) {
 
-        return mBeepDbHelper.getReadableDatabase().query(
+//        String boardTableName = BeepDbContract.BoardEntry.TABLE_NAME;
+//        String beepTableName = BeepDbContract.BeepEntry.TABLE_NAME;
+//
+//        String queryString = "SELECT * " +
+//                "FROM " + boardTableName;
+
+        // FOR NOW - just return the boards as normal
+        Cursor cursor = mBeepDbHelper.getReadableDatabase().query(
                 BeepDbContract.BoardEntry.TABLE_NAME,
                 projection,
                 selection,
@@ -187,6 +201,16 @@ public class BeepProvider extends ContentProvider {
                 null,
                 null,
                 sortOrder);
-    }
 
+        // Cursor cursor = mBeepDbHelper.getReadableDatabase().rawQuery(queryString, selectionArgs);
+        return cursor;
+//        db = dbHelper.getWritableDatabase();
+//        String[] args = {String.valueOf(uri.getLastPathSegment())};
+//        Cursor cursor = db.rawQuery(
+//                "SELECT p1.first_name, p1.last_name " +
+//                        "FROM Person p1, Person p2, Relationship r " +
+//                        "WHERE p1.id = r.relative_id AND " +
+//                        "p2.id = r.related_id AND " +
+//                        "p2.id = ?", args);
+    }
 }
