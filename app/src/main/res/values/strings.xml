@@ -68,6 +68,8 @@
     <string name="header_image_content_description">App header image</string>
     <string name="no_beeps_recorded_msg">No beeps recorded yet&#8230;</string>
     <string name="no_boards_created_msg">No boards created yet&#8230;</string>
+    <string name="number_of_beeps_label">beeps</string>
+
 
 
     <string name="need_audio_permission">This app requires audio recording and playback</string>

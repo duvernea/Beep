@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/board_list_item"
     android:orientation="horizontal"
     android:layout_width="match_parent"
@@ -26,5 +27,36 @@
         android:textSize="@dimen/board_list_item_name_text_size"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:textColor="@color/colorPrimaryDark"/>
+        android:textColor="@color/colorPrimaryDark"
+        tools:text="My Beeps"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginRight="16dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_vertical|left">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/logoColor"
+            android:text="@string/number_of_beeps_label"
+            android:textSize="18sp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="2dp"/>
+        <TextView
+            android:id="@+id/number_of_beeps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="167"
+            android:textSize="14sp"
+            android:layout_marginTop="2dp"
+            android:layout_gravity="center" />
+    </LinearLayout>
 </LinearLayout>
