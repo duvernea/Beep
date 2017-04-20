@@ -47,9 +47,13 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
     @Override
     public void onBindViewHolder(BoardViewHolder holder, int position) {
         mCursor.moveToPosition(position);
+        String boardId = mCursor.getString(Constants.BOARDS_BOARD_ID);
         String boardName = mCursor.getString(Constants.BOARDS_COL_NAME);
         String boardImage = mCursor.getString(Constants.BOARDS_COL_IMAGE);
+        String boardDate = mCursor.getString(Constants.BOARD_COL_DATE);
+        String numBeeps = mCursor.getString(Constants.BOARD_COL_NUM_BEEPS);
         holder.mBoardNameTextView.setText(boardName);
+        holder.mBoardNumBeepsTextView.setText(numBeeps);
 
         if (boardImage == null || boardImage.equals("")) {
             // Do nothing, use the default imageview
@@ -71,11 +75,13 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
     public class BoardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final TextView mBoardNameTextView;
         public final ImageView mBoardImageView;
+        public final TextView mBoardNumBeepsTextView;
 
         public BoardViewHolder(View view) {
             super(view);
             mBoardNameTextView = (TextView) view.findViewById(R.id.board_name_textview);
             mBoardImageView = (ImageView) view.findViewById(R.id.board_imageview);
+            mBoardNumBeepsTextView = (TextView) view.findViewById(R.id.number_of_beeps);
             view.setOnClickListener(this);
         }
         @Override

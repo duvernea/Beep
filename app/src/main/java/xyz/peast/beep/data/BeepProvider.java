@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import xyz.peast.beep.Constants;
+
 /**
  * Created by duverneay on 6/15/16.
  */
@@ -39,8 +41,6 @@ public class BeepProvider extends ContentProvider {
         switch(sUriMatcher.match(uri)) {
 
             case BEEP:
-
-
                 cursor = mBeepDbHelper.getReadableDatabase().query(
                         BeepDbContract.BeepEntry.TABLE_NAME,
                         projection,
@@ -51,8 +51,6 @@ public class BeepProvider extends ContentProvider {
                         sortOrder);
                 break;
             case BOARD:
-                Log.d(TAG, uri.toString());
-
                 cursor = mBeepDbHelper.getReadableDatabase().query(
                         BeepDbContract.BoardEntry.TABLE_NAME,
                         projection,
@@ -63,13 +61,9 @@ public class BeepProvider extends ContentProvider {
                         sortOrder);
                 break;
             case BOARD_WITH_NUM_BEEPS: {
-                Log.d(TAG, uri.toString());
-
-                // TODO - probably need rawQuery - query board + number of beeps
                 cursor = getBoardWithNumBeeps(uri, projection, selection, selectionArgs, sortOrder);
                 break;
             }
-
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -100,13 +94,11 @@ public class BeepProvider extends ContentProvider {
         Uri returnUri;
         long _id;
         switch (sUriMatcher.match(uri)) {
-
             case BEEP:
                 _id = mBeepDbHelper.getWritableDatabase().insert(BeepDbContract.BeepEntry.TABLE_NAME,
                         null, values);
                 if (_id > 0) {
                     returnUri = BeepDbContract.BeepEntry.buildUri(_id);
-                    Log.d(TAG, "Insert return uri: " + returnUri.toString());
                 }
                 else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
@@ -117,7 +109,6 @@ public class BeepProvider extends ContentProvider {
                         null, values);
                 if (_id >0) {
                     returnUri = BeepDbContract.BoardEntry.buildUri(_id);
-                    Log.d(TAG, "Insert return uri: " + returnUri.toString());
                 }
                 else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
@@ -186,31 +177,18 @@ public class BeepProvider extends ContentProvider {
     private Cursor getBoardWithNumBeeps(Uri uri, String[] projection, String selection,
                                         String[] selectionArgs, String sortOrder) {
 
-//        String boardTableName = BeepDbContract.BoardEntry.TABLE_NAME;
-//        String beepTableName = BeepDbContract.BeepEntry.TABLE_NAME;
-//
-//        String queryString = "SELECT * " +
-//                "FROM " + boardTableName;
+        String boardTableName = BeepDbContract.BoardEntry.TABLE_NAME;
+        String beepTableName = BeepDbContract.BeepEntry.TABLE_NAME;
 
-        // FOR NOW - just return the boards as normal
-        Cursor cursor = mBeepDbHelper.getReadableDatabase().query(
-                BeepDbContract.BoardEntry.TABLE_NAME,
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                sortOrder);
+        // Raw Query to get the boards + number of beeps associated with each board
+        String queryString = "SELECT " + boardTableName + "." + "*," +
+                " count(" + beepTableName + "."   + BeepDbContract.BoardEntry._ID +
+                ") as " + Constants.COLUMN_NUMBER_OF_BEEPS + " from " + boardTableName +
+                " left join " + beepTableName + " on (" +
+                boardTableName + "." + BeepDbContract.BoardEntry._ID + " = "
+                + beepTableName + "." + BeepDbContract.BeepEntry.COLUMN_BOARD_KEY + ") " +
+                "group by " + boardTableName + "." + BeepDbContract.BoardEntry._ID;
 
-        // Cursor cursor = mBeepDbHelper.getReadableDatabase().rawQuery(queryString, selectionArgs);
-        return cursor;
-//        db = dbHelper.getWritableDatabase();
-//        String[] args = {String.valueOf(uri.getLastPathSegment())};
-//        Cursor cursor = db.rawQuery(
-//                "SELECT p1.first_name, p1.last_name " +
-//                        "FROM Person p1, Person p2, Relationship r " +
-//                        "WHERE p1.id = r.relative_id AND " +
-//                        "p2.id = r.related_id AND " +
-//                        "p2.id = ?", args);
+        return mBeepDbHelper.getReadableDatabase().rawQuery(queryString, selectionArgs);
     }
 }

@@ -45,10 +45,8 @@ public class BeepDbHelper extends SQLiteOpenHelper {
                 BeepDbContract.BoardEntry.COLUMN_NAME + " TEXT NOT NULL, " +
                 BeepDbContract.BoardEntry.COLUMN_DATE_CREATED + " INTEGER NOT NULL, " +
                 BeepDbContract.BoardEntry.COLUMN_IMAGE + " TEXT);";
-        ;
 
         db.execSQL(SQL_CREATE_BOARD_TABLE);
-
     }
 
     @Override

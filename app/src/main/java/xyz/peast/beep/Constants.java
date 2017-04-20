@@ -89,15 +89,27 @@ public class Constants {
     public static final int BEEPS_COL_FX = 9;
     public static final int BEEPS_COL_BOARD_KEY = 10;
 
-    // database projection for BOARDS
+    // projection - join with BEEPS to include # of Beeps for a board
+    public static final String COLUMN_NUMBER_OF_BEEPS = "number_of_beeps";
+
+    // database projection for BOARDS (no Number of Beeps)
     public static final String[] BOARD_COLUMNS = {
             BeepDbContract.BoardEntry.TABLE_NAME + "." + BeepDbContract.BoardEntry._ID,
             BeepDbContract.BoardEntry.COLUMN_NAME,
+            BeepDbContract.BoardEntry.COLUMN_DATE_CREATED,
             BeepDbContract.BoardEntry.COLUMN_IMAGE,
-            BeepDbContract.BoardEntry.COLUMN_DATE_CREATED
     };
+    public static final String[] BOARD_COLUMNS_NUM_BEEPS = {
+            BeepDbContract.BoardEntry.TABLE_NAME + "." + BeepDbContract.BoardEntry._ID,
+            BeepDbContract.BoardEntry.COLUMN_NAME,
+            BeepDbContract.BoardEntry.COLUMN_DATE_CREATED,
+            BeepDbContract.BoardEntry.COLUMN_IMAGE,
+            COLUMN_NUMBER_OF_BEEPS
+    };
+
     public static final int BOARDS_BOARD_ID = 0;
     public static final int BOARDS_COL_NAME = 1;
-    public static final int BOARDS_COL_IMAGE = 2;
-    public static final int BOARD_COL_DATE = 3;
+    public static final int BOARD_COL_DATE = 2;
+    public static final int BOARDS_COL_IMAGE = 3;
+    public static final int BOARD_COL_NUM_BEEPS = 4;
 }

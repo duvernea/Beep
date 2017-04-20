@@ -280,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             uri = BeepDbContract.BoardEntry.CONTENT_URI_NUM_BEEPS;
             loader = new CursorLoader(mContext,
                     uri,
-                    Constants.BOARD_COLUMNS,
+                    Constants.BOARD_COLUMNS_NUM_BEEPS,
                     null,
                     null,
                     null
