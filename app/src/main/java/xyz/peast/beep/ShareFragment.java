@@ -20,6 +20,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.io.File;
 
 import xyz.peast.beep.services.LoadDownsampledBitmapImageService;
@@ -34,6 +37,9 @@ public class ShareFragment extends Fragment {
     private static final int SHARE_BEEP = 1;
 
     private Context mContext;
+
+    private AdView mAdView;
+
 
     // Views
     private TextView mBeepNameTextView;
@@ -64,6 +70,14 @@ public class ShareFragment extends Fragment {
         mBeepImageView = (ImageView) rootView.findViewById(R.id.beep_imageview);
         mShareButton = (Button) rootView.findViewById(R.id.share_button);
         mDontShareButton = (Button) rootView.findViewById(R.id.no_button);
+
+        // Initilize Ads
+        mAdView = (AdView) rootView.findViewById(R.id.adview);
+        final AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice("839737069995AAD5519D71B8B267924D")
+                .build();
+        mAdView.loadAd(adRequest);
 
         Bundle bundle = this.getArguments();
         mRecordFileName = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME);
