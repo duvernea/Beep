@@ -217,6 +217,8 @@ public class SaveFragment extends Fragment implements LocationListener {
                 int selectedKey = selected.getKey();
                 String boardname = selected.getName();
                 ((RecordActivity) mActivity).setPitchShift(0);
+                ((RecordActivity) mActivity).setTempo(1.0);
+                ((RecordActivity) mActivity).turnFxOff();
 
                 Log.d(TAG, "mbeepfx edit status: " + mBeepFx.getEditStatus());
 

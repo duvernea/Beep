@@ -49,7 +49,7 @@ public class BeepFx implements Parcelable {
     public boolean getRobot() { return mRobot; }
 
     public boolean getEditStatus() {
-        if (mTreble == 1.0 && mBass == 1.0 && mPitchShift == 0 &&
+        if (mTreble == 1.0 && mBass == 1.0 && mPitchShift == 0 && mTempo == 1.0 &&
                 !mEcho && !mReverse && !mReverb && !mRobot) {
             return false;
         } else {

@@ -351,15 +351,11 @@ void SuperpoweredAudio::createWav(const char *path, BeepFx beepFx) {
         strcat(pathWithExtension, ".wav");
     }
 
-
     char *editPathWithExtension;
     editPathWithExtension = (char *) calloc(strlen(path) + editFileSuffix + fileExtension, sizeof(char));
     strcpy(editPathWithExtension, path);
     strcat(editPathWithExtension, "_edit");
     strcat(editPathWithExtension, ".wav");
-
-    //const char * editedFilePath = path + "test";
-    //const char * temppath = "/data/data/xyz.peast.beep/files/createwavtest.wav";
 
     SuperpoweredDecoder *decoder = new SuperpoweredDecoder();
     // TODO - use actual file name
@@ -377,10 +373,13 @@ void SuperpoweredAudio::createWav(const char *path, BeepFx beepFx) {
     FILE *fd = createWAV(editPathWithExtension, decoder->samplerate, 2);
 
     /* Need to use variable size buffer chains for time stretching */
-    // 1.0f = playback rate, 8 = pitchshift
     SuperpoweredTimeStretching *timeStretch = new SuperpoweredTimeStretching(decoder->samplerate);
-    // chipmunk == 1
-    timeStretch->setRateAndPitchShift(1.0f, beepFx.pitchShift);
+    float rate = (float) beepFx.tempo;
+    char rate_float[10];
+    sprintf(rate_float, "%f", rate);
+    __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio rate float", rate_float);
+
+    timeStretch->setRateAndPitchShift(rate, beepFx.pitchShift);
     // This buffer list will receive the time-stretched samples.
     SuperpoweredAudiopointerList *outputBuffers = new SuperpoweredAudiopointerList(8, 16);
     // Create a buffer for the 16-bit integer samples.
@@ -712,6 +711,7 @@ void Java_xyz_peast_beep_RecordActivity_createWav(JNIEnv * javaEnvironment, jobj
 
     jfieldID fidTreble = javaEnvironment->GetFieldID(cls, "mTreble", "F");
     jfieldID fidBass = javaEnvironment->GetFieldID(cls, "mBass", "F");
+    jfieldID fidTempo = javaEnvironment->GetFieldID(cls, "mTempo", "D");
     jfieldID fidPitchShift = javaEnvironment->GetFieldID(cls, "mPitchShift", "I");
     jfieldID fidEcho = javaEnvironment->GetFieldID(cls, "mEcho", "Z");
     jfieldID fidReverse = javaEnvironment->GetFieldID(cls, "mReverse", "Z");
@@ -722,10 +722,20 @@ void Java_xyz_peast_beep_RecordActivity_createWav(JNIEnv * javaEnvironment, jobj
     beepFx.treble = (float) javaEnvironment->GetFloatField(jBeepFx, fidTreble);
     beepFx.bass = (float) javaEnvironment->GetFloatField(jBeepFx, fidBass);
     beepFx.pitchShift = (int) javaEnvironment->GetIntField(jBeepFx, fidPitchShift);
+    beepFx.tempo = (double) javaEnvironment->GetDoubleField(jBeepFx, fidTempo);
     beepFx.echo = (bool) javaEnvironment->GetBooleanField(jBeepFx, fidEcho);
     beepFx.reverse = (bool) javaEnvironment->GetBooleanField(jBeepFx, fidReverse);
     beepFx.reverb = (bool) javaEnvironment->GetBooleanField(jBeepFx, fidReverb);
     beepFx.robot = (bool) javaEnvironment->GetBooleanField(jBeepFx, fidRobot);
+
+    char c[10]; //becuase double is 8 bytes in GCC compiler but take 10 for safety
+    sprintf(c , "%lf" , beepFx.tempo);
+    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio createWAV tempo", c);
+
+    char d[10]; //becuase double is 8 bytes in GCC compiler but take 10 for safety
+    sprintf(d , "%i" , beepFx.pitchShift);
+    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio createWAV pitchshift", d);
+
 
     myAudio->createWav(path, beepFx);
     // myAudio->createReverseWav(path);
@@ -792,7 +802,7 @@ void Java_xyz_peast_beep_RecordActivity_startupAudio(JNIEnv *javaEnvironment, jo
     myAudio->startupAudio();
 }
 extern "C" JNIEXPORT
-void Java_xyz_peast_beep_BoardActivity_turnFxOff(JNIEnv *javaEnvironment, jobject thisObj) {
+void Java_xyz_peast_beep_RecordActivity_turnFxOff(JNIEnv *javaEnvironment, jobject thisObj) {
     myAudio->turnFxOff();
 }
 

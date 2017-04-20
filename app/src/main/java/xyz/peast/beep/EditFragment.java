@@ -66,7 +66,7 @@ public class EditFragment extends Fragment {
     private static final double CHIPMUNK_TEMPO = 1.6;
     private static final double EVIL_TEMPO = 0.7;
     private static final double FASTFWD_TEMPO = 2.0;
-    private static final double SLOMO_TEMPO = 0.4;
+    private static final double SLOMO_TEMPO = 0.5;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -231,7 +231,9 @@ public class EditFragment extends Fragment {
                     mEvilButton.setChecked(false);
                     mDeepButton.setChecked(false);
                     ((RecordActivity) mActivity).setTempo(SLOMO_TEMPO);
+                    ((RecordActivity) mActivity).setPitchShift(NO_PITCH_SHIFT);
                     mBeepFx.setTempo(SLOMO_TEMPO);
+                    mBeepFx.setPitchShift(NO_PITCH_SHIFT);
                 }
                 else {
                     ((RecordActivity) mActivity).setPitchShift(NO_PITCH_SHIFT);

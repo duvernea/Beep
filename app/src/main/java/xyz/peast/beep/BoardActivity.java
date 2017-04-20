@@ -387,7 +387,6 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
             setupAudio();
         }
         startupAudio();
-        turnFxOff();
     }
 
     // Callback from Native
@@ -521,7 +520,6 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     private native void onPlayerPause();
     private native void shutdownAudio();
     private native void startupAudio();
-    private native void turnFxOff();
 
     static {
         System.loadLibrary(Constants.NATIVE_LIBRARY_NAME);
