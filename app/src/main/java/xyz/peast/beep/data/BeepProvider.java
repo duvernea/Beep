@@ -20,6 +20,7 @@ public class BeepProvider extends ContentProvider {
 
     static final int BEEP = 100;
     static final int BOARD = 300;
+    static final int BOARD_WITH_NUM_BEEPS = 301;
 
     private BeepDbHelper mBeepDbHelper;
 
@@ -56,6 +57,11 @@ public class BeepProvider extends ContentProvider {
                         null,
                         sortOrder);
                 break;
+            case BOARD_WITH_NUM_BEEPS: {
+                // TODO - probably need rawQuery - put in method
+                cursor = getBoardWithNumBeeps(uri, projection, selection, selectionArgs, sortOrder);
+                break;
+            }
 
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -73,6 +79,8 @@ public class BeepProvider extends ContentProvider {
             case BEEP:
                 return BeepDbContract.BeepEntry.CONTENT_TYPE;
             case BOARD:
+                return BeepDbContract.BoardEntry.CONTENT_TYPE;
+            case BOARD_WITH_NUM_BEEPS:
                 return BeepDbContract.BoardEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -164,8 +172,21 @@ public class BeepProvider extends ContentProvider {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(BeepDbContract.CONTENT_AUTHORITY, BeepDbContract.PATH_BEEP, BEEP);
         uriMatcher.addURI(BeepDbContract.CONTENT_AUTHORITY, BeepDbContract.PATH_BOARD, BOARD);
+        uriMatcher.addURI(BeepDbContract.CONTENT_AUTHORITY, BeepDbContract.PATH_BOARD + "/*", BOARD_WITH_NUM_BEEPS);
 
         return uriMatcher;
+    }
+    private Cursor getBoardWithNumBeeps(Uri uri, String[] projection, String selection,
+                                        String[] selectionArgs, String sortOrder) {
+
+        return mBeepDbHelper.getReadableDatabase().query(
+                BeepDbContract.BoardEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder);
     }
 
 }
