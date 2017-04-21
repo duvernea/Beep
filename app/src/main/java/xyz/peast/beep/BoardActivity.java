@@ -63,8 +63,6 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     // Loader ids
     private static final int BEEPS_LOADER = 1;
 
-
-
     // Views
     private Button mRandomButton;
     private RecyclerView mBeepsRecyclerView;
@@ -258,6 +256,13 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                     requestReadExternalPermission();
                 }
                 return true;
+            }
+        });
+        mBoardImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String msg = getResources().getString(R.string.change_board_image_msg);
+                Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
             }
         });
         mImageHandler = new Handler() {

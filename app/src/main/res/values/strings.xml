@@ -15,6 +15,7 @@
     <string name="board_image_content_description">Image that represents this board</string>
     <string name="random_button_text">Random</string>
     <string name="no_beeps_yet_msg">No beeps yet. Record one!</string>
+    <string name ="change_board_image_msg">"Long press on image to change"</string>
 
     // Board Activity - Context Menu
     <string name="beep_context_menu_delete">Delete</string>
