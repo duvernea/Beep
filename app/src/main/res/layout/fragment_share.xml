@@ -23,18 +23,41 @@
             android:id="@+id/beep_imageview"
             android:scaleType="centerCrop"
             android:contentDescription="@string/beep_image_content_description"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_selection_textview"
+                android:textSize="@dimen/save_fragment_label_size"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"/>
             <TextView
                 android:id="@+id/beep_name_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_selection_textview"
                 android:textSize="@dimen/save_fragment_label_size"
-                android:textStyle="bold"/>
+                android:layout_marginBottom="16dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/board_selection_textview"
+                android:textSize="@dimen/save_fragment_label_size"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+            <TextView
+                android:id="@+id/board_name_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Brd name here"
+                android:textSize="@dimen/save_fragment_label_size"/>
         </LinearLayout>
+
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -43,18 +66,6 @@
         android:id="@+id/button_frame_layout"
         android:orientation="horizontal"
         android:gravity="center_horizontal">
-        <!--<Button-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="64dp"-->
-            <!--android:id="@+id/delete_button"-->
-            <!--android:text="Delete"-->
-            <!--android:background="@color/recordButtonStopRecording"-->
-            <!--android:textSize="@dimen/button_text_size"-->
-            <!--android:textColor="@color/white_ee"-->
-            <!--android:visibility="visible"-->
-            <!--android:layout_weight="1"-->
-            <!--android:textAllCaps="false"-->
-            <!--/>-->
         <Button
             android:layout_width="0dp"
             android:layout_height="64dp"

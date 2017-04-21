@@ -43,6 +43,7 @@ public class ShareFragment extends Fragment {
 
     // Views
     private TextView mBeepNameTextView;
+    private TextView mBoardNameTextView;
     private ImageView mBeepImageView;
     private Button mShareButton;
     private Button mDontShareButton;
@@ -67,6 +68,7 @@ public class ShareFragment extends Fragment {
         mContext = getActivity();
 
         mBeepNameTextView = (TextView) rootView.findViewById(R.id.beep_name_textview);
+        mBoardNameTextView = (TextView) rootView.findViewById(R.id.board_name_textview);
         mBeepImageView = (ImageView) rootView.findViewById(R.id.beep_imageview);
         mShareButton = (Button) rootView.findViewById(R.id.share_button);
         mDontShareButton = (Button) rootView.findViewById(R.id.no_button);
@@ -90,6 +92,7 @@ public class ShareFragment extends Fragment {
 
         mBeepName = bundle.getString(RecordActivity.BEEP_NAME);
         mBeepNameTextView.setText(mBeepName);
+        mBoardNameTextView.setText(mBoardName);
 
         final String audioWavPath = Utility.getFullWavPath(mContext, mRecordFileName, mBeepEdited);
 
