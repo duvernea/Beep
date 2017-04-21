@@ -37,9 +37,12 @@ public class ShareFragment extends Fragment {
     private static final int SHARE_BEEP = 1;
 
     private Context mContext;
+    private Activity mActivity;
 
     private AdView mAdView;
 
+    // Audio variables
+    private boolean mIsPlaying;
 
     // Views
     private TextView mBeepNameTextView;
@@ -47,6 +50,7 @@ public class ShareFragment extends Fragment {
     private ImageView mBeepImageView;
     private Button mShareButton;
     private Button mDontShareButton;
+    private Button mReplayButton;
 
     private String mBoardName;
     private int mBoardKey;
@@ -66,10 +70,12 @@ public class ShareFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_share, container, false);
         mContext = getActivity();
+        mActivity = getActivity();
 
         mBeepNameTextView = (TextView) rootView.findViewById(R.id.beep_name_textview);
         mBoardNameTextView = (TextView) rootView.findViewById(R.id.board_name_textview);
         mBeepImageView = (ImageView) rootView.findViewById(R.id.beep_imageview);
+        mReplayButton = (Button) rootView.findViewById(R.id.replay_button);
         mShareButton = (Button) rootView.findViewById(R.id.share_button);
         mDontShareButton = (Button) rootView.findViewById(R.id.no_button);
 
@@ -94,6 +100,19 @@ public class ShareFragment extends Fragment {
         mBeepNameTextView.setText(mBeepName);
         mBoardNameTextView.setText(mBoardName);
 
+        // Audio File Name path
+        final String filePath = Utility.getFullWavPath(mContext, mRecordFileName, false);
+
+        // Replay audio button
+        mReplayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mIsPlaying = true;
+                ((RecordActivity) mActivity).onFileChange(filePath, 0, 0);
+                ((RecordActivity) mActivity).onPlayPause(filePath, mIsPlaying, 0);
+            }
+        });
+
         final String audioWavPath = Utility.getFullWavPath(mContext, mRecordFileName, mBeepEdited);
 
         // Encode the wav to mp3 for sharing
@@ -114,6 +133,9 @@ public class ShareFragment extends Fragment {
         mDontShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ((RecordActivity) mActivity).setPitchShift(0);
+                ((RecordActivity) mActivity).setTempo(1.0);
+                ((RecordActivity) mActivity).turnFxOff();
                 Intent intent = new Intent(mContext, BoardActivity.class);
                 intent.putExtra(BoardActivity.LAST_ACTIVITY_UNIQUE_ID,
                         BoardActivity.FROM_SHARE_FRAGMENT);
@@ -127,6 +149,9 @@ public class ShareFragment extends Fragment {
         mShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ((RecordActivity) mActivity).setPitchShift(0);
+                ((RecordActivity) mActivity).setTempo(1.0);
+                ((RecordActivity) mActivity).turnFxOff();
 
                 mBeepMp3Path = Utility.getBeepPath(mContext, mBeepName);
                 Uri fileUri = ShareUtility.encodeBeepGetUri(mContext, mRecordFileName,
