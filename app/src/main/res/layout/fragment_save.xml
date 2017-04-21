@@ -64,14 +64,15 @@
                     android:layout_height="wrap_content"
                     android:text="@string/board_selection_textview"
                     android:textSize="@dimen/save_fragment_label_size"
-                    android:textStyle="bold"/>
-                <Spinner
+                    android:textStyle="bold"
+                    android:layout_marginBottom="4dp" />
+                <xyz.peast.beep.views.NDSpinner
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/board_name_spinner"
                     android:background="@drawable/spinner_bg"
                     android:drawableRight="@drawable/ic_forward_white_48dp">
-                </Spinner>
+                </xyz.peast.beep.views.NDSpinner>
             </LinearLayout>
         </LinearLayout>
     <Button

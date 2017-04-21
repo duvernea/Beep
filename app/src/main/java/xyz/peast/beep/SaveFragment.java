@@ -42,7 +42,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
@@ -58,6 +57,7 @@ import xyz.peast.beep.adapters.Board;
 import xyz.peast.beep.adapters.BoardSpinnerAdapter;
 import xyz.peast.beep.data.BeepDbContract;
 import xyz.peast.beep.services.LoadDownsampledBitmapImageService;
+import xyz.peast.beep.views.NDSpinner;
 
 /**
  * Created by duvernea on 7/30/16.
@@ -81,7 +81,7 @@ public class SaveFragment extends Fragment implements LocationListener {
     private static final int SELECT_PHOTO = 1;
 
     // Views
-    private Spinner mBoardSpinner;
+    private NDSpinner mBoardSpinner;
     private ImageView mBeepImage;
     private Button mSaveButton;
     private Button mDeleteButton;
@@ -146,7 +146,7 @@ public class SaveFragment extends Fragment implements LocationListener {
                 mContext.getSystemService(Context.LOCATION_SERVICE);
 
         // Initialize views
-        mBoardSpinner = (Spinner) rootView.findViewById(R.id.board_name_spinner);
+        mBoardSpinner = (NDSpinner) rootView.findViewById(R.id.board_name_spinner);
         mBeepImage = (ImageView) rootView.findViewById(R.id.beep_image);
         mSaveButton = (Button) rootView.findViewById(R.id.save_button);
         mBeepNameEditText = (EditText) rootView.findViewById(R.id.beep_name_edittext);
@@ -173,7 +173,7 @@ public class SaveFragment extends Fragment implements LocationListener {
         mBoardSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, "Spinner Item Selected");
+                Log.d(TAG, "Spinner Item Selected position: " + position);
                 if (position == mNumberOfBoards) {
                     createBoardNameDialog();
                 }
