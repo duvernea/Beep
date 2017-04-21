@@ -207,6 +207,9 @@ public class RecordFragment extends Fragment {
         mIsRecording = false;
         mIsPlaying =false;
         ((RecordActivity) mActivity).setupAudio();
+        ((RecordActivity) mActivity).setPitchShift(0);
+        ((RecordActivity) mActivity).setTempo(1.0);
+        ((RecordActivity) mActivity).turnFxOff();
         resetMenuState(mMenuState);
         mGlSurfaceView.onResume();
     }
@@ -228,7 +231,7 @@ public class RecordFragment extends Fragment {
     private void resetMenuState(boolean state) {
         if (state) {
             mRecordButton.setVisibility(View.GONE);
-            mPlayButton.setVisibility(View.GONE);
+            mPlayButton.setVisibility(View.VISIBLE);
             mRedoButton.setVisibility(View.VISIBLE);
             mNextButton.setVisibility(View.VISIBLE);
         }
