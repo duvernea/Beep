@@ -213,6 +213,8 @@ public class Utility {
 
         ContentValues values = new ContentValues();
         values.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, playCount + 1);
+        playCount = playCount + 1;
+        Log.d(TAG, "Play count+1: " + playCount);
 
         context.getContentResolver().update(
                 uri,

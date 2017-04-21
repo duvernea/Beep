@@ -185,6 +185,8 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
 
                         // Increase play count by 1
                         Utility.incrementBeepPlayCount(mContext, key);
+                        getLoaderManager().restartLoader(BEEPS_LOADER, null, BoardActivity.this );
+
                         String path = Utility.getFullWavPath(mContext, audioFileName, beepEdited);
 
                         onFileChange(path, 0, 0);
@@ -216,26 +218,11 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 int randBeep = (int)(Math.random() * ((numBeeps - 1) + 1));
                 cursor.moveToPosition(randBeep);
 
                 int key = cursor.getInt((Constants.BEEPS_COL_BEEP_ID));
-
-                int playCount = cursor.getInt(Constants.BEEPS_COL_PLAY_COUNT);
-                Uri uri = BeepDbContract.BeepEntry.CONTENT_URI;
-
-                ContentValues values = new ContentValues();
-                playCount = playCount +1;
-                values.put(BeepDbContract.BeepEntry.COLUMN_PLAY_COUNT, playCount);
-
-                String whereClause = BeepDbContract.BeepEntry._ID+"=?";
-                String [] whereArgs = {key+""};
-                int numRows = mContext.getContentResolver().update(
-                        uri,
-                        values,
-                        whereClause,
-                        whereArgs);
+                Utility.incrementBeepPlayCount(mContext, key);
                 getLoaderManager().restartLoader(BEEPS_LOADER, null, BoardActivity.this );
                 
                 boolean edited = cursor.getInt(Constants.BEEPS_COL_FX) > 0;
