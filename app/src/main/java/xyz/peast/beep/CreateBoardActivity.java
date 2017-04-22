@@ -18,7 +18,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.util.DisplayMetrics;
@@ -83,6 +85,14 @@ public class CreateBoardActivity extends AppCompatActivity {
         mCreateButton = (Button) findViewById(R.id.create_button);
         mCancelButton = (Button) findViewById(R.id.cancel_button);
         mBoardNameEditText = (EditText) findViewById(R.id.board_name_edittext);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar ab = getSupportActionBar();
+        if (ab != null) {
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setDisplayShowTitleEnabled(false);
+        }
 
         // EditText for setting Beep Name - onClick opens Dialog for entering text
         mBoardNameEditText.setClickable(true);
