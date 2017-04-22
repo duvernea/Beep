@@ -190,7 +190,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
 
                         onFileChange(path, 0, 0);
                         mIsPlaying = !mIsPlaying;
-                        onPlayPause(path, mIsPlaying, 0);
+                        onPlayPause();
                     }
                 }, new BeepRecyclerViewAdapter.BeepAdapterOnLongClickHandler() {
             @Override
@@ -230,7 +230,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
 
                 onFileChange(path, 0, 0);
                 mIsPlaying = !mIsPlaying;
-                onPlayPause(path, mIsPlaying, 0);
+                onPlayPause();
             }
         });
         mFab.setOnClickListener(new View.OnClickListener() {
@@ -518,7 +518,7 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
     }
     // Native Audio - Load library and Functions
     private native void setupAudio();
-    private native void onPlayPause(String filepath, boolean play, int size);
+    private native void onPlayPause();
     private native void onFileChange(String apkPath, int fileOffset, int fileLength );
     private native void onPlayerPause();
     private native void shutdownAudio();

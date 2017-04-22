@@ -109,7 +109,7 @@ public class ShareFragment extends Fragment {
             public void onClick(View v) {
                 mIsPlaying = true;
                 ((RecordActivity) mActivity).onFileChange(filePath, 0, 0);
-                ((RecordActivity) mActivity).onPlayPause(filePath, mIsPlaying, 0);
+                ((RecordActivity) mActivity).onPlayPause();
             }
         });
 

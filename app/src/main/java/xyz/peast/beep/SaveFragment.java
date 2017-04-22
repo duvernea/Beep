@@ -249,7 +249,7 @@ public class SaveFragment extends Fragment implements LocationListener {
             public void onClick(View v) {
                 mIsPlaying = true;
                 ((RecordActivity) mActivity).onFileChange(filePath, 0, 0);
-                ((RecordActivity) mActivity).onPlayPause(filePath, mIsPlaying, 0);
+                ((RecordActivity) mActivity).onPlayPause();
             }
         });
         mImageHandler = new Handler() {

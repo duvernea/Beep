@@ -182,7 +182,7 @@ public class RecordFragment extends Fragment {
                         Log.d(TAG, "mIsPlaying play: " + mIsPlaying);
                         Log.d(TAG, "mRecordFilePath: " + mRecordFilePath + ".wav");
                         ((RecordActivity) mActivity).onFileChange(mRecordFilePath + ".wav", 0, 0);
-                        ((RecordActivity) mActivity).onPlayPause(mRecordFilePath + ".wav", mIsPlaying, 0);
+                        ((RecordActivity) mActivity).onPlayPause();
                     }
                 }
             });

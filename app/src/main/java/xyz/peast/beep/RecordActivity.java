@@ -120,6 +120,7 @@ public class RecordActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate run..");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
 
@@ -216,7 +217,7 @@ public class RecordActivity extends AppCompatActivity
     }
     public native void setupAudio();
     public native void SuperpoweredAudio(int samplerate, int buffersize);
-    public native void onPlayPause(String filepath, boolean play, int size);
+    public native void onPlayPause();
     public native void onFileChange(String apkPath, int fileOffset, int fileLength );
     public native void toggleRecord(boolean record);
     public native void setRecordPath(String path);

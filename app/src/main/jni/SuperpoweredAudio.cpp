@@ -22,7 +22,6 @@ static jclass activityClass;
 static jobject activityObj;
 static jmethodID playbackEndCallback;
 static jmethodID recordLevelCallback;
-static uint duration;
 
 
 // New function declarations
@@ -144,17 +143,11 @@ SuperpoweredAudio::~SuperpoweredAudio() {
     pthread_mutex_destroy(&mutex);
 }
 void SuperpoweredAudio::onFileChange(const char *path, int fileOffset, int fileLength) {
-    //pthread_mutex_lock(&mutex);
-    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudioOnFileChange", path);
+    // __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudioOnFileChange", path);
 
     playerA->open(path);
-    duration = playerA->durationMs;
-    __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "track duration %u\n", duration);
-
     playerA->cachePosition(0, 255);
-    duration = playerA->durationMs;
-    playerA->cachePosition(duration, 255);
-    //pthread_mutex_unlock(&mutex);
+    playerA->cachePosition(playerA->durationMs, 255);
 }
 
 void SuperpoweredAudio::onPlayerPause() {
@@ -190,14 +183,12 @@ void SuperpoweredAudio::turnFxOff() {
     equalizer->enable(false);
 }
 
-void SuperpoweredAudio::onPlayPause(const char *path, bool play, int size) {
-    //__android_log_write(ANDROID_LOG_ERROR, "SuperpoweredPATH", path);
-    duration = playerA->durationMs;
-    //const char *path = "/data/data/xyz.peast.beep/files/d5925c56-c611-49ae-91bd-bc1d25ff6b56.mp3";
+void SuperpoweredAudio::onPlayPause() {
+
     if (!isRecording) {
         if (myAudio->reverse) {
             playerA->setReverse(reverse, 5);
-            playerA->setPosition((double) duration, false, false);
+            playerA->setPosition((double) playerA->durationMs, false, false);
             playerA->play(0);
         } else {
             playerA->setReverse(reverse, 5);
@@ -575,17 +566,13 @@ void Java_xyz_peast_beep_MainActivity_SuperpoweredAudio(JNIEnv *javaEnvironment,
 }
 //onPlayPause - Main Activity
 extern "C" JNIEXPORT
-void Java_xyz_peast_beep_MainActivity_onPlayPause(JNIEnv * __unused javaEnvironment, jobject __unused obj, jstring filepath, jboolean play, jint size) {
-    const char *path = javaEnvironment->GetStringUTFChars(filepath, JNI_FALSE);
-    myAudio->onPlayPause(path, play, size);
-    javaEnvironment->ReleaseStringUTFChars(filepath, path);
+void Java_xyz_peast_beep_MainActivity_onPlayPause(JNIEnv * __unused javaEnvironment, jobject __unused obj) {
+    myAudio->onPlayPause();
 }
 //onPlayPause - Board Activity
 extern "C" JNIEXPORT
 void Java_xyz_peast_beep_BoardActivity_onPlayPause(JNIEnv * __unused javaEnvironment, jobject __unused obj, jstring filepath, jboolean play, jint size) {
-    const char *path = javaEnvironment->GetStringUTFChars(filepath, JNI_FALSE);
-    myAudio->onPlayPause(path, play, size);
-    javaEnvironment->ReleaseStringUTFChars(filepath, path);
+    myAudio->onPlayPause();
 }
 //onPlayerPause - MainActivity
 extern "C" JNIEXPORT
@@ -643,12 +630,8 @@ void Java_xyz_peast_beep_RecordActivity_SuperpoweredAudio(JNIEnv *javaEnvironmen
 }
 //onPlayPause
 extern "C" JNIEXPORT
-void Java_xyz_peast_beep_RecordActivity_onPlayPause(JNIEnv * __unused javaEnvironment, jobject __unused obj, jstring filepath, jboolean play, jint size) {
-    const char *path = javaEnvironment->GetStringUTFChars(filepath, JNI_FALSE);
-
-    myAudio->onPlayPause(path, play, size);
-    javaEnvironment->ReleaseStringUTFChars(filepath, path);
-
+void Java_xyz_peast_beep_RecordActivity_onPlayPause(JNIEnv * __unused javaEnvironment, jobject __unused obj) {
+    myAudio->onPlayPause();
 }
 //onFileChange
 extern "C" JNIEXPORT

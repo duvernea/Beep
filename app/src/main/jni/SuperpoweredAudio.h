@@ -29,7 +29,7 @@ public:
 	~SuperpoweredAudio();
 
 	bool process(short int *output, unsigned int numberOfSamples);
-	void onPlayPause(const char *path, bool play, int size);
+	void onPlayPause();
 	void onPlayerPause();
 	void setPitchShift(int pitchShift);
 	void setTempo(double tempo);

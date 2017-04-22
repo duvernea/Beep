@@ -69,6 +69,12 @@ public class EditFragment extends Fragment {
     private static final double SLOMO_TEMPO = 0.5;
 
     @Override
+    public void onDestroyView() {
+        Log.d(TAG, "onDestroyView");
+        super.onDestroyView();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView");
         super.onCreateView(inflater, container, savedInstanceState);
@@ -79,12 +85,11 @@ public class EditFragment extends Fragment {
 
         Bundle bundle = this.getArguments();
         mRecordFileName = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME);
+        Log.d(TAG, "mRecordFileName: " + mRecordFileName);
         mRecordFilePath = Utility.getFullWavPath(mContext, mRecordFileName, false);
-
-        ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
+        Log.d(TAG, "mRecordFilePath: " + mRecordFilePath);
 
         mPlayButton = (Button) rootView.findViewById(R.id.play_button);
-
         mChipmunkButton = (ToggleButton) rootView.findViewById(R.id.chipmunk_button);
         mFastFwdButton = (ToggleButton) rootView.findViewById(R.id.fastfwd_button);
         mHeliumButton = (ToggleButton) rootView.findViewById(R.id.helium_button);
@@ -115,14 +120,12 @@ public class EditFragment extends Fragment {
             public void onClick(View v) {
                 Log.d(TAG, "mIsPlaying start: " + mIsPlaying);
                 mIsPlaying = true;
-                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+                ((RecordActivity) mActivity).onPlayPause();
             }
         });
         mChipmunkButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.d(TAG, "onCheckedChanged listener");
-                Log.d(TAG, "check state: " + mHeliumButton.isChecked());
                 if (isChecked) {
                     mFastFwdButton.setChecked(false);
                     mHeliumButton.setChecked(false);
@@ -140,15 +143,12 @@ public class EditFragment extends Fragment {
                     mBeepFx.setPitchShift(NO_PITCH_SHIFT);
                     mBeepFx.setTempo(NORMAL_TEMPO);
                 }
-                // TODO determine max and min shift
-                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+                ((RecordActivity) mActivity).onPlayPause();
             }
         });
         mFastFwdButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.d(TAG, "onCheckedChanged listener");
-                Log.d(TAG, "check state: " + mHeliumButton.isChecked());
                 if (isChecked) {
                     mChipmunkButton.setChecked(false);
                     mHeliumButton.setChecked(false);
@@ -164,16 +164,13 @@ public class EditFragment extends Fragment {
                     mBeepFx.setPitchShift(NO_PITCH_SHIFT);
                     mBeepFx.setTempo(NORMAL_TEMPO);
                 }
-                // TODO determine max and min shift
-                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+                ((RecordActivity) mActivity).onPlayPause();
             }
         });
 
         mHeliumButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.d(TAG, "onCheckedChanged listener");
-                Log.d(TAG, "check state: " + mHeliumButton.isChecked());
                 if (isChecked) {
                     mChipmunkButton.setChecked(false);
                     mFastFwdButton.setChecked(false);
@@ -189,15 +186,12 @@ public class EditFragment extends Fragment {
                     mBeepFx.setPitchShift(NO_PITCH_SHIFT);
                     mBeepFx.setTempo(NORMAL_TEMPO);
                 }
-                // TODO determine max and min shift
-                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+                ((RecordActivity) mActivity).onPlayPause();
             }
         });
         mEvilButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.d(TAG, "onCheckedChanged listener");
-                Log.d(TAG, "check state: " + mHeliumButton.isChecked());
                 if (isChecked) {
                     mChipmunkButton.setChecked(false);
                     mFastFwdButton.setChecked(false);
@@ -215,15 +209,12 @@ public class EditFragment extends Fragment {
                     mBeepFx.setPitchShift(NO_PITCH_SHIFT);
                     mBeepFx.setTempo(NORMAL_TEMPO);
                 }
-                // TODO determine max and min shift
-                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+                ((RecordActivity) mActivity).onPlayPause();
             }
         });
         mSlomoButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.d(TAG, "onCheckedChanged listener");
-                Log.d(TAG, "check state: " + mHeliumButton.isChecked());
                 if (isChecked) {
                     mChipmunkButton.setChecked(false);
                     mFastFwdButton.setChecked(false);
@@ -241,16 +232,12 @@ public class EditFragment extends Fragment {
                     mBeepFx.setPitchShift(NO_PITCH_SHIFT);
                     mBeepFx.setTempo(NORMAL_TEMPO);
                 }
-                // TODO determine max and min shift
-                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+                ((RecordActivity) mActivity).onPlayPause();
             }
         });
         mDeepButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.d(TAG, "onCheckedChanged listener");
-                Log.d(TAG, "check state: " + mHeliumButton.isChecked());
-                // ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
                 if (isChecked) {
                     mChipmunkButton.setChecked(false);
                     mFastFwdButton.setChecked(false);
@@ -266,9 +253,7 @@ public class EditFragment extends Fragment {
                     mBeepFx.setPitchShift(NO_PITCH_SHIFT);
                     mBeepFx.setTempo(NORMAL_TEMPO);
                 }
-                //mReverse = !mReverse;
-                // TODO determine max and min shift
-                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+                ((RecordActivity) mActivity).onPlayPause();
             }
         });
         mEchoButton.setOnClickListener(new View.OnClickListener() {
@@ -281,9 +266,6 @@ public class EditFragment extends Fragment {
         mEchoButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.d(TAG, "onCheckedChanged listener");
-                Log.d(TAG, "check state: " + mEchoButton.isChecked());
-                // ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
                 if (isChecked) {
                     ((RecordActivity) mActivity).setEcho(true);
                     mBeepFx.setEcho(true);
@@ -292,9 +274,7 @@ public class EditFragment extends Fragment {
                     ((RecordActivity) mActivity).setEcho(false);
                     mBeepFx.setEcho(false);
                 }
-                //mReverse = !mReverse;
-                // TODO determine max and min shift
-                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+                ((RecordActivity) mActivity).onPlayPause();
             }
         });
         mEchoButton.setOnClickListener(new View.OnClickListener() {
@@ -307,8 +287,6 @@ public class EditFragment extends Fragment {
         mChurchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.d(TAG, "onCheckedChanged listener");
-                Log.d(TAG, "check state: " + mChurchButton.isChecked());
                 if (isChecked) {
                     ((RecordActivity) mActivity).setReverb(true);
                     mBeepFx.setReverb(true);
@@ -317,17 +295,12 @@ public class EditFragment extends Fragment {
                     ((RecordActivity) mActivity).setReverb(false);
                     mBeepFx.setReverb(false);
                 }
-                //mReverse = !mReverse;
-                // TODO determine max and min shift
-                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+                ((RecordActivity) mActivity).onPlayPause();
             }
         });
         mReverseButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.d(TAG, "onCheckedChanged listener");
-                Log.d(TAG, "check state: " + mReverseButton.isChecked());
-                // ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
                 if (isChecked) {
                     ((RecordActivity) mActivity).setReverse(true);
                     mBeepFx.setReverse(true);
@@ -336,16 +309,12 @@ public class EditFragment extends Fragment {
                     ((RecordActivity) mActivity).setReverse(false);
                     mBeepFx.setReverse(false);
                 }
-                //mReverse = !mReverse;
-                // TODO determine max and min shift
-                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+                ((RecordActivity) mActivity).onPlayPause();
             }
         });
         mRobotButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.d(TAG, "onCheckedChanged listener");
-                Log.d(TAG, "check state: " + mRobotButton.isChecked());
                 if (isChecked) {
                     ((RecordActivity) mActivity).setRobot(true);
                     mBeepFx.setRobot(true);
@@ -354,7 +323,7 @@ public class EditFragment extends Fragment {
                     ((RecordActivity) mActivity).setRobot(false);
                     mBeepFx.setRobot(false);
                 }
-                ((RecordActivity) mActivity).onPlayPause(mRecordFilePath, mIsPlaying, 0);
+                ((RecordActivity) mActivity).onPlayPause();
             }
         });
         mNextButton.setOnClickListener(new View.OnClickListener() {
@@ -366,6 +335,11 @@ public class EditFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((RecordActivity) mActivity).onFileChange(mRecordFilePath, 0, 0);
+    }
 
     private void handleNextButtonPress() {
         ((EditFragment.NextCallback) getActivity()).onEditNextButton(mBeepFx);
