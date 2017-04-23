@@ -328,5 +328,4 @@ public class CreateBoardActivity extends AppCompatActivity {
 
         mContext.startService(intent);
     }
-
 }

@@ -10,11 +10,14 @@ import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.util.UUID;
@@ -24,7 +27,7 @@ import java.util.UUID;
  */
 public class RecordActivity extends AppCompatActivity
         implements RecordFragment.RecordCallback, SaveFragment.SaveCallback,
-                    EditFragment.NextCallback {
+                    EditFragment.NextCallback, FragmentManager.OnBackStackChangedListener {
 
     private static final String TAG = RecordActivity.class.getSimpleName();
 
@@ -126,8 +129,18 @@ public class RecordActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ActionBar ab = getSupportActionBar();
+        if (ab != null) {
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setDisplayShowTitleEnabled(false);
+        }
 
         mContext = this;
+
+        //Listen for changes in the back stack
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
+        //Handle when activity is recreated like on orientation Change
+        // shouldDisplayHomeUp();
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -203,14 +216,45 @@ public class RecordActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         int backstackCount = getSupportFragmentManager().getBackStackEntryCount();
+        Log.d(TAG, "onBackPressed backstackCount: " + backstackCount);
             // Record and Save Fragments
             if (backstackCount <= 2) {
                 super.onBackPressed();
             }
             if (backstackCount == 3) {
                 finish();
-        }
+            }
     }
+
+    @Override
+    public void onBackStackChanged() {
+        // shouldDisplayHomeUp();
+    }
+    public void shouldDisplayHomeUp(){
+        //Enable Up button only if there are entries in the back stack
+        // boolean canback = getSupportFragmentManager().getBackStackEntryCount()>0;
+        // getSupportActionBar().setDisplayHomeAsUpEnabled(canback);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        int backstackCount = getSupportFragmentManager().getBackStackEntryCount();
+        if (backstackCount == 0 || backstackCount == 3) {
+            finish();
+        } else {
+            getSupportFragmentManager().popBackStack();
+        }
+        Log.d(TAG, "onSupportNavigateUp backstackCount: " + backstackCount);
+        //This method is called when the up button is pressed. Just the pop back stack.
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int backstackCount = getSupportFragmentManager().getBackStackEntryCount();
+        Log.d(TAG, "onOptionsItemSelected backstackCount: " + backstackCount);
+        return super.onOptionsItemSelected(item);
+    }
+
     private void onBufferCallback(float rmsValue) {
         RecordFragment recordFragment = (RecordFragment) getSupportFragmentManager().findFragmentByTag(RECORD_FRAGMENT_TAG);
         recordFragment.onBufferCallback(rmsValue);

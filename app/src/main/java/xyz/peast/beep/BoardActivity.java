@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
@@ -46,7 +47,8 @@ import xyz.peast.beep.data.BeepDbContract;
 import xyz.peast.beep.services.CompressImageUpdateDbService;
 import xyz.peast.beep.services.LoadDownsampledBitmapImageService;
 
-public class BoardActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class BoardActivity extends AppCompatActivity
+        implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = BoardActivity.class.getSimpleName();
     Context mContext;
@@ -110,6 +112,8 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
             ab.setDisplayHomeAsUpEnabled(true);
             ab.setDisplayShowTitleEnabled(false);
         }
+
+
 
         mBoardImage = (ImageView) findViewById(R.id.board_imageview);
         mImageSavedBroadcastReceiver = new BroadcastReceiver() {
@@ -398,16 +402,6 @@ public class BoardActivity extends AppCompatActivity implements LoaderManager.Lo
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
-                supportFinishAfterTransition();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
