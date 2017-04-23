@@ -156,10 +156,12 @@ public class Utility {
     public static int insertNewBoard(Context context, String boardName, Uri originalImageUri) {
 
         int rowInsertKey;
+        String imagePath = Utility.getRealPathFromURI(context, originalImageUri);
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(BeepDbContract.BoardEntry.COLUMN_NAME, boardName);
         contentValues.put(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED, Calendar.getInstance().getTimeInMillis());
+
         Uri uri = context.getContentResolver().insert(BeepDbContract.BoardEntry.CONTENT_URI, contentValues);
         Log.d(TAG, "Utility: Insert board into ContentProvider: " + uri.toString());
         rowInsertKey = (int) ContentUris.parseId(uri);
@@ -168,14 +170,12 @@ public class Utility {
             Intent serviceIntent = new Intent(context, CompressImageUpdateDbService.class);
             Bundle bundle = new Bundle();
             bundle.putString(Constants.INSERTED_RECORD_URI, uri.toString());
+            bundle.putString(Constants.ORIGINAL_IMAGE_FILE_PATH, imagePath);
             serviceIntent.putExtra(Constants.DB_TABLE_ENUM, Constants.DbTable.BOARD);
-
             serviceIntent.putExtras(bundle);
             context.startService(serviceIntent);
         }
         return rowInsertKey;
-
-
     }
 
     public static boolean hasReadExternalPermission(Context context) {

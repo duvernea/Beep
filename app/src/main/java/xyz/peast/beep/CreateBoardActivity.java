@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -37,9 +38,11 @@ import android.widget.Toast;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import java.io.File;
 import java.util.Calendar;
 
 import xyz.peast.beep.data.BeepDbContract;
+import xyz.peast.beep.services.CompressImageUpdateDbService;
 import xyz.peast.beep.services.LoadDownsampledBitmapImageService;
 
 /**
@@ -164,7 +167,8 @@ public class CreateBoardActivity extends AppCompatActivity {
             if (mImageUriString != null) {
                 mImageUri = Uri.parse(mImageUriString);
                 mImagePath = savedInstanceState.getString(SELECTED_IMAGE_PATH);
-                displayDownsampledImage();
+                // displayDownsampledImage();
+                loadImageView();
             }
         }
     }
@@ -212,11 +216,14 @@ public class CreateBoardActivity extends AppCompatActivity {
                 if (resultCode == Activity.RESULT_OK) {
                     mImageUri = data.getData();
                     mImagePath = Utility.getRealPathFromURI(mContext, mImageUri);
-                    displayDownsampledImage();
+                    Log.d(TAG, "mImagePath: " + mImagePath);
+                    // displayDownsampledImage();
+                    loadImageView();
                 }
         }
     }
-    // Insert beep into database
+
+    // Insert board into database
     void insertBoardContent() {
         String boardName = mBoardNameEditText.getText().toString();
         ContentValues contentValues = new ContentValues();
@@ -225,6 +232,7 @@ public class CreateBoardActivity extends AppCompatActivity {
         contentValues.put(BeepDbContract.BoardEntry.COLUMN_DATE_CREATED, currentTime);
 
         int insertedRow = Utility.insertNewBoard(mContext, boardName, mImageUri);
+
 
         Intent intent = new Intent(mContext, BoardActivity.class);
         intent.putExtra(MainActivity.BOARD_KEY_CLICKED, insertedRow);
@@ -320,12 +328,21 @@ public class CreateBoardActivity extends AppCompatActivity {
         }
     }
 
-    private void displayDownsampledImage() {
+//    private void displayDownsampledImage() {
+//        int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
+//        Intent intent = new Intent(mContext, LoadDownsampledBitmapImageService.class);
+//        intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(mImageHandler));
+//        intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
+//
+//        mContext.startService(intent);
+//    }
+    private void loadImageView() {
         int imageSize = (int) mContext.getResources().getDimension(R.dimen.image_size_save_activity);
+
         Intent intent = new Intent(mContext, LoadDownsampledBitmapImageService.class);
         intent.putExtra(Constants.IMAGE_MESSENGER, new Messenger(mImageHandler));
         intent.putExtra(Constants.IMAGE_MIN_SIZE, imageSize);
-
+        intent.putExtra(Constants.ORIGINAL_IMAGE_FILE_PATH, mImagePath);
         mContext.startService(intent);
     }
 }
