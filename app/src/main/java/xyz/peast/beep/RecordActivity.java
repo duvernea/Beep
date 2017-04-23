@@ -2,6 +2,7 @@ package xyz.peast.beep;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -14,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -217,12 +219,14 @@ public class RecordActivity extends AppCompatActivity
     public void onBackPressed() {
         int backstackCount = getSupportFragmentManager().getBackStackEntryCount();
         Log.d(TAG, "onBackPressed backstackCount: " + backstackCount);
-            // Record and Save Fragments
-            if (backstackCount <= 2) {
+            if (backstackCount == 0) {
+                displayDialog(backstackCount);
+            }
+            else if (backstackCount <= 2) {
                 super.onBackPressed();
             }
-            if (backstackCount == 3) {
-                finish();
+            else if (backstackCount == 3) {
+                displayDialog(backstackCount);
             }
     }
 
@@ -240,19 +244,42 @@ public class RecordActivity extends AppCompatActivity
     public boolean onSupportNavigateUp() {
         int backstackCount = getSupportFragmentManager().getBackStackEntryCount();
         if (backstackCount == 0 || backstackCount == 3) {
-            finish();
+            displayDialog(backstackCount);
         } else {
             getSupportFragmentManager().popBackStack();
         }
-        Log.d(TAG, "onSupportNavigateUp backstackCount: " + backstackCount);
         //This method is called when the up button is pressed. Just the pop back stack.
         return true;
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int backstackCount = getSupportFragmentManager().getBackStackEntryCount();
-        Log.d(TAG, "onOptionsItemSelected backstackCount: " + backstackCount);
         return super.onOptionsItemSelected(item);
+    }
+    private void displayDialog(int backstackCount) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+
+        if (backstackCount == 0) {
+            builder.setMessage("Your work will be lost")
+                    .setTitle("Cancel");
+        } else if (backstackCount == 3) {
+            builder.setMessage("Return to Main")
+                    .setTitle("Cancel Sharing?");
+        }
+        // Add the buttons
+        builder.setPositiveButton(R.string.dialog_positive_button, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                finish();
+            }
+        });
+        builder.setNegativeButton(R.string.dialog_negative_button, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void onBufferCallback(float rmsValue) {
