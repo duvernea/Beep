@@ -43,7 +43,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/beep_item_temp"
-                        android:scaleType="centerCrop"
                         android:contentDescription="@string/board_image_content_description"
                         />
                     <ImageView

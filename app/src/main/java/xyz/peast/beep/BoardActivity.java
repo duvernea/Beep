@@ -113,8 +113,6 @@ public class BoardActivity extends AppCompatActivity
             ab.setDisplayShowTitleEnabled(false);
         }
 
-
-
         mBoardImage = (ImageView) findViewById(R.id.board_imageview);
         mImageSavedBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -402,6 +400,16 @@ public class BoardActivity extends AppCompatActivity
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                supportFinishAfterTransition();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
