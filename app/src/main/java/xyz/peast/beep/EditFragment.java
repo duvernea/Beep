@@ -41,6 +41,7 @@ public class EditFragment extends Fragment {
     ToggleButton mReverseButton;
     ToggleButton mRobotButton;
     Button mNextButton;
+    Button mBackButton;
 
     private AdView mAdView;
 
@@ -67,12 +68,6 @@ public class EditFragment extends Fragment {
     private static final double EVIL_TEMPO = 0.7;
     private static final double FASTFWD_TEMPO = 2.0;
     private static final double SLOMO_TEMPO = 0.5;
-
-    @Override
-    public void onDestroyView() {
-        Log.d(TAG, "onDestroyView");
-        super.onDestroyView();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -105,6 +100,7 @@ public class EditFragment extends Fragment {
 //        mTrebleSeekBar = (SeekBar) rootView.findViewById(R.id.treble_seekBar);
 
         mNextButton = (Button) rootView.findViewById(R.id.next_button);
+        mBackButton = (Button) rootView.findViewById(R.id.back_button);
 
         mAdView = (AdView) rootView.findViewById(R.id.adview);
         AdRequest adRequest = new AdRequest.Builder()
@@ -330,6 +326,13 @@ public class EditFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 handleNextButtonPress();
+            }
+        });
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((RecordActivity) mActivity).onBackPressed();
+
             }
         });
         return rootView;
