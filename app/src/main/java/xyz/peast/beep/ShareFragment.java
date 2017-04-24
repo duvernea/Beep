@@ -153,12 +153,19 @@ public class ShareFragment extends Fragment {
                 ((RecordActivity) mActivity).setTempo(1.0);
                 ((RecordActivity) mActivity).turnFxOff();
 
+                ((RecordActivity) mActivity).onFileChange("", 0, 0);
+
                 mBeepMp3Path = Utility.getBeepPath(mContext, mBeepName);
+                Log.d(TAG, "mRecordFileName: " + mRecordFileName);
                 Uri fileUri = ShareUtility.encodeBeepGetUri(mContext, mRecordFileName,
                         mBeepName, mBeepMp3Path, mBeepEdited);
 
                 Intent share = new Intent(Intent.ACTION_SEND);
                 share.setType("audio/*");
+                String subject = "I created this on beep app!";
+                share.putExtra(Intent.EXTRA_SUBJECT, subject);
+                String body = "I call it \"" + mBeepName + "\"";
+                share.putExtra(Intent.EXTRA_TEXT, body);
                 share.putExtra(Intent.EXTRA_STREAM, fileUri);
                 startActivityForResult (share, SHARE_BEEP);
             }
@@ -195,8 +202,10 @@ public class ShareFragment extends Fragment {
 
             // Make sure the request was successful
             if (resultCode == Activity.RESULT_OK || resultCode == Activity.RESULT_CANCELED) {
-                File file = new File(mBeepMp3Path);
-                boolean deleted = file.delete();
+                // TODO - deleting file here seems to happen before the message is sent
+                // TODO - need to find a way to delete after send complete
+                //File file = new File(mBeepMp3Path);
+                // boolean deleted = file.delete();
 
                 Intent intent = new Intent(mContext, BoardActivity.class);
                 intent.putExtra(BoardActivity.LAST_ACTIVITY_UNIQUE_ID,
