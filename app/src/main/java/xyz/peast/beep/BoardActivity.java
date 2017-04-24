@@ -189,6 +189,7 @@ public class BoardActivity extends AppCompatActivity
                         getLoaderManager().restartLoader(BEEPS_LOADER, null, BoardActivity.this );
 
                         String path = Utility.getFullWavPath(mContext, audioFileName, beepEdited);
+                        Log.d(TAG, "wav path: " + path);
 
                         onFileChange(path, 0, 0);
                         mIsPlaying = !mIsPlaying;
@@ -338,8 +339,8 @@ public class BoardActivity extends AppCompatActivity
                 // Make sure the request was successful
                 Log.d(TAG, "onActivityResult SHARE_BEEP");
                 if (resultCode == Activity.RESULT_OK || resultCode == Activity.RESULT_CANCELED) {
-                    File file = new File(mBeepMp3Path);
-                    boolean deleted = file.delete();
+                    // File file = new File(mBeepMp3Path);
+                    // boolean deleted = file.delete();
                 }
                 break;
         }

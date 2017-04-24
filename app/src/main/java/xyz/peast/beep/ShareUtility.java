@@ -44,9 +44,11 @@ public class ShareUtility {
                                  String beepName, String beepPath, boolean beepEdited) {
 
         final String audioWavPath = Utility.getFullWavPath(context, recordFileName, beepEdited);
+        Log.d(TAG, "encodeBeepGetUri audioWavPath");
 
         // If encode on main thread takes < 1 second
         boolean encodeMp3Success = AudioUtility.encodeMp3(context, audioWavPath, beepName);
+        Log.d(TAG, "encodeMp3Success: " + encodeMp3Success);
 
         File beepMp3 = new File(beepPath);
 
