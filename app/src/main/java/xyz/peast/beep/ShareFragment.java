@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.facebook.FacebookSdk;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
