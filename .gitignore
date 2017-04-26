@@ -11,3 +11,5 @@ gradle.properties
 app/libs/*
 strings-private.xml
 /app/src/main/res/xml/track_app.xml
+app/.externalNativeBuild
+androidlame/.externalNativeBuild
