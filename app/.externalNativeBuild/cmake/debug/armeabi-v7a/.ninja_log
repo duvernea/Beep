@@ -1,4 +1,0 @@
-# ninja log v5
-1	119	0	CMakeFiles/SuperpoweredAudio.dir/Users/duverneay/AndroidStudioProjects/Capstone/beep/SuperpoweredSDK/Superpowered/AndroidIO/SuperpoweredAndroidAudioIO.cpp.o	dc8054033dc20554
-0	345	0	CMakeFiles/SuperpoweredAudio.dir/SuperpoweredAudio.cpp.o	f7e1c6eb6fe423c
-345	504	0	/Users/duverneay/AndroidStudioProjects/Capstone/beep/app/build/intermediates/cmake/debug/obj/armeabi-v7a/libSuperpoweredAudio.so	4478134c5b858191
