@@ -131,7 +131,7 @@ void SuperpoweredIntToFloat(int *input, float *output, unsigned int numberOfSamp
 void SuperpoweredFloatToInt(float *input, int *output, unsigned int numberOfSamples, unsigned int numChannels = 2);
 
 /**
- @fn SuperpoweredFloatToShortInt(float *input, short int *output, unsigned int numberOfSamples);
+ @fn SuperpoweredFloatToShortInt(float *input, short int *output, unsigned int numberOfSamples, unsigned int numChannels);
  @brief Converts 32-bit float input to 16-bit signed integer output.
 
  @param input Input buffer.
@@ -142,7 +142,7 @@ void SuperpoweredFloatToInt(float *input, int *output, unsigned int numberOfSamp
 void SuperpoweredFloatToShortInt(float *input, short int *output, unsigned int numberOfSamples, unsigned int numChannels = 2);
 
 /**
- @fn SuperpoweredFloatToShortInt(float *inputLeft, float *inputRight, short int *output, unsigned int numberOfSamples);
+ @fn SuperpoweredFloatToShortIntInterleave(float *inputLeft, float *inputRight, short int *output, unsigned int numberOfSamples);
  @brief Converts two 32-bit float input channels to stereo interleaved 16-bit signed integer output.
 
  @param inputLeft 32-bit input for the left side. Should be numberOfSamples + 8 big minimum.
@@ -150,7 +150,7 @@ void SuperpoweredFloatToShortInt(float *input, short int *output, unsigned int n
  @param output Stereo interleaved 16-bit output. Should be numberOfSamples * 2 + 16 big minimum.
  @param numberOfSamples The number of samples to process.
  */
-void SuperpoweredFloatToShortInt(float *inputLeft, float *inputRight, short int *output, unsigned int numberOfSamples);
+void SuperpoweredFloatToShortIntInterleave(float *inputLeft, float *inputRight, short int *output, unsigned int numberOfSamples);
 
 /**
  @fn SuperpoweredShortIntToFloat(short int *input, float *output, unsigned int numberOfSamples, float *peaks);
@@ -184,6 +184,17 @@ void SuperpoweredShortIntToFloat(short int *input, float *output, unsigned int n
  @param numberOfSamples The number of samples to process.
  */
 void SuperpoweredInterleave(float *left, float *right, float *output, unsigned int numberOfSamples);
+
+/**
+ @fn SuperpoweredInterleaveAdd(float *left, float *right, float *output, unsigned int numberOfSamples);
+ @brief Makes an interleaved audio from two input channels and adds the result to the output.
+
+ @param left Input for left channel.
+ @param right Input for right channel.
+ @param output Interleaved output.
+ @param numberOfSamples The number of samples to process.
+ */
+void SuperpoweredInterleaveAdd(float *left, float *right, float *output, unsigned int numberOfSamples);
 
 /**
  @fn SuperpoweredInterleaveAndGetPeaks(float *left, float *right, float *output, unsigned int numberOfSamples, float *peaks);
@@ -303,8 +314,38 @@ void SuperpoweredCrossMono2(float *left, float *right, float *output0, float *ou
  */
 void SuperpoweredCrossStereo(float *inputA, float *inputB, float *output, float gainStart[4], float gainEnd[4], unsigned int numberOfSamples);
 
+/**
+ @fn SuperpoweredAdd1(float *input, float *output, unsigned int numberOfValues)
+ @brief Adds input to output.
+ 
+ @param input Input data.
+ @param output Output data.
+ @param numberOfValues The length of input.
+ */
 void SuperpoweredAdd1(float *input, float *output, unsigned int numberOfValues);
+
+/**
+ @fn SuperpoweredAdd2(float *inputA, float *inputB, float *output, unsigned int numberOfValues)
+ @brief Adds two inputs to an output.
+
+ @param inputA Input data.
+ @param inputB Input data.
+ @param output Output data.
+ @param numberOfValues The length of input.
+ */
 void SuperpoweredAdd2(float *inputA, float *inputB, float *output, unsigned int numberOfValues);
+
+/**
+ @fn SuperpoweredAdd4(float *inputA, float *inputB, float *inputC, float *inputD, float *output, unsigned int numberOfValues)
+ @brief Adds 4 inputs to an output.
+
+ @param inputA Input data.
+ @param inputB Input data.
+ @param inputC Input data.
+ @param inputD Input data.
+ @param output Output data.
+ @param numberOfValues The length of input.
+ */
 void SuperpoweredAdd4(float *inputA, float *inputB, float *inputC, float *inputD, float *output, unsigned int numberOfValues);
 
 /**

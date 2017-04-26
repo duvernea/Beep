@@ -1,0 +1,23 @@
+# ninja log v5
+2	795	0	CMakeFiles/androidlame.dir/src/main/jni/AndroidLame.c.o	2b766bed60ef1a37
+6	1322	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/fft.c.o	648d41f5215710fb
+1322	1401	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/mpglib_interface.c.o	17290dd949fc6e8a
+9	1576	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/gain_analysis.c.o	b77bcfdc1dc3824
+5	1817	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/encoder.c.o	b0e9071e68b154d6
+1576	2261	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/presets.c.o	30263978b6009161
+1401	3527	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/newmdct.c.o	fd730a70aeb1876b
+795	4828	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/lame.c.o	6ab07541b331f1f2
+4828	5138	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/reservoir.c.o	285954a0a559a654
+10	5223	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/id3tag.c.o	5fcfa20bfbb14c64
+5223	5449	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/tables.c.o	1fdb7ffb2f5dfd7c
+3527	6666	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/quantize_pvt.c.o	6e0d96f5f3cdd14
+3	7244	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/bitstream.c.o	6d222f3fe2528a4c
+5138	7397	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/set_get.c.o	3afbb47cc5b75cd7
+2261	7902	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/quantize.c.o	6b67b191c822ae8b
+7902	8047	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/version.c.o	71f09b528b1f861b
+6666	8356	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/util.c.o	9f00c9cd1b8004e8
+7397	8665	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/VbrTag.c.o	6d0238143182ed3f
+5450	9064	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/takehiro.c.o	af26e72dcf23820f
+1818	9379	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/psymodel.c.o	763dc380f4f934e1
+7244	10461	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/vbrquantize.c.o	2ebaa26d1158bf83
+10461	10687	0	../../../../build/intermediates/cmake/release/obj/mips64/libandroidlame.so	45993ef09c5c6d60

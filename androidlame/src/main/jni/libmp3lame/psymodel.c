@@ -161,6 +161,7 @@ blocktype_d[2]        block type to use for previous granule
 #else
 #define  LN_TO_LOG10  0.2302585093
 #endif
+#include <stdlib.h>
 
 
 /*

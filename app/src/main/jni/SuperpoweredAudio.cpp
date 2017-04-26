@@ -36,7 +36,7 @@ static void playerEventCallbackA(void *clientData, SuperpoweredAdvancedAudioPlay
     if (event == SuperpoweredAdvancedAudioPlayerEvent_EOF) {
 
         SuperpoweredAdvancedAudioPlayer *playerA = *((SuperpoweredAdvancedAudioPlayer **)clientData);
-        __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio EOF", "Native");
+        // __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio EOF", "Native");
 
         playerA->pause(0, 0);
         JNIEnv *env;
@@ -51,7 +51,12 @@ static void playerEventCallbackA(void *clientData, SuperpoweredAdvancedAudioPlay
     }
 }
 static bool audioProcessing(void *clientdata, short int *audioIO, int numberOfSamples, int __unused samplerate) {
-	return ((SuperpoweredAudio *)clientdata)->process(audioIO, (unsigned int)numberOfSamples);
+   char  a[15];
+    sprintf(a, "%i", numberOfSamples);
+
+    // __android_log_write(ANDROID_LOG_DEBUG, "num samples:", a);
+
+    return ((SuperpoweredAudio *)clientdata)->process(audioIO, (unsigned int)numberOfSamples);
 
 
 }
@@ -77,11 +82,20 @@ SuperpoweredAudio::SuperpoweredAudio(unsigned int samplerate, unsigned int buffe
     //playerA->open(path, fileAoffset, fileAlength);
 
     playerA->syncMode = SuperpoweredAdvancedAudioPlayerSyncMode_None;
+
+
+//    maxPercent	The maximum tempo change for pitch bend, should be between 0.01f and 0.3f (1% and 30%).
+//            bendStretch	Use time-stretching for bending or not (false makes it "audible").
+//    faster	Playback speed change direction.
+//            holdMs	How long to maintain the bended state. A value >= 1000 will hold until endContinuousPitchBend is called.
+    playerA->pitchBend	(.3f, true, false, 999);
+
+
     reverse = false;
 
     const char *temp = "/data/data/xyz.peast.beep/files/temp.wav";
     recorder = new SuperpoweredRecorder(temp, samplerate);
-    roll = new SuperpoweredRoll(samplerate);
+    // roll = new SuperpoweredRoll(samplerate);
     //filter->setResonantParameters(floatToFrequency(1.0f - .5f), 0.2f);
     // 3 Band EQ
     equalizer = new Superpowered3BandEQ(samplerate);
@@ -89,6 +103,17 @@ SuperpoweredAudio::SuperpoweredAudio(unsigned int samplerate, unsigned int buffe
     equalizer->bands[0] = 1.0f;
     equalizer->bands[1] = 1.0f;
     equalizer->bands[1] = 1.0f;
+
+    // roll = new SuperpoweredRoll(samplerate);
+
+//    wet	Limited to >= 0.0f and <= 1.0f.
+//            bpm	Limited to >= 60.0f and <= 240.0f
+//    beats	Limit: 1/64 beats to 4 beats. (>= 0.015625f and <= 4.0f)
+//
+//    roll->wet = 1.0f;
+//    roll->bpm =240.0f;
+//    roll->beats = 1.0f;
+//    roll->enable(true);
 
     reverb = new SuperpoweredReverb(samplerate);
     reverb->setMix(0.5f);
@@ -135,7 +160,7 @@ SuperpoweredAudio::SuperpoweredAudio(unsigned int samplerate, unsigned int buffe
 }
 
 SuperpoweredAudio::~SuperpoweredAudio() {
-    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "Deconstructor run..");
+    // __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "Deconstructor run..");
 
     delete audioSystem;
     delete playerA;
@@ -160,16 +185,16 @@ void SuperpoweredAudio::setTempo(double tempo) {
     playerA->setTempo (tempo, true);
 }
 void SuperpoweredAudio::setReverse(bool reverse) {
-    __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "set reverse %d\n", reverse);
+    // __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "set reverse %d\n", reverse);
     myAudio->reverse = reverse;
 }
 void SuperpoweredAudio::setReverb(bool enableReverb) {
-    __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "set reverb %d\n", enableReverb);
+    // __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "set reverb %d\n", enableReverb);
     myAudio->enableReverb = enableReverb;
     reverb->enable(enableReverb);
 }
 void SuperpoweredAudio::setRobot(bool enableRobot) {
-    __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "set robot %d\n", enableRobot);
+    // __android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "set robot %d\n", enableRobot);
     flanger->enable(enableRobot);
     // TODO
     // echo
@@ -199,13 +224,13 @@ void SuperpoweredAudio::onPlayPause() {
     }
 }
 void SuperpoweredAudio::onFxSelect(int value) {
-	__android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", "FXSEL %i", value);
+	// __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", "FXSEL %i", value);
 	activeFx = (unsigned char)value;
 }
 
 void SuperpoweredAudio::onFxOff() {
     filter->enable(false);
-    roll->enable(false);
+    // roll->enable(false);
     flanger->enable(false);
 }
 void SuperpoweredAudio::setEcho(bool echoSetting) {
@@ -267,13 +292,13 @@ char* SuperpoweredAudio::createReverseWav(const char *path) {
     strcat(reversePathWithExtension, ".wav");
 
     // Open the input file
-    __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio reverse original", pathWithExtension);
-    __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio reverse edited", reversePathWithExtension);
+    // __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio reverse original", pathWithExtension);
+    // __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio reverse edited", reversePathWithExtension);
 
     SuperpoweredDecoder *decoder = new SuperpoweredDecoder();
     const char *openError = decoder->open(pathWithExtension, false, 0, 0);
     if (openError) {
-        __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", openError);
+        // __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", openError);
         delete decoder;
         return NULL;
     }
@@ -349,16 +374,15 @@ void SuperpoweredAudio::createWav(const char *path, BeepFx beepFx) {
     strcat(editPathWithExtension, ".wav");
 
     SuperpoweredDecoder *decoder = new SuperpoweredDecoder();
-    // TODO - use actual file name
+
     const char *openError = decoder->open(pathWithExtension, false, 0, 0);
     if (openError) {
-        __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", openError);
+        // __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", openError);
         delete decoder;
         return;
     }
-    __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio pathoriginal", pathWithExtension);
-    __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio pathedited", editPathWithExtension);
-
+    // __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio pathoriginal", pathWithExtension);
+    // __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio pathedited", editPathWithExtension);
 
     // Create the output WAV file.
     FILE *fd = createWAV(editPathWithExtension, decoder->samplerate, 2);
@@ -366,9 +390,6 @@ void SuperpoweredAudio::createWav(const char *path, BeepFx beepFx) {
     /* Need to use variable size buffer chains for time stretching */
     SuperpoweredTimeStretching *timeStretch = new SuperpoweredTimeStretching(decoder->samplerate);
     float rate = (float) beepFx.tempo;
-    char rate_float[10];
-    sprintf(rate_float, "%f", rate);
-    __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio rate float", rate_float);
 
     timeStretch->setRateAndPitchShift(rate, beepFx.pitchShift);
     // This buffer list will receive the time-stretched samples.
@@ -406,7 +427,15 @@ void SuperpoweredAudio::createWav(const char *path, BeepFx beepFx) {
                 // Get pointer to the output samples.
                 int numSamples = 0;
                 float *timeStretchedAudio = (float *) outputBuffers->nextSliceItem(&numSamples);
+                // float *buffer = (float *) malloc(numSamples * 2 * sizeof(float) + 16384);
+                // float *buffer2 = (float *) malloc(numSamples * 2 * sizeof(float) + 16384);
+
                 if (!timeStretchedAudio) break;
+
+                equalizer->process(timeStretchedAudio, timeStretchedAudio, numSamples);
+                flanger->process(timeStretchedAudio, timeStretchedAudio, numSamples);
+                reverb->process(timeStretchedAudio, timeStretchedAudio, numSamples);
+                echo->process(timeStretchedAudio, timeStretchedAudio, numSamples);
 
                 // Convert the time stretched PCM samples from 32-bit floating point to 16-bit integer.
                 SuperpoweredFloatToShortInt(timeStretchedAudio, intBuffer, numSamples);
@@ -435,15 +464,12 @@ bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples)
     if (isRecording) {
         // short int -32,768 to 32,767
         short int *localAudioPointer = output;
-        float RMS =0;
-        //SuperpoweredFloatToShortInt(recordBuffer, output, numberOfSamples);
-        for (int i=0; i<numberOfSamples; i+=1) {
-            //__android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "test int = %d", i);
-            //__android_log_print(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "float = %f", *localAudioPointer);
-            RMS += (*localAudioPointer) * (*localAudioPointer);
-            localAudioPointer+=1;
-        }
-        RMS = sqrtl(RMS / numberOfSamples);
+        // float RMS =0;
+//        for (int i=0; i<numberOfSamples; i+=1) {
+//            // RMS += (*localAudioPointer) * (*localAudioPointer);
+//            // localAudioPointer+=1;
+//        }
+        // RMS = sqrtl(RMS / numberOfSamples);
 
         //char array[40];
         //sprintf(array, "%f", RMS);
@@ -454,9 +480,9 @@ bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples)
         // callback to the android activity to update state
         recordLevelCallback = (env)->GetMethodID(activityClass, "onBufferCallback", "(F)V");
 
-        if (env != NULL && activityObj != NULL && recordLevelCallback != NULL) {
-            (env)->CallVoidMethod(activityObj, recordLevelCallback, (jfloat) RMS);
-        }
+//        if (env != NULL && activityObj != NULL && recordLevelCallback != NULL) {
+//            (env)->CallVoidMethod(activityObj, recordLevelCallback, (jfloat) RMS);
+//        }
         jvm->DetachCurrentThread();
 
         //__android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredAudio", "process record start");
@@ -486,6 +512,9 @@ bool SuperpoweredAudio::process(short int *output, unsigned int numberOfSamples)
         silence = !playerA->process(stereoBuffer, false, numberOfSamples, volA, 0.0f, -1);
 
         if (!silence) {
+            // __android_log_print(ANDROID_LOG_VERBOSE, "SuperpoweredExample", "process");
+
+            // roll->process(stereoBuffer, stereoBuffer, numberOfSamples);
             equalizer->process(stereoBuffer, stereoBuffer, numberOfSamples);
             flanger->process(stereoBuffer, stereoBuffer, numberOfSamples);
             reverb->process(stereoBuffer, stereoBuffer, numberOfSamples);
@@ -503,7 +532,7 @@ void SuperpoweredAudio::setRecordFileName(std::string filename) {
 }
 
 void SuperpoweredAudio::toggleRecord(bool record) {
-    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "toggleRecord called..");
+    // __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "toggleRecord called..");
 
 //    JNIEnv * env;
 //    bool attached = false;
@@ -536,17 +565,17 @@ void SuperpoweredAudio::toggleRecord(bool record) {
     //pthread_mutex_lock(&mutex);
     isRecording = record;
     if (isRecording) {
-        __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "toggleRecord startRecord");
+        // __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "toggleRecord startRecord");
 
         //playerA->open(musicpath, musicOffset, musicLength);
         //playerA->play(false);
         //const char *path = "/data/data/xyz.peast.beep/files/testing.wav";
         const char *b = recordFileName.c_str();
-        __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", b);
+        // __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", b);
         recorder->start(b);
     }
     else {
-        __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "toggleRecord stopRecord");
+        // __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", "toggleRecord stopRecord");
 
         playerA->pause();
         recorder->stop();
@@ -584,8 +613,6 @@ extern "C" JNIEXPORT
 void Java_xyz_peast_beep_BoardActivity_onPlayerPause(JNIEnv * __unused javaEnvironment, jobject __unused obj) {
     myAudio->onPlayerPause();
 }
-
-
 
 //onFxSelect
 extern "C" JNIEXPORT
@@ -639,7 +666,7 @@ void Java_xyz_peast_beep_RecordActivity_onFileChange(JNIEnv * __unused javaEnvir
     const char *path = javaEnvironment->GetStringUTFChars(apkPath, JNI_FALSE);
     myAudio->onFileChange(path, fileOffset, fileLength);
     javaEnvironment->ReleaseStringUTFChars(apkPath, path);
-    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", path);
+    // __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", path);
 
 }
 // setPitchShift
@@ -713,16 +740,16 @@ void Java_xyz_peast_beep_RecordActivity_createWav(JNIEnv * javaEnvironment, jobj
 
     char c[10]; //becuase double is 8 bytes in GCC compiler but take 10 for safety
     sprintf(c , "%lf" , beepFx.tempo);
-    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio createWAV tempo", c);
+    // __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio createWAV tempo", c);
 
     char d[10]; //becuase double is 8 bytes in GCC compiler but take 10 for safety
     sprintf(d , "%i" , beepFx.pitchShift);
-    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio createWAV pitchshift", d);
+    // __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio createWAV pitchshift", d);
 
 
     myAudio->createWav(path, beepFx);
     // myAudio->createReverseWav(path);
-    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio createWAV path", path);
+    // __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio createWAV path", path);
 
     javaEnvironment->ReleaseStringUTFChars(filePath, path);
 }
@@ -803,7 +830,7 @@ void setup(JNIEnv *javaEnvironment, jobject thisObj) {
     mid = javaEnvironment->GetMethodID(cls, "getName", "()Ljava/lang/String;");
     jstring strObj = (jstring)javaEnvironment->CallObjectMethod(clsObj, mid);
     const char* str = javaEnvironment->GetStringUTFChars(strObj, NULL);
-    __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", str);
+    // __android_log_write(ANDROID_LOG_DEBUG, "SuperpoweredAudio", str);
     javaEnvironment->ReleaseStringUTFChars(strObj, str);
  //*********************************************************************************/
 

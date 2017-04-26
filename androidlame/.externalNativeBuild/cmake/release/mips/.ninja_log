@@ -1,0 +1,23 @@
+# ninja log v5
+1	511	0	CMakeFiles/androidlame.dir/src/main/jni/AndroidLame.c.o	df8de112bd97a398
+4	788	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/fft.c.o	f40080a22354538b
+788	865	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/mpglib_interface.c.o	be71c1bf113e66e6
+7	1098	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/gain_analysis.c.o	5fd52335a5a1d8e0
+3	1229	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/encoder.c.o	b9ab25a8e77922fe
+1098	1659	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/presets.c.o	adb82019b631e762
+865	2586	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/newmdct.c.o	bc3901c6d4befd47
+511	4154	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/lame.c.o	74fcf62e6dd9edb7
+4154	4435	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/reservoir.c.o	947ed0a5406a8929
+9	4480	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/id3tag.c.o	4475f93547c05c44
+4480	4678	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/tables.c.o	c5d5403b3f152115
+2586	5084	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/quantize_pvt.c.o	79dff1f6e066c915
+1	6239	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/bitstream.c.o	dd45d4fbfb080a73
+5085	6344	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/util.c.o	8ae82a3963857726
+1660	6484	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/quantize.c.o	8169ae3bc8d88105
+4435	6663	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/set_get.c.o	83997ff3d91b6710
+6484	6701	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/version.c.o	a1b7d2ea4b334451
+6344	7422	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/VbrTag.c.o	661d599a05be1423
+1229	7454	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/psymodel.c.o	8282a661a6957b3c
+4678	7620	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/takehiro.c.o	35306e02b900da26
+6239	8711	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/vbrquantize.c.o	75f0dde1481e1503
+8711	8866	0	../../../../build/intermediates/cmake/release/obj/mips/libandroidlame.so	7d33003062a6725e

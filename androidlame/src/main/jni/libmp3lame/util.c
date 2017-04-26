@@ -949,7 +949,7 @@ disable_FPE(void)
 #define LOG2_SIZE       (512)
 #define LOG2_SIZE_L2    (9)
 
-static ieee754_float32_t log_table[LOG2_SIZE + 1];
+static float log_table[LOG2_SIZE + 1];
 
 
 
@@ -964,19 +964,19 @@ init_log_table(void)
 
     if (!init) {
         for (j = 0; j < LOG2_SIZE + 1; j++)
-            log_table[j] = log(1.0f + j / (ieee754_float32_t) LOG2_SIZE) / log(2.0f);
+            log_table[j] = log(1.0f + j / (float) LOG2_SIZE) / log(2.0f);
     }
     init = 1;
 }
 
 
 
-ieee754_float32_t
-fast_log2(ieee754_float32_t x)
+float
+fast_log2(float x)
 {
-    ieee754_float32_t log2val, partial;
+    float log2val, partial;
     union {
-        ieee754_float32_t f;
+        float f;
         int     i;
     } fi;
     int     mantisse;

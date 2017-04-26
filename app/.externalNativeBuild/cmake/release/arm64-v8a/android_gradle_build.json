@@ -1,0 +1,47 @@
+
+{
+	"buildFiles" : 
+	[
+		"/Users/duverneay/AndroidStudioProjects/Capstone/beep/app/src/main/jni/CMakeLists.txt"
+	],
+	"cleanCommands" : 
+	[
+		"/Users/duverneay/Library/Android/sdk/cmake/3.6.3155560/bin/cmake --build /Users/duverneay/AndroidStudioProjects/Capstone/beep/app/.externalNativeBuild/cmake/release/arm64-v8a --target clean"
+	],
+	"cppFileExtensions" : [ "cpp" ],
+	"libraries" : 
+	{
+		"SuperpoweredAudio-Release-arm64-v8a" : 
+		{
+			"abi" : "arm64-v8a",
+			"artifactName" : "SuperpoweredAudio",
+			"buildCommand" : "/Users/duverneay/Library/Android/sdk/cmake/3.6.3155560/bin/cmake --build /Users/duverneay/AndroidStudioProjects/Capstone/beep/app/.externalNativeBuild/cmake/release/arm64-v8a --target SuperpoweredAudio",
+			"buildType" : "release",
+			"files" : 
+			[
+				
+				{
+					"flags" : "  -target aarch64-none-linux-android -gcc-toolchain /Users/duverneay/Library/Android/sdk/android-ndk-r12b/toolchains/aarch64-linux-android-4.9/prebuilt/darwin-x86_64 --sysroot=/Users/duverneay/Library/Android/sdk/android-ndk-r12b/platforms/android-21/arch-arm64  -DSuperpoweredAudio_EXPORTS -I/Users/duverneay/AndroidStudioProjects/Capstone/beep/app/src/main/jni/src/main/jni -I/Users/duverneay/AndroidStudioProjects/Capstone/beep/SuperpoweredSDK/Superpowered -isystem /Users/duverneay/Library/Android/sdk/android-ndk-r12b/sources/cxx-stl/gnu-libstdc++/4.9/include -isystem /Users/duverneay/Library/Android/sdk/android-ndk-r12b/sources/cxx-stl/gnu-libstdc++/4.9/libs/arm64-v8a/include -isystem /Users/duverneay/Library/Android/sdk/android-ndk-r12b/sources/cxx-stl/gnu-libstdc++/4.9/include/backward  -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -fno-exceptions -fno-rtti -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -fno-exceptions -fno-rtti -fsigned-char -I../SuperpoweredSDK/Superpowered -O2 -DNDEBUG -O2 -DNDEBUG  -fPIC    -c ",
+					"src" : "/Users/duverneay/AndroidStudioProjects/Capstone/beep/app/src/main/jni/SuperpoweredAudio.cpp",
+					"workingDirectory" : "/Users/duverneay/AndroidStudioProjects/Capstone/beep/app/.externalNativeBuild/cmake/release/arm64-v8a"
+				},
+				
+				{
+					"flags" : "  -target aarch64-none-linux-android -gcc-toolchain /Users/duverneay/Library/Android/sdk/android-ndk-r12b/toolchains/aarch64-linux-android-4.9/prebuilt/darwin-x86_64 --sysroot=/Users/duverneay/Library/Android/sdk/android-ndk-r12b/platforms/android-21/arch-arm64  -DSuperpoweredAudio_EXPORTS -I/Users/duverneay/AndroidStudioProjects/Capstone/beep/app/src/main/jni/src/main/jni -I/Users/duverneay/AndroidStudioProjects/Capstone/beep/SuperpoweredSDK/Superpowered -isystem /Users/duverneay/Library/Android/sdk/android-ndk-r12b/sources/cxx-stl/gnu-libstdc++/4.9/include -isystem /Users/duverneay/Library/Android/sdk/android-ndk-r12b/sources/cxx-stl/gnu-libstdc++/4.9/libs/arm64-v8a/include -isystem /Users/duverneay/Library/Android/sdk/android-ndk-r12b/sources/cxx-stl/gnu-libstdc++/4.9/include/backward  -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -fno-exceptions -fno-rtti -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -fno-exceptions -fno-rtti -fsigned-char -I../SuperpoweredSDK/Superpowered -O2 -DNDEBUG -O2 -DNDEBUG  -fPIC    -c ",
+					"src" : "/Users/duverneay/AndroidStudioProjects/Capstone/beep/SuperpoweredSDK/Superpowered/AndroidIO/SuperpoweredAndroidAudioIO.cpp",
+					"workingDirectory" : "/Users/duverneay/AndroidStudioProjects/Capstone/beep/app/.externalNativeBuild/cmake/release/arm64-v8a"
+				}
+			],
+			"output" : "/Users/duverneay/AndroidStudioProjects/Capstone/beep/app/build/intermediates/cmake/release/obj/arm64-v8a/libSuperpoweredAudio.so",
+			"toolchain" : "1685278670520175468"
+		}
+	},
+	"toolchains" : 
+	{
+		"1685278670520175468" : 
+		{
+			"cCompilerExecutable" : "/Users/duverneay/Library/Android/sdk/android-ndk-r12b/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang",
+			"cppCompilerExecutable" : "/Users/duverneay/Library/Android/sdk/android-ndk-r12b/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++"
+		}
+	}
+}

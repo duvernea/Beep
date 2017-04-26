@@ -1,0 +1,23 @@
+# ninja log v5
+1	685	0	CMakeFiles/androidlame.dir/src/main/jni/AndroidLame.c.o	9c3f0feecbcf18ef
+11	1272	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/fft.c.o	22d34adde9d4efc8
+1273	1328	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/mpglib_interface.c.o	8408ff5b028258c3
+15	1752	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/gain_analysis.c.o	60eeae6c7cf6a1e0
+7	2347	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/encoder.c.o	9f876f865d0a6f59
+1752	2523	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/presets.c.o	2dc3366e9034f794
+1328	4203	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/newmdct.c.o	ce624419fcfcc92d
+685	5352	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/lame.c.o	8226c69d934a730c
+5352	5663	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/reservoir.c.o	5626823a93d9e298
+20	5949	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/id3tag.c.o	1cbd8e239c888475
+5950	6084	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/tables.c.o	3ad62895db2e289b
+4204	7343	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/quantize_pvt.c.o	9b5518c490a5a916
+3	7460	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/bitstream.c.o	7ed79f50bf0583a2
+5663	7561	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/set_get.c.o	c92c144cdd60e1a2
+2523	8581	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/quantize.c.o	5325178cf16ff30d
+8581	8720	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/version.c.o	b4854fc72dfc8e07
+7562	8811	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/VbrTag.c.o	1b2f2498cede824f
+7344	9011	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/util.c.o	aafc0efacc0009f5
+6084	9767	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/takehiro.c.o	d97655239ca3e0e5
+2348	10455	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/psymodel.c.o	80ae07d3ed942ec4
+7460	11901	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/vbrquantize.c.o	203ef6f57a528803
+11903	12054	0	../../../../build/intermediates/cmake/release/obj/arm64-v8a/libandroidlame.so	1577de261fea279

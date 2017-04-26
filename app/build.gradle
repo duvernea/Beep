@@ -1,89 +1,42 @@
-apply plugin: 'com.android.model.application'
+apply plugin: 'com.android.application'
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 def superpowered_sdk_path = properties.getProperty('superpowered.dir')
+
 def signConf // signing configuration for release build
 Properties signConfProperties = new Properties()
 signConfProperties.load(project.rootProject.file('gradle.properties').newDataInputStream())
 
-model {
-    android.signingConfigs {
-        create("test") {
-            storeFile = signConfProperties.getProperty("RELEASE_STORE_FILE")
-            storePassword = signConfProperties.getProperty("RELEASE_STORE_PASSWORD")
-            keyAlias = signConfProperties.getProperty("RELEASE_KEY_ALIAS")
-            keyPassword = signConfProperties.getProperty("RELEASE_KEY_PASSWORD")
-            storeType = "jks"
-            signConf = it
-        }
-    }
-    android.buildTypes {
-        release {
-            signingConfig = signConf
-        }
-    }
+android { // main settings for your application
+    compileSdkVersion = 25
+    buildToolsVersion = "25.0.2"
 
-    repositories {
-        libs(PrebuiltLibraries) {
-            superpowered { // this is where you declare the "superpowered" static library
-                headers.srcDir "${superpowered_sdk_path}"
-                binaries.withType(StaticLibraryBinary) { // attaching library files to each platform
-                    def platformName = targetPlatform.getName()
-                    if (platformName == "armeabi-v7a") {
-                        staticLibraryFile = file("${superpowered_sdk_path}/libSuperpoweredAndroidARM.a")
-                    } else if (platformName == "arm64-v8a") {
-                        staticLibraryFile = file("${superpowered_sdk_path}/libSuperpoweredAndroidARM64.a")
-                    } else if (platformName == "x86") {
-                        staticLibraryFile = file("${superpowered_sdk_path}/libSuperpoweredAndroidX86.a")
-                    } else if (platformName == "x86_64") {
-                        staticLibraryFile = file("${superpowered_sdk_path}/libSuperpoweredAndroidX86_64.a")
-                    }
-                }
+    defaultConfig {
+        applicationId "xyz.peast.beep"
+        minSdkVersion 16
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64' // these platforms cover 99% percent of all Android devices
+        }
+        externalNativeBuild {
+            cmake {
+                arguments '-DANDROID_PLATFORM=android-16', '-DANDROID_TOOLCHAIN=clang', '-DANDROID_ARM_NEON=TRUE', '-DANDROID_STL=gnustl_static', "-DPATH_TO_SUPERPOWERED:STRING=${superpowered_sdk_path}"
+                cFlags '-O3', '-fsigned-char' // full optimization, char data type is signed
+                cppFlags '-fsigned-char', "-I${superpowered_sdk_path}"
             }
         }
     }
-    android {
-        compileSdkVersion 25
-        buildToolsVersion "25.0.0"
-
-        defaultConfig {
-            applicationId "xyz.peast.beep"
-            minSdkVersion.apiLevel 16
-            targetSdkVersion.apiLevel 23
-
-            versionCode 1
-            versionName "1.0"
-            testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/jni']
         }
-        buildTypes {
-            release {
-                minifyEnabled false
-                proguardFiles.add(file('proguard-rules.pro'))
-            }
-        }
-
     }
-    android.ndk { // your application's native layer parameters
-        moduleName = "SuperpoweredAudio"
-        platformVersion = 25
-        // this will not limit it to run on older devices, it's just the NDK platform to build with
-        stl = "stlport_static"
-        CFlags.addAll(["-O3", "-fsigned-char"]) // full optimization, char data type is signed
-        cppFlags.addAll(["-fsigned-char", "-I${superpowered_sdk_path}".toString()])
-        ldLibs.addAll(["log", "android", "OpenSLES"])
-        // load these libraries: log, android, OpenSL ES (for audio)
-        abiFilters.addAll(["armeabi-v7a", "arm64-v8a", "x86", "x86_64"])
-        // these platforms cover 99% percent of all Android devices
-    }
-    android.sources.main.jni {
-        source {
-            srcDir "jni"
-            srcDir "${superpowered_sdk_path}/AndroidIO"
-        }
-        dependencies {
-            library "superpowered" linkage "static"
-            // this is where you attach the "superpowered" static library to your app
+    externalNativeBuild {
+        cmake {
+            path 'src/main/jni/CMakeLists.txt'
         }
     }
 }

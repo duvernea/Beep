@@ -1,0 +1,23 @@
+# ninja log v5
+1	506	0	CMakeFiles/androidlame.dir/src/main/jni/AndroidLame.c.o	5f614158cbd7f17e
+5	875	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/fft.c.o	48af485fd5c6cfab
+875	927	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/mpglib_interface.c.o	d169c593b63ad8c6
+8	1313	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/gain_analysis.c.o	7f982709f7b766e7
+1313	1886	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/presets.c.o	acd9945589751710
+4	2229	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/encoder.c.o	8302bc4413f99c16
+927	2896	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/newmdct.c.o	40da947a8d22f506
+506	4327	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/lame.c.o	1b6be76cd0228834
+4327	4621	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/reservoir.c.o	8a6b13dfa0bb7c10
+10	5535	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/id3tag.c.o	c32e00413d201a34
+5535	5835	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/tables.c.o	8776643379243c3
+2896	6993	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/quantize_pvt.c.o	1daa8197c30138c
+4621	7622	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/set_get.c.o	143f9ae5d450ff88
+2	7766	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/bitstream.c.o	7aec4adaab94941
+6993	9343	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/util.c.o	e42f3d1962bb5193
+7766	9402	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/VbrTag.c.o	40d39789608daca1
+2229	9489	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/quantize.c.o	a94e3c719442d4e6
+9343	9532	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/version.c.o	9fb7eb5b42e76753
+5835	10826	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/takehiro.c.o	4a09b92403236ffc
+1886	11724	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/psymodel.c.o	e441c8887bad8235
+7622	12532	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/vbrquantize.c.o	c994aaa2518fa35
+12532	12678	0	../../../../build/intermediates/cmake/release/obj/x86_64/libandroidlame.so	ecd11eaf33b56844

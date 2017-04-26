@@ -1,0 +1,23 @@
+# ninja log v5
+0	409	0	CMakeFiles/androidlame.dir/src/main/jni/AndroidLame.c.o	eb7cfeb276386dad
+5	411	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/fft.c.o	1a4979a7eb3650d2
+9	445	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/gain_analysis.c.o	a23fcbb72963662b
+412	494	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/mpglib_interface.c.o	d6b80e143364b1aa
+4	530	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/encoder.c.o	fa59caa858e2a84f
+2	939	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/bitstream.c.o	30909c083f8c3ea5
+494	982	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/presets.c.o	d5cabd23fc98099
+445	1125	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/newmdct.c.o	725b8a01e1305352
+1126	1366	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/reservoir.c.o	290f2438255c7c18
+12	1543	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/id3tag.c.o	6902658dceeae51d
+982	1769	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/quantize_pvt.c.o	75ca8df6148ef138
+1543	1852	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/tables.c.o	a957b3628f0d7212
+409	2096	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/lame.c.o	5abf390fa3f29ed3
+531	2099	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/psymodel.c.o	29e1c5a25200ecb0
+939	2303	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/quantize.c.o	e32ce9a28ea3c76d
+2303	2485	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/version.c.o	c60dbef9bc6403cb
+1853	2539	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/util.c.o	1fa4a8d6fb15fb15
+1769	2675	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/takehiro.c.o	d66f68ec61b9155f
+2099	2817	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/VbrTag.c.o	255eb390a6e3ae63
+1366	2821	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/set_get.c.o	6303c6f7eab73d83
+2097	3019	0	CMakeFiles/androidlame.dir/src/main/jni/libmp3lame/vbrquantize.c.o	966e4e99cf810f11
+3019	3205	0	../../../../build/intermediates/cmake/debug/obj/mips/libandroidlame.so	1598062d50873a57
