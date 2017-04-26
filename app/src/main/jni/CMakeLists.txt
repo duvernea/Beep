@@ -2,8 +2,7 @@ cmake_minimum_required(VERSION 3.4.1)
 
 set(
 	PATH_TO_SUPERPOWERED
-	CACHE STRING ""
-)
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../SuperpoweredSDK/Superpowered)
 
 message(${ANDROID_ABI})
 
@@ -13,16 +12,16 @@ add_library(
 	SuperpoweredAudio
 	SHARED
 	${CPP_FILES}
-	/Users/duverneay/AndroidStudioProjects/Capstone/beep/SuperpoweredSDK/Superpowered/AndroidIO/SuperpoweredAndroidAudioIO.cpp
+	${PATH_TO_SUPERPOWERED}/AndroidIO/SuperpoweredAndroidAudioIO.cpp
 )
 
 include_directories(src/main/jni)
-include_directories(/Users/duverneay/AndroidStudioProjects/Capstone/beep/SuperpoweredSDK/Superpowered/)
+include_directories(${PATH_TO_SUPERPOWERED})
 
 target_link_libraries(
     SuperpoweredAudio
     log
     android
     OpenSLES
-    /Users/duverneay/AndroidStudioProjects/Capstone/beep/SuperpoweredSDK/Superpowered/libSuperpoweredAndroid${ANDROID_ABI}.a
+    ${PATH_TO_SUPERPOWERED}/libSuperpoweredAndroid${ANDROID_ABI}.a
 )
