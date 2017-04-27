@@ -187,15 +187,15 @@ public class ShareFragment extends Fragment {
 
                 SharePhoto sharePhoto1 = new SharePhoto.Builder()
                         .setBitmap(mImageViewBitmap).build();
-//
-//                ShareLinkContent content = new ShareLinkContent.Builder()
-//                        .setContentUrl(Uri.parse(Uri.parse("https://developers.facebook.com"))).build();
 
-                ShareContent shareContent = new ShareMediaContent.Builder()
-                        .addMedium(sharePhoto1)
-                        .build();
+                ShareLinkContent content = new ShareLinkContent.Builder()
+                        .setContentUrl(Uri.parse("http://k003.kiwi6.com/hotlink/rlucf3los9/TOAD_Free_MP3_Download_.mp3")).build();
 
-                ShareDialog.show(mActivity, shareContent);
+//                ShareContent shareContent = new ShareMediaContent.Builder()
+//                        .addMedium(sharePhoto1)
+//                        .build();
+
+                ShareDialog.show(mActivity, content);
             }
         });
 
