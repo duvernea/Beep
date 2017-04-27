@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.getkeepsafe.dexcount'
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
@@ -15,9 +16,11 @@ android { // main settings for your application
     defaultConfig {
         applicationId "xyz.peast.beep"
         minSdkVersion 16
-        targetSdkVersion 23
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
+
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64' // these platforms cover 99% percent of all Android devices
         }
@@ -57,6 +60,8 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
 
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
+    compile 'com.writingminds:FFmpegAndroid:0.3.2'
+
     compile project(':androidlame')
 
 }

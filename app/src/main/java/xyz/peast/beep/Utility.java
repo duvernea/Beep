@@ -226,6 +226,14 @@ public class Utility {
         String audioPath = context.getFilesDir().getAbsolutePath();
         return (audioPath + File.separator + beepName + Constants.MP3_FILE_SUFFIX);
     }
+    public static String getBeepVideoPath(Context context, String beepName) {
+        String videoPath = context.getFilesDir().getAbsolutePath()
+                + File.separator + Constants.VIDEO_DIR
+                + File.separator + beepName + Constants.MP4_FILE_SUFFIX;
+        String videoPath2 = context.getFilesDir().getAbsolutePath();
+
+        return videoPath2;
+    }
 
     public static String getFullWavPath(Context context, String audioFileName, boolean beepEdited) {
 

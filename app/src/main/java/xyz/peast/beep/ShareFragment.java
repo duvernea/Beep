@@ -29,6 +29,8 @@ import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import java.io.IOException;
+
 import xyz.peast.beep.services.LoadDownsampledBitmapImageService;
 
 

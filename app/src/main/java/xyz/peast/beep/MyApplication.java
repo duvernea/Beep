@@ -1,6 +1,7 @@
 package xyz.peast.beep;
 
 import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -9,7 +10,7 @@ import com.google.android.gms.analytics.Tracker;
 /**
  * Created by duverneay on 9/21/16.
  */
-public class MyApplication extends Application {
+public class MyApplication extends MultiDexApplication {
 
     private static final String TAG = MyApplication.class.getSimpleName();
 

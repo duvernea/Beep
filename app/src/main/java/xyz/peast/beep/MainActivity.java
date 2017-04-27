@@ -36,6 +36,14 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
+import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
+import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
+import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
+import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
+
+import java.io.File;
+
 import xyz.peast.beep.adapters.BeepAdapter;
 import xyz.peast.beep.adapters.BoardRecyclerViewAdapter;
 import xyz.peast.beep.data.BeepDbContract;
@@ -93,6 +101,83 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         mContext = this;
         mActivity = this;
+
+        FFmpeg ffmpeg = FFmpeg.getInstance(mContext);
+        try {
+            ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
+
+                @Override
+                public void onStart() {}
+
+                @Override
+                public void onFailure() {}
+
+                @Override
+                public void onSuccess() {
+                    Log.d(TAG, "FFmpeg binary loaded successfully");
+                }
+
+                @Override
+                public void onFinish() {
+                    Log.d(TAG, "FFmpeg load onFinish");
+                }
+            });
+        } catch (FFmpegNotSupportedException e) {
+            // Handle if FFmpeg is not supported by device
+            e.printStackTrace();
+        }
+        String cmd[] = new String[1];
+        cmd[0] = "-version";
+        String image = getFilesDir().getAbsolutePath() + File.separator + "img.jpg";
+        String audio = getFilesDir().getAbsolutePath() + File.separator + "audio.wav";
+        String output = getFilesDir().getAbsolutePath() + File.separator + "out.mp4";
+
+
+        String cmd2[] = {"-loop", "1",
+                "-i", image,
+                "-i", audio,
+                "-c:v", "libx264",
+                "-c:a", "aac",
+                "-b:a", "192k",
+                "-shortest", output,
+                "-y"};
+
+
+        Log.d(TAG, "cmd: " + cmd2);
+        try {
+            // to execute "ffmpeg -version" command you just need to pass "-version"
+            ffmpeg.execute(cmd2, new ExecuteBinaryResponseHandler() {
+
+                @Override
+                public void onStart() {}
+
+                @Override
+                public void onProgress(String message) {
+                    Log.d(TAG, "onProgress: " + message);
+                }
+
+                @Override
+                public void onFailure(String message) {
+                    Log.d(TAG, "onFailure execute message: " + message);
+                }
+
+                @Override
+                public void onSuccess(String message) {
+                    Log.d(TAG, "onSuccess execute message: " + message);
+
+                }
+                @Override
+                public void onFinish() {
+                    Log.d(TAG, "onFinish");
+                }
+            });
+        } catch (FFmpegCommandAlreadyRunningException e) {
+            // Handle if FFmpeg is already running
+            e.printStackTrace();
+        }
+
+
+
 
         mSharedPrefs = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
         Log.d(TAG, "msharedPrefs"+mSharedPrefs.getBoolean(Constants.SHARED_PREF_FIRST_RUN, true));

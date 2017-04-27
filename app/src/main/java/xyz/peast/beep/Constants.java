@@ -43,9 +43,13 @@ public class Constants {
     // Utility, Image, etc constants
     // KEYs for Service Intent extras
 
+    // audio and video dirs, suffixes
     public static final String EDITED_FILE_SUFFIX = "_edit";
     public static final String WAV_FILE_SUFFIX = ".wav";
     public static final String MP3_FILE_SUFFIX = ".mp3";
+    public static final String MP4_FILE_SUFFIX = ".mp4";
+    public static final String VIDEO_DIR = "video";
+
 
     // Bundle extras
     public static final String WAV_FILE_PATH = "record_file_name";
