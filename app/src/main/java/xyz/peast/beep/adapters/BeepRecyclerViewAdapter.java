@@ -56,10 +56,12 @@ public class BeepRecyclerViewAdapter extends RecyclerView.Adapter<BeepRecyclerVi
         holder.mBeepNameTextView.setText(beepName);
         if (beepImage == null || beepImage.equals("")) {
             // Do nothing, use the default imageview
+            holder.mBeepImageView.setImageResource(R.drawable.beep_item_temp);
         }
         else {
             String imageDir = mContext.getFilesDir().getAbsolutePath();
             String imagePath = "file:" + imageDir + "/" + beepImage;
+            holder.mBeepImageView.setImageDrawable (null);
             Glide.with(mContext).load(imagePath).into(holder.mBeepImageView);
         }
     }
