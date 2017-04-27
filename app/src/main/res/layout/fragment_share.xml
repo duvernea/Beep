@@ -80,33 +80,49 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/replay_button"
         android:id="@+id/button_frame_layout"
         android:orientation="horizontal"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/replay_button"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
         <Button
             android:layout_width="0dp"
             android:layout_height="64dp"
-            android:id="@+id/no_button"
-            android:text="@string/no"
+            android:id="@+id/facebook_button"
+            android:text="facebook"
             android:textColor="@android:color/white"
             android:textSize="@dimen/button_text_size"
-            android:background="@color/recordButtonStopRecording"
+            android:background="@color/com_facebook_blue"
             android:visibility="visible"
             android:layout_weight="1"
             android:textAllCaps="false" />
         <Button
             android:layout_width="0dp"
             android:layout_height="64dp"
-            android:id="@+id/share_button"
-            android:text="@string/share"
+            android:id="@+id/email_share_button"
+            android:text="email"
             android:textColor="@android:color/white"
             android:textSize="@dimen/button_text_size"
-            android:background="@color/recordButtonStartRecording"
+            android:background="@color/email_share_button"
             android:visibility="visible"
             android:layout_weight="1"
             android:textAllCaps="false" />
     </LinearLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/no_button"
+        android:text="@string/no"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/button_text_size"
+        android:background="@color/recordButtonStopRecording"
+        android:visibility="visible"
+
+        android:textAllCaps="false"
+        android:layout_below="@+id/replay_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp" />
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adview"

@@ -18,16 +18,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import com.facebook.FacebookSdk;
 
+import com.facebook.share.model.ShareContent;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.model.ShareMediaContent;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
-import java.io.File;
-
 import xyz.peast.beep.services.LoadDownsampledBitmapImageService;
-import xyz.peast.beep.services.EncodeAudioService;
 
 
 public class ShareFragment extends Fragment {
@@ -52,6 +54,7 @@ public class ShareFragment extends Fragment {
     private Button mShareButton;
     private Button mDontShareButton;
     private Button mReplayButton;
+    private Button mFacebookShareButton;
 
     private String mBoardName;
     private int mBoardKey;
@@ -61,6 +64,10 @@ public class ShareFragment extends Fragment {
     private boolean mBeepEdited;
 
     private String mBeepMp3Path;
+
+    private Bitmap mImageViewBitmap;
+
+    String mImageUri;
 
     public ShareFragment() {
         // Required empty public constructor
@@ -77,8 +84,9 @@ public class ShareFragment extends Fragment {
         mBoardNameTextView = (TextView) rootView.findViewById(R.id.board_name_textview);
         mBeepImageView = (ImageView) rootView.findViewById(R.id.beep_imageview);
         mReplayButton = (Button) rootView.findViewById(R.id.replay_button);
-        mShareButton = (Button) rootView.findViewById(R.id.share_button);
+        mShareButton = (Button) rootView.findViewById(R.id.email_share_button);
         mDontShareButton = (Button) rootView.findViewById(R.id.no_button);
+        mFacebookShareButton = (Button) rootView.findViewById(R.id.facebook_button);
 
         // Initilize Ads
         mAdView = (AdView) rootView.findViewById(R.id.adview);
@@ -91,7 +99,7 @@ public class ShareFragment extends Fragment {
         Bundle bundle = this.getArguments();
         mRecordFileName = bundle.getString(RecordActivity.RECORD_FILE_UNIQUE_NAME);
         String imagefile = bundle.getString(RecordActivity.IMAGE_FILE_UNIQUE_NAME);
-        String imageUri = bundle.getString(RecordActivity.IMAGE_FILE_URI_UNCOMPRESSED);
+        mImageUri = bundle.getString(RecordActivity.IMAGE_FILE_URI_UNCOMPRESSED);
         String imagePath = bundle.getString(RecordActivity.IMAGE_FILE_PATH_UNCOMPRESSED);
         mBoardName = bundle.getString(RecordActivity.BOARD_NAME);
         mBoardKey = bundle.getInt(RecordActivity.BOARD_KEY);
@@ -171,6 +179,25 @@ public class ShareFragment extends Fragment {
                 startActivityForResult (share, SHARE_BEEP);
             }
         });
+        mFacebookShareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "mRecordFileName: " + mRecordFileName);
+                Log.d(TAG, "mImageUri: " + mImageUri);
+
+                SharePhoto sharePhoto1 = new SharePhoto.Builder()
+                        .setBitmap(mImageViewBitmap).build();
+//
+//                ShareLinkContent content = new ShareLinkContent.Builder()
+//                        .setContentUrl(Uri.parse(Uri.parse("https://developers.facebook.com"))).build();
+
+                ShareContent shareContent = new ShareMediaContent.Builder()
+                        .addMedium(sharePhoto1)
+                        .build();
+
+                ShareDialog.show(mActivity, shareContent);
+            }
+        });
 
         Log.d(TAG, "imagePath: " + imagePath);
 
@@ -181,8 +208,8 @@ public class ShareFragment extends Fragment {
                 @Override
                 public void handleMessage(Message msg) {
                     Bundle reply = msg.getData();
-                    Bitmap bitmap = reply.getParcelable(Constants.IMAGE_BITMAP_FROM_SERVICE);
-                    mBeepImageView.setImageBitmap(bitmap);
+                    mImageViewBitmap = reply.getParcelable(Constants.IMAGE_BITMAP_FROM_SERVICE);
+                    mBeepImageView.setImageBitmap(mImageViewBitmap);
                 }
             };
 
@@ -198,6 +225,7 @@ public class ShareFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "onActivityResult");
+
 
         if (requestCode == SHARE_BEEP) {
 

@@ -26,6 +26,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+
+        <provider android:authorities="@string/facebook_authority"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="xyz.peast.beep.fileprovider"
