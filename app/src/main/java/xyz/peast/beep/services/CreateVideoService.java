@@ -3,6 +3,7 @@ package xyz.peast.beep.services;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import xyz.peast.beep.AudioUtility;
 import xyz.peast.beep.Constants;
 import xyz.peast.beep.Utility;
+import xyz.peast.beep.data.BeepDbContract;
 
 /**
  * Created by duvernea on 4/28/17.
@@ -30,6 +32,8 @@ import xyz.peast.beep.Utility;
 public class CreateVideoService extends IntentService {
 
     private static String TAG = CreateVideoService.class.getSimpleName();
+
+    public static String VIDEO_CREATION_DONE = "android.intent.action.VIDEO_DONE";
 
     private long startTime;
     private long stopTime;
@@ -45,17 +49,61 @@ public class CreateVideoService extends IntentService {
         context = getApplicationContext();
         startTime = System.currentTimeMillis();
         Log.d(TAG, "Create video process starting at: " + startTime);
+        Log.d(TAG, "Getting bundle...");
 
-//        Bundle bundle = intent.getExtras();
-//        String wavPath = bundle.getString(Constants.WAV_FILE_PATH);
-//        String beepName = bundle.getString(Constants.BEEP_NAME);
-//        boolean beepEdited = bundle.getBoolean(Constants.BEEP_EDITED);
+        Bundle bundle = intent.getExtras();
+        String beepName = bundle.getString(Constants.BEEP_NAME);
+        Log.d(TAG, "beepName: " + beepName);
+        String wavFileBase = bundle.getString(Constants.WAV_FILE_PATH);
+        Log.d(TAG, "wav path: " + wavFileBase);
+        boolean beepEdited = bundle.getBoolean(Constants.BEEP_EDITED);
+        Log.d(TAG, "beep Edited: " + beepEdited);
+        String fullWavPath = Utility.getFullWavPath(context, wavFileBase, beepEdited);
+        Log.d(TAG, "full wav path: " + fullWavPath);
+        long beepId = bundle.getLong(Constants.BEEP_ID);
+        Log.d(TAG, "beepId: " + beepId);
+        // Get image file path, once compression is finished
+        // TODO - use a messenger/etc to check database rather than this infinite while loop?
+        Cursor cursor;
+        String imageFileName;
+        while (true) {
+            // query the database
+            String whereClause = BeepDbContract.BeepEntry._ID+"=?";
+            String [] whereArgs = {beepId+""};
+            // Delete old image if exists
+            cursor = context.getContentResolver().query(
+                    BeepDbContract.BeepEntry.CONTENT_URI,
+                    Constants.BEEP_COLUMNS,
+                    whereClause,
+                    whereArgs,
+                    null);
+            if (cursor.getCount() == 1) {
+                cursor.moveToFirst();
+                imageFileName = cursor.getString(Constants.BEEPS_COL_IMAGE);
+                if (imageFileName != null) {
+                    break;
+                }
+            }
+        }
 
-        // TODO Create Video - utility method?
-        // needs to have a messenger or something back to main thread
-        createVideo();
+        Log.d(TAG, "current imageFile name: " + imageFileName);
+        String imageFilePath = Utility.getFullImagePath(context, imageFileName);
+        Log.d(TAG, "current imageFile path: " + imageFilePath);
+
+        cursor.close();
+
+        File direct = new File(getFilesDir()+ File.separator + Constants.VIDEO_DIR);
+
+        if(!direct.exists()) {
+            if(direct.mkdir()); //directory is created;
+        }
+
+        // TODO - get watermark image here and pass it in? Right now is hardcoded
+        String watermarkImagePath = createWatermarkedImage(imageFilePath, "");
+
+        createVideo(watermarkImagePath, fullWavPath, beepName);
     }
-    private void createVideo() {
+    private void createVideo(String watermarkImagePath, String audioPath, String beepName) {
 
         /***************** FFMPEG **********************/
 
@@ -79,49 +127,15 @@ public class CreateVideoService extends IntentService {
             // Handle if FFmpeg is not supported by device
             e.printStackTrace();
         }
-        File direct = new File(getFilesDir()+ File.separator + Constants.VIDEO_DIR);
 
-        if(!direct.exists()) {
-            if(direct.mkdir()); //directory is created;
-        }
 
-        String testAudio = "0cf0c46e-fd5b-4984-aa9e-981524790fb3_edit.wav";
-        String testImage = "305d302a-516e-4560-a165-d6bb026dfd35.jpg";
-        String outFile = "out";
-
-        String image = getFilesDir().getAbsolutePath() + File.separator + testImage;
-
-        Log.d(TAG, "image path: " + image);
-
-        String imageWatermark = getFilesDir().getAbsolutePath() + File.separator + "temp.jpg";
-
-        Bitmap temp = BitmapFactory.decodeFile(image);
-        Bitmap temp2 = Utility.addWaterMark(context, temp);
-        FileOutputStream out = null;
-
-        try {
-            out = new FileOutputStream(imageWatermark);
-            temp2.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
-            // PNG is a lossless format, the compression factor (100) is ignored
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        String audio = getFilesDir().getAbsolutePath() + File.separator + testAudio;
+        // String audio = getFilesDir().getAbsolutePath() + File.separator + testAudio;
         String output = getFilesDir().getAbsolutePath() + File.separator +
-                Constants.VIDEO_DIR + File.separator + outFile + Constants.MP4_FILE_SUFFIX;
+                Constants.VIDEO_DIR + File.separator + beepName + Constants.MP4_FILE_SUFFIX;
 
         String cmd[] = {"-loop", "1",
-                "-i", imageWatermark,
-                "-i", audio,
+                "-i", watermarkImagePath,
+                "-i", audioPath,
                 "-c:v", "libx264",
                 "-c:a", "aac",
                 "-b:a", "320k",
@@ -155,11 +169,40 @@ public class CreateVideoService extends IntentService {
                     long elapsedTime = stopTime - startTime;
                     Log.d(TAG, "EncodeAudioService process stopping at: " + stopTime);
                     Log.d(TAG, "EncodeAudioService elapsed time: " + elapsedTime);
+
+                    Intent intent = new Intent(VIDEO_CREATION_DONE);
+                    sendBroadcast(intent);
                 }
             });
         } catch (FFmpegCommandAlreadyRunningException e) {
             // Handle if FFmpeg is already running
             e.printStackTrace();
         }
+    }
+    private String createWatermarkedImage(String imagePath, String watermarkPath) {
+        String imageWatermarkedPath = getFilesDir().getAbsolutePath() + File.separator +
+                Constants.VIDEO_DIR + File.separator + "watermarkedImage.jpg";
+
+
+        Bitmap image = BitmapFactory.decodeFile(imagePath);
+        Bitmap markedBitmap = Utility.addWaterMark(context, image);
+        FileOutputStream out = null;
+
+        try {
+            out = new FileOutputStream(imageWatermarkedPath);
+            markedBitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+            // PNG is a lossless format, the compression factor (100) is ignored
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return imageWatermarkedPath;
     }
 }

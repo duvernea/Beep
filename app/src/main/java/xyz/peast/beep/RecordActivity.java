@@ -3,6 +3,7 @@ package xyz.peast.beep;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -31,6 +32,8 @@ import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedExceptio
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
+
+import xyz.peast.beep.services.CreateVideoService;
 
 /**
  * Created by duvernea on 7/30/16.
@@ -105,91 +108,6 @@ public class RecordActivity extends AppCompatActivity
     @Override
     public void onSaveNextButton(String beepname, String audiofile, Uri imageUri, String imageFilePath,
                                  String boardName, int boardKey, boolean beepEdited) {
-
-        Log.d(TAG, "beepEdited: " + beepEdited);
-        // Generate video
-        String videoPath = Utility.getBeepVideoPath(mContext, beepname);
-        // File videoFile = new File(videoPath);
-        Log.d(TAG, "beep video path: " + videoPath);
-
-//        String videoPath = context.getFilesDir().getAbsolutePath()
-//                + File.separator + Constants.VIDEO_DIR
-//                + File.separator + beepName + Constants.MP4_FILE_SUFFIX;
-//        String videoPath2 = context.getFilesDir().getAbsolutePath();
-//        try {
-//            FFmpeg ffmpeg = new FFmpeg("");
-//        } catch (IOException ioe) {
-//            Log.d(TAG, "ffmpeg creation exception");
-//            ioe.printStackTrace();
-//        }
-        FFmpeg ffmpeg = FFmpeg.getInstance(mContext);
-        try {
-            ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
-
-                @Override
-                public void onStart() {}
-
-                @Override
-                public void onFailure() {}
-
-                @Override
-                public void onSuccess() {}
-
-                @Override
-                public void onFinish() {}
-            });
-        } catch (FFmpegNotSupportedException e) {
-            // Handle if FFmpeg is not supported by device
-            e.printStackTrace();
-        }
-        String cmd[] = new String[1];
-        cmd[0] = "-version";
-        String image = getFilesDir().getAbsolutePath() + File.separator + "img.jpg";
-        String audio = getFilesDir().getAbsolutePath() + File.separator + "audio.wav";
-        String output = getFilesDir().getAbsolutePath() + File.separator + "out.mp4";
-
-        cmd[0] = "-loop 1 -i " + image + " -i " +  audio + "" +
-                " -c:v libx264 -c:a aac -b:a 192k -shortest " + output;
-
-        String cmd2[] = {"-loop", "1",
-                "-i", image,
-                "-i", audio,
-                "-c:v", "libx264",
-                "-c:a", "aac",
-                "-b:a", "192k",
-                "-shortest", output};
-
-
-        Log.d(TAG, "cmd: " + cmd2);
-        try {
-            // to execute "ffmpeg -version" command you just need to pass "-version"
-            ffmpeg.execute(cmd2, new ExecuteBinaryResponseHandler() {
-
-                @Override
-                public void onStart() {}
-
-                @Override
-                public void onProgress(String message) {}
-
-                @Override
-                public void onFailure(String message) {
-                    Log.d(TAG, "onFailure message: " + message);
-                }
-
-                @Override
-                public void onSuccess(String message) {
-                    Log.d(TAG, "onSuccess message: " + message);
-
-                }
-                @Override
-                public void onFinish() {
-                    Log.d(TAG, "onFinish");
-                }
-            });
-        } catch (FFmpegCommandAlreadyRunningException e) {
-            // Handle if FFmpeg is already running
-            e.printStackTrace();
-        }
 
         ShareFragment shareFragment = new ShareFragment();
         Bundle bundle = new Bundle();

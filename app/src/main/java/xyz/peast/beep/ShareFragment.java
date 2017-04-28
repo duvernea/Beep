@@ -1,8 +1,12 @@
 package xyz.peast.beep;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +23,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.facebook.FacebookSdk;
 
 import com.facebook.share.model.ShareContent;
@@ -34,6 +39,8 @@ import com.google.android.gms.ads.AdView;
 import java.io.File;
 import java.io.IOException;
 
+import xyz.peast.beep.services.CompressImageUpdateDbService;
+import xyz.peast.beep.services.CreateVideoService;
 import xyz.peast.beep.services.LoadDownsampledBitmapImageService;
 
 
@@ -68,9 +75,15 @@ public class ShareFragment extends Fragment {
     private String mRecordFileName;
     private boolean mBeepEdited;
 
+    private boolean mVideoCreationComplete = false;
+
     private String mBeepMp3Path;
 
     private Bitmap mImageViewBitmap;
+
+    private BroadcastReceiver mVideoBroadcastReceiver;
+
+    private ProgressDialog mProgressDialog;
 
     String mImageUri;
 
@@ -113,6 +126,8 @@ public class ShareFragment extends Fragment {
         mBeepName = bundle.getString(RecordActivity.BEEP_NAME);
         mBeepNameTextView.setText(mBeepName);
         mBoardNameTextView.setText(mBoardName);
+
+
 
         // Audio File Name path
         final String filePath = Utility.getFullWavPath(mContext, mRecordFileName, false);
@@ -192,11 +207,19 @@ public class ShareFragment extends Fragment {
 
                 // TODO assumes video already created. May need an asynchronous message and spinner here
                 // TODO to create video before content is built?
-                Uri videoFileUri = Uri.fromFile(new File("/data/data/xyz.peast.beep/files/video/out.mp4"));
+
+                String videoPath = Utility.getBeepVideoPath(mContext, mBeepName);
+                Log.d(TAG, "facebook video path: " + videoPath);
+                File videoFile = new File(videoPath);
+                Uri videoFileUri = Uri.fromFile(videoFile);
+
+                Log.d(TAG, "facebook video uri: " + videoFileUri);
+
                 ShareVideo shareVideo = new ShareVideo.Builder()
                         .setLocalUrl(videoFileUri)
                         .build();
-                ShareVideoContent content = new ShareVideoContent.Builder()
+
+                final ShareVideoContent content = new ShareVideoContent.Builder()
                         .setVideo(shareVideo)
                         .build();
 
@@ -209,8 +232,21 @@ public class ShareFragment extends Fragment {
 //                ShareContent shareContent = new ShareMediaContent.Builder()
 //                        .addMedium(sharePhoto1)
 //                        .build();
+                mProgressDialog = new ProgressDialog(mContext);
+                mProgressDialog.setTitle("Creating content");
+                mProgressDialog.setMessage("message...");
+                mProgressDialog.setCancelable(false); // disable dismiss by tapping outside of the dialog
+                mProgressDialog.show();
+                mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        ShareDialog.show(mActivity, content);
 
-                ShareDialog.show(mActivity, content);
+                    }
+                });
+                // To dismiss the dialog
+                // get message from video service that it is complete
+
             }
         });
 
@@ -235,6 +271,29 @@ public class ShareFragment extends Fragment {
             mContext.startService(intent);
         }
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        IntentFilter intentFilter = new IntentFilter(CreateVideoService.VIDEO_CREATION_DONE);
+
+        mVideoBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d(TAG, "onReceive Broadcast Listener");
+                mVideoCreationComplete = true;
+                mProgressDialog.dismiss();
+
+            }
+        };
+            getActivity().registerReceiver(mVideoBroadcastReceiver, intentFilter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(mVideoBroadcastReceiver);
     }
 
     @Override

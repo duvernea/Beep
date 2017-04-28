@@ -47,7 +47,9 @@ public class CompressImageUpdateDbService extends IntentService {
 
         // New compressed file name and path
         String imageDir = getApplicationContext().getFilesDir().getAbsolutePath();
+
         String compressedImageFileName = UUID.randomUUID().toString() + Constants.JPG_EXTENSION;
+
         String compressedImageFilePath = imageDir + File.separator + compressedImageFileName;
         Log.d(TAG, "originalImageFilePath: " + originalImageFilePath);
         File originalImageFile = new File(originalImageFilePath);

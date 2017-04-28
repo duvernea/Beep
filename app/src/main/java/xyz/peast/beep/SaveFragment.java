@@ -44,6 +44,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
+import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
@@ -56,6 +58,7 @@ import java.util.List;
 import xyz.peast.beep.adapters.Board;
 import xyz.peast.beep.adapters.BoardSpinnerAdapter;
 import xyz.peast.beep.data.BeepDbContract;
+import xyz.peast.beep.services.CreateVideoService;
 import xyz.peast.beep.services.LoadDownsampledBitmapImageService;
 import xyz.peast.beep.views.NDSpinner;
 
@@ -211,7 +214,19 @@ public class SaveFragment extends Fragment implements LocationListener {
                     Toast.makeText(mContext, toastMsg, Toast.LENGTH_SHORT).show();
                     return;
                 }
-                insertContent();
+                long id = insertContent();
+
+                // Create video with picture + audio
+                Intent serviceIntent = new Intent(mContext, CreateVideoService.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(Constants.BEEP_NAME, beepName);
+                bundle.putString(Constants.WAV_FILE_PATH, mRecordFileName);
+                bundle.putBoolean(Constants.BEEP_EDITED, mBeepFx.getEditStatus());
+                bundle.putLong(Constants.BEEP_ID, id);
+
+                serviceIntent.putExtras(bundle);
+                mContext.startService(serviceIntent);
+
                 int spinnerSelectedItemPosition  = mBoardSpinner.getSelectedItemPosition();
                 Board selected = mSpinnerItems.get(spinnerSelectedItemPosition);
                 int selectedKey = selected.getKey();
@@ -312,7 +327,7 @@ public class SaveFragment extends Fragment implements LocationListener {
         }
     }
     // Insert beep into database
-    void insertContent() {
+    long insertContent() {
         String beepName = mBeepNameEditText.getText().toString();
         int spinnerSelectedItemPosition  = mBoardSpinner.getSelectedItemPosition();
         Board selected = mSpinnerItems.get(spinnerSelectedItemPosition);
@@ -328,9 +343,9 @@ public class SaveFragment extends Fragment implements LocationListener {
         }
         Log.d(TAG, "save button, mImageuri: " + mImageUri);
         Log.d(TAG, "save button, mImagePath: " + mImagePath);
-        Utility.insertNewBeep(mContext, beepName, mRecordFileName, beepEdited,
+        Uri insertedBeepUri = Utility.insertNewBeep(mContext, beepName, mRecordFileName, beepEdited,
                 mMostRecentLocation, selectedKey, mImagePath, mDeleteTempPic);
-
+        return ContentUris.parseId(insertedBeepUri);
     }
     // Save Image items
     @Override

@@ -109,12 +109,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mContext = this;
         mActivity = this;
 
-        // Create video with picture + audio
-        Intent serviceIntent = new Intent(mContext, CreateVideoService.class);
-        Bundle bundle = new Bundle();
-        serviceIntent.putExtras(bundle);
-        mContext.startService(serviceIntent);
-
         mSharedPrefs = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
         Log.d(TAG, "msharedPrefs"+mSharedPrefs.getBoolean(Constants.SHARED_PREF_FIRST_RUN, true));
 

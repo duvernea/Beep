@@ -50,6 +50,10 @@ public class Constants {
     public static final String MP4_FILE_SUFFIX = ".mp4";
     public static final String VIDEO_DIR = "video";
 
+    // Video service
+    public static final String BEEP_IMAGE_FILE = "beep_image_file";
+
+    public static final String BEEP_ID = "beep_id_extra";
 
     // Bundle extras
     public static final String WAV_FILE_PATH = "record_file_name";

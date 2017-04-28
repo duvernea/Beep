@@ -27,6 +27,7 @@ import android.util.Log;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.UUID;
 
 import xyz.peast.beep.data.BeepDbContract;
 import xyz.peast.beep.services.CompressImageUpdateDbService;
@@ -131,7 +132,7 @@ public class Utility {
         return BitmapFactory.decodeFile(filepath, options);
     }
 
-    public static void insertNewBeep(Context context, String beepName, String audioFileName,
+    public static Uri insertNewBeep(Context context, String beepName, String audioFileName,
                                      boolean beepFx, Location location, int boardKey,
                                      String originalImageFilePath, boolean deleteTempPic) {
         ContentValues contentValues = new ContentValues();
@@ -162,6 +163,7 @@ public class Utility {
             serviceIntent.putExtras(bundle);
             context.startService(serviceIntent);
         }
+        return uri;
     }
 
     public static int insertNewBoard(Context context, String boardName, Uri originalImageUri) {
@@ -241,9 +243,7 @@ public class Utility {
         String videoPath = context.getFilesDir().getAbsolutePath()
                 + File.separator + Constants.VIDEO_DIR
                 + File.separator + beepName + Constants.MP4_FILE_SUFFIX;
-        String videoPath2 = context.getFilesDir().getAbsolutePath();
-
-        return videoPath2;
+        return videoPath;
     }
 
     public static String getFullWavPath(Context context, String audioFileName, boolean beepEdited) {
