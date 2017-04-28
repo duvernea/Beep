@@ -54,6 +54,9 @@
         <service
             android:name=".services.LoadDownsampledBitmapImageService"
             android:exported="false"/>
+        <service
+            android:name=".services.CreateVideoService"
+            android:exported="false"/>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

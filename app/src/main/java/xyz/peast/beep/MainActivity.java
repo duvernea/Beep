@@ -52,6 +52,8 @@ import java.io.IOException;
 import xyz.peast.beep.adapters.BeepAdapter;
 import xyz.peast.beep.adapters.BoardRecyclerViewAdapter;
 import xyz.peast.beep.data.BeepDbContract;
+import xyz.peast.beep.services.CompressImageUpdateDbService;
+import xyz.peast.beep.services.CreateVideoService;
 import xyz.peast.beep.views.RecyclerViewEmptySupport;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -107,109 +109,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mContext = this;
         mActivity = this;
 
-        /***************** FFMPEG **********************/
-
-        FFmpeg ffmpeg = FFmpeg.getInstance(mContext);
-        try {
-            ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
-
-                @Override
-                public void onStart() {}
-
-                @Override
-                public void onFailure() {}
-
-                @Override
-                public void onSuccess() {
-                    Log.d(TAG, "FFmpeg binary loaded successfully");
-                }
-
-                @Override
-                public void onFinish() {
-                    Log.d(TAG, "FFmpeg load onFinish");
-                }
-            });
-        } catch (FFmpegNotSupportedException e) {
-            // Handle if FFmpeg is not supported by device
-            e.printStackTrace();
-        }
-        File direct = new File(getFilesDir()+ File.separator + Constants.VIDEO_DIR);
-
-        if(!direct.exists()) {
-            if(direct.mkdir()); //directory is created;
-        }
-        String testAudio = "0cf0c46e-fd5b-4984-aa9e-981524790fb3_edit.wav";
-        String testImage = "305d302a-516e-4560-a165-d6bb026dfd35.jpg";
-        String outFile = "out";
-
-        String image = getFilesDir().getAbsolutePath() + File.separator + testImage;
-        Log.d(TAG, "image path: " + image);
-        String imageWatermark = getFilesDir().getAbsolutePath() + File.separator + "temp.jpg";
-        Bitmap temp = BitmapFactory.decodeFile(image);
-        Bitmap temp2 = Utility.addWaterMark(mContext, temp);
-        FileOutputStream out = null;
-        try {
-            out = new FileOutputStream(imageWatermark);
-            temp2.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
-            // PNG is a lossless format, the compression factor (100) is ignored
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        String audio = getFilesDir().getAbsolutePath() + File.separator + testAudio;
-        String output = getFilesDir().getAbsolutePath() + File.separator +
-                Constants.VIDEO_DIR + File.separator + outFile + Constants.MP4_FILE_SUFFIX;
-
-        String cmd[] = {"-loop", "1",
-                "-i", imageWatermark,
-                "-i", audio,
-                "-c:v", "libx264",
-                "-c:a", "aac",
-                "-b:a", "320k",
-                "-shortest", output,
-                "-y"};
-
-        try {
-            ffmpeg.execute(cmd, new ExecuteBinaryResponseHandler() {
-
-                @Override
-                public void onStart() {}
-
-                @Override
-                public void onProgress(String message) {
-                    Log.d(TAG, "onProgress: " + message);
-                }
-
-                @Override
-                public void onFailure(String message) {
-                    Log.d(TAG, "onFailure execute message: " + message);
-                }
-
-                @Override
-                public void onSuccess(String message) {
-                    Log.d(TAG, "onSuccess execute message: " + message);
-
-                }
-                @Override
-                public void onFinish() {
-                    Log.d(TAG, "onFinish");
-                }
-            });
-        } catch (FFmpegCommandAlreadyRunningException e) {
-            // Handle if FFmpeg is already running
-            e.printStackTrace();
-        }
-
-        /***************** FFMPEG **********************/
-
+        // Create video with picture + audio
+        Intent serviceIntent = new Intent(mContext, CreateVideoService.class);
+        Bundle bundle = new Bundle();
+        serviceIntent.putExtras(bundle);
+        mContext.startService(serviceIntent);
 
         mSharedPrefs = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
         Log.d(TAG, "msharedPrefs"+mSharedPrefs.getBoolean(Constants.SHARED_PREF_FIRST_RUN, true));
