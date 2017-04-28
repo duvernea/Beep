@@ -144,7 +144,7 @@ public class ShareFragment extends Fragment {
         mBeepName = bundle.getString(RecordActivity.BEEP_NAME);
         mBeepNameTextView.setText(mBeepName);
         mBoardNameTextView.setText(mBoardName);
-        
+
         // Audio File Name path
         final String filePath = Utility.getFullWavPath(mContext, mRecordFileName, false);
 
@@ -293,40 +293,40 @@ public class ShareFragment extends Fragment {
                 }
             }
         });
-        mFacebookMessengerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String videoPath = Utility.getBeepVideoPath(mContext, mBeepName);
-                File videoFile = new File(videoPath);
-                Uri videoFileUri = Uri.fromFile(videoFile);
-
-                ShareVideo shareVideo = new ShareVideo.Builder()
-                        .setLocalUrl(videoFileUri)
-                        .build();
-
-                final ShareVideoContent content = new ShareVideoContent.Builder()
-                        .setVideo(shareVideo)
-                        .build();
-
-                mProgressDialog = new ProgressDialog(mContext);
-                mProgressDialog.setTitle("Creating content");
-                // mProgressDialog.setMessage("message...");
-                mProgressDialog.setCancelable(false); // disable dismiss by tapping outside of the dialog
-                if (mVideoCreationComplete) {
-                    MessageDialog.show(mActivity, content);
-                } else {
-                    mProgressDialog.show();
-                    mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialog) {
-                            MessageDialog.show(mActivity, content);
-                        }
-                    });
-                }
-
-            }
-        });
+//        mFacebookMessengerButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                String videoPath = Utility.getBeepVideoPath(mContext, mBeepName);
+//                File videoFile = new File(videoPath);
+//                Uri videoFileUri = Uri.fromFile(videoFile);
+//
+//                ShareVideo shareVideo = new ShareVideo.Builder()
+//                        .setLocalUrl(videoFileUri)
+//                        .build();
+//
+//                final ShareVideoContent content = new ShareVideoContent.Builder()
+//                        .setVideo(shareVideo)
+//                        .build();
+//
+//                mProgressDialog = new ProgressDialog(mContext);
+//                mProgressDialog.setTitle("Creating content");
+//                // mProgressDialog.setMessage("message...");
+//                mProgressDialog.setCancelable(false); // disable dismiss by tapping outside of the dialog
+//                if (mVideoCreationComplete) {
+//                    MessageDialog.show(mActivity, content);
+//                } else {
+//                    mProgressDialog.show();
+//                    mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                        @Override
+//                        public void onDismiss(DialogInterface dialog) {
+//                            MessageDialog.show(mActivity, content);
+//                        }
+//                    });
+//                }
+//
+//            }
+//        });
 
         Log.d(TAG, "imagePath: " + imagePath);
 
