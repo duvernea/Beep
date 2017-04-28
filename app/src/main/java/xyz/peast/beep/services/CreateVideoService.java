@@ -66,6 +66,8 @@ public class CreateVideoService extends IntentService {
         // TODO - use a messenger/etc to check database rather than this infinite while loop?
         Cursor cursor;
         String imageFileName;
+        // TODO - this code assumes that an image is stored in the database
+        // TODO Currently, not a valid assumption, it can be null/empty
         while (true) {
             // query the database
             String whereClause = BeepDbContract.BeepEntry._ID+"=?";
@@ -84,6 +86,7 @@ public class CreateVideoService extends IntentService {
                     break;
                 }
             }
+            cursor.close();
         }
 
         Log.d(TAG, "current imageFile name: " + imageFileName);

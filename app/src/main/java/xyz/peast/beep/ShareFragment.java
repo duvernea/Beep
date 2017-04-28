@@ -3,10 +3,14 @@ package xyz.peast.beep;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.LabeledIntent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -41,6 +45,8 @@ import com.google.android.gms.ads.AdView;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import xyz.peast.beep.services.CompressImageUpdateDbService;
 import xyz.peast.beep.services.CreateVideoService;
@@ -106,8 +112,8 @@ public class ShareFragment extends Fragment {
         mContext = getActivity();
         mActivity = getActivity();
 
+        // Facebook callback manager
         callbackManager = CallbackManager.Factory.create();
-
 
         mBeepNameTextView = (TextView) rootView.findViewById(R.id.beep_name_textview);
         mBoardNameTextView = (TextView) rootView.findViewById(R.id.board_name_textview);
@@ -138,9 +144,7 @@ public class ShareFragment extends Fragment {
         mBeepName = bundle.getString(RecordActivity.BEEP_NAME);
         mBeepNameTextView.setText(mBeepName);
         mBoardNameTextView.setText(mBoardName);
-
-
-
+        
         // Audio File Name path
         final String filePath = Utility.getFullWavPath(mContext, mRecordFileName, false);
 
@@ -190,6 +194,8 @@ public class ShareFragment extends Fragment {
         mShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                // >= Lollipop gmail only email client used
                 ((RecordActivity) mActivity).setPitchShift(0);
                 ((RecordActivity) mActivity).setTempo(1.0);
                 ((RecordActivity) mActivity).turnFxOff();
@@ -201,14 +207,57 @@ public class ShareFragment extends Fragment {
                 Uri fileUri = ShareUtility.encodeBeepGetUri(mContext, mRecordFileName,
                         mBeepName, mBeepMp3Path, mBeepEdited);
 
-                Intent share = new Intent(Intent.ACTION_SEND);
-                share.setType("audio/*");
-                String subject = "I created this on beep app!";
-                share.putExtra(Intent.EXTRA_SUBJECT, subject);
+                PackageManager pm = mActivity.getPackageManager();
+                Intent emailIntent = new Intent(Intent.ACTION_SEND);
+
                 String body = "I call it \"" + mBeepName + "\"";
-                share.putExtra(Intent.EXTRA_TEXT, body);
-                share.putExtra(Intent.EXTRA_STREAM, fileUri);
-                startActivityForResult (share, SHARE_BEEP);
+                String subject = "I created this on beep app!";
+
+                emailIntent.putExtra(Intent.EXTRA_TEXT, body);
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                emailIntent.setType("message/rfc822");
+
+//                Intent openInChooser = Intent.createChooser(emailIntent, "Test string");
+
+                List<ResolveInfo> resInfo = pm.queryIntentActivities(emailIntent, 0);
+                List<LabeledIntent> intentList = new ArrayList<LabeledIntent>();
+
+                emailIntent.setType("audio/*");
+                emailIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
+
+                Log.d(TAG, "resInfo.size(): " + resInfo.size());
+
+                for (int i = 0; i < resInfo.size(); i++) {
+                    ResolveInfo ri = resInfo.get(i);
+                    String packageName = ri.activityInfo.packageName;
+                    Log.d(TAG, "packageName " + i + " " + packageName);
+                    if (packageName.contains("android.gm")) {
+                        emailIntent.setPackage(packageName);
+                    }
+//                    } else if (packageName.contains("android.gm")) {
+//                        Log.d(TAG, "package contains android.gm");
+//                        Intent intent = new Intent();
+//                        intent.setComponent(new ComponentName(packageName, ri.activityInfo.name));
+//                        intent.setAction(Intent.ACTION_SEND);
+//                        intent.setType("text/plain");
+//
+//                        intent.putExtra(Intent.EXTRA_TEXT, body);
+//
+//                        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+//                        intent.setType("message/rfc822");
+//                        intentList.add(new LabeledIntent(intent, packageName, ri.loadLabel(pm), ri.icon));
+//
+//                    }
+                }
+                // convert intentList to array
+//                LabeledIntent[] extraIntents = intentList.toArray( new LabeledIntent[ intentList.size() ]);
+//                Log.d(TAG, "ExtraIntents count: " + extraIntents.length);
+
+//                openInChooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents);
+                // startActivity(openInChooser);
+                startActivityForResult(emailIntent, SHARE_BEEP);
+
+                // startActivityForResult (share, SHARE_BEEP);
             }
         });
         mFacebookShareButton.setOnClickListener(new View.OnClickListener() {
