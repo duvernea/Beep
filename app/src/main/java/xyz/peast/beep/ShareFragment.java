@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 
 import com.facebook.share.model.ShareContent;
@@ -32,6 +33,8 @@ import com.facebook.share.model.ShareMediaContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.ShareVideo;
 import com.facebook.share.model.ShareVideoContent;
+import com.facebook.share.widget.MessageDialog;
+import com.facebook.share.widget.SendButton;
 import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -67,6 +70,7 @@ public class ShareFragment extends Fragment {
     private Button mDontShareButton;
     private Button mReplayButton;
     private Button mFacebookShareButton;
+    private Button mFacebookMessengerButton;
 
     private String mBoardName;
     private int mBoardKey;
@@ -84,6 +88,10 @@ public class ShareFragment extends Fragment {
     private BroadcastReceiver mVideoBroadcastReceiver;
 
     private ProgressDialog mProgressDialog;
+    private ProgressDialog mProgressDialog2;
+
+
+    CallbackManager callbackManager;
 
     String mImageUri;
 
@@ -98,6 +106,9 @@ public class ShareFragment extends Fragment {
         mContext = getActivity();
         mActivity = getActivity();
 
+        callbackManager = CallbackManager.Factory.create();
+
+
         mBeepNameTextView = (TextView) rootView.findViewById(R.id.beep_name_textview);
         mBoardNameTextView = (TextView) rootView.findViewById(R.id.board_name_textview);
         mBeepImageView = (ImageView) rootView.findViewById(R.id.beep_imageview);
@@ -105,6 +116,7 @@ public class ShareFragment extends Fragment {
         mShareButton = (Button) rootView.findViewById(R.id.email_share_button);
         mDontShareButton = (Button) rootView.findViewById(R.id.no_button);
         mFacebookShareButton = (Button) rootView.findViewById(R.id.facebook_button);
+        mFacebookMessengerButton = (Button) rootView.findViewById(R.id.facebook_messenger_button);
 
         // Initilize Ads
         mAdView = (AdView) rootView.findViewById(R.id.adview);
@@ -202,18 +214,10 @@ public class ShareFragment extends Fragment {
         mFacebookShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "mRecordFileName: " + mRecordFileName);
-                Log.d(TAG, "mImageUri: " + mImageUri);
-
-                // TODO assumes video already created. May need an asynchronous message and spinner here
-                // TODO to create video before content is built?
 
                 String videoPath = Utility.getBeepVideoPath(mContext, mBeepName);
-                Log.d(TAG, "facebook video path: " + videoPath);
                 File videoFile = new File(videoPath);
                 Uri videoFileUri = Uri.fromFile(videoFile);
-
-                Log.d(TAG, "facebook video uri: " + videoFileUri);
 
                 ShareVideo shareVideo = new ShareVideo.Builder()
                         .setLocalUrl(videoFileUri)
@@ -223,29 +227,54 @@ public class ShareFragment extends Fragment {
                         .setVideo(shareVideo)
                         .build();
 
-//                SharePhoto sharePhoto1 = new SharePhoto.Builder()
-//                        .setBitmap(mImageViewBitmap).build();
-//
-//                ShareLinkContent content = new ShareLinkContent.Builder()
-//                        .setContentUrl(Uri.parse("http://k003.kiwi6.com/hotlink/rlucf3los9/TOAD_Free_MP3_Download_.mp3")).build();
+                mProgressDialog2 = new ProgressDialog(mContext);
+                mProgressDialog2.setTitle("Creating content");
+                // mProgressDialog.setMessage("message...");
+                mProgressDialog2.setCancelable(false); // disable dismiss by tapping outside of the dialog
+                if (mVideoCreationComplete) {
+                    MessageDialog.show(mActivity, content);
+                } else {
+                    mProgressDialog2.show();
+                    mProgressDialog2.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            ShareDialog.show(mActivity, content);
+                        }
+                    });
+                }
+            }
+        });
+        mFacebookMessengerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-//                ShareContent shareContent = new ShareMediaContent.Builder()
-//                        .addMedium(sharePhoto1)
-//                        .build();
+                String videoPath = Utility.getBeepVideoPath(mContext, mBeepName);
+                File videoFile = new File(videoPath);
+                Uri videoFileUri = Uri.fromFile(videoFile);
+
+                ShareVideo shareVideo = new ShareVideo.Builder()
+                        .setLocalUrl(videoFileUri)
+                        .build();
+
+                final ShareVideoContent content = new ShareVideoContent.Builder()
+                        .setVideo(shareVideo)
+                        .build();
+
                 mProgressDialog = new ProgressDialog(mContext);
                 mProgressDialog.setTitle("Creating content");
-                mProgressDialog.setMessage("message...");
+                // mProgressDialog.setMessage("message...");
                 mProgressDialog.setCancelable(false); // disable dismiss by tapping outside of the dialog
-                mProgressDialog.show();
-                mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        ShareDialog.show(mActivity, content);
-
-                    }
-                });
-                // To dismiss the dialog
-                // get message from video service that it is complete
+                if (mVideoCreationComplete) {
+                    MessageDialog.show(mActivity, content);
+                } else {
+                    mProgressDialog.show();
+                    mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            MessageDialog.show(mActivity, content);
+                        }
+                    });
+                }
 
             }
         });
@@ -283,7 +312,12 @@ public class ShareFragment extends Fragment {
             public void onReceive(Context context, Intent intent) {
                 Log.d(TAG, "onReceive Broadcast Listener");
                 mVideoCreationComplete = true;
-                mProgressDialog.dismiss();
+                if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
+                }
+                if (mProgressDialog2 != null && mProgressDialog2.isShowing()) {
+                    mProgressDialog2.dismiss();
+                }
 
             }
         };
@@ -299,7 +333,6 @@ public class ShareFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "onActivityResult");
-
 
         if (requestCode == SHARE_BEEP) {
 

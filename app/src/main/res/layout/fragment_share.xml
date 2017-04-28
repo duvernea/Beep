@@ -109,6 +109,39 @@
             android:layout_weight="1"
             android:textAllCaps="false" />
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_frame_layout2"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/button_frame_layout"
+        android:layout_marginTop="16dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:id="@+id/facebook_messenger_button"
+            android:text="fb messenger"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/button_text_size"
+            android:background="@color/com_facebook_blue"
+            android:visibility="visible"
+            android:layout_weight="1"
+            android:textAllCaps="false" />
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:id="@+id/txtmsg_share_button"
+            android:text="txt msg"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/button_text_size"
+            android:background="@android:color/background_dark"
+            android:visibility="visible"
+            android:layout_weight="1"
+            android:textAllCaps="false" />
+    </LinearLayout>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -120,9 +153,9 @@
         android:visibility="visible"
 
         android:textAllCaps="false"
-        android:layout_below="@+id/replay_button"
+        android:layout_below="@+id/button_frame_layout2"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp" />
+        android:layout_marginTop="16dp" />
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adview"
