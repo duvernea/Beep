@@ -354,8 +354,9 @@ public class RecordActivity extends AppCompatActivity
             builder.setMessage("Your work will be lost")
                     .setTitle("Cancel");
         } else if (backstackCount == 3) {
+            // Share screen back or up button press
             builder.setMessage("Return to Main")
-                    .setTitle("Cancel Sharing?");
+                    .setTitle("Exit share screen?");
         }
         // Add the buttons
         builder.setPositiveButton(R.string.dialog_positive_button, new DialogInterface.OnClickListener() {

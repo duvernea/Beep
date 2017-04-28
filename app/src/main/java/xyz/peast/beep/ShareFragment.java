@@ -25,10 +25,13 @@ import com.facebook.share.model.ShareContent;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.ShareMediaContent;
 import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.ShareVideo;
+import com.facebook.share.model.ShareVideoContent;
 import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import java.io.File;
 import java.io.IOException;
 
 import xyz.peast.beep.services.LoadDownsampledBitmapImageService;
@@ -187,11 +190,21 @@ public class ShareFragment extends Fragment {
                 Log.d(TAG, "mRecordFileName: " + mRecordFileName);
                 Log.d(TAG, "mImageUri: " + mImageUri);
 
-                SharePhoto sharePhoto1 = new SharePhoto.Builder()
-                        .setBitmap(mImageViewBitmap).build();
+                // TODO assumes video already created. May need an asynchronous message and spinner here
+                // TODO to create video before content is built?
+                Uri videoFileUri = Uri.fromFile(new File("/data/data/xyz.peast.beep/files/video/out.mp4"));
+                ShareVideo shareVideo = new ShareVideo.Builder()
+                        .setLocalUrl(videoFileUri)
+                        .build();
+                ShareVideoContent content = new ShareVideoContent.Builder()
+                        .setVideo(shareVideo)
+                        .build();
 
-                ShareLinkContent content = new ShareLinkContent.Builder()
-                        .setContentUrl(Uri.parse("http://k003.kiwi6.com/hotlink/rlucf3los9/TOAD_Free_MP3_Download_.mp3")).build();
+//                SharePhoto sharePhoto1 = new SharePhoto.Builder()
+//                        .setBitmap(mImageViewBitmap).build();
+//
+//                ShareLinkContent content = new ShareLinkContent.Builder()
+//                        .setContentUrl(Uri.parse("http://k003.kiwi6.com/hotlink/rlucf3los9/TOAD_Free_MP3_Download_.mp3")).build();
 
 //                ShareContent shareContent = new ShareMediaContent.Builder()
 //                        .addMedium(sharePhoto1)

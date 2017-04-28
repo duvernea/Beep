@@ -19,6 +19,7 @@ import android.media.AudioRecord;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -102,6 +103,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mContext = this;
         mActivity = this;
 
+        /***************** FFMPEG **********************/
+
         FFmpeg ffmpeg = FFmpeg.getInstance(mContext);
         try {
             ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
@@ -126,27 +129,30 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             // Handle if FFmpeg is not supported by device
             e.printStackTrace();
         }
-        String cmd[] = new String[1];
-        cmd[0] = "-version";
-        String image = getFilesDir().getAbsolutePath() + File.separator + "img.jpg";
-        String audio = getFilesDir().getAbsolutePath() + File.separator + "audio.wav";
-        String output = getFilesDir().getAbsolutePath() + File.separator + "out.mp4";
+        File direct = new File(getFilesDir()+ File.separator + Constants.VIDEO_DIR);
 
+        if(!direct.exists()) {
+            if(direct.mkdir()); //directory is created;
+        }
+        String testAudio = "0cf0c46e-fd5b-4984-aa9e-981524790fb3_edit.wav";
+        String testImage = "testimage.jpg";
+        String outFile = "out";
+        String image = getFilesDir().getAbsolutePath() + File.separator + testImage;
+        String audio = getFilesDir().getAbsolutePath() + File.separator + testAudio;
+        String output = getFilesDir().getAbsolutePath() + File.separator +
+                Constants.VIDEO_DIR + File.separator + outFile + Constants.MP4_FILE_SUFFIX;
 
-        String cmd2[] = {"-loop", "1",
+        String cmd[] = {"-loop", "1",
                 "-i", image,
                 "-i", audio,
                 "-c:v", "libx264",
                 "-c:a", "aac",
-                "-b:a", "192k",
+                "-b:a", "320k",
                 "-shortest", output,
                 "-y"};
 
-
-        Log.d(TAG, "cmd: " + cmd2);
         try {
-            // to execute "ffmpeg -version" command you just need to pass "-version"
-            ffmpeg.execute(cmd2, new ExecuteBinaryResponseHandler() {
+            ffmpeg.execute(cmd, new ExecuteBinaryResponseHandler() {
 
                 @Override
                 public void onStart() {}
@@ -176,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             e.printStackTrace();
         }
 
-
+        /***************** FFMPEG **********************/
 
 
         mSharedPrefs = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
