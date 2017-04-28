@@ -142,10 +142,10 @@ public class CreateVideoService extends IntentService {
                 "-c:v", "libx264",
                 "-c:a", "aac",
                 "-b:a", "320k",
-                "-shortest", output,
                 "-y",
-                "-vf", "\"zoompan=z='min(zoom+0.15,1.5)':d=125\""};
-
+                "-shortest", output
+                };
+        // "-vf", "\"zoompan=z='min(zoom+0.15,1.5)':d=125\"",
         try {
             ffmpeg.execute(cmd, new ExecuteBinaryResponseHandler() {
 

@@ -94,7 +94,6 @@ public class ShareFragment extends Fragment {
     private BroadcastReceiver mVideoBroadcastReceiver;
 
     private ProgressDialog mProgressDialog;
-    private ProgressDialog mProgressDialog2;
 
 
     CallbackManager callbackManager;
@@ -276,18 +275,20 @@ public class ShareFragment extends Fragment {
                         .setVideo(shareVideo)
                         .build();
 
-                mProgressDialog2 = new ProgressDialog(mContext);
-                mProgressDialog2.setTitle("Creating content");
+                mProgressDialog = new ProgressDialog(mContext);
+                mProgressDialog.setTitle("Creating content..");
                 // mProgressDialog.setMessage("message...");
-                mProgressDialog2.setCancelable(false); // disable dismiss by tapping outside of the dialog
                 if (mVideoCreationComplete) {
-                    MessageDialog.show(mActivity, content);
+                    // MessageDialog.show(mActivity, content);
+                    ShareDialog.show(mActivity, content);
+
                 } else {
-                    mProgressDialog2.show();
-                    mProgressDialog2.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    mProgressDialog.show();
+                    mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @Override
                         public void onDismiss(DialogInterface dialog) {
                             ShareDialog.show(mActivity, content);
+
                         }
                     });
                 }
@@ -363,9 +364,6 @@ public class ShareFragment extends Fragment {
                 mVideoCreationComplete = true;
                 if (mProgressDialog != null && mProgressDialog.isShowing()) {
                     mProgressDialog.dismiss();
-                }
-                if (mProgressDialog2 != null && mProgressDialog2.isShowing()) {
-                    mProgressDialog2.dismiss();
                 }
 
             }
