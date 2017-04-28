@@ -53,6 +53,8 @@ public class CompressImageUpdateDbService extends IntentService {
         File originalImageFile = new File(originalImageFilePath);
         long length = originalImageFile.length();
 
+        Bitmap myBitmap = BitmapFactory.decodeFile(originalImageFilePath);
+
         // Downsample bitmap
         Bitmap downsampledBitmap = Utility.subsampleBitmap(getApplicationContext(),
                     originalImageFilePath, 360, 360);
@@ -77,7 +79,10 @@ public class CompressImageUpdateDbService extends IntentService {
                 e.printStackTrace();
             }
         }
+
         File compressedImageFile = new File(compressedImageFilePath);
+        Bitmap finalBitmap = BitmapFactory.decodeFile(compressedImageFilePath);
+
         long lengthCompressedFile = compressedImageFile.length();
 
         // Update database to reflect the new file name

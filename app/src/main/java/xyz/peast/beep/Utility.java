@@ -48,23 +48,29 @@ public class Utility {
         //final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
 
         // Center crop
-        if (selectedImage.getWidth() >= selectedImage.getHeight()) {
+        int imgWidth = selectedImage.getWidth();
+        if (imgWidth % 2 != 0) { imgWidth--; }
+
+        int imgHeight = selectedImage.getHeight();
+        if (imgHeight % 2 != 0) { imgHeight--; }
+
+        if (imgWidth >= imgHeight) {
 
             centerCropBmp = Bitmap.createBitmap(
                     selectedImage,
-                    selectedImage.getWidth() / 2 - selectedImage.getHeight() / 2,
+                    imgWidth / 2 - imgHeight / 2,
                     0,
-                    selectedImage.getHeight(),
-                    selectedImage.getHeight()
+                    imgHeight,
+                    imgHeight
             );
 
         } else {
             centerCropBmp = Bitmap.createBitmap(
                     selectedImage,
                     0,
-                    selectedImage.getHeight() / 2 - selectedImage.getWidth() / 2,
-                    selectedImage.getWidth(),
-                    selectedImage.getWidth()
+                    imgHeight / 2 - imgWidth / 2,
+                    imgWidth,
+                    imgWidth
             );
         }
 

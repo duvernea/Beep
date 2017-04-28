@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             if(direct.mkdir()); //directory is created;
         }
         String testAudio = "0cf0c46e-fd5b-4984-aa9e-981524790fb3_edit.wav";
-        String testImage = "testimage.jpg";
+        String testImage = "305d302a-516e-4560-a165-d6bb026dfd35.jpg";
         String outFile = "out";
         String image = getFilesDir().getAbsolutePath() + File.separator + testImage;
         String audio = getFilesDir().getAbsolutePath() + File.separator + testAudio;
