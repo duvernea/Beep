@@ -13,6 +13,11 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Point;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -293,5 +298,60 @@ public class Utility {
 
         boolean[] filesDeletedSuccess = {audioUneditedDeleted, audioEditedDeleted, imageDeleted};
         return filesDeletedSuccess;
+    }
+    public static Bitmap mark(Bitmap src, String watermark, Point location, int color, int alpha, int size, boolean underline) {
+        int w = src.getWidth();
+        int h = src.getHeight();
+        Bitmap result = Bitmap.createBitmap(w, h, src.getConfig());
+
+        Canvas canvas = new Canvas(result);
+        canvas.drawBitmap(src, 0, 0, null);
+
+        Paint paint = new Paint();
+        paint.setColor(color);
+        paint.setAlpha(alpha);
+        paint.setTextSize(size);
+        paint.setAntiAlias(true);
+        paint.setUnderlineText(underline);
+        canvas.drawText(watermark, location.x, location.y, paint);
+
+        return result;
+    }
+    public static Bitmap addWaterMark(Context context, Bitmap src) {
+        Log.d(TAG, "src width: " + src.getWidth());
+        Log.d(TAG, "src height: " + src.getHeight());
+        int w = src.getWidth();
+        int h = src.getHeight();
+        Bitmap result = Bitmap.createBitmap(w, h, src.getConfig());
+
+        Canvas canvas = new Canvas(result);
+
+        canvas.drawBitmap(src, 0, 0, null);
+
+        Bitmap waterMark = BitmapFactory.decodeResource(context.getResources(), R.drawable.beep_item_temp);
+        Log.d(TAG, "watermark width: " + waterMark.getWidth());
+        Log.d(TAG, "watermark height: " + waterMark.getHeight());
+        double scaleFactor = 0.1;
+        // Bitmap watermarkShrink = Bitmap.createScaledBitmap(waterMark, 50, 50, false);
+
+        int newWidth = 80;
+        int newHeight = 80;
+        Bitmap watermarkShrink = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
+
+        float ratioX = newWidth / (float) waterMark.getWidth();
+        float ratioY = newHeight / (float) waterMark.getHeight();
+        float middleX = newWidth / 2.0f;
+        float middleY = newHeight / 2.0f;
+
+        Matrix scaleMatrix = new Matrix();
+        scaleMatrix.setScale(ratioX, ratioY, middleX, middleY);
+
+        Canvas canvas2 = new Canvas(watermarkShrink);
+        canvas2.setMatrix(scaleMatrix);
+        canvas2.drawBitmap(waterMark, middleX - waterMark.getWidth() / 2, middleY - waterMark.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
+
+        canvas.drawBitmap(watermarkShrink, 0, 0, null);
+
+        return result;
     }
 }

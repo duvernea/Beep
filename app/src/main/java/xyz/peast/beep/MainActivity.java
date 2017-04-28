@@ -13,6 +13,8 @@ import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
@@ -44,6 +46,8 @@ import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunnin
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import xyz.peast.beep.adapters.BeepAdapter;
 import xyz.peast.beep.adapters.BoardRecyclerViewAdapter;
@@ -137,13 +141,35 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         String testAudio = "0cf0c46e-fd5b-4984-aa9e-981524790fb3_edit.wav";
         String testImage = "305d302a-516e-4560-a165-d6bb026dfd35.jpg";
         String outFile = "out";
+
         String image = getFilesDir().getAbsolutePath() + File.separator + testImage;
+        Log.d(TAG, "image path: " + image);
+        String imageWatermark = getFilesDir().getAbsolutePath() + File.separator + "temp.jpg";
+        Bitmap temp = BitmapFactory.decodeFile(image);
+        Bitmap temp2 = Utility.addWaterMark(mContext, temp);
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(imageWatermark);
+            temp2.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+            // PNG is a lossless format, the compression factor (100) is ignored
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         String audio = getFilesDir().getAbsolutePath() + File.separator + testAudio;
         String output = getFilesDir().getAbsolutePath() + File.separator +
                 Constants.VIDEO_DIR + File.separator + outFile + Constants.MP4_FILE_SUFFIX;
 
         String cmd[] = {"-loop", "1",
-                "-i", image,
+                "-i", imageWatermark,
                 "-i", audio,
                 "-c:v", "libx264",
                 "-c:a", "aac",
